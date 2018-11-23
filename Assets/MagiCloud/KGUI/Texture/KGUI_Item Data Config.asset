@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: KGUI_Item Data Config
+  m_EditorClassIdentifier: Assembly-CSharp:KGUI:KGUI_ItemDataConfig
+  normalIcon: {fileID: 21300000, guid: 8f91bbc4939d3a8429a884ca6bfb2849, type: 3}
+  enterIcon: {fileID: 21300000, guid: 16463e573374b484a96c6105878b44ee, type: 3}
+  disableIcon: {fileID: 21300000, guid: 495aecdc2f4d04a40bd913bb634e53c0, type: 3}
+  ItemDatas:
+  - ID: 1
+    normalSpritePath: "Images/BagEquipment/\u6B63\u5E38/\u70E7\u676F(\u6C34\uFF09"
+    disableSpritePath: "Images/BagEquipment/\u53BB\u8272/\u70E7\u676F(\u6C34\uFF09"
+    number: 2
+    ItemPath: Prefabs/Items/Item
+    Name: "\u70E7\u676F"
+    zValue: 20
+  - ID: 2
+    normalSpritePath: "Images/BagEquipment/\u6B63\u5E38/\u70E7\u676FA"
+    disableSpritePath: "Images/BagEquipment/\u53BB\u8272/\u70E7\u676FA"
+    number: 2
+    ItemPath: Prefabs/Items/Item
+    Name: "\u77F3\u68C9\u7F51"
+    zValue: 5

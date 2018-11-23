@@ -1,0 +1,550 @@
+﻿using System.Collections;
+//using MagiCloud.RotateAndZoomTool;
+//using MCKinect;
+using UnityEngine;
+using UnityEditor;
+using System.Collections.Generic;
+using System.Linq;
+using MagiCloud.Interactive.Distance;
+
+namespace MagiCloud.Features
+{
+
+    [CustomEditor(typeof(FeaturesObjectController))]
+    [CanEditMultipleObjects]
+    public class FeaturesObjectControllerEditor :Editor
+    {
+        private FeaturesObjectController features;
+
+        private SpaceLimit _spaceLimit;
+        private HighlightObject _highlight;
+        private ShadowController _shadowController;
+        private LabelData _labelController;
+
+        private MCCanGrab _cangrabController;
+        private MCObjectRatation _objectRatationController;
+        private MCLimitMove _limitMoveController;
+        private MCustomize _customizeController;
+        private MCNone _noneController;
+
+        private string distanceName;
+        private List<DistanceInteraction> distances;
+        private List<List<DistanceInteraction>> distanceSums;
+
+        private void OnEnable()
+        {
+            features = serializedObject.targetObject as FeaturesObjectController;
+            distances = new List<DistanceInteraction>();
+
+            if (distanceSums == null)
+                distanceSums = new List<List<DistanceInteraction>>();
+
+            var parent = features.transform.Find("distanceParent");
+            if (parent != null)
+            {
+                distances = parent.GetComponentsInChildren<DistanceInteraction>().ToList();
+
+                Dismantling();
+            }
+
+        }
+
+        /// <summary>
+        /// 拆解
+        /// </summary>
+        void Dismantling()
+        {
+
+            int addValue = 3;
+            int maxCount = addValue;
+
+            for (int i = 0; i < distances.Count; i += addValue)
+            {
+                List<DistanceInteraction> cList = new List<DistanceInteraction>();
+                cList = distances.Take(maxCount).Skip(i).ToList();
+                maxCount += addValue;
+
+                distanceSums.Add(cList);
+            }
+        }
+
+        public override void OnInspectorGUI()
+        {
+            GUILayout.Space(10);
+
+            EditorGUILayout.BeginVertical("box");
+
+            //空间限制面板
+            EditorGUILayout.BeginVertical("box");
+            features.ActiveSpaceLimit = GUILayout.Toggle(features.ActiveSpaceLimit, "  激活空间限制--------------------------------------------------------------");
+            InspectorSpaceLimit();
+            EditorGUILayout.EndVertical();
+
+            //高亮面板
+            EditorGUILayout.BeginVertical("box");
+            features.ActiveHighlight = GUILayout.Toggle(features.ActiveHighlight,"  激活高亮--------------------------------------------------------------");
+            InspectorHighLight();
+            EditorGUILayout.EndVertical();
+
+
+            //标签面板
+            EditorGUILayout.BeginVertical("box");
+            features.ActiveLabel = GUILayout.Toggle(features.ActiveLabel,"  激活标签--------------------------------------------------------------");
+            InspectorLabel();
+            EditorGUILayout.EndVertical();
+
+
+            //虚影面板
+            EditorGUILayout.BeginVertical("box");
+            features.ActiveShadow = GUILayout.Toggle(features.ActiveShadow,"  激活虚影--------------------------------------------------------------");
+            InspectorShadow();
+            EditorGUILayout.EndVertical();
+
+
+
+            //限制移动面板
+            EditorGUILayout.BeginVertical("box");
+            features.ActiveLimitMove = GUILayout.Toggle(features.ActiveLimitMove,"  激活限制移动--------------------------------------------------------------");
+            InspectorLimitMove();
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.BeginVertical("box");
+            //物体操作
+            features.operaType = (ObjectOperaType)EditorGUILayout.EnumPopup("物体操作类型：",features.operaType);
+
+            OnOperaStatus();
+
+            switch (features.operaType)
+            {
+                case ObjectOperaType.无:
+                    InspectorNone();
+                    break;
+                case ObjectOperaType.能抓取:
+                    InspectorCanGrab();
+                    break;
+                case ObjectOperaType.物体自身旋转:
+                    InspectorSelfRotation();
+                    break;
+                case ObjectOperaType.摄像机围绕物体旋转:
+                    InspectorCameraCenterObjectRotation();
+                    break;
+
+                case ObjectOperaType.自定义:
+                    InspectorCustomize();
+                    break;
+                default:
+                    break;
+            }
+
+            EditorGUILayout.EndVertical();
+
+            //创建距离界面
+            //InspectorDistance();
+        }
+
+        /// <summary>
+        /// 操作状态
+        /// </summary>
+        /// <param name="operaType"></param>
+        public void OnOperaStatus()
+        {
+            if (features.operaType != features.beforeChange)
+            {
+                switch (features.beforeChange)
+                {
+                    case ObjectOperaType.无:
+                        features.RemoveNone();
+                        _noneController = null;
+                        break;
+                    case ObjectOperaType.能抓取:
+                        features.RemoveCanGrab();
+                        _cangrabController = null;
+                        break;
+                    case ObjectOperaType.物体自身旋转:
+                        features.RemoveRotation();
+                        _objectRatationController = null;
+                        break;
+                    case ObjectOperaType.摄像机围绕物体旋转:
+                        features.RemoveRotation();
+                        _objectRatationController = null;
+                        break;
+                    case ObjectOperaType.自定义:
+                        features.RemoveCustomize();
+                        _customizeController = null;
+                        break;
+                    default:
+                        break;
+                }
+                features.beforeChange = features.operaType;
+            }
+
+            switch (features.operaType)
+            {
+                case ObjectOperaType.无:
+                    if (_noneController == null)
+                        _noneController = features.AddNone();
+                    break;
+                case ObjectOperaType.能抓取:
+                    if (_cangrabController == null)
+                        _cangrabController = features.AddCanGrab();
+                    break;
+                case ObjectOperaType.物体自身旋转:
+                    if (_objectRatationController == null)
+                        _objectRatationController = features.AddSelfRotation();
+                    break;
+                case ObjectOperaType.摄像机围绕物体旋转:
+                    if (_objectRatationController == null)
+                        _objectRatationController = features.AddCameraCenterObjectRotation();
+                    break;
+
+                case ObjectOperaType.自定义:
+                    if (_customizeController == null)
+                    {
+                        _customizeController = features.AddCustomize();
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        /// <summary>
+        /// 空间限制面板显示
+        /// </summary>
+        private void InspectorSpaceLimit()
+        {
+            if (features.ActiveSpaceLimit)
+            {
+                _spaceLimit = features.AddSpaceLimit();
+                if (_spaceLimit == null) return;
+                EditorGUILayout.BeginVertical();
+                _spaceLimit.limitObj = EditorGUILayout.ObjectField("    *被限制的物体", _spaceLimit.limitObj, typeof(GameObject), true) as GameObject;
+                if (_spaceLimit.limitObj == null)
+                    EditorGUILayout.HelpBox("请赋值被抓取物体本身", MessageType.None,false);
+                _spaceLimit.topLimit = EditorGUILayout.Toggle("    *上边限制", _spaceLimit.topLimit);
+                _spaceLimit.bottomLimit = EditorGUILayout.Toggle("    *下边限制", _spaceLimit.bottomLimit);
+                _spaceLimit.leftLimit = EditorGUILayout.Toggle("    *左边限制", _spaceLimit.leftLimit);
+                _spaceLimit.rightLimit = EditorGUILayout.Toggle("    *右边限制", _spaceLimit.rightLimit);
+                _spaceLimit.offset = EditorGUILayout.FloatField("    *偏移量", 0.5f);
+                EditorGUILayout.EndVertical();
+            }
+            else
+            {
+                features.RemoveSpaceLimit();
+                _spaceLimit = null;
+            }
+        }
+
+        /// <summary>
+        /// 高亮面板显示
+        /// </summary>
+        private void InspectorHighLight()
+        {
+            if (features.ActiveHighlight)
+            {
+                _highlight = features.AddHighlight();
+                _highlight.highlightType = (HighLightType)EditorGUILayout.EnumPopup("高亮类型：", _highlight.highlightType);
+
+                if (_highlight.highlightType == HighLightType.Model)
+                {
+                    if (_highlight == null) return;
+                    _highlight.highlightModel = EditorGUILayout.ObjectField("    *模型高亮：", _highlight.highlightModel, typeof(GameObject), true) as GameObject;
+                    if (_highlight.highlightModel == null)
+                        EditorGUILayout.HelpBox("高亮的物体，默认是自己...", MessageType.None);
+                }
+                else
+                {
+                    if (_highlight == null) return;
+                    
+                    _highlight.highlightColor = FrameConfig.Config.highlightColor;
+
+                    _highlight.grabColor = FrameConfig.Config.grabColor;
+                }
+            }
+            else
+            {
+                features.RemoveHighlight();
+                _highlight = null;
+            }
+        }
+
+        /// <summary>
+        /// 标签显示面板
+        /// </summary>
+        private void InspectorLabel()
+        {
+            if (features.ActiveLabel)
+            {
+                _labelController = features.AddLabel();
+                if (_labelController == null) return;
+                EditorGUILayout.BeginVertical();
+                //标签参数
+                _labelController.labelName = EditorGUILayout.TextField(new GUIContent("    *标签名字:","labelName"),_labelController.labelName);
+                _labelController.type=(LabelType)EditorGUILayout.EnumPopup("    *标签类型:",_labelController.type);
+                GUILayout.Space(10);
+
+                GUILayout.Label("字体设置");
+
+                _labelController.fontSize = EditorGUILayout.IntField(new GUIContent("    *大小","fontSize"),_labelController.fontSize);
+                _labelController.color = EditorGUILayout.ColorField(new GUIContent("    *颜色","color"),_labelController.color);
+
+                _labelController.fontStyle= (FontStyle)EditorGUILayout.EnumPopup(new GUIContent("    *风格","fontStyle"),_labelController.fontStyle);
+                _labelController.useShadow=EditorGUILayout.Toggle(new GUIContent("    *阴影","useShadow"),_labelController.useShadow);
+                _labelController.useOutline=EditorGUILayout.Toggle(new GUIContent("    *描边","useOutline"),_labelController.useOutline);
+                //if (GUILayout.Button("转到标签",GUILayout.Width(60),GUILayout.Height(15)))
+                //{
+                //    Selection.activeObject=_labelController.label.gameObject;
+                //}
+                GUILayout.Space(10);
+                GUILayout.Label("标签位置设置");
+                //实时变化
+                _labelController.labelSize = EditorGUILayout.Vector2Field(new GUIContent("    *标签的sizeDelta","labelSize"),_labelController.labelSize);
+
+                _labelController.labelOffset = EditorGUILayout.Vector3Field(new GUIContent("    *世界坐标偏移量","labelOffset"),_labelController.labelOffset);
+                _labelController.peakZreaZ = EditorGUILayout.Vector2Field(new GUIContent("    *离相机的距离范围内显示","peakZreaZ"),_labelController.peakZreaZ);
+
+                _labelController.clearAreaZ = EditorGUILayout.Vector2Field(new GUIContent("    *在显示范围内的缩放","clearAreaZ"),_labelController.clearAreaZ);
+                _labelController.label.OnUpdate();
+                EditorGUILayout.EndVertical();
+
+            }
+            else
+            {
+                features.RemoveLabel();
+                _labelController = null;
+            }
+        }
+
+        /// <summary>
+        /// 标签显示面板
+        /// </summary>
+        private void InspectorShadow()
+        {
+            if (features.ActiveShadow)
+            {
+                _shadowController = features.AddShadow();
+                _shadowController.shadowType = (ShadowType)EditorGUILayout.EnumPopup("    ·虚影类型：",_shadowController.shadowType);
+                if (_shadowController.shadowType == ShadowType.Manual)
+                {
+                    _shadowController.traModelNode = EditorGUILayout.ObjectField("    ·虚影模型：",_shadowController.traModelNode,typeof(Transform),true) as Transform;
+                }
+
+                _shadowController.renderQueue = EditorGUILayout.IntField("    ·Shader渲染层级：", _shadowController.renderQueue);
+            }
+            else
+            {
+                features.RemoveShadow();
+                _shadowController = null;
+            }
+        }
+
+        /// <summary>
+        /// 无显示面板
+        /// </summary>
+        private void InspectorNone()
+        {
+
+        }
+        /// <summary>
+        /// 能抓取显示面板
+        /// </summary>
+        private void InspectorCanGrab()
+        {
+            if (_cangrabController == null) return;
+
+            _cangrabController.grabObject = EditorGUILayout.ObjectField("    *被抓取物体",
+                _cangrabController.grabObject,typeof(GameObject),true) as GameObject;
+            if (_cangrabController.grabObject == null)
+                EditorGUILayout.HelpBox("当射线照射到该物体时，赋予谁被抓取，不赋值默认为本身...",MessageType.None,false);
+        }
+        /// <summary>
+        /// 物体自身旋转显示面板
+        /// </summary>
+        private void InspectorSelfRotation()
+        {
+            if (_objectRatationController == null) return;
+
+            //grabObject
+            _objectRatationController.grabObject = EditorGUILayout.ObjectField("    *被抓取物体",
+                _objectRatationController.grabObject,typeof(GameObject),true) as GameObject;
+            if (_objectRatationController.grabObject == null)
+                EditorGUILayout.HelpBox("当射线照射到该物体时，赋予谁被抓取，不赋值默认为本身...",MessageType.None,false);
+
+            EditorGUILayout.BeginVertical();
+            //space
+            _objectRatationController.space = (Space)EditorGUILayout.EnumPopup("    *空间坐标：",_objectRatationController.space);
+
+            //axisLimits
+            //_objectRatationController.axisLimits = (AxisLimits)EditorGUILayout.EnumPopup("    *坐标系：",_objectRatationController.axisLimits);
+
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.BeginHorizontal();
+            //minAngle
+            //maxAngle
+            Vector2 minmax = EditorGUILayout.Vector2Field("    *旋转值(最小-最大):",
+                new Vector2(_objectRatationController.minAngle,_objectRatationController.maxAngle));
+            _objectRatationController.minAngle = minmax.x;
+            _objectRatationController.maxAngle = minmax.y;
+
+            EditorGUILayout.EndHorizontal();
+
+        }
+        /// <summary>
+        /// 摄像机围绕物体旋转显示面板
+        /// </summary>
+        private void InspectorCameraCenterObjectRotation()
+        {
+            if (_objectRatationController == null) return;
+
+            //grabObject
+            _objectRatationController.grabObject = EditorGUILayout.ObjectField("    *被抓取物体",
+                _objectRatationController.grabObject,typeof(GameObject),true) as GameObject;
+            if (_objectRatationController.grabObject == null)
+                EditorGUILayout.HelpBox("当射线照射到该物体时，赋予谁被抓取，不赋值默认为本身...",MessageType.None,false);
+        }
+        /// <summary>
+        /// 限制移动显示面板
+        /// </summary>
+        private void InspectorLimitMove()
+        {
+            if (features.ActiveLimitMove)
+            {
+                _limitMoveController = features.AddLimitMove();
+
+                if (_limitMoveController == null) return;
+
+                //grabObject
+                _limitMoveController.grabObject = EditorGUILayout.ObjectField("    *被抓取物体",
+                    _limitMoveController.grabObject,typeof(GameObject),true) as GameObject;
+                if (_limitMoveController.grabObject == null)
+                    EditorGUILayout.HelpBox("当射线照射到该物体时，赋予谁被抓取，不赋值默认为本身...",MessageType.None,false);
+
+                _limitMoveController.type=(ProcessType)EditorGUILayout.EnumPopup("    *选择更新事件",_limitMoveController.type);
+
+                _limitMoveController.isLocal= EditorGUILayout.Toggle("      *使用本地坐标：",_limitMoveController.isLocal);
+                EditorGUILayout.Space();
+                _limitMoveController.activeX = EditorGUILayout.Toggle("      *开启X轴限制：",_limitMoveController.activeX);
+                if (_limitMoveController.activeX)
+                {
+                    _limitMoveController.xRange=EditorGUILayout.Vector2Field("  *x值的限制范围",_limitMoveController.xRange);
+                }
+                EditorGUILayout.Space();
+                _limitMoveController.activeY = EditorGUILayout.Toggle("      *开启Y轴限制：",_limitMoveController.activeY);
+                if (_limitMoveController.activeY)
+                {
+                    _limitMoveController.yRange     = EditorGUILayout.Vector2Field("  *初始y值的限制范围",_limitMoveController.yRange);
+                    _limitMoveController.minYCurve  = EditorGUILayout.CurveField("  *在x范围內的最小Y值",_limitMoveController.minYCurve);
+                    _limitMoveController.maxYCurve  = EditorGUILayout.CurveField("  *在x范围內的最大Y值",_limitMoveController.maxYCurve);
+                    if (GUILayout.Button("重置曲线",GUILayout.Width(60),GUILayout.Height(20)))
+                    {
+                        Debug.Log("生成Y曲线");
+                        _limitMoveController.minYCurve=new AnimationCurve();
+                        _limitMoveController.maxYCurve=new AnimationCurve();
+                        _limitMoveController.AddKeyGroup(_limitMoveController.yRange.x,_limitMoveController.yRange.y,AxisLimits.Y,0);
+                        _limitMoveController.AddKeyGroup(_limitMoveController.yRange.x,_limitMoveController.yRange.y,AxisLimits.Y,1);
+                    }
+                }
+                EditorGUILayout.Space();
+                _limitMoveController.activeZ        = EditorGUILayout.Toggle("      *开启Z轴限制：",_limitMoveController.activeZ);
+                if (_limitMoveController.activeZ)
+                {
+                    _limitMoveController.zRange     = EditorGUILayout.Vector2Field("  *初始z值的限制范围",_limitMoveController.zRange);
+                    _limitMoveController.minZCurve  = EditorGUILayout.CurveField("  *在x范围內的最小z值",_limitMoveController.minZCurve);
+                    _limitMoveController.maxZCurve  = EditorGUILayout.CurveField("  *在x范围內的最大z值",_limitMoveController.maxZCurve);
+                    if (GUILayout.Button("重置曲线",GUILayout.Width(60),GUILayout.Height(20)))
+                    {
+                        Debug.Log("生成Z曲线");
+                        _limitMoveController.minZCurve=new AnimationCurve();
+                        _limitMoveController.maxZCurve=new AnimationCurve();
+                        _limitMoveController.AddKeyGroup(_limitMoveController.zRange.x,_limitMoveController.zRange.y,AxisLimits.Z,0);
+                        _limitMoveController.AddKeyGroup(_limitMoveController.zRange.x,_limitMoveController.zRange.y,AxisLimits.Z,1);
+                    }
+                }
+            }
+            else
+            {
+                features.RemoveLimitMove();
+                _limitMoveController = null;
+            }
+        }
+
+        private void InspectorCustomize()
+        {
+            if (_customizeController == null) return;
+
+            //grabObject
+            _customizeController.grabObject = EditorGUILayout.ObjectField("    *被抓取物体",
+                _customizeController.grabObject,typeof(GameObject),true) as GameObject;
+
+            if (_customizeController.grabObject == null)
+                EditorGUILayout.HelpBox("当射线照射到该物体时，赋予谁被抓取，不赋值默认为本身...",MessageType.None,false);
+
+            GUILayout.Space(10);
+
+            GUILayout.Box("需要通过FeaturesObjectController对象访问Customize对象，然后注册OnOnCustomizeUpdate事件");
+
+            //EditorGUILayout.PropertyField(OnCustomizeUpdate, true, null);
+
+            //_customize.OnCustomizeUpdate = EditorGUILayout.ObjectField("    *被抓取物体", _customize.OnCustomizeUpdate,
+            //    typeof(EventCustomizeUpdate), true);
+
+        }
+
+        /// <summary>
+        /// 距离创建面板
+        /// </summary>
+        private void InspectorDistance()
+        {
+            GUILayout.Space(20);
+            EditorGUILayout.BeginVertical("box");
+
+            distanceName = EditorGUILayout.TextField("距离物体名称：",distanceName);
+
+            if (GUILayout.Button("创建距离检测点",GUILayout.Width(100)))
+            {
+                Transform parent = features.transform.Find("distanceParent");
+                if (parent == null)
+                {
+                    parent = new GameObject("distanceParent").transform;
+                    parent.SetParent(features.transform);
+                    parent.localPosition = Vector3.zero;
+                    parent.localRotation = Quaternion.identity;
+                    parent.localScale = Vector3.one;
+                }
+
+                GameObject distanceObject = new GameObject("distanceObject_" + distanceName);
+                var distance = distanceObject.AddComponent<DistanceInteraction>();
+                distanceObject.transform.SetParent(parent);
+                distanceObject.transform.localPosition = Vector3.zero;
+
+                distances.Add(distance);
+
+                Selection.activeGameObject = distanceObject;
+
+                Dismantling();
+            }
+
+            GUILayout.Space(20);
+            GUILayout.Label("该功能控制端下的距离检测点【只针对distanceParent下的】");
+            for (int i = 0; i < distanceSums.Count; i++)
+            {
+                EditorGUILayout.BeginHorizontal();
+
+                for (int j = 0; j < distanceSums[i].Count; j++)
+                {
+                    if (GUILayout.Button(distanceSums[i][j].name,GUILayout.Width(170)))
+                    {
+                        Selection.activeGameObject = distanceSums[i][j].gameObject;
+                    }
+                }
+
+                EditorGUILayout.EndHorizontal();
+            }
+
+            EditorGUILayout.EndVertical();
+        }
+    }
+}
+
