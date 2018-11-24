@@ -41,9 +41,9 @@ namespace MagiCloud.Core
             {
                 if (markCamera == null)
                 {
-                    var camera = transform.Find("mark Camera");
-                    if (camera != null)
-                        markCamera = camera.GetComponent<Camera>();
+                    var markCam = transform.Find("mark Camera");
+                    if (markCam != null)
+                        markCamera = markCam.GetComponent<Camera>();
                 }
 
                 if (mainCamera == null)
@@ -53,26 +53,74 @@ namespace MagiCloud.Core
                 MUtility.mainCamera = mainCamera;
                 MUtility.UICamera = UICamera;
 
-                highlighting = mainCamera.gameObject.GetComponent<HighlightingRenderer>() ?? mainCamera.gameObject.AddComponent<HighlightingRenderer>();
-
-                if (highlighting != null)
-                {
-                    highlighting.blurIntensity = 1;
-                    highlighting.blurSpread = 0;
-                    highlighting.blurMinSpread = 1;
-                    highlighting.iterations = 2;
-                    highlighting.downsampleFactor = 1;
-                }
+                SwitchPlatform(Application.platform);
             });
 
             behaviour.OnDestroy(() =>
             {
-                Destroy(highlighting);
+                DestoryPlatform(Application.platform);
             });
 
             DontDestroyOnLoad(gameObject);
 
             MBehaviourController.AddBehaviour(behaviour);
+        }
+
+        void AddHighlighting()
+        {
+            highlighting = mainCamera.gameObject.GetComponent<HighlightingRenderer>() ?? mainCamera.gameObject.AddComponent<HighlightingRenderer>();
+
+            if (highlighting != null)
+            {
+                highlighting.blurIntensity = 1;
+                highlighting.blurSpread = 0;
+                highlighting.blurMinSpread = 1;
+                highlighting.iterations = 2;
+                highlighting.downsampleFactor = 1;
+            }
+        }
+
+        void RemoveHighlighting()
+        {
+            if (highlighting != null)
+                Destroy(highlighting);
+        }
+
+        /// <summary>
+        /// 销毁时，平台处理
+        /// </summary>
+        void DestoryPlatform(RuntimePlatform platform)
+        {
+            switch (platform)
+            {
+                case RuntimePlatform.WindowsPlayer:
+                case RuntimePlatform.WindowsEditor:
+                    {
+                        RemoveHighlighting();
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 选择平台，根据不同的平台切换不同的高亮处理
+        /// </summary>
+        /// <param name="platform">Platform.</param>
+        void SwitchPlatform(RuntimePlatform platform)
+        {
+            switch (platform)
+            {
+                case RuntimePlatform.WindowsPlayer:
+                case RuntimePlatform.WindowsEditor:
+                    {
+                        AddHighlighting();
+                        break;
+                    }
+                default:
+                    break;
+            }
         }
 
         private void OnDestroy()
