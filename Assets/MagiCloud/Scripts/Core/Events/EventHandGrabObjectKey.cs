@@ -8,7 +8,7 @@ namespace MagiCloud.Core.Events
     {
         private readonly static EventIntGameKey Value = new EventIntGameKey();
 
-        public static void AddListener(GameObject key, Action<int> action, ExecutionPriority priority)
+        public static void AddListener(GameObject key, Action<int> action, ExecutionPriority priority = ExecutionPriority.Mid)
         {
             Value.AddListener(key, priority, action);
         }

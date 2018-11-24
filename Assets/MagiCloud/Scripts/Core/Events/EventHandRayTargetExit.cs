@@ -50,7 +50,7 @@ namespace MagiCloud.Core.Events
         /// <param name="key">自身Object</param>
         /// <param name="action">委托</param>
         /// <param name="priority">优先级</param>
-        public static void AddRayTargetEnter(this GameObject key, Action<int> action, ExecutionPriority priority = ExecutionPriority.Mid)
+        public static void AddRayTargetExit(this GameObject key, Action<int> action, ExecutionPriority priority = ExecutionPriority.Mid)
         {
             AddListener(key, action, priority);
         }
@@ -60,7 +60,7 @@ namespace MagiCloud.Core.Events
         /// </summary>
         /// <param name="key">自身Object</param>
         /// <param name="action">委托</param>
-        public static void RemoveRayTargetEnter(this GameObject key, Action<int> action)
+        public static void RemoveRayTargetExit(this GameObject key, Action<int> action)
         {
             RemoveListener(key, action);
         }
@@ -69,7 +69,7 @@ namespace MagiCloud.Core.Events
         /// 移除该抓取物体下的所有注册委托
         /// </summary>
         /// <param name="key"></param>
-        public static void RemoveRayTargetEnter(this GameObject key)
+        public static void RemoveRayTargetExit(this GameObject key)
         {
             RemoveListener(key);
         }
