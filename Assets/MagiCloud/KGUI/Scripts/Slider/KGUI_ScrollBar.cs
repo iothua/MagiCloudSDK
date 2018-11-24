@@ -95,9 +95,7 @@ namespace MagiCloud.KGUI
         {
             base.OnStart();
 
-            EventHandGrip.AddListener(OnButtonRelease, Core.ExecutionPriority.High);
-
-            //KinectEventHandIdle.AddListener(EventLevel.A, OnButtonRelease);
+            EventHandIdle.AddListener(OnButtonRelease, Core.ExecutionPriority.High);
 
             SetRectData();//进行刷新
 
@@ -106,8 +104,7 @@ namespace MagiCloud.KGUI
 
         protected override void OnDestroy()
         {
-            EventHandGrip.RemoveListener(OnButtonRelease);
-            //KinectEventHandIdle.RemoveListener(OnButtonRelease);
+            EventHandIdle.RemoveListener(OnButtonRelease);
         }
 
         private void Update()
