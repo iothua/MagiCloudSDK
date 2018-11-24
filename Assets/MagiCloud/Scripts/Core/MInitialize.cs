@@ -30,6 +30,8 @@ namespace MagiCloud.Core
 
             behaviour.OnAwake(() =>
             {
+                MUtility.CurrentPlatform = CurrentPlatform;
+
                 SwitchPlatform(Application.platform);
             });
 

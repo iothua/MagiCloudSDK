@@ -1,2 +1,2 @@
 # MFrameworkCore
-框架
+框架API
