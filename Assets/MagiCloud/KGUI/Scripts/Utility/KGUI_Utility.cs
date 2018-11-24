@@ -25,7 +25,7 @@ namespace MagiCloud.KGUI
             //return KinectConfig.mainCamera.WorldToScreenPoint(position);
 
             if (kguiCamera == null)
-                throw new Exception("KGUI摄像机对象为Null，如果是在编辑器上出现此问题，运行后，即可");
+                return Vector3.zero;
 
             return kguiCamera.WorldToScreenPoint(position);
         }

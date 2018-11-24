@@ -7,7 +7,7 @@ namespace MagiCloud.KGUI
     /// <summary>
     /// 继承ButtonBase的交互类型布局
     /// </summary>
-    public class KGUIButtonTypeEditor :Editor
+    public class KGUIButtonTypeEditor
     {
 
         public SerializedProperty spriteRenderer;
@@ -28,7 +28,7 @@ namespace MagiCloud.KGUI
         public SerializedProperty onDownStay; //按下持续
         public SerializedProperty onUpRange;
 
-        public void OnInstantiation()
+        public void OnInstantiation(SerializedObject serializedObject)
         {
             buttonType = serializedObject.FindProperty("buttonType");
 
@@ -44,14 +44,6 @@ namespace MagiCloud.KGUI
             enterObject = serializedObject.FindProperty("enterObject");
             pressedObject = serializedObject.FindProperty("pressedObject");
             disableObject = serializedObject.FindProperty("disableObject");
-
-            onClick = serializedObject.FindProperty("onClick");
-            onEnter = serializedObject.FindProperty("onEnter");
-            onExit = serializedObject.FindProperty("onExit");
-            onDown = serializedObject.FindProperty("onDown");
-            onUp = serializedObject.FindProperty("onUp");
-            onDownStay = serializedObject.FindProperty("onDownStay");
-            onUpRange = serializedObject.FindProperty("onUpRange");
 
         }
 
@@ -144,30 +136,6 @@ namespace MagiCloud.KGUI
             EditorGUILayout.EndVertical();
 
 
-        }
-
-        /// <summary>
-        /// 初始化事件
-        /// </summary>
-        public void OnInspectorButtonEvent()
-        {
-            //初始化事件相关的属性
-            EditorGUILayout.BeginVertical();
-
-            EditorGUILayout.LabelField("Button事件", MUtilityStyle.LabelStyle);
-
-            EditorGUILayout.PropertyField(onClick, true, null);
-
-            EditorGUILayout.PropertyField(onEnter, true, null);
-            EditorGUILayout.PropertyField(onExit, true, null);
-
-            EditorGUILayout.PropertyField(onDown, true, null);
-            EditorGUILayout.PropertyField(onUp, true, null);
-
-            EditorGUILayout.PropertyField(onDownStay, true, null);
-            EditorGUILayout.PropertyField(onUpRange, true, null);
-
-            EditorGUILayout.EndVertical();
         }
     }
 }

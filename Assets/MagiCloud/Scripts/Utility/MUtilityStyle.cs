@@ -25,7 +25,7 @@ namespace MagiCloud
                     labelStyle.fontStyle = FontStyle.Bold;
                     labelStyle.alignment = TextAnchor.UpperLeft;
                 }
-                return LabelStyle;
+                return labelStyle;
             }
         }
     }
