@@ -157,6 +157,7 @@ namespace MagiCloud.KGUI
             foreach (var name in Names)
             {
                 var go = Instantiate(dropdownItem, gridLayout.transform);
+                go.SetActive(true);
 
                 var item = go.GetComponent<KGUI_DropdownItem>();
 
