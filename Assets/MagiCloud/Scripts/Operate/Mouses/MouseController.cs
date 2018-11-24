@@ -252,8 +252,8 @@ namespace MagiCloud.Operate
             Vector3 screenpoint = InputHands[0].ScreenPoint;
             operateObject = operate;
 
-            Vector3 screenMainCamera = MUtility.MainWorldToScreenPoint(MUtility.mainCamera.transform.position 
-                + MUtility.mainCamera.transform.forward * cameraRelativeDistance);
+            Vector3 screenMainCamera = MUtility.MainWorldToScreenPoint(MUtility.MainCamera.transform.position 
+                + MUtility.MainCamera.transform.forward * cameraRelativeDistance);
 
             Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenpoint.x, screenpoint.y, screenMainCamera.z));
 

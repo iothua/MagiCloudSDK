@@ -11,16 +11,44 @@ namespace MagiCloud
     /// </summary>
     public sealed class MUtility
     {
+        private static Camera _markCamera;
+        private static Camera _mainCamera;
+        private static Camera _uiCamera;
+
         /// <summary>
         /// 发射线点
         /// </summary>
-        public static Camera markCamera;
+        public static Camera MarkCamera
+        {
+            get{
+                if (_markCamera == null)
+                    _markCamera = GameObject.FindGameObjectWithTag("MarkCamera").GetComponent<Camera>();
+
+                return _markCamera;
+            }
+        }
         /// <summary>
         /// 主相机
         /// </summary>
-        public static Camera mainCamera;
+        public static Camera MainCamera
+        {
+            get{
+                if (_mainCamera == null)
+                    _mainCamera = Camera.main;
 
-        public static Camera UICamera;
+                return _mainCamera;
+            }
+        }
+
+        public static Camera UICamera
+        {
+            get{
+                if (_uiCamera == null)
+                    _uiCamera = GameObject.FindGameObjectWithTag("UICamera").GetComponent<Camera>();
+
+                return _uiCamera;
+            }
+        }
 
         public static Core.OperatePlatform CurrentPlatform;
 
@@ -31,10 +59,10 @@ namespace MagiCloud
         /// <returns></returns>
         public static Vector3 MarkWorldToScreenPoint(Vector3 point)
         {
-            if (markCamera == null)
+            if (MarkCamera == null)
                 throw new Exception("markCamera相机对象为Null");
 
-            return markCamera.WorldToScreenPoint(point);
+            return MarkCamera.WorldToScreenPoint(point);
         }
 
         /// <summary>
@@ -44,10 +72,10 @@ namespace MagiCloud
         /// <returns></returns>
         public static Vector3 MarkScreenToWorldPoint(Vector3 point)
         {
-            if (markCamera == null)
+            if (MarkCamera == null)
                 throw new Exception("markCamera相机对象为Null");
 
-            return markCamera.ScreenToWorldPoint(point);
+            return MarkCamera.ScreenToWorldPoint(point);
         }
 
         /// <summary>
@@ -57,10 +85,10 @@ namespace MagiCloud
         /// <returns></returns>
         public static Vector3 MainWorldToScreenPoint(Vector3 point)
         {
-            if (mainCamera == null)
+            if (MainCamera == null)
                 throw new Exception("mainCamera相机对象为Null");
 
-            return mainCamera.WorldToScreenPoint(point);
+            return MainCamera.WorldToScreenPoint(point);
         }
 
         /// <summary>
@@ -70,10 +98,10 @@ namespace MagiCloud
         /// <returns></returns>
         public static Vector3 MainScreenToWorldPoint(Vector3 point)
         {
-            if (mainCamera == null)
+            if (MainCamera == null)
                 throw new Exception("mainCamera相机对象为Null");
 
-            return mainCamera.ScreenToWorldPoint(point);
+            return MainCamera.ScreenToWorldPoint(point);
         }
 
         /// <summary>
@@ -83,10 +111,10 @@ namespace MagiCloud
         /// <returns></returns>
         public static Ray ScreenPointToRay(Vector3 screenPoint)
         {
-            if (markCamera == null)
+            if (MarkCamera == null)
                 throw new Exception("markCamera相机对象为Null");
 
-            return markCamera.ScreenPointToRay(screenPoint);
+            return MarkCamera.ScreenPointToRay(screenPoint);
         }
 
         public static Ray UIScreenPointToRay(Vector3 screenPoint)

@@ -164,7 +164,7 @@ namespace MagiCloud.KGUI
                 return;
             }
             //获取到屏幕坐标
-            Vector3 scrollbarScreen = KGUI_Utility.GetScreenPoint(transform.position);
+            Vector3 scrollbarScreen = MUtility.UIWorldToScreenPoint(transform.position);
 
             RectTransform rectTransform = GetComponent<RectTransform>();
 
@@ -262,9 +262,9 @@ namespace MagiCloud.KGUI
 
                     //在将屏幕坐标转化为世界坐标
 
-                    Vector3 handleScreenX = KGUI_Utility.GetScreenPoint(handleRect.position);
+                    Vector3 handleScreenX = MUtility.UIWorldToScreenPoint(handleRect.position);
 
-                    position = KGUI_Utility.GetWorldPoint(new Vector3(moveValue, handleScreenX.y, handleScreenX.z));
+                    position = MUtility.UIScreenToWorldPoint(new Vector3(moveValue, handleScreenX.y, handleScreenX.z));
                     position.y = handleRect.position.y;
                     position.z = handleRect.position.z;
 
@@ -275,9 +275,9 @@ namespace MagiCloud.KGUI
 
                     moveValue = maxValue.Value - value * sumValue;
 
-                    Vector3 handleScreenY = KGUI_Utility.GetScreenPoint(handleRect.position);
+                    Vector3 handleScreenY = MUtility.UIWorldToScreenPoint(handleRect.position);
 
-                    position = KGUI_Utility.GetWorldPoint(new Vector3(handleScreenY.x, moveValue, handleScreenY.z));
+                    position = MUtility.UIScreenToWorldPoint(new Vector3(handleScreenY.x, moveValue, handleScreenY.z));
                     position.x = handleRect.position.x;
                     position.z = handleRect.position.z;
 

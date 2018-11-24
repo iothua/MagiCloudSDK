@@ -204,7 +204,7 @@ namespace MagiCloud.KGUI
 
                 foreach (var item in OtherSizes)
                 {
-                    Vector3 screenPoint = KGUI_Utility.GetScreenPoint(item.transform.position);
+                    Vector3 screenPoint = MUtility.UIWorldToScreenPoint(item.transform.position);
 
                     if (KGUI_Utility.IsAreaContains(screenPoint, item.panelSize, hand))
                     {
@@ -229,7 +229,7 @@ namespace MagiCloud.KGUI
             }
             else
             {
-                Vector3 screenPoint = KGUI_Utility.GetScreenPoint(transform.position);
+                Vector3 screenPoint = MUtility.UIWorldToScreenPoint(transform.position);
 
                 return KGUI_Utility.IsAreaContains(screenPoint, panelSize, handIndex) || OtherRectAreaContains(handIndex);
             }

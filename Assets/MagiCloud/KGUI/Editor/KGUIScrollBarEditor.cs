@@ -12,19 +12,10 @@ namespace MagiCloud.KGUI
     [CanEditMultipleObjects]
     public class KGUIScrollBarEditor : Editor
     {
-        public SerializedProperty onEnter;  //鼠标移入
-        public SerializedProperty onExit;   //鼠标移出
-        public SerializedProperty onDown;   //鼠标按下
+        KGUIButtonTypeEditor buttonType;
 
-        public SerializedProperty spriteRenderer;
-        public SerializedProperty image;
-
-        public SerializedProperty normalSprite, enterSprite, pressedSprite, disableSprite;
-        public SerializedProperty normalObject, enterObject, pressedObject, disableObject;
 
         public SerializedProperty handleRect;
-
-        //public SerializedProperty Value;
 
         private KGUI_ScrollBar scrollBar;
 
@@ -35,22 +26,10 @@ namespace MagiCloud.KGUI
         {
             scrollBar = serializedObject.targetObject as KGUI_ScrollBar;
 
-            onEnter = serializedObject.FindProperty("onEnter");
-            onExit = serializedObject.FindProperty("onExit");
-            onDown = serializedObject.FindProperty("onDown");
+            if (buttonType == null)
+                buttonType = new KGUIButtonTypeEditor();
 
-            spriteRenderer = serializedObject.FindProperty("spriteRenderer");
-            image = serializedObject.FindProperty("image");
-
-            normalSprite = serializedObject.FindProperty("normalSprite");
-            enterSprite = serializedObject.FindProperty("enterSprite");
-            pressedSprite = serializedObject.FindProperty("pressedSprite");
-            disableSprite = serializedObject.FindProperty("disableSprite");
-
-            normalObject = serializedObject.FindProperty("normalObject");
-            enterObject = serializedObject.FindProperty("enterObject");
-            pressedObject = serializedObject.FindProperty("pressedObject");
-            disableObject = serializedObject.FindProperty("disableObject");
+            buttonType.OnInstantiation(serializedObject);
 
             handleRect = serializedObject.FindProperty("handleRect");
 
@@ -61,50 +40,9 @@ namespace MagiCloud.KGUI
 
         public override void OnInspectorGUI()
         {
+            buttonType.OnInspectorButtonType(scrollBar);
+
             GUILayout.BeginVertical(GUILayout.Width(500));
-
-            GUILayout.Space(10);
-
-            EditorGUILayout.LabelField("交互属性：");
-
-            scrollBar.buttonType = (ButtonType)EditorGUILayout.EnumPopup("滚动交互类型：", scrollBar.buttonType);
-
-            switch (scrollBar.buttonType)
-            {
-                case ButtonType.Image:
-
-                    EditorGUI.BeginChangeCheck();
-
-                    EditorGUILayout.PropertyField(image, true, null);
-                    EditorGUILayout.PropertyField(normalSprite, true, null);
-                    EditorGUILayout.PropertyField(enterSprite, true, null);
-                    EditorGUILayout.PropertyField(pressedSprite, true, null);
-                    EditorGUILayout.PropertyField(disableSprite, true, null);
-
-                    break;
-                case ButtonType.Object:
-                    EditorGUI.BeginChangeCheck();
-
-                    EditorGUILayout.PropertyField(normalObject, true, null);
-                    EditorGUILayout.PropertyField(enterObject, true, null);
-                    EditorGUILayout.PropertyField(pressedObject, true, null);
-                    EditorGUILayout.PropertyField(disableObject, true, null);
-
-                    break;
-                case ButtonType.SpriteRenderer:
-                    EditorGUI.BeginChangeCheck();
-
-                    EditorGUILayout.PropertyField(spriteRenderer, true, null);
-                    EditorGUILayout.PropertyField(normalSprite, true, null);
-                    EditorGUILayout.PropertyField(enterSprite, true, null);
-                    EditorGUILayout.PropertyField(pressedSprite, true, null);
-                    EditorGUILayout.PropertyField(disableSprite, true, null);
-
-                    break;
-                default:
-                    break;
-
-            }
 
             GUILayout.Space(10);
 

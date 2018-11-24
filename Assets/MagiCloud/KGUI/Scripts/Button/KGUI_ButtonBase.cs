@@ -122,7 +122,6 @@ namespace MagiCloud.KGUI
 
         protected virtual void OnStart()
         {
-            Debug.Log("执行OnStart");
         }
 
         /// <summary>

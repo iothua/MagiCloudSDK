@@ -11,40 +11,6 @@ namespace MagiCloud.KGUI
     {
 
         /// <summary>
-        /// 此时KGUI摄像机
-        /// </summary>
-        public static Camera kguiCamera;
-        public static LayerMask layerMask;
-        /// <summary>
-        /// 将物体世界坐标转化为屏幕坐标
-        /// </summary>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        public static Vector3 GetScreenPoint(Vector3 position)
-        {
-            //return KinectConfig.mainCamera.WorldToScreenPoint(position);
-
-            if (kguiCamera == null)
-                return Vector3.zero;
-
-            return kguiCamera.WorldToScreenPoint(position);
-        }
-
-        /// <summary>
-        /// 将屏幕坐标转化为世界坐标
-        /// </summary>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        public static Vector3 GetWorldPoint(Vector3 position)
-        {
-            if (kguiCamera == null)
-                throw new Exception("KGUI摄像机对象为Null，如果是在编辑器上出现此问题，运行后，即可");
-
-            //return KinectConfig.mainCamera.ScreenToWorldPoint(position);
-            return kguiCamera.ScreenToWorldPoint(position);
-        }
-
-        /// <summary>
         /// 判断坐标是否在指定物体内
         /// </summary>
         /// <param name="position">物体屏幕坐标</param>
@@ -92,7 +58,7 @@ namespace MagiCloud.KGUI
                 //获取到此时手的屏幕坐标屏幕坐标
                 Vector3 screenHandPoint = MOperateManager.GetHandScreenPoint(handIndex);
 
-                Vector3 screenPoint = GetScreenPoint(transform.position);
+                Vector3 screenPoint = MUtility.UIWorldToScreenPoint(transform.position);
 
                 //根据自身此时的屏幕坐标，去算区域
 
@@ -133,15 +99,13 @@ namespace MagiCloud.KGUI
         /// <returns></returns>
         public static bool AttachThingPosInCamera(Transform thingAttach, Vector2 xlimits, Vector2 ylimits)
         {
-            Transform camTransform = Camera.main.transform;
-
-            Vector2 viewPos = Camera.main.WorldToViewportPoint(thingAttach.position);
+            Transform camTransform = MUtility.MainCamera.transform;
 
             Vector3 dir = (thingAttach.position - camTransform.position).normalized;
 
             float dot = Vector3.Dot(camTransform.forward, dir);     //判断物体是否在相机前面  
 
-            Vector2 screenPos = Camera.main.WorldToScreenPoint(thingAttach.position);
+            Vector2 screenPos = MUtility.MainWorldToScreenPoint(thingAttach.position);
 
             if (screenPos.x < xlimits.y &&
                 screenPos.x > xlimits.x &&

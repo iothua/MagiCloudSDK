@@ -8,16 +8,18 @@ namespace MagiCloud.KGUI
     [CanEditMultipleObjects]
     public class KGUISliderEditor : Editor
     {
-        private GUIStyle style;
-        public SerializedProperty onEnter;  //鼠标移入
-        public SerializedProperty onExit;   //鼠标移出
-        public SerializedProperty onDown;   //鼠标按下
+        //private GUIStyle style;
+        //public SerializedProperty onEnter;  //鼠标移入
+        //public SerializedProperty onExit;   //鼠标移出
+        //public SerializedProperty onDown;   //鼠标按下
 
-        public SerializedProperty spriteRenderer;
-        public SerializedProperty image;
+        //public SerializedProperty spriteRenderer;
+        //public SerializedProperty image;
 
-        public SerializedProperty normalSprite, enterSprite, pressedSprite;
-        public SerializedProperty normalObject, enterObject, pressedObject;
+        //public SerializedProperty normalSprite, enterSprite, pressedSprite;
+        //public SerializedProperty normalObject, enterObject, pressedObject;
+
+        private KGUIButtonTypeEditor buttonType;
 
         private KGUI_Slider slider;
 
@@ -32,20 +34,22 @@ namespace MagiCloud.KGUI
         {
             slider = serializedObject.targetObject as KGUI_Slider;
 
-            onEnter = serializedObject.FindProperty("onEnter");
-            onExit = serializedObject.FindProperty("onExit");
-            onDown = serializedObject.FindProperty("onDown");
+            //onEnter = serializedObject.FindProperty("onEnter");
+            //onExit = serializedObject.FindProperty("onExit");
+            //onDown = serializedObject.FindProperty("onDown");
 
-            spriteRenderer = serializedObject.FindProperty("spriteRenderer");
-            image = serializedObject.FindProperty("image");
+            //spriteRenderer = serializedObject.FindProperty("spriteRenderer");
+            //image = serializedObject.FindProperty("image");
 
-            normalSprite = serializedObject.FindProperty("normalSprite");
-            enterSprite = serializedObject.FindProperty("enterSprite");
-            pressedSprite = serializedObject.FindProperty("pressedSprite");
+            //normalSprite = serializedObject.FindProperty("normalSprite");
+            //enterSprite = serializedObject.FindProperty("enterSprite");
+            //pressedSprite = serializedObject.FindProperty("pressedSprite");
 
-            normalObject = serializedObject.FindProperty("normalObject");
-            enterObject = serializedObject.FindProperty("enterObject");
-            pressedObject = serializedObject.FindProperty("pressedObject");
+            //normalObject = serializedObject.FindProperty("normalObject");
+            //enterObject = serializedObject.FindProperty("enterObject");
+            //pressedObject = serializedObject.FindProperty("pressedObject");
+            if (buttonType == null)
+                buttonType.OnInstantiation(serializedObject);
 
             sliderObject = serializedObject.FindProperty("sliderObject");
 
@@ -60,55 +64,11 @@ namespace MagiCloud.KGUI
 
         public override void OnInspectorGUI()
         {
-            if (style == null)
-            {
-                style = new GUIStyle(GUI.skin.name);
-                style.normal.textColor = GUI.skin.label.normal.textColor;
-                style.fontStyle = FontStyle.Bold;
-                style.alignment = TextAnchor.UpperLeft;
-            }
-
-            GUILayout.Space(10);
-            EditorGUILayout.LabelField("交互属性", style);
-
-            slider.buttonType = (ButtonType)EditorGUILayout.EnumPopup("滚动交互类型：", slider.buttonType);
-
-            switch (slider.buttonType)
-            {
-                case ButtonType.Image:
-
-                    EditorGUI.BeginChangeCheck();
-
-                    EditorGUILayout.PropertyField(image, true, null);
-                    EditorGUILayout.PropertyField(normalSprite, true, null);
-                    EditorGUILayout.PropertyField(enterSprite, true, null);
-                    EditorGUILayout.PropertyField(pressedSprite, true, null);
-
-                    break;
-                case ButtonType.Object:
-                    EditorGUI.BeginChangeCheck();
-
-                    EditorGUILayout.PropertyField(normalObject, true, null);
-                    EditorGUILayout.PropertyField(enterObject, true, null);
-                    EditorGUILayout.PropertyField(pressedObject, true, null);
-
-                    break;
-                case ButtonType.SpriteRenderer:
-                    EditorGUI.BeginChangeCheck();
-
-                    EditorGUILayout.PropertyField(spriteRenderer, true, null);
-                    EditorGUILayout.PropertyField(normalSprite, true, null);
-                    EditorGUILayout.PropertyField(enterSprite, true, null);
-                    EditorGUILayout.PropertyField(pressedSprite, true, null);
-                    break;
-                default:
-                    //EditorGUI.BeginChangeCheck();
-                    break;
-            }
+            buttonType.OnInspectorButtonType(slider);
 
             GUILayout.Space(10);
 
-            EditorGUILayout.LabelField("滚动属性", style);
+            EditorGUILayout.LabelField("滚动属性", MUtilityStyle.LabelStyle);
 
             slider.sliderType = (SliderType)EditorGUILayout.EnumPopup("滚动类型：", slider.sliderType);
 
@@ -154,7 +114,7 @@ namespace MagiCloud.KGUI
                 case SliderType.Bar:
                     EditorGUI.BeginChangeCheck();
 
-                    EditorGUILayout.LabelField("移动的区域", style);
+                    EditorGUILayout.LabelField("移动的区域", MUtilityStyle.LabelStyle);
                     EditorGUILayout.PropertyField(rectMove, true, null);
 
                     if (GUILayout.Button(new GUIContent("刷新", "根据当前属性设置，刷新滚动条位置"), GUILayout.Width(100), GUILayout.Height(21)))
@@ -173,7 +133,8 @@ namespace MagiCloud.KGUI
 
             EditorGUILayout.PropertyField(OnValueChanged);
 
-            serializedObject.ApplyModifiedProperties();
+            if (EditorGUI.EndChangeCheck())
+                serializedObject.ApplyModifiedProperties();
         }
     }
 }

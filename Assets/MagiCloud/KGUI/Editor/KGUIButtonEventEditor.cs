@@ -30,6 +30,7 @@ namespace MagiCloud.KGUI
         public void OnInspectorButtonEvent()
         {
             EditorGUILayout.BeginVertical();
+            GUILayout.Space(10);
 
             EditorGUILayout.LabelField("Button事件", MUtilityStyle.LabelStyle);
 

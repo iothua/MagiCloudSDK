@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using MagiCloud.Core;
 
 namespace MagiCloud
 {
@@ -11,7 +12,7 @@ namespace MagiCloud
     {
         private static GUISkin magiCloud;
 
-        private static Features.FeaturesController featuresController;
+        private static MInitialize initialize;
 
         private static List<MagiCloudTagInfo> tagInfos; //Tag信息
         private static List<MagiCloudLayerInfo> layerInfos; //Layer信息
@@ -30,7 +31,7 @@ namespace MagiCloud
         {
             FrameConfigEditorWindow window = (FrameConfigEditorWindow)EditorWindow.GetWindow(typeof(FrameConfigEditorWindow));
 
-            featuresController = FindObjectOfType<Features.FeaturesController>();
+            initialize = FindObjectOfType<MInitialize>();
         }
 
         private void OnInitTags()
@@ -90,25 +91,25 @@ namespace MagiCloud
             GUILayout.Label("创建/查找框架预制物体",magiCloud.label);
 
             GUILayout.BeginHorizontal();
-            featuresController = (Features.FeaturesController)EditorGUILayout.ObjectField(new GUIContent("场景框架预知物体：","查询场景框架预制物体,如果场景不存在,可点击创建可自动创建,也可通过创建按钮,自动查找"),
-                featuresController,typeof(Features.FeaturesController),false,GUILayout.Width(400),GUILayout.Height(20));
+            initialize = (MInitialize)EditorGUILayout.ObjectField(new GUIContent("场景框架预知物体：","查询场景框架预制物体,如果场景不存在,可点击创建可自动创建,也可通过创建按钮,自动查找"),
+                initialize,typeof(MInitialize),false,GUILayout.Width(400),GUILayout.Height(20));
 
             GUILayout.Space(10);
 
             if (GUILayout.Button(new GUIContent("创建/查找","如果场景框架预制物体为Null，自动会在场景中创建，如果场景框架预制物体不为Null，但是编辑器窗口为Null，则点击该按钮自动赋值"),
                 GUILayout.Width(120),GUILayout.Height(20)))
             {
-                featuresController = FindObjectOfType<Features.FeaturesController>();
+                initialize = FindObjectOfType<MInitialize>();
 
-                if (featuresController == null)
+                if (initialize == null)
                 {
                     GameObject featuresObject = Resources.Load<GameObject>("MagiCloud");
                     var newFeatures = Instantiate<GameObject>(featuresObject);
                     newFeatures.name = featuresObject.name;
-                    featuresController = newFeatures.GetComponent<Features.FeaturesController>();
+                    initialize = newFeatures.GetComponent<MInitialize>();
                 }
 
-                Selection.activeGameObject = featuresController.gameObject;
+                Selection.activeGameObject = initialize.gameObject;
             }
 
             GUILayout.EndHorizontal();

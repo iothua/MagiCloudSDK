@@ -6,6 +6,7 @@ TagManager:
   tags:
   - MarkCamera
   - button
+  - UICamera
   layers:
   - Default
   - TransparentFX
