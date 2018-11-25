@@ -18,7 +18,7 @@ namespace MagiCloud.Core.MInput
 
         private MInputHandStatus handStatus = MInputHandStatus.Idle;
 
-        public IHandUI HandUI { get; set; }
+        public IHandUI HandUI { get; private set; }
 
         /// <summary>
         /// 手势状态
@@ -44,9 +44,6 @@ namespace MagiCloud.Core.MInput
         public bool IsPressed {
             get {
                 return isPressed;
-            }
-            set {
-                isPressed = value;
             }
         }
 
