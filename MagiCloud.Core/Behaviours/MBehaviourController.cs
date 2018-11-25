@@ -10,11 +10,11 @@ namespace MagiCloud.Core
     /// </summary>
     public class MBehaviourController : MonoBehaviour
     {
-        public static List<MBehaviour> Behaviours = new List<MBehaviour>();
+        private static List<MBehaviour> Behaviours = new List<MBehaviour>();
 
         private static MBehaviourController behaviourController;
 
-        public static MBehaviourController Instance {
+        internal static MBehaviourController Instance {
             get {
                 if (behaviourController == null)
                     behaviourController = FindObjectOfType<MBehaviourController>();
@@ -42,7 +42,7 @@ namespace MagiCloud.Core
             ExcuteUpdate();
         }
 
-        public static void ExcuteAwake()
+        private static void ExcuteAwake()
         {
             foreach (var item in Behaviours)
             {
@@ -50,7 +50,7 @@ namespace MagiCloud.Core
             }
         }
 
-        public static void ExcuteEnable()
+        private static void ExcuteEnable()
         {
             foreach (var item in Behaviours)
             {
@@ -58,7 +58,7 @@ namespace MagiCloud.Core
             }
         }
 
-        public static void ExcuteStart()
+        private static void ExcuteStart()
         {
             foreach (var item in Behaviours)
             {
@@ -66,7 +66,7 @@ namespace MagiCloud.Core
             }
         }
 
-        public static void ExcuteUpdate()
+        private static void ExcuteUpdate()
         {
             foreach (var item in Behaviours)
             {
@@ -90,7 +90,7 @@ namespace MagiCloud.Core
         /// <summary>
         /// 对行为集合进行排序
         /// </summary>
-        public static void SortBehaviour()
+        private static void SortBehaviour()
         {
             Behaviours = Behaviours.OrderBy(obj => obj.ExecutionPriority).ThenBy(obj => obj.ExecutionOrder).ToList();
         }
@@ -111,7 +111,7 @@ namespace MagiCloud.Core
         /// </summary>
         /// <param name="behaviour"></param>
         /// <returns></returns>
-        public static bool IsContainsBehaviour(MBehaviour behaviour)
+        internal static bool IsContainsBehaviour(MBehaviour behaviour)
         {
             return Behaviours.Contains(behaviour);
         }
@@ -124,7 +124,7 @@ namespace MagiCloud.Core
         /// </summary>
         /// <param name="action"></param>
         /// <param name="time"></param>
-        public void ExcuteDelay(System.Action action, float time)
+        internal void ExcuteDelay(System.Action action, float time)
         {
             StartCoroutine(Delay(action, time));
         }
@@ -147,7 +147,7 @@ namespace MagiCloud.Core
         /// 执行延时
         /// </summary>
         /// <param name="action"></param>
-        public void ExcuteDelay(System.Action action)
+        internal void ExcuteDelay(System.Action action)
         {
             StartCoroutine(Delay(action));
         }

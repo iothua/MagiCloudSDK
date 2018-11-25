@@ -158,9 +158,6 @@ namespace MagiCloud.Core
             get {
                 return executionOrder;
             }
-            set {
-                executionOrder = value;
-            }
         }
 
         /// <summary>
@@ -168,7 +165,6 @@ namespace MagiCloud.Core
         /// </summary>
         public ExecutionPriority ExecutionPriority {
             get { return priority; }
-            set { priority = value; }
         }
 
     }

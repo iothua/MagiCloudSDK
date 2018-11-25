@@ -182,7 +182,6 @@ public class TestController : MonoBehaviour
     private void OnDestroy()
     {
         behaviour.OnExcuteDestroy();
-        MBehaviourController.RemoveBehaviour(behaviour);
     }
 
 }
