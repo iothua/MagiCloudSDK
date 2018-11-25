@@ -36,7 +36,7 @@
 
 1. Fork仓库到个人Respository目录：进入仓库，点击`Fork`
 
-   ![Fork](https://cloud.githubusercontent.com/assets/11772494/18979569/bf247980-86fe-11e6-9b56-6411f5a55a0e.png)
+   ![Fork](https://github.com/iothua/MFrameworkCore/blob/develop/WikiPng/fork.jpg)
 
 2. Clone到本地
 
@@ -60,9 +60,11 @@
 
 5. 提交`pull request`:登陆github,进入`fork`后的仓库，切换到新提交的`fixer`分支，点击右侧绿色按钮`Compare& pull request`
 
-   ![pull](https://cloud.githubusercontent.com/assets/11772494/18979575/cde1bcf8-86fe-11e6-8ee2-51b7a1deb62b.png)
+   ![pull](https://github.com/iothua/MFrameworkCore/blob/develop/WikiPng/compare.jpg)
 
 6. 添加注释信息，确认提交
 
-   ![commit](https://cloud.githubusercontent.com/assets/11772494/18979581/d5e35fd8-86fe-11e6-9aae-d36c8f077ac8.png)
+   ![commit](https://github.com/iothua/MFrameworkCore/blob/develop/WikiPng/pull%20request.jpg)
    ​
+7. 最终我会将你上传的，进行合并
+   ![merge](https://github.com/iothua/MFrameworkCore/blob/develop/WikiPng/merge.jpg)
