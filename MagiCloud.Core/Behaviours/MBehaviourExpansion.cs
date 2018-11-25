@@ -41,7 +41,7 @@ namespace MagiCloud.Core
 
         #region 执行
 
-        public static void OnExcuteAwake(this MBehaviour behaviour)
+        internal static void OnExcuteAwake(this MBehaviour behaviour)
         {
             if (behaviour.IsAwake) return;
 
@@ -62,7 +62,7 @@ namespace MagiCloud.Core
             //behaviour.IsEnable = true;
         }
 
-        public static void OnExcuteStart(this MBehaviour behaviour)
+        internal static void OnExcuteStart(this MBehaviour behaviour)
         {
             if (behaviour.IsStart) return;
 
@@ -73,7 +73,7 @@ namespace MagiCloud.Core
             behaviour.IsStart = true;
         }
 
-        public static void OnExcuteDisable(this MBehaviour behaviour)
+        internal static void OnExcuteDisable(this MBehaviour behaviour)
         {
            if (!behaviour.IsEnable) return;
 
@@ -93,7 +93,7 @@ namespace MagiCloud.Core
             behaviour.onUpdate.RemoveListenerAll();
         }
 
-        public static void OnExcuteUpdate(this MBehaviour behaviour)
+        internal static void OnExcuteUpdate(this MBehaviour behaviour)
         {
             if (!behaviour.IsEnable) return;
             behaviour.onUpdate.SendListener();
