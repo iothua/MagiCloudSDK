@@ -32,7 +32,7 @@
 
 <h3 id="pull">Pull Request流程图示</h3>
 
-以 [neoui](https://github.com/iuap-design/neoui) 仓库为例：
+以 [MFrameworkCore](https://github.com/iothua/MFrameworkCore) 仓库为例：
 
 1. Fork仓库到个人Respository目录：进入仓库，点击`Fork`
 
@@ -41,7 +41,7 @@
 2. Clone到本地
 
    ```
-   $ git clone git@github.com:onvno/neoui.git
+   $ git clone git@github.com:iothua/MFrameworkCore.git
    ```
 
 3. 创建分支
