@@ -199,6 +199,7 @@ GameObject:
   - component: {fileID: 166803563}
   - component: {fileID: 166803564}
   - component: {fileID: 166803562}
+  - component: {fileID: 166803565}
   m_Layer: 0
   m_Name: operaObject
   m_TagString: Untagged
@@ -298,6 +299,23 @@ MonoBehaviour:
   fontStyle: 1
   useShadow: 1
   useOutline: 1
+--- !u!114 &166803565
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 166803558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a73bcd407f6114b8b57c3ab150dedc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  limitObj: {fileID: 0}
+  topLimit: 1
+  bottomLimit: 1
+  leftLimit: 1
+  rightLimit: 1
+  offset: 0.5
 --- !u!1 &182315041
 GameObject:
   m_ObjectHideFlags: 0
@@ -623,6 +641,86 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
+--- !u!1 &294686812
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 294686814}
+  - component: {fileID: 294686813}
+  m_Layer: 0
+  m_Name: send (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &294686813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 294686812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6ab8c35a7ec43c4ca5e079a81c8ab05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distanceData:
+    TagID: "\u8DDD\u79BB\u4EA4\u4E92"
+    distanceValue: 0.05
+    IsSelf: 0
+    distanceType: 1
+    interactionType: 2
+    detectType: 0
+    distanceShape: 0
+    Size: {x: 0.1, y: 0.1, z: 0.1}
+    IsGrabOwn: 1
+    IsOnly: 0
+    IsEnabel: 1
+    maxCount: -1
+    Interaction: {fileID: 294686813}
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnStay:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnExit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnRelease:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnNotRelease:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  AutoDetection: 0
+--- !u!4 &294686814
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 294686812}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.6618778, y: 0.08132996, z: 0.083619624}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &413405528
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,6 +879,87 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 413405528}
   m_CullTransparentMesh: 0
+--- !u!1 &435315067
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 435315068}
+  - component: {fileID: 435315069}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &435315068
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 435315067}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1248396070}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &435315069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 435315067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee142c1b14cd8484b84628f38301785c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distanceData:
+    TagID: "\u8DDD\u79BB\u4EA4\u4E92"
+    distanceValue: 0.05
+    IsSelf: 0
+    distanceType: 1
+    interactionType: 1
+    detectType: 0
+    distanceShape: 0
+    Size: {x: 0.1, y: 0.1, z: 0.1}
+    IsGrabOwn: 1
+    IsOnly: 0
+    IsEnabel: 1
+    maxCount: -1
+    Interaction: {fileID: 435315069}
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnStay:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnExit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnRelease:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnNotRelease:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  AutoDetection: 1
+  Equipment: {fileID: 0}
 --- !u!1 &707102187
 GameObject:
   m_ObjectHideFlags: 0
@@ -1835,7 +2014,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d60dedc6f85427643955a4beb1ae0e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActiveSpaceLimit: 0
+  ActiveSpaceLimit: 1
   ActiveHighlight: 1
   ActiveShadow: 0
   ActiveLabel: 1
@@ -1847,7 +2026,7 @@ MonoBehaviour:
   ObjectRatation: {fileID: 0}
   LabelController: {fileID: 166803564}
   CanGrab: {fileID: 0}
-  spaceLimit: {fileID: 0}
+  spaceLimit: {fileID: 166803565}
   highlightObject: {fileID: 166803563}
   ShadowController: {fileID: 0}
   None: {fileID: 166803562}
@@ -1908,6 +2087,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 166803561}
+  - {fileID: 435315068}
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2311,6 +2491,86 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1421007291
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1421007293}
+  - component: {fileID: 1421007292}
+  m_Layer: 0
+  m_Name: send
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1421007292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1421007291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6ab8c35a7ec43c4ca5e079a81c8ab05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distanceData:
+    TagID: "\u8DDD\u79BB\u4EA4\u4E92"
+    distanceValue: 0.05
+    IsSelf: 0
+    distanceType: 1
+    interactionType: 1
+    detectType: 0
+    distanceShape: 0
+    Size: {x: 0.1, y: 0.1, z: 0.1}
+    IsGrabOwn: 1
+    IsOnly: 0
+    IsEnabel: 1
+    maxCount: -1
+    Interaction: {fileID: 1421007292}
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnStay:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnExit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnRelease:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnNotRelease:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  AutoDetection: 1
+--- !u!4 &1421007293
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1421007291}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.6618778, y: 0.08132996, z: 0.083619624}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1459494229
 GameObject:
   m_ObjectHideFlags: 0
@@ -2405,6 +2665,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1493173327}
   - component: {fileID: 1493173326}
+  - component: {fileID: 1493173328}
   m_Layer: 0
   m_Name: TestEvent
   m_TagString: Untagged
@@ -2437,6 +2698,57 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1493173328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1493173325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6ab8c35a7ec43c4ca5e079a81c8ab05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distanceData:
+    TagID: "\u8DDD\u79BB\u4EA4\u4E92"
+    distanceValue: 0.05
+    IsSelf: 0
+    distanceType: 1
+    interactionType: 1
+    detectType: 0
+    distanceShape: 0
+    Size: {x: 0.1, y: 0.1, z: 0.1}
+    IsGrabOwn: 1
+    IsOnly: 0
+    IsEnabel: 1
+    maxCount: -1
+    Interaction: {fileID: 1493173328}
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnStay:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnExit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnRelease:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnNotRelease:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  AutoDetection: 1
 --- !u!1 &1542119455
 GameObject:
   m_ObjectHideFlags: 0
@@ -2880,6 +3192,86 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23480a0b7cdf44948a9a3e1a70c6191f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2044377720
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2044377722}
+  - component: {fileID: 2044377721}
+  m_Layer: 0
+  m_Name: all
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2044377721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2044377720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6ab8c35a7ec43c4ca5e079a81c8ab05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distanceData:
+    TagID: "\u8DDD\u79BB\u4EA4\u4E92"
+    distanceValue: 0.05
+    IsSelf: 0
+    distanceType: 1
+    interactionType: 3
+    detectType: 0
+    distanceShape: 0
+    Size: {x: 0.1, y: 0.1, z: 0.1}
+    IsGrabOwn: 1
+    IsOnly: 0
+    IsEnabel: 1
+    maxCount: -1
+    Interaction: {fileID: 2044377721}
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnStay:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnExit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnRelease:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.Interactive.Distance.EventDistanceInteraction, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnNotRelease:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  AutoDetection: 0
+--- !u!4 &2044377722
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2044377720}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.6618778, y: 0.08132996, z: 0.083619624}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2109682562
 GameObject:
   m_ObjectHideFlags: 0
