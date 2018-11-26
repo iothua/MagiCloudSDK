@@ -19,13 +19,18 @@ namespace MagiCloud.KGUI
 
         public SerializedProperty OnValueChanged;  //鼠标点击
 
-        public SerializedProperty AudioClip;
+        public KGUIButtonAudioEditor buttonAudio;
 
         public KGUI_Toggle toggle;
 
         private void OnEnable()
         {
             toggle = serializedObject.targetObject as KGUI_Toggle;
+
+            if (buttonAudio == null)
+                buttonAudio = new KGUIButtonAudioEditor();
+
+            buttonAudio.OnInstantiation(serializedObject);
 
             OnValueChanged = serializedObject.FindProperty("OnValueChanged");
 
@@ -44,7 +49,6 @@ namespace MagiCloud.KGUI
             onEnterObject = serializedObject.FindProperty("onEnterObject");
             offEnterObject = serializedObject.FindProperty("offEnterObject");
 
-            AudioClip = serializedObject.FindProperty("audioClip");
         }
 
         public override void OnInspectorGUI()
@@ -98,17 +102,7 @@ namespace MagiCloud.KGUI
                     break;
             }
 
-            toggle.IsStartAudio = EditorGUILayout.Toggle("启动音频：", toggle.IsStartAudio);
-
-            if (toggle.IsStartAudio)
-            {
-                EditorGUILayout.PropertyField(AudioClip, true, null);
-                toggle.AddAudio();
-            }
-            else
-            {
-                toggle.DestroyAudio();
-            }
+            buttonAudio.OnInspectorButtonAudio(toggle);
 
             GUILayout.Space(10);
             toggle.IsValue = EditorGUILayout.Toggle("IsValue：", toggle.IsValue);

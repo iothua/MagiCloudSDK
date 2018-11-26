@@ -47,11 +47,6 @@ namespace MagiCloud.KGUI
 
         public ToggleEvent OnValueChanged;
 
-        public AudioClip audioClip;//音频
-
-        public AudioSource audioSource;
-        public bool IsStartAudio = true;
-
         protected override void OnStart()
         {
             base.OnStart();
@@ -143,40 +138,6 @@ namespace MagiCloud.KGUI
                     break;
                 default:
                     break;
-            }
-        }
-
-        public void AddAudio()
-        {
-            if (audioClip == null)
-            {
-                audioClip = Resources.Load<AudioClip>("Audios\\手势划过-2");
-            }
-
-            if (audioSource == null)
-            {
-                if (audioSource == null)
-                {
-                    audioSource = gameObject.GetComponent<AudioSource>();
-                }
-
-                if (audioSource == null)
-                {
-                    audioSource = gameObject.AddComponent<AudioSource>();
-                }
-                if (audioSource.playOnAwake)
-                    audioSource.playOnAwake = false;
-
-                if (audioClip != audioSource.clip)
-                    audioSource.clip = audioClip;
-            }
-        }
-
-        public void DestroyAudio()
-        {
-            if (audioSource != null)
-            {
-                DestroyImmediate(audioSource);
             }
         }
     }

@@ -14,7 +14,6 @@ namespace MagiCloud.KGUI
     {
         KGUIButtonTypeEditor buttonType;
 
-
         public SerializedProperty handleRect;
 
         private KGUI_ScrollBar scrollBar;

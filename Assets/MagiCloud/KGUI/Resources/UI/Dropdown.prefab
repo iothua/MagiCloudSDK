@@ -415,6 +415,10 @@ MonoBehaviour:
   enterObject: {fileID: 0}
   pressedObject: {fileID: 0}
   disableObject: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: 29d930b535510174a887d268c209256a, type: 3}
+  audioStatus: 0
+  audioSource: {fileID: 0}
+  IsStartAudio: 0
   onClick:
     m_PersistentCalls:
       m_Calls: []
@@ -453,9 +457,6 @@ MonoBehaviour:
   IsButtonGroup: 0
   buttonGroup: {fileID: 0}
   IsShowButton: 0
-  audioClip: {fileID: 0}
-  audioSource: {fileID: 0}
-  IsStartAudio: 1
   onGroupReset:
     m_PersistentCalls:
       m_Calls: []
@@ -567,6 +568,10 @@ MonoBehaviour:
   enterObject: {fileID: 0}
   pressedObject: {fileID: 0}
   disableObject: {fileID: 0}
+  audioClip: {fileID: 0}
+  audioStatus: 0
+  audioSource: {fileID: 0}
+  IsStartAudio: 1
   onClick:
     m_PersistentCalls:
       m_Calls: []
@@ -713,6 +718,10 @@ MonoBehaviour:
   enterObject: {fileID: 0}
   pressedObject: {fileID: 0}
   disableObject: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: 29d930b535510174a887d268c209256a, type: 3}
+  audioStatus: 0
+  audioSource: {fileID: 0}
+  IsStartAudio: 0
   onClick:
     m_PersistentCalls:
       m_Calls: []
@@ -985,10 +994,10 @@ RectTransform:
   m_Father: {fileID: 224678474106116634}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 117.28, y: -22}
+  m_SizeDelta: {x: 234.56, y: 44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224960926659660320
 RectTransform:

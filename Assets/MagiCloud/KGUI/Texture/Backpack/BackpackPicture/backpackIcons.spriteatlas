@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: backpackIcons
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: e02ee241f0660344baeba93c5be8004f, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 5ea1d530858b51b4e86cb0301453ff35, type: 3}
+  - {fileID: 21300000, guid: cc5a73737642c8a4cadfd4505095227f, type: 3}
+  - {fileID: 21300000, guid: d19efec33d6147242ad33557df5b5d42, type: 3}
+  - {fileID: 21300000, guid: 9a7464d436235734aa673c0e3764025a, type: 3}
+  - {fileID: 21300000, guid: 252b3bf6733fec445b54325e4cdefe24, type: 3}
+  - {fileID: 21300000, guid: b3f7fd173dc41a64aadd89404345b82e, type: 3}
+  - {fileID: 21300000, guid: f402f4e726fdcba4b9a5c9fe9e8d2532, type: 3}
+  - {fileID: 21300000, guid: 7607aa699a9acfc4c8645aebfa20a326, type: 3}
+  - {fileID: 21300000, guid: 751fb94ad430267419c996b9c4240fcc, type: 3}
+  - {fileID: 21300000, guid: 1c4c6c6ab92243841a2f1a7a68b8b1f3, type: 3}
+  - {fileID: 21300000, guid: c657f3aa7093fcf4a8df69e2cb435d46, type: 3}
+  - {fileID: 21300000, guid: 23fe178cda7e48f45b70c631b643b5b0, type: 3}
+  - {fileID: 21300000, guid: e75ebb5eeca98404dbc782f25ea51f07, type: 3}
+  - {fileID: 21300000, guid: 5bd72dae8ad0c3c428fec55fc5aeb0b2, type: 3}
+  - {fileID: 21300000, guid: fab3bacef67bdaf44928a6015d49a350, type: 3}
+  - {fileID: 21300000, guid: 83a903ee7f55b0346a5fe3633a7c5caa, type: 3}
+  - {fileID: 21300000, guid: df44014fb2710aa4d88dc7cec604fd03, type: 3}
+  - {fileID: 21300000, guid: 8b3a4f8f802434b409823cb93027c272, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - "\u5929\u738B\u661F-\u6B63\u5E38"
+  - "\u91D1\u661F-\u6B63\u5E38"
+  - "\u706B\u661F-\u6B63\u5E38"
+  - "\u592A\u9633-\u7070\u5EA6"
+  - "\u5730\u7403-\u6B63\u5E38"
+  - "\u571F\u661F-\u7070\u5EA6"
+  - "\u706B\u661F-\u7070\u5EA6"
+  - "\u91D1\u661F-\u7070\u5EA6"
+  - "\u6728\u661F-\u6B63\u5E38"
+  - "\u6C34\u661F-\u6B63\u5E38"
+  - "\u592A\u9633-\u6B63\u5E38"
+  - "\u6C34\u661F-\u7070\u5EA6"
+  - "\u6D77\u738B\u661F-\u6B63\u5E38"
+  - "\u571F\u661F-\u6B63\u5E38"
+  - "\u6728\u661F-\u7070\u5EA6"
+  - "\u5929\u738B\u661F-\u7070\u5EA6"
+  - "\u6D77\u738B\u661F-\u7070\u5EA6"
+  - "\u5730\u7403-\u7070\u5EA6"
+  m_Tag: backpackIcons
+  m_IsVariant: 0
