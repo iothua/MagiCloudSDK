@@ -63,20 +63,53 @@ namespace MagiCloud.Interactive
 
                 }
 
-                //如果是初始交互，则对接收端筛选一次
-                if (defaultInteraction)
-                {
-                    var distances = new List<DistanceDataManager>();
+                ////如果是初始交互，则对接收端筛选一次
+                //if (defaultInteraction)
+                //{
+                //    //var distances = new List<DistanceDataManager>();
+                //    //distances.CopyTo(distanceManagers.ToArray());
 
-                    distances = distanceManagers.Select((obj) =>
-                    {
-                        obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
+                //    DistanceDataManager[] distances = new DistanceDataManager[distanceManagers.Count];
+                //    distanceManagers.CopyTo(distances);
 
-                        return obj;
+                //    for (int i = 0; i < distanceManagers.Count; i++)
+                //    {
+                //        var distanceings = new DistanceData[distanceManagers[i].Distanceing.Count];
+                //        distanceManagers[i].Distanceing.CopyTo(distanceings);
 
-                    }).ToList();
+                //        distances[i].Distanceing = distanceings.ToList();
+                //    }
 
-                }
+                //    //distances = distances.Select((obj) =>
+                //    //{
+                //    //    obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
+
+                //    //    return obj;
+
+                //    //}).ToList();
+                    
+                //    distances = distances.Select((obj) =>
+                //    {
+                //        obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
+
+                //        return obj;
+
+                //    }).ToArray();
+
+
+                //    if (!dataManagers.ContainsKey(target))
+                //        dataManagers.Add(target, distances.ToList());
+                //    else
+                //        dataManagers[target] = distances.ToList();
+                //}
+                //else
+                //{
+
+                    //if (!dataManagers.ContainsKey(target))
+                //        dataManagers.Add(target, distanceManagers);
+                //    else
+                //        dataManagers[target] = distanceManagers;
+                //}
 
                 if (!dataManagers.ContainsKey(target))
                     dataManagers.Add(target, distanceManagers);

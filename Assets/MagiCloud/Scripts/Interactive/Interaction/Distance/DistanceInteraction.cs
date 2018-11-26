@@ -120,7 +120,8 @@ namespace MagiCloud.Interactive.Distance
 
         private IEnumerator Start()
         {
-            if (AutoDetection && (distanceData.interactionType == InteractionType.Send || distanceData.interactionType == InteractionType.All))
+            //目前只支持send端初始交互
+            if (distanceData.interactionType == InteractionType.Send)
                 yield return StartCoroutine(AutoInteraction(0.01f));
         }
 
@@ -137,6 +138,7 @@ namespace MagiCloud.Interactive.Distance
 
             if (distanceData.interactionType != InteractionType.Send) yield break;
 
+            yield return new WaitForSeconds(delay);
             //初始交互
             InteractiveController.Instance.Search.OnStartInteraction(FeaturesObjectController.gameObject, false, true);
             yield return new WaitForSeconds(delay);

@@ -252,6 +252,7 @@ namespace MagiCloud.Interactive.Distance
 
             sendData.Interaction.IsGrab = false;
 
+            //如果不存在有交互的，就进行无释放。
             if(isNotRelease)
                 sendData.OnNotRelease(); ;
         }
