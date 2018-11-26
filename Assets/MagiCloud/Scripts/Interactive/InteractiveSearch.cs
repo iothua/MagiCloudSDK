@@ -22,7 +22,7 @@ namespace MagiCloud.Interactive
 
             if (interactions.Count() == 0) return;
 
-            OnSend(target, isGrab, interactions);
+            OnSend(target, isGrab, interactions, defaultInteraction);
 
             OnPourAll(target, isGrab, interactions, InteractionType.Pour);
             OnPourAll(target, isGrab, interactions, InteractionType.All);
@@ -48,8 +48,6 @@ namespace MagiCloud.Interactive
                 //根据指定key获取到接收点
                 var managers = DistanceStorage.GetSendDistaceDataKey(interaction.distanceData);
 
-
-
                 List<DistanceDataManager> distanceManagers;
                 dataManagers.TryGetValue(target, out distanceManagers);
 
@@ -65,10 +63,20 @@ namespace MagiCloud.Interactive
 
                 }
 
-                ////如果是初始交互，则对接收端筛选一次
-                //if (defaultInteraction)
-                //{
-                //}
+                //如果是初始交互，则对接收端筛选一次
+                if (defaultInteraction)
+                {
+                    var distances = new List<DistanceDataManager>();
+
+                    distances = distanceManagers.Select((obj) =>
+                    {
+                        obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
+
+                        return obj;
+
+                    }).ToList();
+
+                }
 
                 if (!dataManagers.ContainsKey(target))
                     dataManagers.Add(target, distanceManagers);

@@ -79,6 +79,14 @@ namespace MagiCloud.Interactive
             Equipment.OnDistanceRelease((InteractionEquipment)distanceInteraction.ExternalInteraction);
         }
 
+        public override void OnDistanceRelease(DistanceInteraction distanceInteraction, InteractionReleaseStatus status)
+        {
+            if (Equipment == null) return;
+            base.OnDistanceRelease(distanceInteraction, status);
+
+            Equipment.OnDistanceRelease((InteractionEquipment)distanceInteraction.ExternalInteraction, status);
+        }
+
         public override void OnDistanceNotInteractionRelease()
         {
             if (Equipment == null)
