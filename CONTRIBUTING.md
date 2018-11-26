@@ -17,7 +17,7 @@
 
  2.提交内容
 
-针对存在问题反馈不够明确，建议提交包含以下内容，目前提供了一个[在线模板可供参考](https://github.com/iothua/MFrameworkCore/issues)，个人填写建议包含以下内容:
+针对存在问题反馈不够明确，建议提交包含以下内容，目前提供了一个[在线模板可供参考](https://github.com/iothua/MFrameworkCore/issues/new?template=----.md)，个人填写建议包含以下内容:
 
 ```
 **问题描述**
