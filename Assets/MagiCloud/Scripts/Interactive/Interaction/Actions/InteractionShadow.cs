@@ -6,25 +6,27 @@ namespace MagiCloud.Interactive.Actions
     /// <summary>
     /// 虚影
     /// </summary>
+    [System.Serializable]
     public class InteractionShadow : InteractionAction
     {
         public Vector3 localPosition = Vector3.zero;
         public Vector3 localRotation = Vector3.zero;
         public Vector3 localScale = Vector3.one;
 
-        public override void OnOpen(DistanceInteraction interaction)
+        public override void OnOpen(DistanceInteraction InteractionSelf, DistanceInteraction interaction)
         {
-            base.OnOpen(interaction);
+            base.OnOpen(InteractionSelf, interaction);
 
-            if (Interaction == null) return;
+            if (interaction == null) return;
+            if (InteractionSelf == null) return;
 
-            if (Interaction.IsGrab && !IsSelf) return;
+            if (InteractionSelf.IsGrab && !IsSelf) return;
 
             if (!IsOpen && !IsLimit)
             {
-                if (Interaction.FeaturesObjectController.ActiveShadow)
+                if (InteractionSelf.FeaturesObjectController.ActiveShadow)
                 {
-                    Interaction.FeaturesObjectController.ShadowController.OpenGhost(interaction.FeaturesObjectController.transform,
+                    InteractionSelf.FeaturesObjectController.ShadowController.OpenGhost(interaction.FeaturesObjectController.transform,
                         localPosition, localScale, Quaternion.Euler(localRotation));
 
                     IsOpen = true;
@@ -32,18 +34,18 @@ namespace MagiCloud.Interactive.Actions
             }
         }
 
-        public override void OnClose(DistanceInteraction interaction)
+        public override void OnClose(DistanceInteraction InteractionSelf, DistanceInteraction interaction)
         {
-            base.OnClose(interaction);
+            base.OnClose(InteractionSelf, interaction);
 
-            if (Interaction == null) return;
-            if (Interaction.IsGrab && !IsSelf) return;
+            if (InteractionSelf == null) return;
+            if (InteractionSelf.IsGrab && !IsSelf) return;
 
             if (IsOpen)
             {
-                if (Interaction.FeaturesObjectController.ActiveShadow)
+                if (InteractionSelf.FeaturesObjectController.ActiveShadow)
                 {
-                    Interaction.FeaturesObjectController.ShadowController.CloseGhost();
+                    InteractionSelf.FeaturesObjectController.ShadowController.CloseGhost();
                     IsOpen = false;
                 }
             }

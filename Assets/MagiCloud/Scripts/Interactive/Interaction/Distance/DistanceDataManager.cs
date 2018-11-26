@@ -197,17 +197,27 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         public void OnComputeRelesae()
         {
+            if (Distanceing.Count == 0)
+            {
+                sendData.OnNotRelease();
+                return;
+            }
+
+            bool isNotRelease = false;
+
             foreach (var receive in Distanceing.ToList())
             {
                 if (receive.Interaction == null) continue;
 
+                //检测是否有正在交互中，如果没有，则执行notRelease释放。
                 if (!InteractionDistanceController.IsEnter(sendData, receive))
                 {
-                    sendData.OnNotRelease();
-                    receive.OnNotRelease();
+                    isNotRelease = true;
                     continue;
                 }
-                
+
+                isNotRelease = false;
+
                 switch (sendData.detectType)
                 {
                     case InteractionDetectType.And:
@@ -215,7 +225,6 @@ namespace MagiCloud.Interactive.Distance
                         if (receive.Interaction.IsCanInteraction(sendData.Interaction) &&
                                 sendData.Interaction.IsCanInteraction(receive.Interaction))
                         {
-                            //Distanceing.Remove(receive);
                             InteractionDistanceController.OnRelease(sendData, receive);
                         }
 
@@ -224,9 +233,6 @@ namespace MagiCloud.Interactive.Distance
                         
                         if (receive.Interaction.IsCanInteraction(sendData.Interaction))
                         {
-
-                            //Distanceing.Remove(receive);
-
                             InteractionDistanceController.OnRelease(sendData, receive);
                         }
 
@@ -235,9 +241,6 @@ namespace MagiCloud.Interactive.Distance
 
                         if (sendData.Interaction.IsCanInteraction(receive.Interaction))
                         {
-
-                            //Distanceing.Remove(receive);
-
                             InteractionDistanceController.OnRelease(sendData, receive);
                         }
 
@@ -248,6 +251,9 @@ namespace MagiCloud.Interactive.Distance
             }
 
             sendData.Interaction.IsGrab = false;
+
+            if(isNotRelease)
+                sendData.OnNotRelease(); ;
         }
     }
 }

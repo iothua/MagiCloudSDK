@@ -11,11 +11,10 @@ namespace MagiCloud.Interactive.Actions
         Release
     }
 
+    [Serializable]
     public class InteractionAction : IInteraction_Limit
     {
         public bool IsOpen = false;
-
-        public DistanceInteraction Interaction;
 
         [Header("是在哪种状态执行OnOpen()方法")]
         public ActionHandler actionHandler;
@@ -36,7 +35,7 @@ namespace MagiCloud.Interactive.Actions
         /// <summary>
         /// 打开
         /// </summary>
-        public virtual void OnOpen(DistanceInteraction interaction)
+        public virtual void OnOpen(DistanceInteraction InteractionSelf, DistanceInteraction interaction)
         {
 
         }
@@ -44,7 +43,7 @@ namespace MagiCloud.Interactive.Actions
         /// <summary>
         /// 关闭
         /// </summary>
-        public virtual void OnClose(DistanceInteraction interaction)
+        public virtual void OnClose(DistanceInteraction InteractionSelf, DistanceInteraction interaction)
         {
 
         }

@@ -197,6 +197,7 @@ namespace MagiCloud.Interactive.Distance
                         if (OnlyDistance == target)
                         {
                             Interaction.OnDistanceRelesae(target.Interaction);
+                            Interaction.OnDistanceRelease(target.Interaction, InteractionReleaseStatus.Inside);
                             return;
                         }
                     }
@@ -205,7 +206,7 @@ namespace MagiCloud.Interactive.Distance
                         if (Distanced != null && Distanced.Contains(target))
                         {
                             Interaction.OnDistanceRelesae(target.Interaction);
-
+                            Interaction.OnDistanceRelease(target.Interaction, InteractionReleaseStatus.Inside);
                             return;
                         }
                     }
@@ -213,6 +214,7 @@ namespace MagiCloud.Interactive.Distance
                     if (!OnCheck()) return;
 
                     Interaction.OnDistanceRelesae(target.Interaction);
+                    Interaction.OnDistanceRelease(target.Interaction, InteractionReleaseStatus.Once);
 
                     if (IsOnly)
                     {
@@ -231,10 +233,13 @@ namespace MagiCloud.Interactive.Distance
                     if (!OnCheck())
                     {
                         Interaction.OnDistanceRelesae(target.Interaction);
+                        Interaction.OnDistanceRelease(target.Interaction, InteractionReleaseStatus.Inside);
+
                         return;
                     }
 
                     Interaction.OnDistanceRelesae(target.Interaction);
+                    Interaction.OnDistanceRelease(target.Interaction, InteractionReleaseStatus.Once);
 
                     AddSendDistance(target);
 
@@ -250,6 +255,7 @@ namespace MagiCloud.Interactive.Distance
             if (Interaction == null) return;
 
             Interaction.OnDistanceNotInteractionRelease();
+            Interaction.OnDistanceRelease(null, InteractionReleaseStatus.None);
         }
 
         /// <summary>

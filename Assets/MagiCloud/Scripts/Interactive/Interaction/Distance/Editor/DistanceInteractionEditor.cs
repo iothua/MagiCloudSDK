@@ -12,8 +12,6 @@ namespace MagiCloud.Interactive.Distance
 
         public SerializedProperty OnEnter, OnExit, OnStay, OnRelease;
         public SerializedProperty OnNotRelease;
-        //private bool IsExitDistanceObject;
-        //private bool IsExitDistance;
 
         protected virtual void OnEnable()
         {
@@ -24,7 +22,6 @@ namespace MagiCloud.Interactive.Distance
             OnStay = serializedObject.FindProperty("OnStay");
             OnRelease = serializedObject.FindProperty("OnRelease");
             OnNotRelease = serializedObject.FindProperty("OnNotRelease");
-            //GetDistanceEquals();
         }
 
         protected void AddMenuItemForValue(GenericMenu menu, string value)
@@ -68,7 +65,6 @@ namespace MagiCloud.Interactive.Distance
                 case InteractionType.All:
 
                     var managerAlls = DistanceStorage.GetSendDistaceDataAll(interaction.distanceData, InteractionType.All);
-                        /*&& !obj.sendData.EqualsObject(interaction.distanceData)*/
 
                     foreach (var item in managerAlls)
                     {
@@ -78,7 +74,6 @@ namespace MagiCloud.Interactive.Distance
                     break;
                 case InteractionType.Pour:
                     var managerPours = DistanceStorage.GetSendDistaceDataAll(interaction.distanceData, InteractionType.Pour);
-                    /*&& !obj.sendData.EqualsObject(interaction.distanceData)*/
 
                     foreach (var item in managerPours)
                     {
@@ -122,8 +117,6 @@ namespace MagiCloud.Interactive.Distance
                     interaction.distanceData.maxCount);
             }
 
-            interaction.AutoDetection = false;
-
             interaction.distanceData.distanceShape = (DistanceShape)EditorGUILayout.EnumPopup("距离外形：", interaction.distanceData.distanceShape);
 
             if (interaction.distanceData.distanceShape == DistanceShape.Cube)
@@ -158,6 +151,52 @@ namespace MagiCloud.Interactive.Distance
             GetDistanceInfo();
 
             GUILayout.Space(10);
+
+            //设置
+            InspectorInteractionAction();
+
+            GUILayout.Space(10);
+
+            EditorGUILayout.EndVertical();
+        }
+
+        public void InspectorInteractionAction()
+        {
+            EditorGUILayout.BeginVertical("box");
+
+            interaction.ActiveParent = GUILayout.Toggle(interaction.ActiveParent, "激活【加入子父物体】功能");
+            if (interaction.ActiveParent)
+            {
+                interaction.AddParent();
+
+                interaction.interactionParent.IsSelf = EditorGUILayout.Toggle(new GUIContent("      本身：", "当进行交互时，交互是否这些本身，True为执行本身，对方不执行。反之同理!"), interaction.interactionParent.IsSelf);
+
+                interaction.interactionParent.Parent = EditorGUILayout.ObjectField(new GUIContent("      父对象：", "需要加入子父物体的父对象"), interaction.interactionParent.Parent, typeof(Transform), true) as Transform;
+                interaction.interactionParent.localPosition = EditorGUILayout.Vector3Field("      局部坐标：", interaction.interactionParent.localPosition);
+                interaction.interactionParent.localRotation = EditorGUILayout.Vector3Field("      局部旋转值：", interaction.interactionParent.localRotation);
+            }
+            else
+            {
+                interaction.RemoveParent();
+            }
+
+            GUILayout.Space(10);
+
+            interaction.ActiveShadow = GUILayout.Toggle(interaction.ActiveShadow, "激活【虚影】功能");
+
+            if (interaction.ActiveShadow)
+            {
+                interaction.AddShadow();
+                interaction.interactionShadow.IsSelf = EditorGUILayout.Toggle(new GUIContent("      本身：", "当进行交互时，交互是否执行本身，True为执行本身，对方不执行。反之同理!"), interaction.interactionShadow.IsSelf);
+
+                interaction.interactionShadow.localPosition = EditorGUILayout.Vector3Field("      局部坐标：", interaction.interactionShadow.localPosition);
+                interaction.interactionShadow.localRotation = EditorGUILayout.Vector3Field("      局部旋转值：", interaction.interactionShadow.localRotation);
+                //interaction.interactionShadow.localScale = EditorGUILayout.Vector3Field("局部大小：", shadow.localScale);
+            }
+            else
+            {
+                interaction.RemoveShadow();
+            }
 
             EditorGUILayout.EndVertical();
         }
@@ -207,6 +246,8 @@ namespace MagiCloud.Interactive.Distance
                     }
                     GUILayout.EndHorizontal();
 
+                    interaction.AutoDetection = EditorGUILayout.Toggle(new GUIContent("初始交互：", "执行Start函数时，会自动检索在距离内的接收点，并且进行交互"), interaction.AutoDetection);
+
                     //绘制距离信息
                     DrawDistanceInfo();
                     break;
@@ -214,11 +255,10 @@ namespace MagiCloud.Interactive.Distance
 
                     interaction.distanceData.TagID = EditorGUILayout.TextField("交互唯一ID：", interaction.distanceData.TagID);
 
+                    interaction.distanceData.IsGrabOwn = EditorGUILayout.Toggle("抓取本身触发：", interaction.distanceData.IsGrabOwn);
                     interaction.distanceData.detectType = (InteractionDetectType)EditorGUILayout.EnumPopup("距离检测优先级：", interaction.distanceData.detectType);
 
-                    interaction.distanceData.IsGrabOwn = EditorGUILayout.Toggle("抓取本身触发：", interaction.distanceData.IsGrabOwn);
-                    interaction.AutoDetection = EditorGUILayout.Toggle(new GUIContent("初始交互：", "执行Start函数时，会自动检索在距离内的接收点，并且进行交互"), interaction.AutoDetection);
-
+                    interaction.AutoDetection = false;
                     break;
                 case InteractionType.All:
                 case InteractionType.Pour:
@@ -246,7 +286,9 @@ namespace MagiCloud.Interactive.Distance
                     GUILayout.EndHorizontal();
 
                     interaction.distanceData.IsGrabOwn = EditorGUILayout.Toggle("抓取本身触发：", interaction.distanceData.IsGrabOwn);
-                    interaction.AutoDetection = EditorGUILayout.Toggle(new GUIContent("初始交互：", "执行Start函数时，会自动检索在距离内的接收点，并且进行交互"), interaction.AutoDetection);
+                    //interaction.AutoDetection = EditorGUILayout.Toggle(new GUIContent("初始交互：", "执行Start函数时，会自动检索在距离内的接收点，并且进行交互"), interaction.AutoDetection);
+
+                    interaction.AutoDetection = false;
 
                     GUILayout.Space(10);
                     interaction.distanceData.detectType = (InteractionDetectType)EditorGUILayout.EnumPopup("距离检测优先级：", interaction.distanceData.detectType);

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace MagiCloud.Interactive.Actions
 {
+    [Serializable]
     public class InteractionParent : InteractionAction
     {
         [Header("父对象")]
@@ -12,26 +13,26 @@ namespace MagiCloud.Interactive.Actions
         public Vector3 localPosition = Vector3.zero;
         [Header("布局旋转值")]
         public Vector3 localRotation = Vector3.zero;
-
-        public override void OnClose(DistanceInteraction interaction)
+        public override void OnClose(DistanceInteraction InteractionSelf, DistanceInteraction interaction)
         {
-            base.OnClose(interaction);
+            base.OnClose(InteractionSelf,interaction);
 
             if (interaction == null) return;
-            if (Interaction.IsGrab && !IsSelf) return;
+            if (InteractionSelf == null) return;
+            if (InteractionSelf.IsGrab && !IsSelf) return;
 
             interaction.FeaturesObjectController.SetParent(null);
 
             IsOpen = false;
         }
 
-        public override void OnOpen(DistanceInteraction interaction)
+        public override void OnOpen(DistanceInteraction InteractionSelf, DistanceInteraction interaction)
         {
-            base.OnOpen(interaction);
+            base.OnOpen(InteractionSelf, interaction);
 
             if (interaction == null) return;
-
-            if (Interaction.IsGrab && !IsSelf) return;
+            if (InteractionSelf == null) return;
+            if (InteractionSelf.IsGrab && !IsSelf) return;
 
             if (IsLimit) return;
 
