@@ -10,6 +10,7 @@ namespace MagiCloud.KGUI
     public class KGUIDropdownItemEditor : Editor
     {
         KGUIButtonTypeEditor buttonType;
+        KGUIButtonAudioEditor buttonAudio;
 
         private KGUI_DropdownItem dropdownItem;
 
@@ -20,14 +21,17 @@ namespace MagiCloud.KGUI
             if(buttonType==null)
                 buttonType=new KGUIButtonTypeEditor();
 
+            if (buttonAudio == null)
+                buttonAudio = new KGUIButtonAudioEditor();
+
             buttonType.OnInstantiation(serializedObject);
-            
+            buttonAudio.OnInstantiation(serializedObject);
         }
 
         public override void OnInspectorGUI()
         {
-
             buttonType.OnInspectorButtonType(dropdownItem);
+            buttonAudio.OnInspectorButtonAudio(dropdownItem);
         }
     }
 }

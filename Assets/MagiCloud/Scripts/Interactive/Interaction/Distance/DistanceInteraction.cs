@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Events;
+using MagiCloud.Interactive.Actions;
 
 namespace MagiCloud.Interactive.Distance
 {
@@ -35,6 +36,11 @@ namespace MagiCloud.Interactive.Distance
         /// 初始距离检测，在距离内则进行交互
         /// </summary>
         public bool AutoDetection = true;
+
+        public bool ActiveParent;
+        public bool ActiveShadow;
+        public InteractionParent interactionParent; //父子关系
+        public InteractionShadow interactionShadow; //虚影关系
 
         /// <summary>
         /// 是否被抓取
@@ -89,7 +95,7 @@ namespace MagiCloud.Interactive.Distance
 
         private IEnumerator Start()
         {
-            if (AutoDetection)
+            if (AutoDetection && (distanceData.interactionType == InteractionType.Send || distanceData.interactionType == InteractionType.All))
                 yield return StartCoroutine(AutoInteraction(0.01f));
         }
 
@@ -104,7 +110,8 @@ namespace MagiCloud.Interactive.Distance
             //在距离内的时候，进行一次检索
             if (InteractiveController.Instance != null && (distanceData.interactionType == InteractionType.Send || distanceData.interactionType == InteractionType.All))
             {
-                InteractiveController.Instance.Search.OnStartInteraction(FeaturesObjectController.gameObject, false);
+                //初始交互
+                InteractiveController.Instance.Search.OnStartInteraction(FeaturesObjectController.gameObject, false, true);
                 yield return new WaitForSeconds(delay);
                 InteractiveController.Instance.Search.OnStopInteraction(FeaturesObjectController.gameObject);
             }
@@ -175,6 +182,35 @@ namespace MagiCloud.Interactive.Distance
             }
         }
 
+        #region 编辑器使用
+
+        /// <summary>
+        /// 添加虚影
+        /// </summary>
+        /// <returns></returns>
+        public InteractionShadow AddShadow()
+        {
+
+        }
+
+        /// <summary>
+        /// 移除虚影
+        /// </summary>
+        public void RemoveShadow()
+        { }
+
+        /// <summary>
+        /// 添加子父物体
+        /// </summary>
+        /// <returns></returns>
+        public InteractionParent AddParent()
+        { }
+        /// <summary>
+        /// 移除父子关系
+        /// </summary>
+        public void RemoveParent()
+        { }
+
         private void OnDrawGizmos()
         {
 #if UNITY_EDITOR
@@ -201,6 +237,9 @@ namespace MagiCloud.Interactive.Distance
 #endif
 
         }
+
+        #endregion
+
     }
 }
 

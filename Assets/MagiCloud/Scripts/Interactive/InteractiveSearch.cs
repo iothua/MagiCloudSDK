@@ -16,7 +16,7 @@ namespace MagiCloud.Interactive
         /// <summary>
         /// 启动交互
         /// </summary>
-        public void OnStartInteraction(GameObject target,bool isGrab)
+        public void OnStartInteraction(GameObject target, bool isGrab, bool defaultInteraction = false)
         {
             var interactions = target.GetComponentsInChildren<DistanceInteraction>();
 
@@ -35,7 +35,7 @@ namespace MagiCloud.Interactive
         /// <param name="target">物体</param>
         /// <param name="isGrab">是否抓取</param>
         /// <param name="interactions">距离互动集合</param>
-        void OnSend(GameObject target, bool isGrab, DistanceInteraction[] interactions)
+        void OnSend(GameObject target, bool isGrab, DistanceInteraction[] interactions, bool defaultInteraction = false)
         {
             //获取到所有的发送信息
             var interactionSends = interactions.Where(_ => _.distanceData.interactionType == InteractionType.Send);
@@ -47,6 +47,8 @@ namespace MagiCloud.Interactive
             {
                 //根据指定key获取到接收点
                 var managers = DistanceStorage.GetSendDistaceDataKey(interaction.distanceData);
+
+
 
                 List<DistanceDataManager> distanceManagers;
                 dataManagers.TryGetValue(target, out distanceManagers);
@@ -63,6 +65,11 @@ namespace MagiCloud.Interactive
 
                 }
 
+                ////如果是初始交互，则对接收端筛选一次
+                //if (defaultInteraction)
+                //{
+                //}
+
                 if (!dataManagers.ContainsKey(target))
                     dataManagers.Add(target, distanceManagers);
                 else
@@ -77,7 +84,8 @@ namespace MagiCloud.Interactive
         /// <param name="isGrab"></param>
         /// <param name="interactions"></param>
         /// <param name="interactionType"></param>
-        void OnPourAll(GameObject target, bool isGrab, DistanceInteraction[] interactions,InteractionType interactionType)
+        void OnPourAll(GameObject target, bool isGrab, DistanceInteraction[] interactions,
+            InteractionType interactionType, bool defaultInteraction = false)
         {
             var interactionPours = interactions.Where(_ => _.distanceData.interactionType == interactionType);
 

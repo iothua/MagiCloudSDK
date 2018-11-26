@@ -14,12 +14,11 @@ namespace MagiCloud.KGUI
 
         public SerializedProperty buttonGroup;
 
-        public SerializedProperty AudioClip;
-
         private KGUI_Button button;
 
         KGUIButtonTypeEditor ButtonType;
         KGUIButtonEventEditor ButtonEvent;
+        KGUIButtonAudioEditor ButtonAudio;
 
         private void OnEnable()
         {
@@ -31,14 +30,17 @@ namespace MagiCloud.KGUI
             if (ButtonEvent == null)
                 ButtonEvent = new KGUIButtonEventEditor();
 
+            if (ButtonAudio == null)
+                ButtonAudio = new KGUIButtonAudioEditor();
+
+
             ButtonType.OnInstantiation(serializedObject);
             ButtonEvent.OnInstantiation(serializedObject);
+            ButtonAudio.OnInstantiation(serializedObject);
 
             onGroupReset = serializedObject.FindProperty("onGroupReset");
 
             buttonGroup = serializedObject.FindProperty("buttonGroup");
-
-            AudioClip = serializedObject.FindProperty("audioClip");
         }
 
         public override void OnInspectorGUI()
@@ -52,24 +54,14 @@ namespace MagiCloud.KGUI
 
             button.IsEnable = EditorGUILayout.Toggle("是否启用(IsEnable)", button.IsEnable);
 
+            ButtonAudio.OnInspectorButtonAudio(button);
+
             button.IsButtonGroup = EditorGUILayout.Toggle("是否归属Button组：", button.IsButtonGroup);
 
             if (button.IsButtonGroup)
             {
                 EditorGUILayout.PropertyField(buttonGroup, true, null);
                 button.IsShowButton = EditorGUILayout.Toggle("IsShowButton[是否默认按下]：", button.IsShowButton);
-            }
-
-            button.IsStartAudio = EditorGUILayout.Toggle("启动音频：", button.IsStartAudio);
-
-            if (button.IsStartAudio)
-            {
-                EditorGUILayout.PropertyField(AudioClip, true, null);
-                button.AddAudio();
-            }
-            else
-            {
-                button.DestroyAudio();
             }
 
             GUILayout.Space(20);
@@ -82,6 +74,8 @@ namespace MagiCloud.KGUI
             ButtonEvent.OnInspectorButtonEvent();
 
             EditorGUILayout.EndVertical();
+
+
 
             if (EditorGUI.EndChangeCheck())
             {
