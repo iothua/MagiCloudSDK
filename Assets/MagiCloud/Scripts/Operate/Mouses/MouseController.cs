@@ -21,7 +21,7 @@ namespace MagiCloud.Operate
         private bool IsRotateDown = false; //旋转是否开启
 
         [Header("手图标")]
-        public Sprite handSprite;//手图标
+        public HandIcon handSprite;//手图标
 
         [Header("图标大小")]
         public Vector2 handSize;//图标大小

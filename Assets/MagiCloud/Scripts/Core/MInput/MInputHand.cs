@@ -25,7 +25,12 @@ namespace MagiCloud.Core.MInput
         /// </summary>
         public MInputHandStatus HandStatus {
             get { return handStatus; }
-            set { handStatus = value; }
+            set { 
+                handStatus = value;
+
+                if (HandUI != null)
+                    HandUI.SetHandIcon(handStatus);
+            }
         }
 
         /// <summary>
@@ -59,7 +64,7 @@ namespace MagiCloud.Core.MInput
                 isEnable = value;
 
                 isPressed = false;
-                handStatus = MInputHandStatus.Idle;
+                HandStatus = MInputHandStatus.Idle;
                 currentPoint = Vector3.zero;
                 lastPoint = null;
                 lerpPoint = Vector3.zero;
@@ -142,7 +147,7 @@ namespace MagiCloud.Core.MInput
 
             EventHandGrip.SendListener(HandIndex);
 
-            handStatus = MInputHandStatus.Grip;
+            HandStatus = MInputHandStatus.Grip;
         }
 
         /// <summary>
@@ -157,7 +162,7 @@ namespace MagiCloud.Core.MInput
 
             EventHandIdle.SendListener(HandIndex);
 
-            handStatus = MInputHandStatus.Idle;
+            HandStatus = MInputHandStatus.Idle;
         }
 
         ///// <summary>

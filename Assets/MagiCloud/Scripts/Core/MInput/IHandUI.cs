@@ -21,7 +21,11 @@ namespace MagiCloud.Core.MInput
         /// 设置默认值
         /// </summary>
         void SetNormalIcon();
-
+        /// <summary>
+        /// 根据状态，设置手图标
+        /// </summary>
+        /// <param name="status">Status.</param>
+        void SetHandIcon(MInputHandStatus status);
         /// <summary>
         /// 移动手（UI）
         /// </summary>
