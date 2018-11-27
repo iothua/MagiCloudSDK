@@ -19,6 +19,8 @@ namespace MagiCloud.Interactive.Distance
     {
         #region 属性
 
+        private bool isEnable = false;
+
         //距离的TagID
         public string TagID = "距离交互";
 
@@ -63,7 +65,24 @@ namespace MagiCloud.Interactive.Distance
         /// <summary>
         /// 是否激活
         /// </summary>
-        public bool IsEnabel;
+        public bool IsEnabel {
+            get {
+                return isEnable;
+            }
+            set {
+
+                isEnable = value;
+
+                if (isEnable)
+                {
+                    DistanceStorage.AddDistanceData(this);
+                }
+                else
+                {
+                    DistanceStorage.DeleteDistanceData(this);
+                }
+            }
+        }
 
         /// <summary>
         /// 最大值-1为无限

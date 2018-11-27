@@ -109,20 +109,18 @@ namespace MagiCloud.Interactive.Distance
 
         protected virtual void OnEnable()
         {
-
             distanceData.IsEnabel = true;
             //统一调用，去匹配数据，还需要一个数据，每隔一段时间校验一次，用于匹配执行顺序等情况
-            DistanceStorage.AddDistanceData(distanceData);
-
-            //检索一次，是否有物体在距离内，在的话，则进行处理
-
         }
 
-        private IEnumerator Start()
+        private void Start()
         {
-            //目前只支持send端初始交互
-            if (distanceData.interactionType == InteractionType.Send)
-                yield return StartCoroutine(AutoInteraction(0.01f));
+            if (Application.isPlaying)
+            {
+                //目前只支持send端初始交互
+                if (distanceData.interactionType == InteractionType.Send)
+                    StartCoroutine(AutoInteraction(0.01f));
+            }
         }
 
         /// <summary>
@@ -141,14 +139,13 @@ namespace MagiCloud.Interactive.Distance
             yield return new WaitForSeconds(delay);
             //初始交互
             InteractiveController.Instance.Search.OnStartInteraction(FeaturesObjectController.gameObject, false, true);
-            yield return new WaitForSeconds(delay);
+            yield return new WaitForSeconds(0.15f);
             InteractiveController.Instance.Search.OnStopInteraction(FeaturesObjectController.gameObject);
         }
 
         protected virtual void OnDisable()
         {
             distanceData.IsEnabel = false;
-            DistanceStorage.DeleteDistanceData(distanceData);
         }
 
         public virtual bool IsCanInteraction(DistanceInteraction distanceInteraction)
