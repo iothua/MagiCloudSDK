@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.496413, b: 0.5748175, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -164,7 +164,6 @@ MonoBehaviour:
     Size: {x: 0.1, y: 0.1, z: 0.1}
     IsGrabOwn: 1
     IsOnly: 1
-    IsEnabel: 1
     maxCount: -1
     Interaction: {fileID: 38481685}
   OnEnter:
@@ -196,7 +195,7 @@ MonoBehaviour:
   ActiveParent: 1
   ActiveShadow: 1
   interactionParent:
-    IsOpen: 0
+    IsOpen: 1
     actionHandler: 0
     IsSelf: 1
     Parent: {fileID: 925021919}
@@ -730,7 +729,6 @@ MonoBehaviour:
     Size: {x: 0.1, y: 0.1, z: 0.1}
     IsGrabOwn: 1
     IsOnly: 0
-    IsEnabel: 0
     maxCount: -1
     Interaction: {fileID: 294686813}
   OnEnter:
@@ -1001,7 +999,6 @@ MonoBehaviour:
     Size: {x: 0.1, y: 0.1, z: 0.1}
     IsGrabOwn: 1
     IsOnly: 0
-    IsEnabel: 1
     maxCount: -1
     Interaction: {fileID: 435315069}
   OnEnter:
@@ -2178,8 +2175,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1248396066}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.75, y: -0.54, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.78, y: -0.38, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 166803561}
@@ -2521,7 +2518,6 @@ MonoBehaviour:
     Size: {x: 0.1, y: 0.1, z: 0.1}
     IsGrabOwn: 1
     IsOnly: 0
-    IsEnabel: 0
     maxCount: -1
     Interaction: {fileID: 1421007292}
   OnEnter:
@@ -3149,7 +3145,6 @@ MonoBehaviour:
     Size: {x: 0.1, y: 0.1, z: 0.1}
     IsGrabOwn: 1
     IsOnly: 1
-    IsEnabel: 1
     maxCount: -1
     Interaction: {fileID: 1719198807}
   OnEnter:
@@ -3359,7 +3354,6 @@ MonoBehaviour:
     Size: {x: 0.1, y: 0.1, z: 0.1}
     IsGrabOwn: 1
     IsOnly: 0
-    IsEnabel: 0
     maxCount: -1
     Interaction: {fileID: 2044377721}
   OnEnter:

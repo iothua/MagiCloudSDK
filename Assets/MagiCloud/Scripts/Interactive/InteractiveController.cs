@@ -92,8 +92,7 @@ namespace MagiCloud.Interactive
             while (true)
             {
                 yield return new WaitForSeconds(0.1f);
-
-                Search.OnUpdate();
+                Search.OnUpdate(); //先执行一次
             }
         }
     }

@@ -63,58 +63,73 @@ namespace MagiCloud.Interactive
 
                 }
 
-                ////如果是初始交互，则对接收端筛选一次
-                //if (defaultInteraction)
-                //{
-                //    //var distances = new List<DistanceDataManager>();
-                //    //distances.CopyTo(distanceManagers.ToArray());
+                //如果是初始交互，则对接收端筛选一次
+                if (defaultInteraction)
+                {
+                    //var distances = new List<DistanceDataManager>();
+                    //distances.CopyTo(distanceManagers.ToArray());
 
-                //    DistanceDataManager[] distances = new DistanceDataManager[distanceManagers.Count];
-                //    distanceManagers.CopyTo(distances);
-
-                //    for (int i = 0; i < distanceManagers.Count; i++)
-                //    {
-                //        var distanceings = new DistanceData[distanceManagers[i].Distanceing.Count];
-                //        distanceManagers[i].Distanceing.CopyTo(distanceings);
-
-                //        distances[i].Distanceing = distanceings.ToList();
-                //    }
-
-                //    //distances = distances.Select((obj) =>
-                //    //{
-                //    //    obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
-
-                //    //    return obj;
-
-                //    //}).ToList();
-                    
-                //    distances = distances.Select((obj) =>
-                //    {
-                //        obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
-
-                //        return obj;
-
-                //    }).ToArray();
+                    DistanceDataManager[] distances = new DistanceDataManager[distanceManagers.Count];
 
 
-                //    if (!dataManagers.ContainsKey(target))
-                //        dataManagers.Add(target, distances.ToList());
-                //    else
-                //        dataManagers[target] = distances.ToList();
-                //}
-                //else
-                //{
 
-                    //if (!dataManagers.ContainsKey(target))
-                //        dataManagers.Add(target, distanceManagers);
-                //    else
-                //        dataManagers[target] = distanceManagers;
-                //}
+                    for (int i = 0; i < distanceManagers.Count; i++)
+                    {
+                        distances[i] = new DistanceDataManager
+                        {
+                            sendData = distanceManagers[i].sendData,
+                            Distances = new List<DistanceData>()
+                        };
 
-                if (!dataManagers.ContainsKey(target))
-                    dataManagers.Add(target, distanceManagers);
+                        for (int j = 0; j < distanceManagers[i].Distances.Count; j++)
+                        {
+                            var distance = distanceManagers[i].Distances[j];
+                            if (distance.Interaction.AutoDetection)
+                            {
+                                distances[i].AddDistance(distance);
+                            }
+                        }
+                        //var distanceings = new DistanceData[distanceManagers[i].Distanceing.Count];
+                        //distanceManagers[i].Distanceing.CopyTo(distanceings);
+
+                        //distances[i].Distanceing = distanceings.ToList();
+                    }
+
+                    //distances = distances.Select((obj) =>
+                    //{
+                    //    obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
+
+                    //    return obj;
+
+                    //}).ToList();
+
+                    //distances = distances.Select((obj) =>
+                    //{
+                    //    obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
+
+                    //    return obj;
+
+                    //}).ToArray();
+
+
+                    if (!dataManagers.ContainsKey(target))
+                        dataManagers.Add(target, distances.ToList());
+                    else
+                        dataManagers[target] = distances.ToList();
+                }
                 else
-                    dataManagers[target] = distanceManagers;
+                {
+
+                    if (!dataManagers.ContainsKey(target))
+                        dataManagers.Add(target, distanceManagers);
+                    else
+                        dataManagers[target] = distanceManagers;
+                }
+
+                //if (!dataManagers.ContainsKey(target))
+                //    dataManagers.Add(target, distanceManagers);
+                //else
+                //    dataManagers[target] = distanceManagers;
             }
         }
 
@@ -219,12 +234,12 @@ namespace MagiCloud.Interactive
 
         public void OnUpdate()
         {
+
             if (dataManagers.Count == 0) return;
 
             //帅选被动点中的主动点，然后实时进行距离检测，判断是否靠近了某段距离
             foreach (var send in dataManagers)
             {
-
                 for (int i = 0; i < send.Value.Count; i++)
                 {
                     //遍历距离检测，并且触发相应的事件
