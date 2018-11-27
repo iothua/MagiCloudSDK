@@ -6,6 +6,37 @@ using MagiCloud.Core;
 
 namespace MagiCloud.KGUI
 {
+    public enum ButtonType
+    {
+        /// <summary>
+        /// 无
+        /// </summary>
+        None,
+        /// <summary>
+        /// 精灵
+        /// </summary>
+        Image,
+        /// <summary>
+        /// 精灵渲染
+        /// </summary>
+        SpriteRenderer,
+        /// <summary>
+        /// 物体
+        /// </summary>
+        Object
+    }
+
+    public enum AudioStatus
+    {
+        /// <summary>
+        /// 移入触发
+        /// </summary>
+        Enter,
+        /// <summary>
+        /// 按下触发
+        /// </summary>
+        Down
+    }
 
     /// <summary>
     /// KGUI基类
@@ -26,6 +57,12 @@ namespace MagiCloud.KGUI
         protected BoxCollider boxCollider;
 
         protected MBehaviour behaviour;
+
+        //声音
+        public AudioClip audioClip;//音频
+        public AudioStatus audioStatus = AudioStatus.Enter; //声音状态
+        public AudioSource audioSource;
+        public bool IsStartAudio = true;
 
         /// <summary>
         /// 是否激活
@@ -147,6 +184,11 @@ namespace MagiCloud.KGUI
 
             IsEnter = true;
 
+            if (audioStatus == AudioStatus.Enter && IsStartAudio && audioSource != null)
+            {
+                audioSource.Play();
+            }
+
             if (onEnter != null)
                 onEnter.Invoke(handIndex);
         }
@@ -173,6 +215,11 @@ namespace MagiCloud.KGUI
         public override void OnDown(int handIndex)
         {
             base.OnDown(handIndex);
+
+            if (audioStatus == AudioStatus.Down && IsStartAudio && audioSource != null)
+            {
+                audioSource.Play();
+            }
 
             if (onDown != null)
                 onDown.Invoke(handIndex);
@@ -356,6 +403,40 @@ namespace MagiCloud.KGUI
         {
             if (behaviour != null)
                 behaviour.OnExcuteDestroy();
+        }
+
+        public void AddAudio()
+        {
+            if (audioClip == null)
+            {
+                audioClip = Resources.Load<AudioClip>("Audios\\手势划过-2");
+            }
+
+            if (audioSource == null)
+            {
+                if (audioSource == null)
+                {
+                    audioSource = gameObject.GetComponent<AudioSource>();
+                }
+
+                if (audioSource == null)
+                {
+                    audioSource = gameObject.AddComponent<AudioSource>();
+                }
+                if (audioSource.playOnAwake)
+                    audioSource.playOnAwake = false;
+
+                if (audioClip != audioSource.clip)
+                    audioSource.clip = audioClip;
+            }
+        }
+
+        public void DestroyAudio()
+        {
+            if (audioSource != null)
+            {
+                DestroyImmediate(audioSource);
+            }
         }
     }
 }

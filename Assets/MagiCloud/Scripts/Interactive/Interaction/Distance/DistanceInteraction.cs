@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Events;
+using MagiCloud.Interactive.Actions;
 
 namespace MagiCloud.Interactive.Distance
 {
     [System.Serializable]
     public class EventDistanceInteraction : UnityEvent<DistanceInteraction> { }
+
+    public class EventDistanceInteractionRelease : UnityEvent<DistanceInteraction, InteractionReleaseStatus> { }
 
     /// <summary>
     /// 距离交互(挂在物体中)
@@ -16,9 +19,11 @@ namespace MagiCloud.Interactive.Distance
         public DistanceData distanceData;
 
         //靠近、停留、离开、放下、中断(OnBreak)
-        public EventDistanceInteraction OnEnter, OnStay, OnExit, OnRelease;
+        public EventDistanceInteraction OnEnter, OnStay, OnExit;
 
-        public UnityEvent OnNotRelease;
+        public EventDistanceInteraction OnRelease; //交互距离后交互释放
+        public EventDistanceInteractionRelease OnStatusRelease; //交互后，第二次释放
+        public UnityEvent OnNotRelease;//没有交互时的释放
 
         /// <summary>
         /// 功能对象
@@ -35,6 +40,11 @@ namespace MagiCloud.Interactive.Distance
         /// 初始距离检测，在距离内则进行交互
         /// </summary>
         public bool AutoDetection = true;
+
+        public bool ActiveParent;
+        public bool ActiveShadow;
+        public InteractionParent interactionParent; //父子关系
+        public InteractionShadow interactionShadow; //虚影关系
 
         /// <summary>
         /// 是否被抓取
@@ -56,6 +66,9 @@ namespace MagiCloud.Interactive.Distance
             if (OnRelease == null)
                 OnRelease = new EventDistanceInteraction();
 
+            if (OnStatusRelease == null)
+                OnStatusRelease = new EventDistanceInteractionRelease();
+
             if (OnNotRelease == null)
                 OnNotRelease = new UnityEvent();
 
@@ -74,23 +87,40 @@ namespace MagiCloud.Interactive.Distance
                 if (FeaturesObjectController == null)
                     FeaturesObjectController = gameObject.GetComponentInParent<Features.FeaturesObjectController>();
             }
+
+            if (ActiveShadow)
+            {
+                AddShadow();
+            }
+            else
+            {
+                RemoveShadow();
+            }
+
+            if (ActiveParent)
+            {
+                AddParent();
+            }
+            else
+            {
+                RemoveParent();
+            }
         }
 
         protected virtual void OnEnable()
         {
-
             distanceData.IsEnabel = true;
             //统一调用，去匹配数据，还需要一个数据，每隔一段时间校验一次，用于匹配执行顺序等情况
-            DistanceStorage.AddDistanceData(distanceData);
-
-            //检索一次，是否有物体在距离内，在的话，则进行处理
-
         }
 
-        private IEnumerator Start()
+        private void Start()
         {
-            if (AutoDetection)
-                yield return StartCoroutine(AutoInteraction(0.01f));
+            if (Application.isPlaying)
+            {
+                //目前只支持send端初始交互
+                if (distanceData.interactionType == InteractionType.Send)
+                    StartCoroutine(AutoInteraction(0.01f));
+            }
         }
 
         /// <summary>
@@ -100,20 +130,22 @@ namespace MagiCloud.Interactive.Distance
         public IEnumerator AutoInteraction(float delay)
         {
             //关闭一些动作，只是单纯的数据初始化
+            if (FeaturesObjectController == null) yield break;
 
-            //在距离内的时候，进行一次检索
-            if (InteractiveController.Instance != null && (distanceData.interactionType == InteractionType.Send || distanceData.interactionType == InteractionType.All))
-            {
-                InteractiveController.Instance.Search.OnStartInteraction(FeaturesObjectController.gameObject, false);
-                yield return new WaitForSeconds(delay);
-                InteractiveController.Instance.Search.OnStopInteraction(FeaturesObjectController.gameObject);
-            }
+            if (InteractiveController.Instance == null) yield break;
+
+            if (distanceData.interactionType != InteractionType.Send) yield break;
+
+            yield return new WaitForSeconds(delay);
+            //初始交互
+            InteractiveController.Instance.Search.OnStartInteraction(FeaturesObjectController.gameObject, false, true);
+            yield return new WaitForSeconds(0.15f);
+            InteractiveController.Instance.Search.OnStopInteraction(FeaturesObjectController.gameObject);
         }
 
         protected virtual void OnDisable()
         {
             distanceData.IsEnabel = false;
-            DistanceStorage.DeleteDistanceData(distanceData);
         }
 
         public virtual bool IsCanInteraction(DistanceInteraction distanceInteraction)
@@ -139,6 +171,16 @@ namespace MagiCloud.Interactive.Distance
             {
                 OnExit.Invoke(distanceInteraction);
             }
+
+            if (ActiveParent && interactionParent != null)
+            {
+                interactionParent.OnClose(this, distanceInteraction);
+            }
+
+            if (ActiveShadow && interactionShadow != null)
+            {
+                interactionShadow.OnClose(this, distanceInteraction);
+            }
         }
 
         /// <summary>
@@ -146,6 +188,11 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         public virtual void OnDistanceStay(DistanceInteraction distanceInteraction)
         {
+            if (ActiveShadow && interactionShadow != null)
+            {
+                interactionShadow.OnOpen(this, distanceInteraction);
+            }
+
             if (OnStay != null)
             {
                 OnStay.Invoke(distanceInteraction);
@@ -157,6 +204,14 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         public virtual void OnDistanceRelesae(DistanceInteraction distanceInteraction)
         {
+            if (ActiveParent && interactionParent != null)
+            {
+                interactionParent.OnOpen(this,distanceInteraction);
+            }
+            if (ActiveShadow && interactionShadow != null)
+            {
+                interactionShadow.OnClose(this,distanceInteraction);
+            }
 
             if (OnRelease != null)
             {
@@ -165,14 +220,69 @@ namespace MagiCloud.Interactive.Distance
         }
 
         /// <summary>
+        /// 带状态释放
+        /// </summary>
+        /// <param name="distanceInteraction"></param>
+        /// <param name="status"></param>
+        public virtual void OnDistanceRelease(DistanceInteraction distanceInteraction,InteractionReleaseStatus status)
+        {
+            if (OnStatusRelease != null)
+            {
+                OnStatusRelease.Invoke(distanceInteraction, status);
+            }
+        }
+
+        /// <summary>
         /// 没有物体与它进行交互时，会进行释放
         /// </summary>
         public virtual void OnDistanceNotInteractionRelease()
         {
+
             if (OnNotRelease != null)
             {
                 OnNotRelease.Invoke();
             }
+        }
+
+        #region 编辑器使用
+
+        /// <summary>
+        /// 添加虚影
+        /// </summary>
+        /// <returns></returns>
+        public InteractionShadow AddShadow()
+        {
+            if (interactionShadow == null)
+                interactionShadow = new InteractionShadow();
+
+            return interactionShadow;
+        }
+
+        /// <summary>
+        /// 移除虚影
+        /// </summary>
+        public void RemoveShadow()
+        {
+            interactionShadow = null;
+        }
+
+        /// <summary>
+        /// 添加子父物体
+        /// </summary>
+        /// <returns></returns>
+        public InteractionParent AddParent()
+        {
+            if (interactionParent == null)
+                interactionParent = new InteractionParent();
+
+            return interactionParent;
+        }
+        /// <summary>
+        /// 移除父子关系
+        /// </summary>
+        public void RemoveParent()
+        {
+            interactionParent = null;
         }
 
         private void OnDrawGizmos()
@@ -201,6 +311,9 @@ namespace MagiCloud.Interactive.Distance
 #endif
 
         }
+
+        #endregion
+
     }
 }
 

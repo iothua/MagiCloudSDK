@@ -42,7 +42,7 @@ namespace MagiCloud.Interactive
 
             EditorGUILayout.EndVertical();
 
-            //serializedObject.ApplyModifiedProperties();
+            serializedObject.ApplyModifiedProperties();
         }
 
         void InspectorShadow()

@@ -236,8 +236,11 @@ namespace MagiCloud.Features
                     OnUpdate();
                     break;
                 case ProcessType.Grab:
-                    GameObject temp = MOperateManager.GetObjectGrab(0);
-                    if (temp!=null&&temp==grabObject)
+                    GameObject right = MOperateManager.GetObjectGrab(0);
+                    if (right!=null&&right==grabObject)
+                        OnUpdate();
+                    GameObject left = MOperateManager.GetObjectGrab(1);
+                    if (left!=null&&left==grabObject)
                         OnUpdate();
                     break;
                 default:

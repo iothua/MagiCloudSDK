@@ -92,11 +92,6 @@ namespace MagiCloud.KGUI
 
             GUILayout.Space(10);
 
-            //GUILayout.Label("背包子项图片路径配置", backpack.label);
-            //config.normalIconPath = EditorGUILayout.TextField("默认图片：", config.normalIconPath, GUILayout.Width(500), GUILayout.Height(18));
-            //config.enterIconPath = EditorGUILayout.TextField("选中图片：", config.enterIconPath, GUILayout.Width(500), GUILayout.Height(18));
-            //config.disableIconPath = EditorGUILayout.TextField("禁用图片：", config.disableIconPath, GUILayout.Width(500), GUILayout.Height(18));
-
             //GUILayout.Space(10);
             GUILayout.Label("背包子项数据配置", backpack.label);
 
@@ -113,6 +108,14 @@ namespace MagiCloud.KGUI
             itemData.ItemPath = EditorGUILayout.TextField("仪器预制物体路径(Resources路径下)：", itemData.ItemPath, GUILayout.Width(500), GUILayout.Height(18));
 
             itemData.zValue = EditorGUILayout.FloatField("生成物体相对摄像机Z轴值：", itemData.zValue, GUILayout.Width(200), GUILayout.Height(18));
+
+            itemData.isGenerate = EditorGUILayout.Toggle("是否初始化生成仪器：", itemData.isGenerate,GUILayout.Width(200),GUILayout.Height(18));
+
+            if(itemData.isGenerate)
+            {
+                itemData.generateCount = EditorGUILayout.IntSlider("初始数量：", itemData.generateCount, 0, itemData.number, GUILayout.Width(200), GUILayout.Height(18));
+                itemData.Position = EditorGUILayout.Vector3Field("初始仪器坐标：", itemData.Position, GUILayout.Width(200), GUILayout.Height(18));
+            }
 
             GUILayout.Space(10);
 
@@ -171,7 +174,8 @@ namespace MagiCloud.KGUI
             GUILayout.Box("仪器禁用图片", boxTitleStyle, GUILayout.Width(200), GUILayout.Height(22));
             GUILayout.Box("仪器预制物体路径", boxTitleStyle, GUILayout.Width(200), GUILayout.Height(22));
             GUILayout.Box("物体相对摄像机Z轴值", boxTitleStyle, GUILayout.Width(130), GUILayout.Height(22));
-
+            GUILayout.Box("初始生成仪器数量", boxTitleStyle, GUILayout.Width(130), GUILayout.Height(22));
+            GUILayout.Box("初始仪器坐标", boxTitleStyle, GUILayout.Width(100), GUILayout.Height(22));
             GUILayout.EndHorizontal();
 
             if (config.ItemDatas != null)
@@ -191,6 +195,9 @@ namespace MagiCloud.KGUI
                     GUILayout.Box(item.disableSpritePath, boxValueStyle, GUILayout.Width(200), GUILayout.Height(20));
                     GUILayout.Box(item.ItemPath, boxValueStyle, GUILayout.Width(200), GUILayout.Height(20));
                     GUILayout.Box(item.zValue.ToString(), boxValueStyle, GUILayout.Width(130), GUILayout.Height(20));
+
+                    GUILayout.Box(item.generateCount.ToString(), boxTitleStyle, GUILayout.Width(130), GUILayout.Height(20));
+                    GUILayout.Box(item.Position.ToString(), boxTitleStyle, GUILayout.Width(100), GUILayout.Height(20));
 
                     GUILayout.EndHorizontal();
                 }

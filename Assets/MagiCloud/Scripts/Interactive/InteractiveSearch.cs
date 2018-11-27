@@ -16,13 +16,13 @@ namespace MagiCloud.Interactive
         /// <summary>
         /// 启动交互
         /// </summary>
-        public void OnStartInteraction(GameObject target,bool isGrab)
+        public void OnStartInteraction(GameObject target, bool isGrab, bool defaultInteraction = false)
         {
             var interactions = target.GetComponentsInChildren<DistanceInteraction>();
 
             if (interactions.Count() == 0) return;
 
-            OnSend(target, isGrab, interactions);
+            OnSend(target, isGrab, interactions, defaultInteraction);
 
             OnPourAll(target, isGrab, interactions, InteractionType.Pour);
             OnPourAll(target, isGrab, interactions, InteractionType.All);
@@ -35,7 +35,7 @@ namespace MagiCloud.Interactive
         /// <param name="target">物体</param>
         /// <param name="isGrab">是否抓取</param>
         /// <param name="interactions">距离互动集合</param>
-        void OnSend(GameObject target, bool isGrab, DistanceInteraction[] interactions)
+        void OnSend(GameObject target, bool isGrab, DistanceInteraction[] interactions, bool defaultInteraction = false)
         {
             //获取到所有的发送信息
             var interactionSends = interactions.Where(_ => _.distanceData.interactionType == InteractionType.Send);
@@ -63,10 +63,73 @@ namespace MagiCloud.Interactive
 
                 }
 
-                if (!dataManagers.ContainsKey(target))
-                    dataManagers.Add(target, distanceManagers);
+                //如果是初始交互，则对接收端筛选一次
+                if (defaultInteraction)
+                {
+                    //var distances = new List<DistanceDataManager>();
+                    //distances.CopyTo(distanceManagers.ToArray());
+
+                    DistanceDataManager[] distances = new DistanceDataManager[distanceManagers.Count];
+
+
+
+                    for (int i = 0; i < distanceManagers.Count; i++)
+                    {
+                        distances[i] = new DistanceDataManager
+                        {
+                            sendData = distanceManagers[i].sendData,
+                            Distances = new List<DistanceData>()
+                        };
+
+                        for (int j = 0; j < distanceManagers[i].Distances.Count; j++)
+                        {
+                            var distance = distanceManagers[i].Distances[j];
+                            if (distance.Interaction.AutoDetection)
+                            {
+                                distances[i].AddDistance(distance);
+                            }
+                        }
+                        //var distanceings = new DistanceData[distanceManagers[i].Distanceing.Count];
+                        //distanceManagers[i].Distanceing.CopyTo(distanceings);
+
+                        //distances[i].Distanceing = distanceings.ToList();
+                    }
+
+                    //distances = distances.Select((obj) =>
+                    //{
+                    //    obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
+
+                    //    return obj;
+
+                    //}).ToList();
+
+                    //distances = distances.Select((obj) =>
+                    //{
+                    //    obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
+
+                    //    return obj;
+
+                    //}).ToArray();
+
+
+                    if (!dataManagers.ContainsKey(target))
+                        dataManagers.Add(target, distances.ToList());
+                    else
+                        dataManagers[target] = distances.ToList();
+                }
                 else
-                    dataManagers[target] = distanceManagers;
+                {
+
+                    if (!dataManagers.ContainsKey(target))
+                        dataManagers.Add(target, distanceManagers);
+                    else
+                        dataManagers[target] = distanceManagers;
+                }
+
+                //if (!dataManagers.ContainsKey(target))
+                //    dataManagers.Add(target, distanceManagers);
+                //else
+                //    dataManagers[target] = distanceManagers;
             }
         }
 
@@ -77,7 +140,8 @@ namespace MagiCloud.Interactive
         /// <param name="isGrab"></param>
         /// <param name="interactions"></param>
         /// <param name="interactionType"></param>
-        void OnPourAll(GameObject target, bool isGrab, DistanceInteraction[] interactions,InteractionType interactionType)
+        void OnPourAll(GameObject target, bool isGrab, DistanceInteraction[] interactions,
+            InteractionType interactionType, bool defaultInteraction = false)
         {
             var interactionPours = interactions.Where(_ => _.distanceData.interactionType == interactionType);
 
@@ -170,12 +234,12 @@ namespace MagiCloud.Interactive
 
         public void OnUpdate()
         {
+
             if (dataManagers.Count == 0) return;
 
             //帅选被动点中的主动点，然后实时进行距离检测，判断是否靠近了某段距离
             foreach (var send in dataManagers)
             {
-
                 for (int i = 0; i < send.Value.Count; i++)
                 {
                     //遍历距离检测，并且触发相应的事件

@@ -10,6 +10,7 @@ namespace MagiCloud.KGUI
     public class KGUIDropdownEditor : Editor
     {
         private KGUIButtonTypeEditor buttonType;
+        private KGUIButtonAudioEditor buttonAudio;
 
         private KGUI_Dropdown dropdown;
 
@@ -30,7 +31,11 @@ namespace MagiCloud.KGUI
             if (buttonType == null)
                 buttonType = new KGUIButtonTypeEditor();
 
+            if (buttonAudio == null)
+                buttonAudio = new KGUIButtonAudioEditor();
+
             buttonType.OnInstantiation(serializedObject);
+            buttonAudio.OnInstantiation(serializedObject);
 
             Names = serializedObject.FindProperty("Names");
 
@@ -48,6 +53,7 @@ namespace MagiCloud.KGUI
         {
 
             buttonType.OnInspectorButtonType(dropdown);
+            buttonAudio.OnInspectorButtonAudio(dropdown);
 
             GUILayout.BeginVertical("box", GUILayout.Width(500));
 

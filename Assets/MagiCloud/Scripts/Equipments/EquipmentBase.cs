@@ -174,5 +174,9 @@ namespace MagiCloud.Equipments
 
         }
 
+        public virtual void OnDistanceRelease(InteractionEquipment interaction, InteractionReleaseStatus status)
+        {
+
+        }
     }
 }

@@ -17,7 +17,7 @@
 
  2.提交内容
 
-针对存在问题反馈不够明确，建议提交包含以下内容，目前提供了一个[在线模板可供参考](https://github.com/iuap-design/neoui/issues/new?title=Bug:%20&body=**%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0**%0A%EF%BC%88%E6%8F%8F%E8%BF%B0%E4%B8%80%E4%B8%8B%E9%97%AE%E9%A2%98%EF%BC%89%0A%0A**%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83**%20%0A-%20%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8F%8A%E7%89%88%E6%9C%AC%EF%BC%9A%20%0A-%20%E6%BC%94%E7%A4%BA%E5%9C%B0%E5%9D%80:%20%0A-%20%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8A%A5%E9%94%99:%20%0A-%20%E6%88%AA%E5%9B%BE:)，个人填写建议包含以下内容:
+针对存在问题反馈不够明确，建议提交包含以下内容，目前提供了一个[在线模板可供参考](https://github.com/iothua/MFrameworkCore/issues/new?template=----.md)，个人填写建议包含以下内容:
 
 ```
 **问题描述**

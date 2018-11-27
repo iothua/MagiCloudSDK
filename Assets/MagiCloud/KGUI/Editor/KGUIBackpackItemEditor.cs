@@ -11,6 +11,7 @@ namespace MagiCloud.KGUI
 
         KGUIButtonTypeEditor buttonType;
         KGUIButtonEventEditor buttonEvent;
+        KGUIButtonAudioEditor buttonAudio;
 
         private KGUI_BackpackItem item;
 
@@ -26,16 +27,19 @@ namespace MagiCloud.KGUI
             {
                 buttonEvent = new KGUIButtonEventEditor();
             }
-
+            if (buttonAudio == null)
+                buttonAudio = new KGUIButtonAudioEditor();
 
             buttonType.OnInstantiation(serializedObject);
             buttonEvent.OnInstantiation(serializedObject);
+            buttonAudio.OnInstantiation(serializedObject);
         }
 
         public override void OnInspectorGUI()
         {
 
             buttonType.OnInspectorButtonType(item);
+            buttonAudio.OnInspectorButtonAudio(item);
 
             buttonEvent.OnInspectorButtonEvent();
 

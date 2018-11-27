@@ -39,6 +39,36 @@ namespace MagiCloud.Features
         private Collider _collider;
         private bool isEnable = true;
 
+        private GameObject interactionObject;
+        public GameObject InteractionObject {
+            get {
+
+                if (interactionObject == null)
+                {
+                    var obj = transform.Find("interactionObject");
+
+                    if (obj == null)
+                    {
+                        interactionObject = null;
+                    }
+                    else
+                    {
+                        interactionObject = obj.gameObject;
+                    }
+
+                    if (interactionObject == null)
+                    {
+                        interactionObject = new GameObject("interactionObject");
+                        interactionObject.transform.SetParent(transform);
+                        interactionObject.transform.localPosition = Vector3.zero;
+                        interactionObject.hideFlags = HideFlags.HideInHierarchy;
+                    }
+                }
+
+                return interactionObject.gameObject;
+            }
+        }
+
         private void Awake()
         {
             if (ActiveSpaceLimit)

@@ -19,6 +19,8 @@ namespace MagiCloud.Interactive.Distance
     {
         #region 属性
 
+        private bool isEnable = false;
+
         //距离的TagID
         public string TagID = "距离交互";
 
@@ -63,7 +65,24 @@ namespace MagiCloud.Interactive.Distance
         /// <summary>
         /// 是否激活
         /// </summary>
-        public bool IsEnabel;
+        public bool IsEnabel {
+            get {
+                return isEnable;
+            }
+            set {
+
+                isEnable = value;
+
+                if (isEnable)
+                {
+                    DistanceStorage.AddDistanceData(this);
+                }
+                else
+                {
+                    DistanceStorage.DeleteDistanceData(this);
+                }
+            }
+        }
 
         /// <summary>
         /// 最大值-1为无限
@@ -197,6 +216,7 @@ namespace MagiCloud.Interactive.Distance
                         if (OnlyDistance == target)
                         {
                             Interaction.OnDistanceRelesae(target.Interaction);
+                            Interaction.OnDistanceRelease(target.Interaction, InteractionReleaseStatus.Inside);
                             return;
                         }
                     }
@@ -205,7 +225,7 @@ namespace MagiCloud.Interactive.Distance
                         if (Distanced != null && Distanced.Contains(target))
                         {
                             Interaction.OnDistanceRelesae(target.Interaction);
-
+                            Interaction.OnDistanceRelease(target.Interaction, InteractionReleaseStatus.Inside);
                             return;
                         }
                     }
@@ -213,6 +233,7 @@ namespace MagiCloud.Interactive.Distance
                     if (!OnCheck()) return;
 
                     Interaction.OnDistanceRelesae(target.Interaction);
+                    Interaction.OnDistanceRelease(target.Interaction, InteractionReleaseStatus.Once);
 
                     if (IsOnly)
                     {
@@ -231,10 +252,13 @@ namespace MagiCloud.Interactive.Distance
                     if (!OnCheck())
                     {
                         Interaction.OnDistanceRelesae(target.Interaction);
+                        Interaction.OnDistanceRelease(target.Interaction, InteractionReleaseStatus.Inside);
+
                         return;
                     }
 
                     Interaction.OnDistanceRelesae(target.Interaction);
+                    Interaction.OnDistanceRelease(target.Interaction, InteractionReleaseStatus.Once);
 
                     AddSendDistance(target);
 
@@ -250,6 +274,7 @@ namespace MagiCloud.Interactive.Distance
             if (Interaction == null) return;
 
             Interaction.OnDistanceNotInteractionRelease();
+            Interaction.OnDistanceRelease(null, InteractionReleaseStatus.None);
         }
 
         /// <summary>

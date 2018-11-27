@@ -20,7 +20,7 @@ namespace MagiCloud.KGUI
 
         KGUIButtonTypeEditor buttonType;
         KGUIButtonEventEditor buttonEvent;
-
+        KGUIButtonAudioEditor buttonAudio;
 
         private void OnEnable()
         {
@@ -32,9 +32,14 @@ namespace MagiCloud.KGUI
             if (buttonEvent == null)
                 buttonEvent = new KGUIButtonEventEditor();
 
-            onGroupReset = serializedObject.FindProperty("onGroupReset");
+            if (buttonAudio == null)
+                buttonAudio = new KGUIButtonAudioEditor();
 
-            AudioClip = serializedObject.FindProperty("audioClip");
+            buttonType.OnInstantiation(serializedObject);
+            buttonEvent.OnInstantiation(serializedObject);
+            buttonAudio.OnInstantiation(serializedObject);
+
+            onGroupReset = serializedObject.FindProperty("onGroupReset");
 
             BindObject = serializedObject.FindProperty("bindObject");
             Panel = serializedObject.FindProperty("panel");
@@ -52,17 +57,7 @@ namespace MagiCloud.KGUI
 
             button.IsEnable = EditorGUILayout.Toggle("是否启用(IsEnable)", button.IsEnable);
 
-            button.IsStartAudio = EditorGUILayout.Toggle("启动音频：", button.IsStartAudio);
-
-            if (button.IsStartAudio)
-            {
-                EditorGUILayout.PropertyField(AudioClip, true, null);
-                button.AddAudio();
-            }
-            else
-            {
-                button.DestroyAudio();
-            }
+            buttonAudio.OnInspectorButtonAudio(button);
 
             GUILayout.Space(20);
 
