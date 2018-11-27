@@ -101,7 +101,7 @@ namespace MagiCloud.KGUI
         /// </summary>
         /// <param name="handIndex"></param>
         /// <returns></returns>
-        public GameObject CreatEquipment(int handIndex)
+        public GameObject CreateEquipment(int handIndex)
         {
             GameObject go = null;
 
@@ -195,7 +195,7 @@ namespace MagiCloud.KGUI
             base.OnDown(handIndex);
             if (dataConfig.number == 0) return;
 
-            CreatEquipment(handIndex);
+            CreateEquipment(handIndex);
         }
 
         /// <summary>
