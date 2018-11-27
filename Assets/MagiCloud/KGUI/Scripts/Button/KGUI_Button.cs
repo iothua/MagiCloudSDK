@@ -52,6 +52,14 @@ namespace MagiCloud.KGUI
             base.OnClick(handIndex);
         }
 
+        public override void OnDown(int handIndex)
+        {
+            if (IsButtonGroup && buttonGroup != null && buttonGroup.CurrentButton == this)
+                return;
+
+            base.OnDown(handIndex);
+        }
+
         /// <summary>
         /// 鼠标移入
         /// </summary>

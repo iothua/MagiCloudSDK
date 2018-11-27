@@ -62,18 +62,6 @@ namespace MagiCloud.KGUI
             IsValue = !IsValue;
         }
 
-        public override void OnEnter(int handIndex)
-        {
-
-            if (IsStartAudio && audioSource != null)
-            {
-                audioSource.Play();
-            }
-
-            base.OnEnter(handIndex);
-
-        }
-
         protected override void OnHandle(string cmd)
         {
             switch (buttonType)
