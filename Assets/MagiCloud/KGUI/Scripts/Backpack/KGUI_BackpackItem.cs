@@ -38,22 +38,9 @@ namespace MagiCloud.KGUI
             txtNumber = transform.Find("Number").GetComponent<Text>();
             Icon = transform.Find("Icon").GetComponent<Image>();
 
-            ////设置初始值
-            //buttonType = ButtonType.Image;
-            //image = GetComponent<Image>();
-
-            //normalSprite = Backpack.dataConfig.normalIcon;
-            //enterSprite = Backpack.dataConfig.enterIcon;
-            //disableSprite = Backpack.dataConfig.disableIcon;
-
-            //获取到路径信息
-            //normalIcon = config.NormalSprite;
-            //disableIcon = config.DisableSprite;
 
             normalIcon = backpack.backpackIcons.GetSprite(config.normalSpritePath);
             disableIcon = backpack.backpackIcons.GetSprite(config.disableSpritePath);
-
-            //disableIcon = config.DisableSprite;
 
             Icon.sprite = normalIcon;
 
@@ -67,8 +54,46 @@ namespace MagiCloud.KGUI
 
             GenerateItems = new List<GameObject>();
 
+            if(dataConfig.isGenerate)
+            {
+                for (int i = 0; i < dataConfig.generateCount; i++)
+                {
+                    CreateEquipment();
+                }
+            }
+
             //刷新
             RefreshShow();
+        }
+
+        public void CreateEquipment()
+        {
+            GameObject go = null;
+            if (_equipmentNumber >= 1)
+            {
+                _equipmentNumber--;
+                RefreshShow();
+
+                go = Backpack.GenerateEquipment(this, dataConfig.ItemPath);
+
+            }
+            else if (_equipmentNumber == 0)
+            {
+                //0 不触发 
+            }
+            else if (_equipmentNumber == -1)
+            {
+                // -1 数量无限
+                go = Backpack.GenerateEquipment(this, dataConfig.ItemPath);
+            }
+
+            go.transform.position = dataConfig.Position;
+
+            if (go != null)
+            {
+                GenerateItems.Add(go);//将生成的物体添加到子项中
+            }
+
         }
 
         /// <summary>

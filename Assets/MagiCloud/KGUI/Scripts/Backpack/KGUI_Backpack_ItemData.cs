@@ -28,44 +28,22 @@ namespace MagiCloud.KGUI
         [Header("物体相对摄像机的位置")]
         public float zValue;//z轴值
 
-        //private GameObject _itemObject;
-        //private Sprite _normalSprite;
-        //private Sprite _disableSprite;
+        public bool isGenerate = false;
+        public int generateCount; //生成数量
+        //坐标
+        public float xPosition, yPosition, zPosition;
 
-        //[JsonIgnore]
-        //public GameObject ItemObject {
-        //    get {
-        //        if (_itemObject == null)
-        //        {
-        //            _itemObject = Resources.Load<GameObject>(ItemPath);
-        //        }
-
-        //        return _itemObject;
-        //    }
-        //}
-
-        //[JsonIgnore]
-        //public Sprite NormalSprite {
-        //    get {
-        //        if (_normalSprite == null)
-        //        {
-        //            _normalSprite = Resources.Load<Sprite>(normalSpritePath);
-        //        }
-
-        //        return _normalSprite;
-        //    }
-        //}
-
-        //[JsonIgnore]
-        //public Sprite DisableSprite {
-        //    get {
-        //        if (_disableSprite == null)
-        //        {
-        //            _disableSprite = Resources.Load<Sprite>(disableSpritePath);
-        //        }
-        //        return _disableSprite;
-        //    }
-        //}
+        [JsonIgnore]
+        public Vector3 Position{
+            get{
+                return new Vector3(xPosition, yPosition, zPosition);
+            }
+            set{
+                xPosition = value.x;
+                yPosition = value.y;
+                zPosition = value.z;
+            }
+        }
     }
 
     /// <summary>
@@ -75,53 +53,8 @@ namespace MagiCloud.KGUI
     [Serializable]
     public class KGUI_ItemDataConfig
     {
-        #region 注释
-
-        //private Sprite _normalIcon;
-        //private Sprite _enterIcon;
-        //private Sprite _disableIcon;
-
-        //public string normalIconPath;
-        //public string enterIconPath;
-        //public string disableIconPath;
-
-        #endregion
 
         public List<KGUI_Backpack_ItemData> ItemDatas;
-
-        //[JsonIgnore]
-        //public Sprite normalIcon {
-        //    get {
-
-        //        if (_normalIcon == null)
-        //        {
-        //            _normalIcon = Resources.Load<Sprite>(normalIconPath);
-        //        }
-        //        return _normalIcon;
-        //    }
-        //}
-
-        //[JsonIgnore]
-        //public Sprite enterIcon {
-        //    get {
-        //        if (_enterIcon == null)
-        //        {
-        //            _enterIcon = Resources.Load<Sprite>(enterIconPath);
-        //        }
-        //        return _enterIcon;
-        //    }
-        //}
-
-        //[JsonIgnore]
-        //public Sprite disableIcon {
-        //    get {
-        //        if (_disableIcon == null)
-        //        {
-        //            _disableIcon = Resources.Load<Sprite>(disableIconPath);
-        //        }
-        //        return _disableIcon;
-        //    }
-        //}
 
         public KGUI_ItemDataConfig()
         {

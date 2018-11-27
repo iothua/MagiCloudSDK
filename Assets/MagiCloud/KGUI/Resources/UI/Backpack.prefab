@@ -528,7 +528,7 @@ MonoBehaviour:
   areaPanel: {fileID: 114520551019335612}
   backpackIcons: {fileID: 4343727234628468602, guid: 1d486fd8aa978624ea9a88092cb1cad7,
     type: 2}
-  universalPath: Others/BackpackObjects/
+  universalPath: Prefabs/Items/
   backpackJsonFileNmae: "\u9ED8\u8BA4\u914D\u7F6E"
   backpackTrigger: {fileID: 114657322620103214}
   openPosition: {x: 0, y: 86}
@@ -542,6 +542,11 @@ MonoBehaviour:
       ItemPath: Prefabs/Items/Item
       Name: "\u70E7\u676F"
       zValue: 5
+      isGenerate: 0
+      generateCount: 0
+      xPosition: 0
+      yPosition: 0
+      zPosition: 0
     - ID: 1
       normalSpritePath: "Images/BagEquipment/\u6B63\u5E38/\u70E7\u676F(\u6C34\uFF09"
       disableSpritePath: "Images/BagEquipment/\u53BB\u8272/\u70E7\u676F(\u6C34\uFF09"
@@ -549,6 +554,11 @@ MonoBehaviour:
       ItemPath: Prefabs/Items/Item
       Name: "\u77F3\u68C9\u7F51"
       zValue: 5
+      isGenerate: 0
+      generateCount: 0
+      xPosition: 0
+      yPosition: 0
+      zPosition: 0
     - ID: 2
       normalSpritePath: "Images/BagEquipment/\u6B63\u5E38/\u70E7\u676F(\u6C34\uFF09"
       disableSpritePath: "Images/BagEquipment/\u53BB\u8272/\u70E7\u676F(\u6C34\uFF09"
@@ -556,6 +566,11 @@ MonoBehaviour:
       ItemPath: Prefabs/Items/Item
       Name: "\u5DF4\u62C9\u5DF4\u62C9"
       zValue: 5
+      isGenerate: 0
+      generateCount: 0
+      xPosition: 0
+      yPosition: 0
+      zPosition: 0
   IsOpen: 1
   AutoInitialize: 1
 --- !u!114 &114266163458398348
