@@ -22,6 +22,7 @@ namespace MagiCloud.KGUI
             if (button.IsStartAudio)
             {
                 EditorGUILayout.PropertyField(AudioClip, true, null);
+                button.audioStatus = (AudioStatus)EditorGUILayout.EnumPopup("声音触发类型：", button.audioStatus);
                 button.AddAudio();
             }
             else
