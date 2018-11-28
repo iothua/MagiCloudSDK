@@ -1,9 +1,4 @@
-﻿using System;
-using DG.Tweening;
-using Earth_Universe.Weather;
-using MagiCloud.KGUI;
-using MagiCloud.UIFrame;
-using MCScience;
+﻿using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,7 +51,7 @@ namespace MagiCloud.KGUI
         {
             tableManager.transform.DOLocalMoveY(0,0.5f);
             showButtom.gameObject.SetActive(false);
-            ExperimentNotification.AddReturn(Close);
+            //  ExperimentNotification.AddReturn(Close);
         }
 
 
@@ -65,7 +60,7 @@ namespace MagiCloud.KGUI
         {
             tableManager.transform.DOLocalMoveY(1000,0.5f);
             showButtom.gameObject.SetActive(true);
-            ExperimentNotification.RemoveReturn(Close,true);
+            //  ExperimentNotification.RemoveReturn(Close,true);
         }
 
         private void OnDestroy()
