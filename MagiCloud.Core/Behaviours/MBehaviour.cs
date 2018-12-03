@@ -83,7 +83,7 @@ namespace MagiCloud.Core
             this.executionOrder = executionOrder;
 
             this.IsActive = isActive;
-
+            this.isEnable = isActive;
             //MBehaviourController.AddBehaviour(this);
         }
 
