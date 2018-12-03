@@ -31,7 +31,7 @@ namespace MagiCloud.Equipments
         {
             behaviour = new MBehaviour(ExecutionPriority.High, -100, enabled);
 
-            behaviour.OnAwake(() =>
+            behaviour.OnAwake_MBehaviour(() =>
             {
                 normalCamera = new CameraProperty(MUtility.MainCamera);
 
@@ -45,13 +45,13 @@ namespace MagiCloud.Equipments
                 IsExperimentHome = true;
             });
 
-            behaviour.OnEnable(() =>
+            behaviour.OnEnable_MBehaviour(() =>
             {
                 if (onEnableEvent != null)
                     onEnableEvent.Invoke();
             });
 
-            behaviour.OnStart(() =>
+            behaviour.OnStart_MBehaviour(() =>
             {
                 if (IsSetLighting && lightingData != null)
                     SystemParameters.SetLighting(lightingData);
@@ -60,13 +60,13 @@ namespace MagiCloud.Equipments
                     onStartEvent.Invoke();
             });
 
-            behaviour.OnDisable(() =>
+            behaviour.OnDisable_MBehaviour(() =>
             {
                 if (onDisableEvent != null)
                     onDisableEvent.Invoke();
             });
 
-            behaviour.OnDestroy(() =>
+            behaviour.OnDestroy_MBehaviour(() =>
             {
                 if (onDestoryEvent != null)
                     onDestoryEvent.Invoke();

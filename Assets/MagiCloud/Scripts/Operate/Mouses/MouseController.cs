@@ -68,7 +68,7 @@ namespace MagiCloud.Operate
         {
             behaviour = new MBehaviour(ExecutionPriority.Highest, -900, enabled);
 
-            behaviour.OnAwake(() =>
+            behaviour.OnAwake_MBehaviour(() =>
             {
                 InputHands = new Dictionary<int, MInputHand>();
 
@@ -88,7 +88,7 @@ namespace MagiCloud.Operate
                 operate.OnEnable();
             });
 
-            behaviour.OnUpdate(OnMouseUpdate);
+            behaviour.OnUpdate_MBehaviour(OnMouseUpdate);
 
             MBehaviourController.AddBehaviour(behaviour);
         }

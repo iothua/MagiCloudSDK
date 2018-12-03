@@ -6,33 +6,33 @@ namespace MagiCloud.Core
     {
         #region 注册
 
-        public static void OnAwake(this MBehaviour behaviour, Action action)
+        public static void OnAwake_MBehaviour(this MBehaviour behaviour, Action action)
         {
             behaviour.onAwake.AddListener(action);
         }
 
-        public static void OnEnable(this MBehaviour behaviour, Action action)
+        public static void OnEnable_MBehaviour(this MBehaviour behaviour, Action action)
         {
             behaviour.onEnable.AddListener(action);
         }
 
-        public static void OnStart(this MBehaviour behaviour, Action action)
+        public static void OnStart_MBehaviour(this MBehaviour behaviour, Action action)
         {
             behaviour.onStart.AddListener(action);
         }
 
-        public static void OnDisable(this MBehaviour behaviour, Action action)
+        public static void OnDisable_MBehaviour(this MBehaviour behaviour, Action action)
         {
             behaviour.onDisable.AddListener(action);
         }
 
-        public static void OnDestroy(this MBehaviour behaviour, Action action)
+        public static void OnDestroy_MBehaviour(this MBehaviour behaviour, Action action)
         {
             behaviour.onDestroy.AddListener(action);
             MBehaviourController.RemoveBehaviour(behaviour);
         }
 
-        public static void OnUpdate(this MBehaviour behaviour, Action action)
+        public static void OnUpdate_MBehaviour(this MBehaviour behaviour, Action action)
         {
             behaviour.onUpdate.AddListener(action);
         }
