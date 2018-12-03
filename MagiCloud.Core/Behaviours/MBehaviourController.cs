@@ -118,27 +118,8 @@ namespace MagiCloud.Core
 
         #region 延时处理
 
-
-        /// <summary>
-        /// 执行延时
-        /// </summary>
-        /// <param name="action"></param>
-        /// <param name="time"></param>
-        internal void ExcuteDelay(System.Action action, float time)
-        {
-            StartCoroutine(Delay(action, time));
-        }
-
-        IEnumerator Delay(System.Action action, float time)
-        {
-            yield return new WaitForSeconds(time);
-
-            action();
-        }
-
         IEnumerator Delay(System.Action action)
         {
-            //yield return new WaitForFixedUpdate();
             yield return 0;
             action();
         }
@@ -149,7 +130,13 @@ namespace MagiCloud.Core
         /// <param name="action"></param>
         internal void ExcuteDelay(System.Action action)
         {
-            StartCoroutine(Delay(action));
+            try
+            {
+                StartCoroutine(Delay(action));
+            }
+            catch
+            {
+            }
         }
 
         #endregion
