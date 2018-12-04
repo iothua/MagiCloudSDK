@@ -27,7 +27,7 @@ namespace MagiCloud.Features
         /// <summary>
         /// 物体旋转对象
         /// </summary>
-        public MCObjectRatation ObjectRatation;
+        public MCObjectRotation ObjectRatation;
 
         private GameObject operaObject; //操作物体
 
@@ -348,9 +348,9 @@ namespace MagiCloud.Features
         /// <summary>
         /// 添加“物体自身旋转”
         /// </summary>
-        public MCObjectRatation AddSelfRotation()
+        public MCObjectRotation AddSelfRotation()
         {
-            ObjectRatation = OperaObject.GetComponent<MCObjectRatation>() ?? OperaObject.AddComponent<MCObjectRatation>();
+            ObjectRatation = OperaObject.GetComponent<MCObjectRotation>() ?? OperaObject.AddComponent<MCObjectRotation>();
             ObjectRatation.SetOperaType(ObjectOperaType.物体自身旋转);
             ObjectRatation.hideFlags = HideFlags.HideInInspector;
             return ObjectRatation;
@@ -368,9 +368,9 @@ namespace MagiCloud.Features
         /// <summary>
         /// 添加“摄像机围绕物体旋转”
         /// </summary>
-        public MCObjectRatation AddCameraCenterObjectRotation()
+        public MCObjectRotation AddCameraCenterObjectRotation()
         {
-            ObjectRatation = OperaObject.GetComponent<MCObjectRatation>() ?? OperaObject.AddComponent<MCObjectRatation>();
+            ObjectRatation = OperaObject.GetComponent<MCObjectRotation>() ?? OperaObject.AddComponent<MCObjectRotation>();
             ObjectRatation.SetOperaType(ObjectOperaType.摄像机围绕物体旋转);
             ObjectRatation.hideFlags = HideFlags.HideInInspector;
             return ObjectRatation;

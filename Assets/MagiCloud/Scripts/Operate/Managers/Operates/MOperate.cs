@@ -254,7 +254,7 @@ namespace MagiCloud
                     return canGrab;
                 case ObjectOperaType.物体自身旋转:
 
-                    var rotation = operaObject.GetComponent<MCObjectRatation>();
+                    var rotation = operaObject.GetComponent<MCObjectRotation>();
 
                     //如果物体不是闲置状态，则直接返回
                     if (rotation.HandStatus != MInputHandStatus.Idle) return null;
@@ -296,7 +296,7 @@ namespace MagiCloud
                     break;
                 case ObjectOperaType.物体自身旋转:
 
-                    var rotation = operaObject.GetComponent<MCObjectRatation>();
+                    var rotation = operaObject.GetComponent<MCObjectRotation>();
                     if (rotation != null)
                         rotation.OnClose();
 
