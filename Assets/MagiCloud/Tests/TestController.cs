@@ -40,7 +40,7 @@ public class TestController : MonoBehaviour
             Debug.Log("OnDestroy");
         });
 
-        MBehaviourController.AddBehaviour(behaviour);
+        //MBehaviourController.AddBehaviour(behaviour);
     }
 
     void onGrab(int handindex)

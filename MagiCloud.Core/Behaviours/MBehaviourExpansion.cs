@@ -29,7 +29,6 @@ namespace MagiCloud.Core
         public static void OnDestroy_MBehaviour(this MBehaviour behaviour, Action action)
         {
             behaviour.onDestroy.AddListener(action);
-            MBehaviourController.RemoveBehaviour(behaviour);
         }
 
         public static void OnUpdate_MBehaviour(this MBehaviour behaviour, Action action)
@@ -91,6 +90,8 @@ namespace MagiCloud.Core
             behaviour.onDisable.RemoveListenerAll();
             behaviour.onStart.RemoveListenerAll();
             behaviour.onUpdate.RemoveListenerAll();
+
+            MBehaviourController.RemoveBehaviour(behaviour);
         }
 
         internal static void OnExcuteUpdate(this MBehaviour behaviour)

@@ -84,7 +84,8 @@ namespace MagiCloud.Core
 
             this.IsActive = isActive;
             this.isEnable = isActive;
-            //MBehaviourController.AddBehaviour(this);
+
+            MBehaviourController.AddBehaviour(this);
         }
 
         internal bool IsAwake { get; set; }

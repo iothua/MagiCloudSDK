@@ -89,8 +89,6 @@ namespace MagiCloud.Operate
             });
 
             behaviour.OnUpdate_MBehaviour(OnMouseUpdate);
-
-            MBehaviourController.AddBehaviour(behaviour);
         }
 
         /// <summary>

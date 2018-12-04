@@ -186,8 +186,6 @@ namespace MagiCloud.RotateAndZoomTool
 
                 mBehaviour = new MBehaviour(ExecutionPriority.High);
 
-                MBehaviourController.AddBehaviour(mBehaviour);
-
                 mBehaviour.OnUpdate_MBehaviour(() =>
                 {
                     RotateCameraToCenter(inputPointPos);
@@ -228,8 +226,6 @@ namespace MagiCloud.RotateAndZoomTool
                         EventCameraRotate.AddListener(RotateCameraToCenter);
 
                         mBehaviour = new MBehaviour(ExecutionPriority.High);
-
-                        MBehaviourController.AddBehaviour(mBehaviour);
 
                         mBehaviour.OnUpdate_MBehaviour(() =>
                         {

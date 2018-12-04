@@ -26,8 +26,6 @@ namespace MagiCloud.KGUI
                 canvas.worldCamera = MUtility.UICamera;
 
             });
-
-            MBehaviourController.AddBehaviour(behaviour);
         }
 
         private void OnDestroy()
