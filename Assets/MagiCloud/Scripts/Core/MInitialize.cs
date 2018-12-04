@@ -28,14 +28,14 @@ namespace MagiCloud.Core
         {
             behaviour = new MBehaviour(ExecutionPriority.Highest, -1000, enabled);
 
-            behaviour.OnAwake(() =>
+            behaviour.OnAwake_MBehaviour(() =>
             {
                 MUtility.CurrentPlatform = CurrentPlatform;
 
                 SwitchPlatform(Application.platform);
             });
 
-            behaviour.OnDestroy(() =>
+            behaviour.OnDestroy_MBehaviour(() =>
             {
                 DestoryPlatform(Application.platform);
             });

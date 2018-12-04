@@ -114,7 +114,7 @@ namespace MagiCloud.KGUI
             if(itemData.isGenerate)
             {
                 itemData.generateCount = EditorGUILayout.IntSlider("初始数量：", itemData.generateCount, 0, itemData.number, GUILayout.Width(200), GUILayout.Height(18));
-                itemData.Position = EditorGUILayout.Vector3Field("初始仪器坐标：", itemData.Position, GUILayout.Width(200), GUILayout.Height(18));
+                itemData.Position = EditorGUILayout.Vector3Field("初始仪器坐标：", itemData.Position, GUILayout.Width(500), GUILayout.Height(18));
             }
 
             GUILayout.Space(10);

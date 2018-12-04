@@ -15,27 +15,27 @@ public class TestController : MonoBehaviour
     {
         behaviour = new MBehaviour(executionPriority, executionOrder, enabled);
 
-        behaviour.OnAwake(() =>
+        behaviour.OnAwake_MBehaviour(() =>
         {
             Debug.Log("Awake:" + gameObject);
         });
 
-        behaviour.OnEnable(() =>
+        behaviour.OnEnable_MBehaviour(() =>
         {
             Debug.Log("Enable   " + gameObject);
         });
 
-        behaviour.OnDisable(() =>
+        behaviour.OnDisable_MBehaviour(() =>
         {
             Debug.Log("OnDisable    " + gameObject);
         });
 
-        behaviour.OnUpdate(() =>
+        behaviour.OnUpdate_MBehaviour(() =>
         {
             Debug.Log("OnUpdate " + gameObject);
         });
 
-        behaviour.OnDestroy(() =>
+        behaviour.OnDestroy_MBehaviour(() =>
         {
             Debug.Log("OnDestroy");
         });

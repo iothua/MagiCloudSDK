@@ -152,7 +152,7 @@ namespace MagiCloud.KGUI
             gameObject.tag = "button";
 
             behaviour = new MBehaviour(ExecutionPriority.High, -799, enabled);
-            behaviour.OnStart(OnStart);
+            behaviour.OnStart_MBehaviour(OnStart);
 
             MBehaviourController.AddBehaviour(behaviour);
         }

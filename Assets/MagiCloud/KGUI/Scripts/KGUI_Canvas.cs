@@ -19,7 +19,7 @@ namespace MagiCloud.KGUI
         private void Awake()
         {
             behaviour = new MBehaviour(ExecutionPriority.High, -800);
-            behaviour.OnAwake(() =>
+            behaviour.OnAwake_MBehaviour(() =>
             {
                 canvas = GetComponent<Canvas>();
                 canvas.renderMode = RenderMode.ScreenSpaceCamera;
