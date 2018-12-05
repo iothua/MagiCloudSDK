@@ -28,6 +28,10 @@ namespace MagiCloud.Features
         /// 物体旋转对象
         /// </summary>
         public MCObjectRotation ObjectRatation;
+        /// <summary>
+        /// 相机绕物体旋转
+        /// </summary>
+        public MCCameraRotateAround cameraRotateAround;
 
         private GameObject operaObject; //操作物体
 
@@ -40,8 +44,10 @@ namespace MagiCloud.Features
         private bool isEnable = true;
 
         private GameObject interactionObject;
-        public GameObject InteractionObject {
-            get {
+        public GameObject InteractionObject
+        {
+            get
+            {
 
                 if (interactionObject == null)
                 {
@@ -351,7 +357,7 @@ namespace MagiCloud.Features
         public MCObjectRotation AddSelfRotation()
         {
             ObjectRatation = OperaObject.GetComponent<MCObjectRotation>() ?? OperaObject.AddComponent<MCObjectRotation>();
-            ObjectRatation.SetOperaType(ObjectOperaType.物体自身旋转);
+            //  ObjectRatation.SetOperaType(ObjectOperaType.物体自身旋转);
             ObjectRatation.hideFlags = HideFlags.HideInInspector;
             return ObjectRatation;
         }
@@ -368,12 +374,12 @@ namespace MagiCloud.Features
         /// <summary>
         /// 添加“摄像机围绕物体旋转”
         /// </summary>
-        public MCObjectRotation AddCameraCenterObjectRotation()
+        public MCCameraRotateAround AddCameraCenterObjectRotation()
         {
-            ObjectRatation = OperaObject.GetComponent<MCObjectRotation>() ?? OperaObject.AddComponent<MCObjectRotation>();
-            ObjectRatation.SetOperaType(ObjectOperaType.摄像机围绕物体旋转);
-            ObjectRatation.hideFlags = HideFlags.HideInInspector;
-            return ObjectRatation;
+            cameraRotateAround = OperaObject.GetComponent<MCCameraRotateAround>() ?? OperaObject.AddComponent<MCCameraRotateAround>();
+            // ObjectRatation.SetOperaType(ObjectOperaType.摄像机围绕物体旋转);
+            cameraRotateAround.hideFlags = HideFlags.HideInInspector;
+            return cameraRotateAround;
         }
 
         /// <summary>
@@ -381,8 +387,8 @@ namespace MagiCloud.Features
         /// </summary>
         public void RemoveCameraCenterObjectRotation()
         {
-            if (ObjectRatation == null) return;
-            DestroyImmediate(ObjectRatation);
+            if (cameraRotateAround == null) return;
+            DestroyImmediate(cameraRotateAround);
         }
 
         /// <summary>

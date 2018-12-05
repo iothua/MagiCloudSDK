@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ObjectFrontUI
   - button
+  - Weather
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - 
   - PostProcessing
   - 
-  - 
+  - Fire
   - 
   - 
   - 
@@ -38,7 +39,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Drawable
   m_SortingLayers:
   - name: Default
     uniqueID: 0
