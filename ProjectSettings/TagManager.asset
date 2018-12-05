@@ -4,9 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - MarkCamera
+  - ObjectFrontUI
   - button
-  - UICamera
   layers:
   - Default
   - TransparentFX
@@ -16,8 +15,7 @@ TagManager:
   - UI
   - 
   - 
-  - Object
-  - Ray
+  - PostProcessing
   - 
   - 
   - 
@@ -26,8 +24,9 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - LightSpreadDefault
+  - Reflex
+  - Refract
   - 
   - 
   - 
