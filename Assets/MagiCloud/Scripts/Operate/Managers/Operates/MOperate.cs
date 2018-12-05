@@ -194,8 +194,8 @@ namespace MagiCloud
                     {
                         OperateObject.HandStatus = MInputHandStatus.Grabing;
 
-                        EventHandGrabObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
                         EventHandGrabObject.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
+                        EventHandGrabObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
                     }
 
                     InputHand.HandStatus = MInputHandStatus.Grabing;
@@ -315,8 +315,8 @@ namespace MagiCloud
             InputHand.HandStatus = MInputHandStatus.Idle;
             OperateObject.HandStatus = MInputHandStatus.Idle;
 
-            EventHandReleaseObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
             EventHandReleaseObject.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
+            EventHandReleaseObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
         }
 
         /// <summary>
@@ -344,8 +344,8 @@ namespace MagiCloud
                     OnSetGrab(OperateObject, InputHand.HandIndex, zValue);
                 }
 
-                EventHandGrabObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
                 EventHandGrabObject.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
+                EventHandGrabObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
             }
         }
 
