@@ -194,8 +194,8 @@ namespace MagiCloud
                     {
                         OperateObject.HandStatus = MInputHandStatus.Grabing;
 
-                        EventHandGrabObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
                         EventHandGrabObject.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
+                        EventHandGrabObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
                     }
 
                     InputHand.HandStatus = MInputHandStatus.Grabing;
@@ -254,7 +254,7 @@ namespace MagiCloud
                     return canGrab;
                 case ObjectOperaType.物体自身旋转:
 
-                    var rotation = operaObject.GetComponent<MCObjectRatation>();
+                    var rotation = operaObject.GetComponent<MCObjectRotation>();
 
                     //如果物体不是闲置状态，则直接返回
                     if (rotation.HandStatus != MInputHandStatus.Idle) return null;
@@ -296,7 +296,7 @@ namespace MagiCloud
                     break;
                 case ObjectOperaType.物体自身旋转:
 
-                    var rotation = operaObject.GetComponent<MCObjectRatation>();
+                    var rotation = operaObject.GetComponent<MCObjectRotation>();
                     if (rotation != null)
                         rotation.OnClose();
 
@@ -315,8 +315,8 @@ namespace MagiCloud
             InputHand.HandStatus = MInputHandStatus.Idle;
             OperateObject.HandStatus = MInputHandStatus.Idle;
 
-            EventHandReleaseObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
             EventHandReleaseObject.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
+            EventHandReleaseObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
         }
 
         /// <summary>
@@ -344,8 +344,8 @@ namespace MagiCloud
                     OnSetGrab(OperateObject, InputHand.HandIndex, zValue);
                 }
 
-                EventHandGrabObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
                 EventHandGrabObject.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
+                EventHandGrabObjectKey.SendListener(OperateObject.GrabObject, InputHand.HandIndex);
             }
         }
 

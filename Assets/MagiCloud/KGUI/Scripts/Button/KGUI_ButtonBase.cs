@@ -153,8 +153,6 @@ namespace MagiCloud.KGUI
 
             behaviour = new MBehaviour(ExecutionPriority.High, -799, enabled);
             behaviour.OnStart_MBehaviour(OnStart);
-
-            MBehaviourController.AddBehaviour(behaviour);
         }
 
         protected virtual void OnStart()

@@ -270,10 +270,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4076663986306170}
-  - component: {fileID: 114011320829081076}
   - component: {fileID: 114595803720912626}
   - component: {fileID: 114237931221106444}
   - component: {fileID: 114180928840296826}
+  - component: {fileID: 114044613784715180}
   m_Layer: 0
   m_Name: MagiCloud
   m_TagString: Untagged
@@ -988,7 +988,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &114011320829081076
+--- !u!114 &114044613784715180
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1982,8 +1982,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handSprite:
-    IdelIcon: {fileID: 21300000, guid: a2253ac38ad77a6428356b95be02a500, type: 3}
-    GripIcon: {fileID: 21300000, guid: 9daa155e312a53844b3068074eb03030, type: 3}
+    IdelIcon: {fileID: 0}
+    GripIcon: {fileID: 0}
     InvalidIcon: {fileID: 0}
     ErrorIcon: {fileID: 0}
   handSize: {x: 50, y: 50}

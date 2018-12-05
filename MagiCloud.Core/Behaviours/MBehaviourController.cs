@@ -78,7 +78,7 @@ namespace MagiCloud.Core
         /// 添加行为
         /// </summary>
         /// <param name="behaviour"></param>
-        public static void AddBehaviour(MBehaviour behaviour)
+        internal static void AddBehaviour(MBehaviour behaviour)
         {
             if (IsContainsBehaviour(behaviour)) return;
 
@@ -90,7 +90,7 @@ namespace MagiCloud.Core
         /// <summary>
         /// 对行为集合进行排序
         /// </summary>
-        private static void SortBehaviour()
+        internal static void SortBehaviour()
         {
             Behaviours = Behaviours.OrderBy(obj => obj.ExecutionPriority).ThenBy(obj => obj.ExecutionOrder).ToList();
         }
@@ -99,7 +99,7 @@ namespace MagiCloud.Core
         /// 移除行为
         /// </summary>
         /// <param name="behaviour"></param>
-        public static void RemoveBehaviour(MBehaviour behaviour)
+        internal static void RemoveBehaviour(MBehaviour behaviour)
         {
             if (!IsContainsBehaviour(behaviour)) return;
 

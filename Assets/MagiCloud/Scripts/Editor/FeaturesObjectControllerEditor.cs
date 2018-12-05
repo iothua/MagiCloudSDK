@@ -22,7 +22,7 @@ namespace MagiCloud.Features
         private LabelData _labelController;
 
         private MCCanGrab _cangrabController;
-        private MCObjectRatation _objectRatationController;
+        private MCObjectRotation _objectRatationController;
         private MCLimitMove _limitMoveController;
         private MCustomize _customizeController;
         private MCNone _noneController;

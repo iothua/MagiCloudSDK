@@ -6,7 +6,7 @@ namespace MagiCloud.Features
     /// <summary>
     /// 物体旋转
     /// </summary>
-    public class MCObjectRatation : MCOperaObject
+    public class MCObjectRotation : MCOperaObject
     {
         [Header("选“能抓取”、“限制移动”是无效的")]
         public ObjectOperaType operaType;

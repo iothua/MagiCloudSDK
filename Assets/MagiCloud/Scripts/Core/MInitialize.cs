@@ -42,7 +42,7 @@ namespace MagiCloud.Core
 
             DontDestroyOnLoad(gameObject);
 
-            MBehaviourController.AddBehaviour(behaviour);
+            //MBehaviourController.AddBehaviour(behaviour);
         }
 
         void AddHighlighting()
@@ -104,8 +104,14 @@ namespace MagiCloud.Core
 
         private void OnDestroy()
         {
-            if (behaviour != null)
-                behaviour.OnExcuteDestroy();
+            try
+            {
+                if (behaviour != null)
+                    behaviour.OnExcuteDestroy();
+            }
+            catch 
+            {
+            }
         }
     }
 }
