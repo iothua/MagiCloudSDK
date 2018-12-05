@@ -111,10 +111,10 @@ namespace MagiCloud
         /// <returns></returns>
         public static Ray ScreenPointToRay(Vector3 screenPoint)
         {
-            if (MarkCamera == null)
+            if (MainCamera == null)
                 throw new Exception("markCamera相机对象为Null");
 
-            return MarkCamera.ScreenPointToRay(screenPoint);
+            return MainCamera.ScreenPointToRay(screenPoint);
         }
 
         public static Ray UIScreenPointToRay(Vector3 screenPoint)
