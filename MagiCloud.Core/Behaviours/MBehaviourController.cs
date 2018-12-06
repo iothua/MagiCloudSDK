@@ -14,6 +14,8 @@ namespace MagiCloud.Core
 
         private static MBehaviourController behaviourController;
 
+        private static bool IsInitialize = false;
+
         internal static MBehaviourController Instance {
             get {
                 if (behaviourController == null)
@@ -30,6 +32,13 @@ namespace MagiCloud.Core
             //执行OnEnable
             //执行OnStart
 
+            OnExcute();
+
+            IsInitialize = true;
+        }
+
+        private void OnExcute()
+        {
             ExcuteAwake();
 
             ExcuteEnable();
@@ -85,6 +94,16 @@ namespace MagiCloud.Core
             Behaviours.Add(behaviour);
 
             SortBehaviour();
+
+            if(IsInitialize)
+            {
+                Instance.ExcuteDelay(() =>
+                {
+                    behaviour.OnExcuteAwake();
+                    behaviour.OnExcuteEnable();
+                    behaviour.OnExcuteStart();
+                });
+            }
         }
 
         /// <summary>
@@ -130,13 +149,7 @@ namespace MagiCloud.Core
         /// <param name="action"></param>
         internal void ExcuteDelay(System.Action action)
         {
-            try
-            {
-                StartCoroutine(Delay(action));
-            }
-            catch
-            {
-            }
+            StartCoroutine(Delay(action));
         }
 
         #endregion
