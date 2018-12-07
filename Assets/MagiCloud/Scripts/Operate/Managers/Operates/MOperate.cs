@@ -35,11 +35,15 @@ namespace MagiCloud
         public Action<IOperateObject,int> OnError;
         public Action<IOperateObject,int> OnInvalid;
 
-        public MOperate(MInputHand inputHand,Func<bool> func)
+        public IHandController HandController { get; set; }
+
+        public MOperate(MInputHand inputHand,Func<bool> func,IHandController handController)
         {
             this.InputHand = inputHand;
             RayExternaLimit = func;
             UIOperate = new UIOperate(inputHand);
+
+            this.HandController = handController;
         }
 
         /// <summary>
@@ -236,7 +240,10 @@ namespace MagiCloud
             switch (type)
             {
                 case ObjectOperaType.无:
-                    break;
+
+                    var none = operaObject.GetComponent<MCNone>();
+
+                    return none;
                 case ObjectOperaType.能抓取:
 
                     //调用物体的抓取
@@ -279,6 +286,15 @@ namespace MagiCloud
                     customize.OnOpen(InputHand.HandIndex);
 
                     return customize;
+                case ObjectOperaType.物体式按钮:
+
+                    var button = operaObject.GetComponent<MCObjectButton>();
+
+                    if (button.HandStatus != MInputHandStatus.Idle) return null;
+
+                    button.OnDown(InputHand.HandIndex);
+
+                    return button;
                 default:
                     break;
             }
@@ -314,6 +330,10 @@ namespace MagiCloud
                     if (cameraRotation != null)
                         cameraRotation.OnClose();
                     break;
+                case ObjectOperaType.物体式按钮:
+                    var button = operaObject.GetComponent<MCObjectButton>();
+                    button.OnFreed(InputHand.HandIndex);
+                    break;
                 default:
                     break;
             }
@@ -324,6 +344,9 @@ namespace MagiCloud
         /// </summary>
         public void SetObjectRelease()
         {
+            HideHighLight();
+            HideLabel();
+
             HandleIdle(operaObject.FeaturesObject.operaType);
             InputHand.HandStatus = MInputHandStatus.Idle;
             OperateObject.HandStatus = MInputHandStatus.Idle;
@@ -339,6 +362,14 @@ namespace MagiCloud
         /// <param name="zValue"></param>
         public void SetObjectGrab(GameObject target,float zValue)
         {
+            //停止手上已经抓取的
+            if (OperateObject != null)
+            {
+                HandleIdle(operaObject.FeaturesObject.operaType);
+                OperateObject.HandStatus = MInputHandStatus.Idle;
+                OperateObject = null;
+            }
+
             var feature = target.GetComponent<FeaturesObjectController>();
 
             if (feature == null)
@@ -350,6 +381,7 @@ namespace MagiCloud
             if (OperateObject != null)
             {
                 OperateObject.HandStatus = MInputHandStatus.Grabing;
+                InputHand.HandStatus = MInputHandStatus.Grabing;
 
                 //设置物体被抓取
                 if (OnSetGrab != null)

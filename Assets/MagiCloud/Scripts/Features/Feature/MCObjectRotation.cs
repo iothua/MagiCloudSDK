@@ -29,7 +29,10 @@ namespace MagiCloud.Features
             behaviour.OnUpdate_MBehaviour(OnUpdate);
         }
 
-
+        private void OnDestroy()
+        {
+        //    behaviour.OnExcuteDestroy();
+        }
 
         public virtual void OnUpdate()
         {

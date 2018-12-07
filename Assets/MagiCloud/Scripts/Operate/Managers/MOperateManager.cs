@@ -33,7 +33,7 @@ namespace MagiCloud
         /// </summary>
         /// <param name="inputHand"></param>
         /// <param name="func"></param>
-        public static MOperate AddOperateHand(MInputHand inputHand, Func<bool> func = null)
+        public static MOperate AddOperateHand(MInputHand inputHand,  IHandController handController,Func<bool> func = null)
         {
             MOperate operate = GetOperateHand(inputHand.HandIndex, inputHand.Platform);
 
@@ -43,7 +43,7 @@ namespace MagiCloud
                 return operate;
             }
 
-            operate = new MOperate(inputHand, func);
+            operate = new MOperate(inputHand, func, handController);
 
             Operates.Add(new OperateKey(inputHand.HandIndex, inputHand.Platform), operate);
 
@@ -125,6 +125,28 @@ namespace MagiCloud
         }
 
         /// <summary>
+        /// 启动多个手
+        /// </summary>
+        public static void StartMultipleHand()
+        {
+            foreach (var item in Operates)
+            {
+                item.Value.HandController.StartMultipleHand();
+            }
+        }
+
+        /// <summary>
+        /// 启动一只手
+        /// </summary>
+        public static void StartOnlyHand()
+        {
+            foreach (var item in Operates)
+            {
+                item.Value.HandController.StartOnlyHand();
+            }
+        }
+
+        /// <summary>
         /// 激活手
         /// </summary>
         /// <param name="handIndex"></param>
@@ -165,7 +187,21 @@ namespace MagiCloud
         /// </summary>
         /// <param name="target">需要被设置抓取的物体对象</param>
         /// <param name="zValue"></param>
-        public static void SetObjectGrab(GameObject target, float zValue, int handIndex)
+        public static void SetObjectGrab(GameObject target,  int handIndex = 0, float zValue = 5)
+        {
+            var operate = GetOperateHand(handIndex);
+            if (operate == null) return;
+
+            operate.SetObjectGrab(target, zValue);
+        }
+
+        /// <summary>
+        /// 更换抓取事件
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="handIndex"></param>
+        /// <param name="zValue"></param>
+        public static void SetChangeObjectGrab(GameObject target, int handIndex, float zValue = 5)
         {
             var operate = GetOperateHand(handIndex);
             if (operate == null) return;

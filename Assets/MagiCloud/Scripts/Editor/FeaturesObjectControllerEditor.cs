@@ -6,6 +6,9 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
 using MagiCloud.Interactive.Distance;
+using UnityEngine.Events;
+using System;
+using MagiCloud.KGUI;
 
 namespace MagiCloud.Features
 {
@@ -26,11 +29,13 @@ namespace MagiCloud.Features
         private MCCameraRotateAround _rotateAround;
         private MCLimitMove _limitMoveController;
         private MCustomize _customizeController;
+        private MCObjectButton _objectButton;
         private MCNone _noneController;
 
         private string distanceName;
         private List<DistanceInteraction> distances;
         private List<List<DistanceInteraction>> distanceSums;
+
 
         private void OnEnable()
         {
@@ -133,6 +138,10 @@ namespace MagiCloud.Features
                 case ObjectOperaType.自定义:
                     InspectorCustomize();
                     break;
+                case ObjectOperaType.物体式按钮:
+
+                    InspectorObjectButton();
+                    break;
                 default:
                     break;
             }
@@ -173,6 +182,10 @@ namespace MagiCloud.Features
                         features.RemoveCustomize();
                         _customizeController = null;
                         break;
+                    case ObjectOperaType.物体式按钮:
+                        features.RemoveObjectButton();
+                        _objectButton = null;
+                        break;
                     default:
                         break;
                 }
@@ -202,6 +215,12 @@ namespace MagiCloud.Features
                     if (_customizeController == null)
                     {
                         _customizeController = features.AddCustomize();
+                    }
+                    break;
+                case ObjectOperaType.物体式按钮:
+                    if (_objectButton==null)
+                    {
+                        _objectButton=features.AddObjectButton();
                     }
                     break;
                 default:
@@ -407,7 +426,27 @@ namespace MagiCloud.Features
             if (_rotateAround.grabObject == null)
                 EditorGUILayout.HelpBox("当射线照射到该物体时，赋予谁被抓取，不赋值默认为本身...",MessageType.None,false);
             _rotateAround.speed=EditorGUILayout.FloatField("    *旋转速度：",_rotateAround.speed);
+            //maxAngle
+            _rotateAround.leftAndRight = EditorGUILayout.Vector2Field("    *左右旋转范围(最小-最大):",
+                _rotateAround.leftAndRight);
+            _rotateAround.upAndDown = EditorGUILayout.Vector2Field("    *上下旋转范围(最小-最大):",
+               _rotateAround.upAndDown);
         }
+
+
+        /// <summary>
+        /// 物体式按钮
+        /// </summary>
+        private void InspectorObjectButton()
+        {
+            if (_objectButton==null) return;
+            _objectButton.grabObject = EditorGUILayout.ObjectField("    *被抓取物体",
+               _objectButton.grabObject,typeof(GameObject),true) as GameObject;
+            GUILayout.Space(10);
+            GUILayout.Box("需要通过FeaturesObjectController对象访问ObjectButton对象，然后注册onDown、onPress、OnFreed事件",GUILayout.Width(350));
+        }
+
+
 
         /// <summary>
         /// 限制移动显示面板

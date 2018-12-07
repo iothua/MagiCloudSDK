@@ -47,9 +47,9 @@ namespace MagiCloud.KGUI
 
         public ToggleEvent OnValueChanged;
 
-        protected override void OnStart()
+        protected override void Start()
         {
-            base.OnStart();
+            base.Start();
 
             OnHandle("click");
         }

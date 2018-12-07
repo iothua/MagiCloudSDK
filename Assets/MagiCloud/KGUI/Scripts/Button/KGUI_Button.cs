@@ -20,7 +20,7 @@ namespace MagiCloud.KGUI
         
         public ButtonGroupReset onGroupReset;
 
-        protected override void OnStart()
+        protected override void Start()
         {
             if (IsButtonGroup && IsShowButton)
                 OnClick(0);

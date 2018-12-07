@@ -51,7 +51,7 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         public bool IsGrab { get; set; }
 
-        private void Awake()
+        protected virtual void Awake()
         {
 
             if (OnEnter == null)
@@ -113,7 +113,7 @@ namespace MagiCloud.Interactive.Distance
             //统一调用，去匹配数据，还需要一个数据，每隔一段时间校验一次，用于匹配执行顺序等情况
         }
 
-        private void Start()
+        protected virtual void Start()
         {
             if (Application.isPlaying)
             {

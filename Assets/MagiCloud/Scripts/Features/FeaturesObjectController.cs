@@ -33,6 +33,8 @@ namespace MagiCloud.Features
         /// </summary>
         public MCCameraRotateAround cameraRotateAround;
 
+        public MCObjectButton objectButton;
+
         private GameObject operaObject; //操作物体
 
         /// <summary>
@@ -382,6 +384,7 @@ namespace MagiCloud.Features
             return cameraRotateAround;
         }
 
+
         /// <summary>
         /// 移除“摄像机围绕物体旋转”
         /// </summary>
@@ -389,6 +392,26 @@ namespace MagiCloud.Features
         {
             if (cameraRotateAround == null) return;
             DestroyImmediate(cameraRotateAround);
+        }
+
+        /// <summary>
+        /// 添加物体式按钮
+        /// </summary>
+        /// <returns></returns>
+        public MCObjectButton AddObjectButton()
+        {
+            objectButton = OperaObject.GetComponent<MCObjectButton>() ?? OperaObject.AddComponent<MCObjectButton>();
+            objectButton.hideFlags = HideFlags.HideInInspector;
+            return objectButton;
+        }
+
+        /// <summary>
+        /// 移除物体式按钮
+        /// </summary>
+        public void RemoveObjectButton()
+        {
+            if (objectButton==null) return;
+            DestroyImmediate(objectButton);
         }
 
         /// <summary>
@@ -428,11 +451,16 @@ namespace MagiCloud.Features
                     RemoveCanGrab();
                     break;
                 case ObjectOperaType.物体自身旋转:
-                case ObjectOperaType.摄像机围绕物体旋转:
                     RemoveRotation();
+                    break;
+                case ObjectOperaType.摄像机围绕物体旋转:
+                    RemoveCameraCenterObjectRotation();
                     break;
                 case ObjectOperaType.自定义:
                     RemoveCustomize();
+                    break;
+                case ObjectOperaType.物体式按钮:
+                    RemoveObjectButton();
                     break;
                 default:
                     break;
@@ -454,6 +482,9 @@ namespace MagiCloud.Features
                     break;
                 case ObjectOperaType.自定义:
                     AddCustomize();
+                    break;
+                case ObjectOperaType.物体式按钮:
+                    AddObjectButton();
                     break;
                 default:
                     break;

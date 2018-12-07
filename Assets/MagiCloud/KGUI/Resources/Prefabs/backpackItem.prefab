@@ -74,6 +74,7 @@ GameObject:
   - component: {fileID: 114473191936685208}
   - component: {fileID: 65277714503115616}
   - component: {fileID: 114894383489828036}
+  - component: {fileID: 82211621004872622}
   m_Layer: 5
   m_Name: backpackItem
   m_TagString: Untagged
@@ -93,6 +94,101 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 156, y: 150, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!82 &82211621004872622
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1754291072357728}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 29d930b535510174a887d268c209256a, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &114060625131384310
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -235,35 +331,44 @@ MonoBehaviour:
   enterObject: {fileID: 0}
   pressedObject: {fileID: 0}
   disableObject: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: 29d930b535510174a887d268c209256a, type: 3}
+  audioStatus: 0
+  audioSource: {fileID: 82211621004872622}
+  IsStartAudio: 1
   onClick:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onUp:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onDownStay:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  onUpRange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.KGUI.PanelEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
 --- !u!222 &222432226736219200
 CanvasRenderer:

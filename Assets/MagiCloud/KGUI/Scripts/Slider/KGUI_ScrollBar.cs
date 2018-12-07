@@ -91,9 +91,9 @@ namespace MagiCloud.KGUI
             }
         }
 
-        protected override void OnStart()
+        protected override void Start()
         {
-            base.OnStart();
+            base.Start();
 
             EventHandIdle.AddListener(OnButtonRelease, Core.ExecutionPriority.High);
 

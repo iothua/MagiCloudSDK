@@ -9,8 +9,6 @@ public class TestEvent : MonoBehaviour
 {
     public GameObject key;
 
-    public GameObject testobject;
-
     private void Start()
     {
         //EventCameraZoom.AddListener((float lerp) =>
@@ -63,9 +61,6 @@ public class TestEvent : MonoBehaviour
         {
             //Debug.Log("释放手：" + handIndex + "  物体：" + go);
         });
-
-        Instantiate(testobject);
-
     }
 
     private Dictionary<OperateKey, int> Tests = new Dictionary<OperateKey, int>();

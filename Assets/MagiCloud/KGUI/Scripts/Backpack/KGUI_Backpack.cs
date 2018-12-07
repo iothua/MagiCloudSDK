@@ -217,7 +217,7 @@ namespace MagiCloud.KGUI
             }
 
             //KinectTransfer.SetObjectGrab(go, handIndex);
-            MOperateManager.SetObjectGrab(go, itemData.zValue, handIndex);
+            MOperateManager.SetObjectGrab(go,  handIndex, itemData.zValue);
             this._handIndex = handIndex;
 
             SetObjectFrontUI(false);

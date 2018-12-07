@@ -11,6 +11,7 @@ namespace MagiCloud.Operate
     /// <summary>
     /// 鼠标控制端
     /// </summary>
+    [DefaultExecutionOrder(-900)]
     public class MouseController : MonoBehaviour, IHandController
     {
         private MBehaviour behaviour;
@@ -68,25 +69,42 @@ namespace MagiCloud.Operate
         {
             behaviour = new MBehaviour(ExecutionPriority.Highest, -900, enabled);
 
-            behaviour.OnAwake_MBehaviour(() =>
-            {
-                InputHands = new Dictionary<int, MInputHand>();
+            //behaviour.OnAwake_MBehaviour(() =>
+            //{
+            //    InputHands = new Dictionary<int, MInputHand>();
 
-                //初始化手的种类
-                var handUI = MHandUIManager.CreateHandUI(transform, handSprite, handSize);
-                var inputHand = new MInputHand(0, handUI, OperatePlatform.Mouse);
+            //    //初始化手的种类
+            //    var handUI = MHandUIManager.CreateHandUI(transform, handSprite, handSize);
+            //    var inputHand = new MInputHand(0, handUI, OperatePlatform.Mouse);
 
-                InputHands.Add(0, inputHand);
+            //    InputHands.Add(0, inputHand);
 
-                isPlaying = true;
+            //    isPlaying = true;
 
-                //注册操作者相关事件
-                var operate = MOperateManager.AddOperateHand(inputHand);
-                //注册方法
-                operate.OnGrab = OnGrabObject;
-                operate.OnSetGrab = SetGrabObject;
-                operate.OnEnable();
-            });
+            //    //注册操作者相关事件
+            //    var operate = MOperateManager.AddOperateHand(inputHand, this);
+            //    //注册方法
+            //    operate.OnGrab = OnGrabObject;
+            //    operate.OnSetGrab = SetGrabObject;
+            //    operate.OnEnable();
+            //});
+
+            InputHands = new Dictionary<int, MInputHand>();
+
+            //初始化手的种类
+            var handUI = MHandUIManager.CreateHandUI(transform, handSprite, handSize);
+            var inputHand = new MInputHand(0, handUI, OperatePlatform.Mouse);
+
+            InputHands.Add(0, inputHand);
+
+            isPlaying = true;
+
+            //注册操作者相关事件
+            var operate = MOperateManager.AddOperateHand(inputHand, this);
+            //注册方法
+            operate.OnGrab = OnGrabObject;
+            operate.OnSetGrab = SetGrabObject;
+            operate.OnEnable();
 
             behaviour.OnUpdate_MBehaviour(OnMouseUpdate);
         }
@@ -255,12 +273,24 @@ namespace MagiCloud.Operate
 
             Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenpoint.x, screenpoint.y, screenMainCamera.z));
 
+            offset = Vector3.zero;
+
             operateObject.GrabObject.transform.position = position;
         }
 
         private void OnDestroy()
         {
             behaviour.OnExcuteDestroy();
+        }
+
+        public void StartOnlyHand()
+        {
+            //不做任何处理
+        }
+
+        public void StartMultipleHand()
+        {
+            //不用做任何处理
         }
     }
 }

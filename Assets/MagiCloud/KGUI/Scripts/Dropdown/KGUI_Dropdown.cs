@@ -67,9 +67,9 @@ namespace MagiCloud.KGUI
                 dropdownItem = Resources.Load<GameObject>("Prefabs\\DropdownItem");
         }
 
-        protected override void OnStart()
+        protected override void Start()
         {
-            base.OnStart();
+            base.Start();
 
             if (buttonGroup == null)
                 buttonGroup = GetComponent<KGUI_ButtonGroup>() ?? gameObject.AddComponent<KGUI_ButtonGroup>();
