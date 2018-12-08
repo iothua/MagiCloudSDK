@@ -42,7 +42,6 @@ namespace MagiCloud.KGUI
         //显示的内容
         public Text textName;
 
-        [HideInInspector]
         private KGUI_DropdownItem currentItem;//当前选项
 
         [HideInInspector]
@@ -67,9 +66,9 @@ namespace MagiCloud.KGUI
                 dropdownItem = Resources.Load<GameObject>("Prefabs\\DropdownItem");
         }
 
-        protected override void OnStart()
+        protected override void Start()
         {
-            base.OnStart();
+            base.Start();
 
             if (buttonGroup == null)
                 buttonGroup = GetComponent<KGUI_ButtonGroup>() ?? gameObject.AddComponent<KGUI_ButtonGroup>();

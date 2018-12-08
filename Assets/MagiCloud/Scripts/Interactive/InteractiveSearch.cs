@@ -151,16 +151,21 @@ namespace MagiCloud.Interactive
             {
                 //获取到其他的接收点（All、Pour）
                 var managers = DistanceStorage.GetSendDistaceDataAll(interaction.distanceData, interactionType);
+                
+                //如果没有获取到其他的，则跳过
+                if (managers.Count == 0) continue;
 
+                //获取到当前已经存在的距离管理端
                 List<DistanceDataManager> distanceManagers;
                 dataManagers.TryGetValue(target, out distanceManagers);
 
+                //如果不存在，则实例化新的
                 if (distanceManagers == null)
                     distanceManagers = new List<DistanceDataManager>();
 
-                //找到对应的
-                DistanceDataManager distanceManager = distanceManagers.Count == 0 ? new DistanceDataManager() : 
-                    distanceManagers.Find(obj => obj.sendData.EqualsObject(interaction.distanceData));
+                //在当前的距离管理端中，找是否存在的，
+                DistanceDataManager distanceManager = distanceManagers.Count == 0 ? new DistanceDataManager() :
+                    distanceManagers.Find(obj => obj.sendData.EqualsObject(interaction.distanceData)) ?? new DistanceDataManager();
 
                 distanceManager.sendData = interaction.distanceData;
 

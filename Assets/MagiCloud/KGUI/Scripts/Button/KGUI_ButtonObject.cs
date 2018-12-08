@@ -40,7 +40,7 @@ namespace MagiCloud.KGUI
             var frontUI = targetObject.GetComponent<KGUI_ObjectFrontUI>() ?? targetObject.AddComponent<KGUI_ObjectFrontUI>();
             frontUI.OnSet();
 
-            MOperateManager.SetObjectGrab(targetObject, zValue, handIndex);
+            MOperateManager.SetObjectGrab(targetObject, handIndex, zValue);
             //KinectTransfer.SetObjectGrab(targetObject, zValue, handIndex: handIndex);
 
             targetObjects.Add(targetObject);

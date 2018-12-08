@@ -217,7 +217,7 @@ namespace MagiCloud.KGUI
             }
 
             //KinectTransfer.SetObjectGrab(go, handIndex);
-            MOperateManager.SetObjectGrab(go, itemData.zValue, handIndex);
+            MOperateManager.SetObjectGrab(go,  handIndex, itemData.zValue);
             this._handIndex = handIndex;
 
             SetObjectFrontUI(false);
@@ -285,7 +285,7 @@ namespace MagiCloud.KGUI
             _isHandOnBag = true;
             _handIndex = handIndex;
             
-            var tween = areaPanel.transform.DOLocalMove(openPosition, 1.0f);
+            areaPanel.transform.DOLocalMove(openPosition, 1.0f);
 
         }
 

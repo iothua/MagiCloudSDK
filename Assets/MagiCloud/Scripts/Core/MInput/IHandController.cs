@@ -18,5 +18,8 @@ namespace MagiCloud.Core.MInput
         MInputHand GetInputHand(int handIndex);
 
         bool IsPlaying { get; }
+
+        void StartOnlyHand();
+        void StartMultipleHand();
     }
 }

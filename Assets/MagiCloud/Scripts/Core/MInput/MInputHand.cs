@@ -145,9 +145,9 @@ namespace MagiCloud.Core.MInput
 
             isPressed = true;
 
-            EventHandGrip.SendListener(HandIndex);
-
             HandStatus = MInputHandStatus.Grip;
+
+            EventHandGrip.SendListener(HandIndex);
         }
 
         /// <summary>
@@ -160,9 +160,9 @@ namespace MagiCloud.Core.MInput
             if (!isPressed) return;
             isPressed = false;
 
-            EventHandIdle.SendListener(HandIndex);
-
             HandStatus = MInputHandStatus.Idle;
+
+            EventHandIdle.SendListener(HandIndex);
         }
 
         /// <summary>

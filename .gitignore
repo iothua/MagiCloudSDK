@@ -34,3 +34,27 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+Assets/Chemistry/
+Assets/MagnetPlugins/
+Assets/MathUtilities/
+Assets/Optics/
+Assets/Physicals/
+Assets/Plugins/InkPainter/
+Assets/Plugins/MagiCloud/LiquidVolume/
+Assets/StreamingAssets/Equipments/
+Assets/Universe/Resources.meta
+Assets/Universe/
+Assets/Weather/
+Assets/StreamingAssets/
+Assets/Plugins/
+Assets/Chemistry.meta
+Assets/Physicals.meta
+Assets/Optics.meta
+Assets/MathUtilities.meta
+Assets/MagnetPlugins.meta
+Assets/Weather.meta
+Assets/Universe.meta
+Assets/TimerTest.cs.meta
+Assets/TimerTest.cs
+Assets/RyhTest.cs.meta
+Assets/RyhTest.cs

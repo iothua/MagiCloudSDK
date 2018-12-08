@@ -16,6 +16,7 @@ namespace MagiCloud.Core
     /// <summary>
     /// 框架初始化
     /// </summary>
+    [DefaultExecutionOrder(-1000)]
     public class MInitialize : MonoBehaviour
     {
         public OperatePlatform CurrentPlatform;
@@ -26,23 +27,29 @@ namespace MagiCloud.Core
 
         private void Awake()
         {
-            behaviour = new MBehaviour(ExecutionPriority.Highest, -1000, enabled);
+            //behaviour = new MBehaviour(ExecutionPriority.Highest, -1000, enabled);
 
-            behaviour.OnAwake_MBehaviour(() =>
-            {
-                MUtility.CurrentPlatform = CurrentPlatform;
+            //behaviour.OnAwake_MBehaviour(() =>
+            //{
+            //    MUtility.CurrentPlatform = CurrentPlatform;
 
-                SwitchPlatform(Application.platform);
-            });
+            //    SwitchPlatform(Application.platform);
+            //});
 
-            behaviour.OnDestroy_MBehaviour(() =>
-            {
-                DestoryPlatform(Application.platform);
-            });
+            //behaviour.OnDestroy_MBehaviour(() =>
+            //{
+            //    DestoryPlatform(Application.platform);
+            //});
+
+
+            //MBehaviourController.AddBehaviour(behaviour);
+
+            MUtility.CurrentPlatform = CurrentPlatform;
+
+            SwitchPlatform(Application.platform);
 
             DontDestroyOnLoad(gameObject);
 
-            //MBehaviourController.AddBehaviour(behaviour);
         }
 
         void AddHighlighting()
@@ -104,14 +111,15 @@ namespace MagiCloud.Core
 
         private void OnDestroy()
         {
-            try
-            {
-                if (behaviour != null)
-                    behaviour.OnExcuteDestroy();
-            }
-            catch 
-            {
-            }
+            DestoryPlatform(Application.platform);
+            //try
+            //{
+            //    if (behaviour != null)
+            //        behaviour.OnExcuteDestroy();
+            //}
+            //catch 
+            //{
+            //}
         }
     }
 }

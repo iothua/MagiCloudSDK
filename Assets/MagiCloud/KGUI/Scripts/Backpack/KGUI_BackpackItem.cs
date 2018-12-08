@@ -17,7 +17,7 @@ namespace MagiCloud.KGUI
 
         private Sprite normalIcon, disableIcon;
 
-        private string _equipmentName;                      //仪器名字
+        //private string _equipmentName;                      //仪器名字
         private int _equipmentNumber;
 
         public KGUI_Backpack Backpack {
@@ -50,7 +50,7 @@ namespace MagiCloud.KGUI
                 txtNumber.text = config.number.ToString();
 
             _equipmentNumber = config.number;
-            _equipmentName = config.Name;
+            //_equipmentName = config.Name;
 
             GenerateItems = new List<GameObject>();
 

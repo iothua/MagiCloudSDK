@@ -20,7 +20,8 @@ namespace MagiCloud.KGUI
         private Color color = Color.white;
         void Start()
         {
-            recordButton.onClick.AddListener(OnClick);
+            if (recordButton!=null)
+                recordButton.onClick.AddListener(OnClick);
         }
 
         private void OnClick(int arg)
@@ -52,7 +53,6 @@ namespace MagiCloud.KGUI
         {
             tableManager.transform.DOLocalMoveY(0,0.5f);
             showButtom.gameObject.SetActive(false);
-            //ExperimentNotification.AddReturn(Close);
         }
 
 
@@ -61,13 +61,12 @@ namespace MagiCloud.KGUI
         {
             tableManager.transform.DOLocalMoveY(1000,0.5f);
             showButtom.gameObject.SetActive(true);
-            //ExperimentNotification.RemoveReturn(Close,true);
         }
 
         private void OnDestroy()
         {
-
-            recordButton.onClick.RemoveListener(OnClick);
+            if (recordButton!=null)
+                recordButton.onClick.RemoveListener(OnClick);
 
         }
     }

@@ -6,6 +6,9 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
 using MagiCloud.Interactive.Distance;
+using UnityEngine.Events;
+using System;
+using MagiCloud.KGUI;
 
 namespace MagiCloud.Features
 {
@@ -23,13 +26,16 @@ namespace MagiCloud.Features
 
         private MCCanGrab _cangrabController;
         private MCObjectRotation _objectRatationController;
+        private MCCameraRotateAround _rotateAround;
         private MCLimitMove _limitMoveController;
         private MCustomize _customizeController;
+        private MCObjectButton _objectButton;
         private MCNone _noneController;
 
         private string distanceName;
         private List<DistanceInteraction> distances;
         private List<List<DistanceInteraction>> distanceSums;
+
 
         private void OnEnable()
         {
@@ -76,7 +82,7 @@ namespace MagiCloud.Features
 
             //空间限制面板
             EditorGUILayout.BeginVertical("box");
-            features.ActiveSpaceLimit = GUILayout.Toggle(features.ActiveSpaceLimit, "  激活空间限制--------------------------------------------------------------");
+            features.ActiveSpaceLimit = GUILayout.Toggle(features.ActiveSpaceLimit,"  激活空间限制--------------------------------------------------------------");
             InspectorSpaceLimit();
             EditorGUILayout.EndVertical();
 
@@ -132,6 +138,10 @@ namespace MagiCloud.Features
                 case ObjectOperaType.自定义:
                     InspectorCustomize();
                     break;
+                case ObjectOperaType.物体式按钮:
+
+                    InspectorObjectButton();
+                    break;
                 default:
                     break;
             }
@@ -165,12 +175,16 @@ namespace MagiCloud.Features
                         _objectRatationController = null;
                         break;
                     case ObjectOperaType.摄像机围绕物体旋转:
-                        features.RemoveRotation();
-                        _objectRatationController = null;
+                        features.RemoveCameraCenterObjectRotation();
+                        _rotateAround = null;
                         break;
                     case ObjectOperaType.自定义:
                         features.RemoveCustomize();
                         _customizeController = null;
+                        break;
+                    case ObjectOperaType.物体式按钮:
+                        features.RemoveObjectButton();
+                        _objectButton = null;
                         break;
                     default:
                         break;
@@ -193,14 +207,20 @@ namespace MagiCloud.Features
                         _objectRatationController = features.AddSelfRotation();
                     break;
                 case ObjectOperaType.摄像机围绕物体旋转:
-                    if (_objectRatationController == null)
-                        _objectRatationController = features.AddCameraCenterObjectRotation();
+                    if (_rotateAround == null)
+                        _rotateAround = features.AddCameraCenterObjectRotation();
                     break;
 
                 case ObjectOperaType.自定义:
                     if (_customizeController == null)
                     {
                         _customizeController = features.AddCustomize();
+                    }
+                    break;
+                case ObjectOperaType.物体式按钮:
+                    if (_objectButton==null)
+                    {
+                        _objectButton=features.AddObjectButton();
                     }
                     break;
                 default:
@@ -219,14 +239,14 @@ namespace MagiCloud.Features
                 _spaceLimit = features.AddSpaceLimit();
                 if (_spaceLimit == null) return;
                 EditorGUILayout.BeginVertical();
-                _spaceLimit.limitObj = EditorGUILayout.ObjectField("    *被限制的物体", _spaceLimit.limitObj, typeof(GameObject), true) as GameObject;
+                _spaceLimit.limitObj = EditorGUILayout.ObjectField("    *被限制的物体",_spaceLimit.limitObj,typeof(GameObject),true) as GameObject;
                 if (_spaceLimit.limitObj == null)
-                    EditorGUILayout.HelpBox("请赋值被抓取物体本身", MessageType.None,false);
-                _spaceLimit.topLimit = EditorGUILayout.Toggle("    *上边限制", _spaceLimit.topLimit);
-                _spaceLimit.bottomLimit = EditorGUILayout.Toggle("    *下边限制", _spaceLimit.bottomLimit);
-                _spaceLimit.leftLimit = EditorGUILayout.Toggle("    *左边限制", _spaceLimit.leftLimit);
-                _spaceLimit.rightLimit = EditorGUILayout.Toggle("    *右边限制", _spaceLimit.rightLimit);
-                _spaceLimit.offset = EditorGUILayout.FloatField("    *偏移量", 0.5f);
+                    EditorGUILayout.HelpBox("请赋值被抓取物体本身",MessageType.None,false);
+                _spaceLimit.topLimit = EditorGUILayout.Toggle("    *上边限制",_spaceLimit.topLimit);
+                _spaceLimit.bottomLimit = EditorGUILayout.Toggle("    *下边限制",_spaceLimit.bottomLimit);
+                _spaceLimit.leftLimit = EditorGUILayout.Toggle("    *左边限制",_spaceLimit.leftLimit);
+                _spaceLimit.rightLimit = EditorGUILayout.Toggle("    *右边限制",_spaceLimit.rightLimit);
+                _spaceLimit.offset = EditorGUILayout.FloatField("    *偏移量",0.5f);
                 EditorGUILayout.EndVertical();
             }
             else
@@ -244,19 +264,19 @@ namespace MagiCloud.Features
             if (features.ActiveHighlight)
             {
                 _highlight = features.AddHighlight();
-                _highlight.highlightType = (HighLightType)EditorGUILayout.EnumPopup("高亮类型：", _highlight.highlightType);
+                _highlight.highlightType = (HighLightType)EditorGUILayout.EnumPopup("高亮类型：",_highlight.highlightType);
 
                 if (_highlight.highlightType == HighLightType.Model)
                 {
                     if (_highlight == null) return;
-                    _highlight.highlightModel = EditorGUILayout.ObjectField("    *模型高亮：", _highlight.highlightModel, typeof(GameObject), true) as GameObject;
+                    _highlight.highlightModel = EditorGUILayout.ObjectField("    *模型高亮：",_highlight.highlightModel,typeof(GameObject),true) as GameObject;
                     if (_highlight.highlightModel == null)
-                        EditorGUILayout.HelpBox("高亮的物体，默认是自己...", MessageType.None);
+                        EditorGUILayout.HelpBox("高亮的物体，默认是自己...",MessageType.None);
                 }
                 else
                 {
                     if (_highlight == null) return;
-                    
+
                     _highlight.highlightColor = FrameConfig.Config.highlightColor;
 
                     _highlight.grabColor = FrameConfig.Config.grabColor;
@@ -330,7 +350,7 @@ namespace MagiCloud.Features
                     _shadowController.traModelNode = EditorGUILayout.ObjectField("    ·虚影模型：",_shadowController.traModelNode,typeof(Transform),true) as Transform;
                 }
 
-                _shadowController.renderQueue = EditorGUILayout.IntField("    ·Shader渲染层级：", _shadowController.renderQueue);
+                _shadowController.renderQueue = EditorGUILayout.IntField("    ·Shader渲染层级：",_shadowController.renderQueue);
             }
             else
             {
@@ -374,7 +394,7 @@ namespace MagiCloud.Features
             EditorGUILayout.BeginVertical();
             //space
             _objectRatationController.space = (Space)EditorGUILayout.EnumPopup("    *空间坐标：",_objectRatationController.space);
-
+            _objectRatationController.axisLimits = (AxisLimits)EditorGUILayout.EnumPopup("    *旋转轴：",_objectRatationController.axisLimits);
             //axisLimits
             //_objectRatationController.axisLimits = (AxisLimits)EditorGUILayout.EnumPopup("    *坐标系：",_objectRatationController.axisLimits);
 
@@ -388,7 +408,9 @@ namespace MagiCloud.Features
             _objectRatationController.minAngle = minmax.x;
             _objectRatationController.maxAngle = minmax.y;
 
+
             EditorGUILayout.EndHorizontal();
+            _objectRatationController.speed=EditorGUILayout.FloatField("    *旋转速度：",_objectRatationController.speed);
 
         }
         /// <summary>
@@ -396,14 +418,36 @@ namespace MagiCloud.Features
         /// </summary>
         private void InspectorCameraCenterObjectRotation()
         {
-            if (_objectRatationController == null) return;
+            if (_rotateAround == null) return;
 
             //grabObject
-            _objectRatationController.grabObject = EditorGUILayout.ObjectField("    *被抓取物体",
-                _objectRatationController.grabObject,typeof(GameObject),true) as GameObject;
-            if (_objectRatationController.grabObject == null)
+            _rotateAround.grabObject = EditorGUILayout.ObjectField("    *被抓取物体",
+                _rotateAround.grabObject,typeof(GameObject),true) as GameObject;
+            if (_rotateAround.grabObject == null)
                 EditorGUILayout.HelpBox("当射线照射到该物体时，赋予谁被抓取，不赋值默认为本身...",MessageType.None,false);
+            _rotateAround.speed=EditorGUILayout.FloatField("    *旋转速度：",_rotateAround.speed);
+            //maxAngle
+            _rotateAround.leftAndRight = EditorGUILayout.Vector2Field("    *左右旋转范围(最小-最大):",
+                _rotateAround.leftAndRight);
+            _rotateAround.upAndDown = EditorGUILayout.Vector2Field("    *上下旋转范围(最小-最大):",
+               _rotateAround.upAndDown);
         }
+
+
+        /// <summary>
+        /// 物体式按钮
+        /// </summary>
+        private void InspectorObjectButton()
+        {
+            if (_objectButton==null) return;
+            _objectButton.grabObject = EditorGUILayout.ObjectField("    *被抓取物体",
+               _objectButton.grabObject,typeof(GameObject),true) as GameObject;
+            GUILayout.Space(10);
+            GUILayout.Box("需要通过FeaturesObjectController对象访问ObjectButton对象，然后注册onDown、onPress、OnFreed事件",GUILayout.Width(350));
+        }
+
+
+
         /// <summary>
         /// 限制移动显示面板
         /// </summary>

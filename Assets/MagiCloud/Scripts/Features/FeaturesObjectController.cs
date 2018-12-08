@@ -28,6 +28,12 @@ namespace MagiCloud.Features
         /// 物体旋转对象
         /// </summary>
         public MCObjectRotation ObjectRatation;
+        /// <summary>
+        /// 相机绕物体旋转
+        /// </summary>
+        public MCCameraRotateAround cameraRotateAround;
+
+        public MCObjectButton objectButton;
 
         private GameObject operaObject; //操作物体
 
@@ -40,8 +46,10 @@ namespace MagiCloud.Features
         private bool isEnable = true;
 
         private GameObject interactionObject;
-        public GameObject InteractionObject {
-            get {
+        public GameObject InteractionObject
+        {
+            get
+            {
 
                 if (interactionObject == null)
                 {
@@ -351,7 +359,7 @@ namespace MagiCloud.Features
         public MCObjectRotation AddSelfRotation()
         {
             ObjectRatation = OperaObject.GetComponent<MCObjectRotation>() ?? OperaObject.AddComponent<MCObjectRotation>();
-            ObjectRatation.SetOperaType(ObjectOperaType.物体自身旋转);
+            //  ObjectRatation.SetOperaType(ObjectOperaType.物体自身旋转);
             ObjectRatation.hideFlags = HideFlags.HideInInspector;
             return ObjectRatation;
         }
@@ -368,21 +376,42 @@ namespace MagiCloud.Features
         /// <summary>
         /// 添加“摄像机围绕物体旋转”
         /// </summary>
-        public MCObjectRotation AddCameraCenterObjectRotation()
+        public MCCameraRotateAround AddCameraCenterObjectRotation()
         {
-            ObjectRatation = OperaObject.GetComponent<MCObjectRotation>() ?? OperaObject.AddComponent<MCObjectRotation>();
-            ObjectRatation.SetOperaType(ObjectOperaType.摄像机围绕物体旋转);
-            ObjectRatation.hideFlags = HideFlags.HideInInspector;
-            return ObjectRatation;
+            cameraRotateAround = OperaObject.GetComponent<MCCameraRotateAround>() ?? OperaObject.AddComponent<MCCameraRotateAround>();
+            // ObjectRatation.SetOperaType(ObjectOperaType.摄像机围绕物体旋转);
+            cameraRotateAround.hideFlags = HideFlags.HideInInspector;
+            return cameraRotateAround;
         }
+
 
         /// <summary>
         /// 移除“摄像机围绕物体旋转”
         /// </summary>
         public void RemoveCameraCenterObjectRotation()
         {
-            if (ObjectRatation == null) return;
-            DestroyImmediate(ObjectRatation);
+            if (cameraRotateAround == null) return;
+            DestroyImmediate(cameraRotateAround);
+        }
+
+        /// <summary>
+        /// 添加物体式按钮
+        /// </summary>
+        /// <returns></returns>
+        public MCObjectButton AddObjectButton()
+        {
+            objectButton = OperaObject.GetComponent<MCObjectButton>() ?? OperaObject.AddComponent<MCObjectButton>();
+            objectButton.hideFlags = HideFlags.HideInInspector;
+            return objectButton;
+        }
+
+        /// <summary>
+        /// 移除物体式按钮
+        /// </summary>
+        public void RemoveObjectButton()
+        {
+            if (objectButton==null) return;
+            DestroyImmediate(objectButton);
         }
 
         /// <summary>
@@ -422,11 +451,16 @@ namespace MagiCloud.Features
                     RemoveCanGrab();
                     break;
                 case ObjectOperaType.物体自身旋转:
-                case ObjectOperaType.摄像机围绕物体旋转:
                     RemoveRotation();
+                    break;
+                case ObjectOperaType.摄像机围绕物体旋转:
+                    RemoveCameraCenterObjectRotation();
                     break;
                 case ObjectOperaType.自定义:
                     RemoveCustomize();
+                    break;
+                case ObjectOperaType.物体式按钮:
+                    RemoveObjectButton();
                     break;
                 default:
                     break;
@@ -448,6 +482,9 @@ namespace MagiCloud.Features
                     break;
                 case ObjectOperaType.自定义:
                     AddCustomize();
+                    break;
+                case ObjectOperaType.物体式按钮:
+                    AddObjectButton();
                     break;
                 default:
                     break;

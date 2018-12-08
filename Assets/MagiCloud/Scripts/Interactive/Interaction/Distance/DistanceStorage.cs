@@ -200,7 +200,8 @@ namespace MagiCloud.Interactive.Distance
 
             return dataManagers.FindAll(obj => obj.sendData.TagID.Equals(data.TagID)
             && obj.sendData.interactionType.Equals(interactionType)
-            && !obj.sendData.EqualsObject(data));
+            && !obj.sendData.EqualsObject(data)
+                                        && !obj.sendData.Interaction.FeaturesObjectController.Equals(data.Interaction.FeaturesObjectController));
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using MagiCloud.Core.UI;
-using MagiCloud.Core;
+//using MagiCloud.Core;
 
 namespace MagiCloud.KGUI
 {
@@ -41,6 +41,7 @@ namespace MagiCloud.KGUI
     /// <summary>
     /// KGUI基类
     /// </summary>
+    [DefaultExecutionOrder(-100)]
     public class KGUI_ButtonBase : KGUI_Base,IButton
     {
         public ButtonType buttonType;
@@ -56,7 +57,7 @@ namespace MagiCloud.KGUI
         private bool _IsEnable = true;
         protected BoxCollider boxCollider;
 
-        protected MBehaviour behaviour;
+        //protected MBehaviour behaviour;
 
         //声音
         public AudioClip audioClip;//音频
@@ -151,11 +152,9 @@ namespace MagiCloud.KGUI
 
             gameObject.tag = "button";
 
-            behaviour = new MBehaviour(ExecutionPriority.High, -799, enabled);
-            behaviour.OnStart_MBehaviour(OnStart);
         }
 
-        protected virtual void OnStart()
+        protected virtual void Start()
         {
         }
 
@@ -399,8 +398,7 @@ namespace MagiCloud.KGUI
 
         protected virtual void OnDestroy()
         {
-            if (behaviour != null)
-                behaviour.OnExcuteDestroy();
+            
         }
 
         public void AddAudio()

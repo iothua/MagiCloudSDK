@@ -4,9 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - MarkCamera
+  - ObjectFrontUI
   - button
-  - UICamera
+  - Weather
   layers:
   - Default
   - TransparentFX
@@ -16,8 +16,18 @@ TagManager:
   - UI
   - 
   - 
-  - Object
-  - Ray
+  - PostProcessing
+  - 
+  - Fire
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - LightSpreadDefault
+  - Reflex
+  - Refract
   - 
   - 
   - 
@@ -29,17 +39,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Drawable
   m_SortingLayers:
   - name: Default
     uniqueID: 0

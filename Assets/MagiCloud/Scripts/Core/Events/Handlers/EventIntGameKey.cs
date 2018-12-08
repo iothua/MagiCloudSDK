@@ -87,10 +87,15 @@ namespace MagiCloud.Core.Events.Handlers
             if (values == null) return;
             if (values.Count == 0) return;
 
-            foreach (var item in values)
+            for (int i = 0; i < values.Count; i++)
             {
-                item.Action(handIndex);
+                values[i].Action(handIndex);
             }
+
+            //foreach (var item in values)
+            //{
+            //    item.Action(handIndex);
+            //}
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿//using MagiCloud.RotateAndZoomTool;
+﻿using MagiCloud.RotateAndZoomTool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -48,7 +48,7 @@ namespace MagiCloud.Features
 
                 _isActiveCameraZoom = value;
 
-                //RotateAndZoomManager.IsPauseOrReStart_CameraZoom = value;
+                RotateAndZoomManager.IsPauseOrReStart_CameraZoom = value;
             }
         }
 
@@ -68,14 +68,14 @@ namespace MagiCloud.Features
 
                 _isActiveCameraRotate = value;
 
-                //if (_isActiveCameraRotate)
-                //{
-                //    RotateAndZoomManager.IsPauseOrReStart_CameraSelfRotate = true;
-                //}
-                //else
-                //{
-                //    RotateAndZoomManager.IsPauseOrReStart_CameraSelfRotate = false;
-                //}
+                if (_isActiveCameraRotate)
+                {
+                    RotateAndZoomManager.IsPauseOrReStart_CameraSelfRotate = true;
+                }
+                else
+                {
+                    RotateAndZoomManager.IsPauseOrReStart_CameraSelfRotate = false;
+                }
             }
 
         }
@@ -85,16 +85,14 @@ namespace MagiCloud.Features
         /// </summary>
         public static bool IsActiveCameraAroundCenter
         {
-            get;set;
-
-            //get
-            //{
-            //    return RotateAndZoomManager.IsPauseOrReStart_CameraRotateAroundCenter;
-            //}
-            //set
-            //{
-            //    RotateAndZoomManager.IsPauseOrReStart_CameraRotateAroundCenter = value;
-            //}
+            get
+            {
+                return RotateAndZoomManager.IsPauseOrReStart_CameraRotateAroundCenter;
+            }
+            set
+            {
+                RotateAndZoomManager.IsPauseOrReStart_CameraRotateAroundCenter = value;
+            }
         }
 
         /// <summary>
@@ -108,16 +106,15 @@ namespace MagiCloud.Features
         /// </summary>
         public static Vector2 Limit_CameraRotateAroundCenter_HorizontalAxis
         {
-            get;set;
-            //get
-            //{
-            //    return RotateAndZoomManager.Limit_CameraRotateAroundCenter_HorizontalAxis;
-            //}
+            get
+            {
+                return RotateAndZoomManager.Limit_CameraRotateAroundCenter_HorizontalAxis;
+            }
 
-            //set
-            //{
-            //    RotateAndZoomManager.Limit_CameraRotateAroundCenter_HorizontalAxis = value;
-            //}
+            set
+            {
+                RotateAndZoomManager.Limit_CameraRotateAroundCenter_HorizontalAxis = value;
+            }
         }
 
         /// <summary>
@@ -125,16 +122,15 @@ namespace MagiCloud.Features
         /// </summary>
         public static Vector2 Limit_CameraRotateAroundCenter_VerticalAxis
         {
-            //get
-            //{
-            //    return RotateAndZoomManager.Limit_CameraRotateAroundCenter_VerticalAxis;
-            //}
+            get
+            {
+                return RotateAndZoomManager.Limit_CameraRotateAroundCenter_VerticalAxis;
+            }
 
-            //set
-            //{
-            //    RotateAndZoomManager.Limit_CameraRotateAroundCenter_VerticalAxis = value;
-            //}
-            get;set;
+            set
+            {
+                RotateAndZoomManager.Limit_CameraRotateAroundCenter_VerticalAxis = value;
+            }
         }
 
 
@@ -143,16 +139,15 @@ namespace MagiCloud.Features
         /// </summary>
         public static Vector2 Limit_CameraRotateSelf_HorizontalAxis
         {
-            //get
-            //{
-            //    return RotateAndZoomManager.Limit_CameraRotateSelf_HorizontalAxis;
-            //}
+            get
+            {
+                return RotateAndZoomManager.Limit_CameraRotateSelf_HorizontalAxis;
+            }
 
-            //set
-            //{
-            //    RotateAndZoomManager.Limit_CameraRotateSelf_HorizontalAxis = value;
-            //}
-            get;set;
+            set
+            {
+                RotateAndZoomManager.Limit_CameraRotateSelf_HorizontalAxis = value;
+            }
         }
 
         /// <summary>
@@ -160,16 +155,15 @@ namespace MagiCloud.Features
         /// </summary>
         public static Vector2 Limit_CameraRotateSelf_VerticalAxis
         {
-            //get
-            //{
-            //    return RotateAndZoomManager.Limit_CameraRotateSelf_VerticalAxis;
-            //}
+            get
+            {
+                return RotateAndZoomManager.Limit_CameraRotateSelf_VerticalAxis;
+            }
 
-            //set
-            //{
-            //    RotateAndZoomManager.Limit_CameraRotateSelf_VerticalAxis = value;
-            //}
-            get;set;
+            set
+            {
+                RotateAndZoomManager.Limit_CameraRotateSelf_VerticalAxis = value;
+            }
         }
 
         #region 相机旋转开启与关闭
@@ -180,14 +174,14 @@ namespace MagiCloud.Features
         /// <param name="center"></param>
         public static void StartCameraAroundCenter(Transform center, Vector3 position = default(Vector3), Quaternion quaternion = default(Quaternion),float duration =0.5f)
         {
-            //if (position.Equals(default(Vector3)) && quaternion.Equals(default(Quaternion)))
-            //{
-            //    RotateAndZoomManager.StartCameraAroundCenter(center, duration);
-            //}
-            //else
-            //{
-            //    RotateAndZoomManager.StartCameraAroundCenter(center, position, quaternion, duration);
-            //}
+            if (position.Equals(default(Vector3)) && quaternion.Equals(default(Quaternion)))
+            {
+                RotateAndZoomManager.StartCameraAroundCenter(center, duration);
+            }
+            else
+            {
+                RotateAndZoomManager.StartCameraAroundCenter(center, position, quaternion, duration);
+            }
 
         }
 
@@ -196,7 +190,7 @@ namespace MagiCloud.Features
         /// </summary>
         public static void StopCameraAroundCenter()
         {
-            //RotateAndZoomManager.StopCameraAroundCenter();
+            RotateAndZoomManager.StopCameraAroundCenter();
         }
 
         /// <summary>
@@ -206,7 +200,7 @@ namespace MagiCloud.Features
         {
             if (IsCameraRotate) return;
 
-            //RotateAndZoomManager.StartCameraSelfRotate();
+            RotateAndZoomManager.StartCameraSelfRotate();
             IsCameraRotate = true;
         }
 
@@ -217,7 +211,7 @@ namespace MagiCloud.Features
         public static void StopCameraSelfCenter()
         {
             if (!IsCameraRotate) return;
-            //RotateAndZoomManager.StopCameraSelfRotate();
+            RotateAndZoomManager.StopCameraSelfRotate();
             IsCameraRotate = false;
         }
 
@@ -225,22 +219,22 @@ namespace MagiCloud.Features
 
         #region 物体旋转开启与关闭
 
-        ///// <summary>
-        ///// 开启物体旋转
-        ///// </summary>
-        ///// <param name="go">旋转的物体</param>
-        ///// <param name="space">旋转相对坐标系</param>
-        ///// <param name="axisLimit">限制于某轴</param>
-        ///// <param name="minangle">限制于某轴上最小角度</param>
-        ///// <param name="maxangle">限制于某轴上最大角度</param>
+        /// <summary>
+        /// 开启物体旋转
+        /// </summary>
+        /// <param name="go">旋转的物体</param>
+        /// <param name="space">旋转相对坐标系</param>
+        /// <param name="axisLimit">限制于某轴</param>
+        /// <param name="minangle">限制于某轴上最小角度</param>
+        /// <param name="maxangle">限制于某轴上最大角度</param>
         //public static void StartGoRotate(GameObject go, Space space = Space.World, AxisLimits axisLimit = AxisLimits.None, float minangle = -360, float maxangle = 360)
         //{
         //    RotateAndZoomManager.StartGoRotate(go, space, axisLimit, minangle, maxangle);
         //}
 
-        ///// <summary>
-        ///// 关闭物体旋转
-        ///// </summary>
+        /// <summary>
+        /// 关闭物体旋转
+        /// </summary>
         //public static void StopGoRotate(GameObject go)
         //{
         //    RotateAndZoomManager.StopGoRotate(go);
@@ -259,7 +253,7 @@ namespace MagiCloud.Features
         /// <param name="maxdistance">距离中心最远距离</param>
         public static void StartCameraZoom(Transform center, float mindistance, float maxdistance)
         {
-            //RotateAndZoomManager.StartCameraZoom(center, mindistance, maxdistance);
+            RotateAndZoomManager.StartCameraZoom(center, mindistance, maxdistance);
         }
 
         /// <summary>
@@ -267,7 +261,7 @@ namespace MagiCloud.Features
         /// </summary>
         public static void StopCameraZoom()
         {
-            //RotateAndZoomManager.StopCameraZoom();
+            RotateAndZoomManager.StopCameraZoom();
         }
 
         #endregion
@@ -276,7 +270,7 @@ namespace MagiCloud.Features
 
         public static void RotateAndZoomReset()
         {
-            //RotateAndZoomManager.RotateAndZoomReset();
+            RotateAndZoomManager.RotateAndZoomReset();
         }
 
         #endregion
