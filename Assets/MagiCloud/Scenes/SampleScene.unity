@@ -2126,6 +2126,7 @@ MonoBehaviour:
   LimitMove: {fileID: 0}
   ObjectRatation: {fileID: 0}
   cameraRotateAround: {fileID: 0}
+  objectButton: {fileID: 0}
   LabelController: {fileID: 1459494236}
   CanGrab: {fileID: 1459494234}
   spaceLimit: {fileID: 0}
@@ -2459,6 +2460,7 @@ MonoBehaviour:
   LimitMove: {fileID: 0}
   ObjectRatation: {fileID: 0}
   cameraRotateAround: {fileID: 0}
+  objectButton: {fileID: 0}
   LabelController: {fileID: 166803564}
   CanGrab: {fileID: 166803562}
   spaceLimit: {fileID: 0}
@@ -2740,7 +2742,7 @@ MonoBehaviour:
   LimitMove: {fileID: 0}
   ObjectRatation: {fileID: 1015018634}
   cameraRotateAround: {fileID: 0}
-  cameraRotateAround: {fileID: 0}
+  objectButton: {fileID: 0}
   LabelController: {fileID: 0}
   CanGrab: {fileID: 0}
   spaceLimit: {fileID: 0}
@@ -4117,6 +4119,57 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2052254621}
   m_CullTransparentMesh: 0
+--- !u!1001 &2122945541
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4076663986306170, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4076663986306170, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4076663986306170, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4076663986306170, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4076663986306170, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4076663986306170, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4076663986306170, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4076663986306170, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
+      propertyPath: m_RootOrder
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 223663814397262712, guid: cf48556c813bfd045a71b20acfac6bad,
+        type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 202693554}
+    - target: {fileID: 1646362849330962, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
+      propertyPath: m_Name
+      value: MagiCloud (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!1 &2125538403
 GameObject:
   m_ObjectHideFlags: 0
@@ -4201,7 +4254,7 @@ RectTransform:
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2127415524
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 114863877892904242, guid: cf48556c813bfd045a71b20acfac6bad,
     type: 2}
   m_PrefabInternal: {fileID: 0}
@@ -4264,7 +4317,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9707746}
-  - component: {fileID: 2133782678}
   - component: {fileID: 2133782677}
   - component: {fileID: 2133782676}
   - component: {fileID: 2133782675}
@@ -4331,15 +4383,3 @@ MonoBehaviour:
   labelFont: {fileID: 12800000, guid: cc74136f0a3c40341bba0319eb8d9d30, type: 3}
   labelFontSize: 24
   labelBg: {fileID: 0}
---- !u!114 &2133782678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 114011320829081076, guid: cf48556c813bfd045a71b20acfac6bad,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2133782673}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1679752655, guid: 0829bd564275ed840ac97ce71ff4f5d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
