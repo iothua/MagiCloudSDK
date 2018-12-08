@@ -42,7 +42,6 @@ namespace MagiCloud.KGUI
         //显示的内容
         public Text textName;
 
-        [HideInInspector]
         private KGUI_DropdownItem currentItem;//当前选项
 
         [HideInInspector]

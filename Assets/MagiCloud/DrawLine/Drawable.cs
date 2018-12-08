@@ -135,7 +135,7 @@ namespace DrawLine
         {
             int centerX = (int)centerPixel.x;
             int centerY = (int)centerPixel.y;
-            int extraRadius = Mathf.Min(0, penThickness - 2);
+            //int extraRadius = Mathf.Min(0, penThickness - 2);
 
             //根据centerPixel及penThickness计算出每一个方向需要着色的像素数
             for (int x = centerX - penThickness; x <= centerX + penThickness; x++)
@@ -188,7 +188,7 @@ namespace DrawLine
         {
             int centerX = (int)centerPixel.x;
             int centerY = (int)centerPixel.y;
-            int extraRadius = Mathf.Min(0, penThickness - 2);
+            //int extraRadius = Mathf.Min(0, penThickness - 2);
 
             for (int x = centerX - penThickness; x <= centerX + penThickness; x++)
             {

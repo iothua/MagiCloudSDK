@@ -285,7 +285,7 @@ namespace MagiCloud.KGUI
             _isHandOnBag = true;
             _handIndex = handIndex;
             
-            var tween = areaPanel.transform.DOLocalMove(openPosition, 1.0f);
+            areaPanel.transform.DOLocalMove(openPosition, 1.0f);
 
         }
 

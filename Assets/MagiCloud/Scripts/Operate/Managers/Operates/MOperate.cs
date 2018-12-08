@@ -344,15 +344,22 @@ namespace MagiCloud
         /// </summary>
         public void SetObjectRelease()
         {
+
+            OperateObjectHandler();
+            InputHand.HandStatus = MInputHandStatus.Idle;
+
+            EventHandReleaseObject.SendListener(OperateObject.GrabObject,InputHand.HandIndex);
+            EventHandReleaseObjectKey.SendListener(OperateObject.GrabObject,InputHand.HandIndex);
+        }
+
+        private void OperateObjectHandler()
+        {
             HideHighLight();
             HideLabel();
 
             HandleIdle(operaObject.FeaturesObject.operaType);
-            InputHand.HandStatus = MInputHandStatus.Idle;
             OperateObject.HandStatus = MInputHandStatus.Idle;
 
-            EventHandReleaseObject.SendListener(OperateObject.GrabObject,InputHand.HandIndex);
-            EventHandReleaseObjectKey.SendListener(OperateObject.GrabObject,InputHand.HandIndex);
         }
 
         /// <summary>
@@ -365,8 +372,8 @@ namespace MagiCloud
             //停止手上已经抓取的
             if (OperateObject != null)
             {
-                HandleIdle(operaObject.FeaturesObject.operaType);
-                OperateObject.HandStatus = MInputHandStatus.Idle;
+                OperateObjectHandler();
+
                 OperateObject = null;
             }
 

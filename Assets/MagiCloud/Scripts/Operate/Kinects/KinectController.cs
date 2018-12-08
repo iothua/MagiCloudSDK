@@ -236,7 +236,11 @@ namespace MagiCloud.Operate
                         Vector3 screenMouse = InputHands[0].ScreenPoint;
                         Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x, screenMouse.y, screenDevice.z));
 
-                        rightOperateObject.GrabObject.transform.position = vPos - rightOffset;
+                        //rightOperateObject.GrabObject.transform.position = vPos - rightOffset;
+
+                        Vector3 position = vPos - rightOffset;
+
+                        EventUpdateObject.SendListener(rightOperateObject.GrabObject, position, rightOperateObject.GrabObject.transform.rotation, InputHands[0].HandIndex);
 
                         //需要处理偏移量
 
@@ -261,7 +265,11 @@ namespace MagiCloud.Operate
                         Vector3 screenMouse = InputHands[1].ScreenPoint;
                         Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x, screenMouse.y, screenDevice.z));
 
-                        leftOperateObject.GrabObject.transform.position = vPos - leftOffset;
+                        //leftOperateObject.GrabObject.transform.position = vPos - leftOffset;
+
+                        Vector3 position = vPos - leftOffset;
+
+                        EventUpdateObject.SendListener(leftOperateObject.GrabObject, position, leftOperateObject.GrabObject.transform.rotation, InputHands[0].HandIndex);
 
                         //需要处理偏移量
 
@@ -488,7 +496,7 @@ namespace MagiCloud.Operate
         {
             if (handIndex != InputHands[0].HandIndex) return;
 
-            Vector3 screenDevice = MUtility.MainWorldToScreenPoint(operate.GrabObject.transform.position);
+            //Vector3 screenDevice = MUtility.MainWorldToScreenPoint(operate.GrabObject.transform.position);
             Vector3 screenpoint = InputHands[0].ScreenPoint;
             rightOperateObject = operate;
 

@@ -36,7 +36,7 @@ namespace MagiCloud.Features
             if (!isActive) return;
             float dis = (GrabObject.transform.position-Camera.main.transform.position).magnitude;   //相机到物体的距离
             Vector3 screenHand = MOperateManager.GetHandScreenPoint(handIndex);//当前手的屏幕坐标
-            Vector3 vector = (screenHand-recordPos)*speed*Time.deltaTime;  //手移动的向量
+            //Vector3 vector = (screenHand-recordPos)*speed*Time.deltaTime;  //手移动的向量
             //移动距离转旋转值
             x+= (screenHand.x-recordPos.x)/1920*360;
             y-= (screenHand.y-recordPos.y)/1080*360;

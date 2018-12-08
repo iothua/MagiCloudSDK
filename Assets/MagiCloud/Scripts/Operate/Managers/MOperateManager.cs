@@ -187,7 +187,7 @@ namespace MagiCloud
         /// </summary>
         /// <param name="target">需要被设置抓取的物体对象</param>
         /// <param name="zValue"></param>
-        public static void SetObjectGrab(GameObject target,  int handIndex = 0, float zValue = 5)
+        public static void SetObjectGrab(GameObject target,  int handIndex, float zValue)
         {
             var operate = GetOperateHand(handIndex);
             if (operate == null) return;
@@ -195,18 +195,16 @@ namespace MagiCloud
             operate.SetObjectGrab(target, zValue);
         }
 
-        /// <summary>
-        /// 更换抓取事件
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="handIndex"></param>
-        /// <param name="zValue"></param>
-        public static void SetChangeObjectGrab(GameObject target, int handIndex, float zValue = 5)
+        public static void SetObjectGrab(GameObject target, int handIndex = 0)
         {
             var operate = GetOperateHand(handIndex);
             if (operate == null) return;
 
-            operate.SetObjectGrab(target, zValue);
+            Vector3 tempPos = MUtility.MainWorldToScreenPoint(target.transform.position - new Vector3(0, 0, MUtility.MainCamera.transform.position.z));
+
+            tempPos = MUtility.MainScreenToWorldPoint(tempPos);
+
+            operate.SetObjectGrab(target, tempPos.z);
         }
 
         /// <summary>

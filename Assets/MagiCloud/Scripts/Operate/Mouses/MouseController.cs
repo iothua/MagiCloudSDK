@@ -203,14 +203,14 @@ namespace MagiCloud.Operate
                 {
                     case MInputHandStatus.Grabing:
 
+                        //需要处理偏移量
                         var screenDevice = MUtility.MainWorldToScreenPoint(operateObject.GrabObject.transform.position);
-
                         Vector3 screenMouse = InputHands[0].ScreenPoint;
                         Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x, screenMouse.y, screenDevice.z));
 
-                        operateObject.GrabObject.transform.position = vPos - offset;
+                        Vector3 position = vPos - offset;
 
-                        //需要处理偏移量
+                        EventUpdateObject.SendListener(operateObject.GrabObject, position, operateObject.GrabObject.transform.rotation, InputHands[0].HandIndex);
 
                         break;
                     case MInputHandStatus.Idle:
@@ -264,7 +264,7 @@ namespace MagiCloud.Operate
         {
             if (handIndex != InputHands[0].HandIndex) return;
 
-            Vector3 screenDevice = MUtility.MainWorldToScreenPoint(operate.GrabObject.transform.position);
+            //Vector3 screenDevice = MUtility.MainWorldToScreenPoint(operate.GrabObject.transform.position);
             Vector3 screenpoint = InputHands[0].ScreenPoint;
             operateObject = operate;
 
