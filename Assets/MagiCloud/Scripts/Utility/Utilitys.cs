@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using MagiCloud.Equipments;
+using System;
 
-namespace MagiCloud.Utility
+namespace MagiCloud
 {
     public static class Utilitys
     {
@@ -28,7 +30,7 @@ namespace MagiCloud.Utility
             for (int i = 0; i < n; i++)
             {
                 //随机一个数，每随机一次，随机区间-1  
-                int num = Random.Range(0,end + 1);
+                int num = UnityEngine.Random.Range(0,end + 1);
                 output[i] = sequence[num];
                 //将区间最后一个数赋值到取到数上  
                 sequence[num] = sequence[end];
@@ -56,5 +58,57 @@ namespace MagiCloud.Utility
             return t;
         }
 
+
+        /// <summary>
+        /// 根据脚本信息，添加命名空间
+        /// </summary>
+        /// <param name="transform">Transform.</param>
+        /// <param name="namespaces">Namespaces.</param>
+        /// <param name="scriptName">Script name.</param>
+        public static T AddEquipmentScript<T>(this Transform transform,string namespaces,string scriptName)
+            where T:EquipmentBase
+        {
+            string script = !string.IsNullOrEmpty(namespaces) ? namespaces + "." + scriptName : scriptName;
+            var component = transform.AddEquipmentByName(script);
+
+            return (T)component;
+        }
+
+        /// <summary>
+        /// 根据名称添加脚本
+        /// </summary>
+        /// <returns>The equipment by name.</returns>
+        /// <param name="t">T.</param>
+        /// <param name="name">Name.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public static Component AddEquipmentByName<T>(this T t, string name) where T : Component
+        {
+            Type type = null;
+            type = Type.GetType(name);
+
+            return t.gameObject.GetComponent(type) ?? t.gameObject.AddComponent(type);
+        }
+
+        /// <summary>
+        /// 设置局部Tranform值
+        /// </summary>
+        /// <param name="transform">Transform.</param>
+        /// <param name="transformData">Transform data.</param>
+        public static void SetTransform(this Transform transform,TransformData transformData,bool isLocal = true)
+        {
+            if(isLocal)
+            {
+                transform.localPosition = transformData.localPosition.Vector;
+                transform.localRotation = Quaternion.Euler(transformData.localRotation.Vector);
+                transform.localScale = transformData.localScale.Vector;
+            }
+            else
+            {
+                transform.position = transformData.localPosition.Vector;
+                transform.rotation = Quaternion.Euler(transformData.localRotation.Vector);
+                transform.localScale = transformData.localScale.Vector;
+            }
+
+        }
     }
 }

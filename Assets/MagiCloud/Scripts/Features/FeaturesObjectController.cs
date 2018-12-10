@@ -42,7 +42,7 @@ namespace MagiCloud.Features
         /// </summary>
         public LabelData LabelController;
 
-        private Collider _collider;
+        private BoxCollider _collider;
         private bool isEnable = true;
 
         private GameObject interactionObject;
@@ -142,12 +142,12 @@ namespace MagiCloud.Features
         /// <summary>
         /// 碰撞体
         /// </summary>
-        public Collider Collider
+        public BoxCollider Collider
         {
             get
             {
                 if (_collider == null)
-                    _collider = OperaObject.GetComponent<Collider>();
+                    _collider = OperaObject.GetComponent<BoxCollider>();
 
                 return _collider;
             }
@@ -513,6 +513,17 @@ namespace MagiCloud.Features
             transform.SetParent(parent);
             transform.localPosition = localPosition;
             transform.localRotation = Quaternion.Euler(localRotation);
+        }
+
+        /// <summary>
+        /// 设置碰撞体大小
+        /// </summary>
+        /// <param name="center">Center.</param>
+        /// <param name="size">Size.</param>
+        public void SetCollider(Vector3 center,Vector3 size)
+        {
+            Collider.center = center;
+            Collider.size = size;
         }
     }
 }

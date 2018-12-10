@@ -10,6 +10,18 @@ namespace MagiCloud.Equipments
         public EquipmentModelDataItem geneterItem;//已经生成后的
         [Title("资源信息")]
         public EquipmentModelDataItem resourcesItem; //资源内的
+
+        /// <summary>
+        /// 创建模型
+        /// </summary>
+        /// <param name="parent">Parent.</param>
+        public void CreateModel(Transform parent)
+        {
+            geneterItem.modelObject = GameObject.Instantiate(resourcesItem.modelObject, parent);
+
+            geneterItem.transformData = resourcesItem.transformData;
+            geneterItem.modelObject.transform.SetTransform(resourcesItem.transformData);
+        }
     }
 
     /// <summary>
@@ -21,7 +33,11 @@ namespace MagiCloud.Equipments
         [InlineEditor(InlineEditorModes.LargePreview)]
         public GameObject modelObject;
 
-        [InfoBox("Transform信息")]
         public TransformData transformData;
+
+        public void Assignment()
+        {
+            transformData = new TransformData(modelObject.transform);
+        }
     }
 }
