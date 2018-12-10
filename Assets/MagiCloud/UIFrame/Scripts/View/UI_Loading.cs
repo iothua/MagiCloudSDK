@@ -61,7 +61,7 @@ namespace MagiCloud.UIFrame
 
             //KinectConfig.SetHandStartStatus(KinectHandStartStatus.None);
 
-            int[] nums = Utility.Utilitys.GetRandomSequence(LoadData.SpriteDatas.Count, LoadData.loadCount);
+            int[] nums = Utilitys.GetRandomSequence(LoadData.SpriteDatas.Count, LoadData.loadCount);
 
             for (int i = 0; i < nums.Length; i++)
             {
@@ -90,7 +90,7 @@ namespace MagiCloud.UIFrame
             //KinectHandStartStatus status = KinectConfig.GetHandStartStatus();
             //KinectConfig.SetHandStartStatus(KinectHandStartStatus.None);
 
-            var value = Utility.Utilitys.GetRandomSequence(LoadData.SpriteDatas.Count, 1)[0];
+            var value = Utilitys.GetRandomSequence(LoadData.SpriteDatas.Count, 1)[0];
 
             SetBackground(LoadData.SpriteDatas[value].Value);
 
