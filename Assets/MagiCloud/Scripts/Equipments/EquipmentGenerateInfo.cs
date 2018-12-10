@@ -41,27 +41,7 @@ namespace MagiCloud.Equipments
         [ReadOnly]
         public List<EquipmentGenerateInfo> childs;
 
-        [Button("刷新数据")]
-        public void OnUpdateData()
-        {
-            var equipment = gameObject.GetComponent<EquipmentBase>();
-
-            Type type = equipment.GetType();
-            Namespaces = type.Namespace;
-            scriptName = type.Name;
-
-            colliderData = new ColliderData(equipment.FeaturesObject.Collider);
-            transformData = new TransformData(transform);
-
-            for (int i = 0; i < modelDatas.Count; i++)
-            {
-            }
-
-            childs = gameObject.GetComponentsInChildren<EquipmentGenerateInfo>().Where(arg => !arg.Equals(this)).ToList();
-
-
-        }
-
+        [ButtonGroup]
         [Button("创建")]
         public void OnCreate()
         {
@@ -70,7 +50,7 @@ namespace MagiCloud.Equipments
             transform.SetTransform(transformData);
 
             var equipment = transform.AddEquipmentScript<EquipmentBase>(Namespaces, scriptName);
-            if(equipment!=null)
+            if (equipment != null)
             {
                 equipment.FeaturesObject.SetCollider(colliderData.Center.Vector, colliderData.Size.Vector);
             }
@@ -90,6 +70,55 @@ namespace MagiCloud.Equipments
                 effectDatas[i].CreateModel(effectNode);
             }
         }
+
+        [ButtonGroup]
+        [Button("获取物体数据")]
+        public void GetObjectData()
+        {
+            var equipment = gameObject.GetComponent<EquipmentBase>();
+            if (equipment == null) return;
+            Type type = equipment.GetType();
+            Namespaces = type.Namespace;
+            scriptName = type.Name;
+
+            colliderData = new ColliderData(equipment.FeaturesObject.Collider);
+            transformData = new TransformData(transform);
+
+            for (int i = 0; i < modelDatas.Count; i++)
+            {
+                modelDatas[i].geneterItem.Assignment();
+            }
+
+            for (int i = 0; i < effectDatas.Count; i++)
+            {
+                effectDatas[i].geneterItem.Assignment();
+            }
+
+            childs = gameObject.GetComponentsInChildren<EquipmentGenerateInfo>().Where(arg => !arg.Equals(this)).ToList();
+        }
+
+        [ButtonGroup]
+        [Button("设置物体数据")]
+        public void SetObjectData()
+        {
+            var equipment = gameObject.GetComponent<EquipmentBase>();
+            if (equipment == null) return;
+
+            equipment.FeaturesObject.SetCollider(colliderData.Center.Vector, colliderData.Size.Vector);
+            transform.SetTransform(transformData);
+
+            for (int i = 0; i < modelDatas.Count; i++)
+            {
+                modelDatas[i].geneterItem.SetTransform();
+            }
+
+            for (int i = 0; i < effectDatas.Count; i++)
+            {
+                effectDatas[i].geneterItem.SetTransform();
+            }
+        }
+
+        
     }
 }
 #endif

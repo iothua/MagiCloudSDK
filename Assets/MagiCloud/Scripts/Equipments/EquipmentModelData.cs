@@ -39,5 +39,13 @@ namespace MagiCloud.Equipments
         {
             transformData = new TransformData(modelObject.transform);
         }
+
+        /// <summary>
+        /// 给当前物体设置值
+        /// </summary>
+        public void SetTransform()
+        {
+            modelObject.transform.SetTransform(transformData);
+        }
     }
 }
