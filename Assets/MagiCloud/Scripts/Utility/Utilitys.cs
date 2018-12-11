@@ -110,5 +110,31 @@ namespace MagiCloud
             }
 
         }
+
+        /// <summary>
+        /// 删除该物体下的所有子物体（编辑器下）
+        /// </summary>
+        /// <param name="transform"></param>
+        public static void DestroyImmediateChildObject(this Transform transform)
+        {
+            foreach (Transform item in transform)
+            {
+                //删除下面所有的
+                GameObject.DestroyImmediate(item.gameObject);
+            }
+        }
+
+        /// <summary>
+        /// 删除该物体下的所有子物体
+        /// </summary>
+        /// <param name="transform"></param>
+        public static void DestroyChildObject(this Transform transform)
+        {
+            foreach (Transform item in transform)
+            {
+                //删除下面所有的
+                GameObject.Destroy(item.gameObject);
+            }
+        }
     }
 }

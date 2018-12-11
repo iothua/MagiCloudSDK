@@ -119,7 +119,8 @@ namespace MagiCloud.Common
             //  key.z=center.position.z;
             var sum = limit.xRange.y-limit.xRange.x;
             var min = limit.xRange.x;
-            float t = leftToRight ? (key.x-min)/sum : -1f*(min+(float)Math.Round(key.x,5))/sum;
+            float t = leftToRight ? (key.x-min)/sum : -1f*(min+key.x)/sum;
+            t=Mathf.Clamp01(t);
             //float t = leftToRight ? (key.x/sum+0.5f) : (0.5f-(float)Math.Round(key.x,5)/sum);
             limit.AddKeyGroup(key.y,key.y,AxisLimits.Y,t);
             keys.Add(key);
