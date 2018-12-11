@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 114595803720912626}
   - component: {fileID: 114237931221106444}
   - component: {fileID: 114180928840296826}
+  - component: {fileID: 114525473724657096}
   - component: {fileID: 114180495320876648}
   m_Layer: 0
   m_Name: MagiCloud
@@ -558,7 +559,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedProfile: {fileID: 0}
+  sharedProfile: {fileID: 11400000, guid: a0787dc900946644faa455895af8adf8, type: 2}
   isGlobal: 1
   blendDistance: 0
   weight: 1
@@ -579,7 +580,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   stopNaNPropagation: 1
-  finalBlitToCameraTarget: 1
   antialiasingMode: 2
   temporalAntialiasing:
     jitterSpread: 0.75
@@ -610,7 +610,6 @@ MonoBehaviour:
       size: 256
       exposure: 0.12
     overlaySettings:
-      linearDepth: 0
       motionColorIntensity: 4
       motionGridSize: 64
       colorBlindnessType: 0
@@ -635,6 +634,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UIs: []
   defaultStr: 
+--- !u!114 &114525473724657096
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1646362849330962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4b83bb4be0534548b8bfa58015c37b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114534302780824186
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -721,7 +731,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 20146341618963040}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1

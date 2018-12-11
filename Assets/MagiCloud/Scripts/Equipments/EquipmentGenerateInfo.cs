@@ -19,10 +19,10 @@ namespace MagiCloud.Equipments
         public string EquipmentName = "仪器名称"; //仪器名称
 
         [LabelText("命名空间(Namespaces)")]
-        public string Namespaces; //命名空间
+        public string Namespaces = "MagiCloud.Equipments"; //命名空间
 
         [LabelText("脚本名称(scriptName)")]
-        public string scriptName;
+        public string scriptName = "EquipmentBase";
 
         [PropertySpace(10)]
         [LabelText("碰撞体数据(ColliderDat)")]
@@ -56,6 +56,7 @@ namespace MagiCloud.Equipments
             }
 
             Transform modelNode = equipment == null ? transform : equipment.ModelNode;
+            modelNode.DestroyImmediateChildObject();
 
             for (int i = 0; i < modelDatas.Count; i++)
             {
@@ -64,11 +65,16 @@ namespace MagiCloud.Equipments
             }
 
             Transform effectNode = equipment == null ? transform : equipment.EffectNode;
+
+            effectNode.DestroyImmediateChildObject();
+
             for (int i = 0; i < effectDatas.Count; i++)
             {
                 if (effectDatas[i].resourcesItem == null) continue;
                 effectDatas[i].CreateModel(effectNode);
             }
+
+            equipment.OnInitializeEquipment_Editor(EquipmentName);
         }
 
         [ButtonGroup]
@@ -77,6 +83,9 @@ namespace MagiCloud.Equipments
         {
             var equipment = gameObject.GetComponent<EquipmentBase>();
             if (equipment == null) return;
+
+            EquipmentName = name;
+
             Type type = equipment.GetType();
             Namespaces = type.Namespace;
             scriptName = type.Name;
@@ -117,8 +126,6 @@ namespace MagiCloud.Equipments
                 effectDatas[i].geneterItem.SetTransform();
             }
         }
-
-        
     }
 }
 #endif

@@ -59,7 +59,7 @@ namespace MagiCloud.KGUI
 
         public void Close(int i)
         {
-            tableManager.transform.DOLocalMoveY(1000,0.5f);
+            tableManager.transform.DOLocalMoveY(1080,0.5f);
             showButtom.gameObject.SetActive(true);
         }
 

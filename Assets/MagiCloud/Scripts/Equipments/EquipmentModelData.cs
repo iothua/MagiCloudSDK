@@ -15,12 +15,22 @@ namespace MagiCloud.Equipments
         /// 创建模型
         /// </summary>
         /// <param name="parent">Parent.</param>
-        public void CreateModel(Transform parent)
+        public GameObject CreateModel(Transform parent)
         {
+            if (resourcesItem == null) return null;
+
+            if (geneterItem.modelObject != null)
+            {
+                GameObject.DestroyImmediate(geneterItem.modelObject);
+            }
+
             geneterItem.modelObject = GameObject.Instantiate(resourcesItem.modelObject, parent);
+            geneterItem.modelObject.name = resourcesItem.modelObject.name;
 
             geneterItem.transformData = resourcesItem.transformData;
             geneterItem.modelObject.transform.SetTransform(resourcesItem.transformData);
+
+            return geneterItem.modelObject;
         }
     }
 
@@ -37,6 +47,7 @@ namespace MagiCloud.Equipments
 
         public void Assignment()
         {
+            if (modelObject == null) return;
             transformData = new TransformData(modelObject.transform);
         }
 
@@ -45,6 +56,7 @@ namespace MagiCloud.Equipments
         /// </summary>
         public void SetTransform()
         {
+            if (modelObject == null) return;
             modelObject.transform.SetTransform(transformData);
         }
     }
