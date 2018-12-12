@@ -18,10 +18,12 @@ namespace MagiCloud.KGUI
         public KGUI_TableManagerHelper tableManager;
         public KGUI_Button showButtom;
         private Color color = Color.white;
+        public KGUI_Button backButton;
         void Start()
         {
             if (recordButton!=null)
                 recordButton.onClick.AddListener(OnClick);
+            if (backButton!=null) backButton.onClick.AddListener(Close);
         }
 
         private void OnClick(int arg)
@@ -67,6 +69,8 @@ namespace MagiCloud.KGUI
         {
             if (recordButton!=null)
                 recordButton.onClick.RemoveListener(OnClick);
+            if (backButton!=null)
+                backButton.onClick.RemoveListener(Close);
 
         }
     }

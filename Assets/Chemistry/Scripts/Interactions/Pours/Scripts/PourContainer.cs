@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+
 
 /// <summary>
-/// 关于倒水的容器类
+/// 关于倒水的容器类--此容器类主要功能用于计算倒水量
 /// 
 /// 1 当前被子液体集合 
 /// 2 每帧接受和倒出的处理 
@@ -25,6 +27,8 @@ public class PourContainer
     /// </summary>
     private float containerCurrentVolume;
 
+    private float startLiquidV;
+
     /// <summary>
     /// 容器的模型物体
     /// </summary>
@@ -38,12 +42,12 @@ public class PourContainer
     /// <summary>
     /// 容器存在的流体总集合
     /// </summary>
-    private Dictionary<string, FluidData> dicContainerWhat;
+    private Dictionary<string, float> dicContainerWhat;
 
     /// <summary>
     /// 作为倒水容器每一帧的去传递的流体集合
     /// </summary>
-    private Dictionary<string, FluidData> dicContainerPreFrameWhat;
+    private Dictionary<string, float> dicContainerPreFrameWhat;
 
     #endregion
 
@@ -58,23 +62,23 @@ public class PourContainer
 
     #endregion
 
-    #region 其他参数
     /// <summary>
     /// 流体速度流出--暂时无用
     /// </summary>
-    private float fluidSpeed = 1;
+    //private float fluidSpeed = 1;
 
     /// <summary>
     /// 容器可被旋转的范围 
     /// </summary>
     public Vector2 leftRotateLimits = new Vector2(0, 120);
     public Vector2 rightRotateLimits = new Vector2(-120, 0);
-    #endregion
 
 
+    //[Header("当前容器对应的类")]
+    //public EC_Container CurContainer;
 
     #region 属性
-    public Dictionary<string, FluidData> DicContainerWhat
+    public Dictionary<string, float> DicContainerWhat
     {
         get
         {
@@ -87,10 +91,14 @@ public class PourContainer
         }
     }
 
-    public Dictionary<string, FluidData> DicContainerPreFrameWhat
+    public Dictionary<string, float> DicContainerPreFrameWhat
     {
         get
         {
+            if (dicContainerPreFrameWhat==null)
+            {
+                dicContainerPreFrameWhat = new Dictionary<string, float>();
+            }
             return dicContainerPreFrameWhat;
         }
 
@@ -113,20 +121,21 @@ public class PourContainer
         }
     }
 
-    float currenttemp;//暂存存放量来防止每次get都执行循环
+    bool hasChanged = false;//改变过才重新遍历，提高效率
     public float ContainerCurrentVolume
     {
         get
         {
-            if (currenttemp != containerCurrentVolume)
+            if (hasChanged)
             {
-                float sumVolume = 0;
+                hasChanged = false;
+                containerCurrentVolume = 0;
+
                 foreach (var item in dicContainerWhat)
                 {
-                    sumVolume += item.Value.FluidVolume;
+                    containerCurrentVolume += item.Value;
                 }
-                //sumVolume = containerCurrentVolume;
-                containerCurrentVolume = sumVolume;
+
                 return containerCurrentVolume;
             }
             else
@@ -135,10 +144,11 @@ public class PourContainer
             }
         }
 
-        set
-        {
-            containerCurrentVolume = value;
-        }
+        //set--不能直接设置总量，需单独设置每个药品量
+        //{
+        //    //直接设置当前量--混合物待扩展
+        //    containerCurrentVolume = value;
+        //}
     }
 
     #endregion
@@ -148,11 +158,14 @@ public class PourContainer
     /// </summary>
     /// <param name="tra">模型本身</param>
     /// <param name="dicContainerWhat"></param>
-    public PourContainer(Transform tra, float maxVolume, Dictionary<string, FluidData> dicContainerWhat)
+    public PourContainer(Transform tra, float maxVolume, Dictionary<string, float> dicContainerWhat)
     {
         this.containerTra = tra;
         this.ContainerMaxVolume = maxVolume;
         this.DicContainerWhat = dicContainerWhat;
+
+        hasChanged = true;//先保证至少遍历一次
+        startLiquidV = ContainerCurrentVolume;
     }
 
 
@@ -162,21 +175,46 @@ public class PourContainer
     /// 倒出液体计算每一帧的流体值
     /// </summary>
     /// <param name="interactionPourWater">倒水杯那一边的倒水距离检测点</param>
-    public void PourOut(InteractionPourWater interactionPourWater)
+    public float PourOut(InteractionPourWater interactionPourWater)
     {
-        //这个地方的返回值是否有问题？？？？//TODO---
+        
         float outValume = RotateAngleToReduce(interactionPourWater);
 
+        //Debug.Log("旋转角度差为：" + outValume);
         //Dictionary<string, FluidData> temp = null;
-        dicContainerPreFrameWhat.Clear();
+        if (outValume>= interactionPourWater.pourContainer.ContainerCurrentVolume)
+        {
+            outValume = interactionPourWater.pourContainer.ContainerCurrentVolume;
+        }
+       
+        DicContainerPreFrameWhat.Clear();
 
-        foreach (var item in dicContainerWhat)
+        if (outValume <= 0.001f)
+        {
+            return 0.0f;
+        }
+
+        float sumV = 0.0f;
+        foreach (var item in DicContainerWhat)
         {
             //计算每个液体占每一帧的量
-            float x = (item.Value.FluidVolume / containerCurrentVolume) * outValume;
+            float tmpV = (item.Value / ContainerCurrentVolume) * outValume;
+            Debug.Log("倒水   " + item.Value + "/" + ContainerCurrentVolume + "结果" + tmpV);
             //添加到临时字典中
-            dicContainerPreFrameWhat.Add(item.Key, new FluidData(item.Key, x, item.Value.FluidDensity));
+            //dicContainerPreFrameWhat.Add(item.Key, new FluidData(item.Key, x, item.Value.FluidDensity));
+            DicContainerPreFrameWhat.Add(item.Key, tmpV);
+            sumV += tmpV;
         }
+        
+        //for (int i = 0; i < tmpLst.Count; i++)
+        //{
+        //    tmpLst[i]
+        //}
+
+        //可优化，目前只考虑纯净物
+        DicContainerWhat[DicContainerWhat.First().Key] -= sumV;
+
+        return sumV;
     }
 
 
@@ -184,22 +222,28 @@ public class PourContainer
     /// 传入的是倒水杯子的容器类
     /// </summary>
     /// <param name="pourContainer">倒水杯子的容器对象</param>
-    public void ReceiveIn(PourContainer pourContainer)
+    public float ReceiveIn(PourContainer pourContainer)
     {
+        float sumV = 0.0f;
         //做流体的接受处理 有相同的液体的合并处理 不相同的做增加处理
         foreach (var item in pourContainer.DicContainerPreFrameWhat)
         {
             if (DicContainerWhat.ContainsKey(item.Key))
             {
                 //有则在原对应流体加上这一帧的量
-                DicContainerWhat[item.Key].FluidVolume += item.Value.FluidVolume;
+                DicContainerWhat[item.Key] += item.Value;
+                sumV += item.Value;
             }
             else
             {
                 //若没有则再新加一种流体
                 DicContainerWhat.Add(item.Key, item.Value);
+                sumV += item.Value;
             }
         }
+        Debug.Log("接水   " + ContainerCurrentVolume + "结果");
+
+        return sumV;
     }
 
     #endregion
@@ -208,9 +252,9 @@ public class PourContainer
     #region 物体的旋转和液量对应处理
 
     float currentAngel = 0;
-    float lastAngel = 0;
-    float offsetAngel = 0;
-    float angelToVolumeRate = 1;//角度转流体量量的转化率
+    //float lastAngel = 0;
+    //float offsetAngel = 0;
+    //float angelToVolumeRate = 1;//角度转流体量量的转化率
 
     /// <summary>
     /// 返回的是 在满足可倒出液体的角度下 当每次角度提高一点就将这一点转化为浮点数用于去计算倒出的液体总量
@@ -218,38 +262,88 @@ public class PourContainer
     /// <returns></returns>
     float RotateAngleToReduce(InteractionPourWater interactionPourWater)
     {
+        //若当前帧的角度无法倒出水，返回0
         if (!ISCanPourOut(interactionPourWater)) return 0;
-        currentAngel = containerTra.localRotation.eulerAngles.z;
-        offsetAngel = currentAngel - lastAngel;
-        lastAngel = currentAngel;
-        return Mathf.Abs(offsetAngel);
+
+        //currentAngel= interactionPourWater
+
+        //Debug.Log("当前旋转度为" + containerTra.parent.eulerAngles);
+        currentAngel = containerTra.parent.eulerAngles.z;
+
+        if (interactionPourWater.pointSide == PourPointSide.Right)//-120-0
+        {
+            currentAngel = -currentAngel;
+        }
+
+        //速率的系数--几倍速
+        int modulus = Mathf.CeilToInt((currentAngel - 90.0f) / 10.0f);
+        float resultV = Mathf.Clamp(modulus, 1, 4)* interactionPourWater.pourHelper.WaterSpeed;
+
+        Debug.Log("resultV" + resultV);
+
+        return resultV;
+        //offsetAngel = currentAngel - lastAngel;
+        //lastAngel = currentAngel;
+
+        //return Mathf.Abs(offsetAngel);
     }
 
     /// <summary>
     /// 能否再倒出来 依据现有的量去计算 可以倾倒的最小角度 在与现在的物体的倾斜角对比 
     /// </summary>
-    /// <param name="obj">杯子容器模型</param>
-    /// <param name="interactionPourWater">倒水杯那一边的倒水距离检测点</param>
+    /// <param name="interactionPourWater">倒水杯那一边的倒水距离检测点-----修改为自己倒水点的左右来判断</param>
     /// <returns></returns>
-    bool ISCanPourOut(InteractionPourWater interactionPourWater)
+    public bool ISCanPourOut(InteractionPourWater interactionPourWater)
     {
+        //没有了也不能倒水
+        if (interactionPourWater.pourContainer.ContainerCurrentVolume<=0.1f)
+        {
+            Debug.Log("容器已空，不能倒水");
+            return false;
+        }
+
+        //Debug.Log(interactionPourWater.FeaturesObjectController.name + "正在判断能否倒出水");
         switch (interactionPourWater.pointSide)
         {
             case PourPointSide.Left://采用(0,120)度限制杯子可倾斜角度
                 float minangleLeft = EquationsOfTwoUnknowns(ContainerCurrentVolume, new Vector2(0, leftRotateLimits.y), new Vector2(containerMaxVolume, 0));
 
-                if (containerTra.localRotation.eulerAngles.z > minangleLeft)
+                if (minangleLeft>90.0f)
+                {
+                    minangleLeft = 90.0f;
+                }
+                //Debug.Log(interactionPourWater.FeaturesObjectController.transform.parent.name + "是能否倒出水的旋转中心");
+                if (interactionPourWater.FeaturesObjectController.transform.parent.eulerAngles.z > minangleLeft)
+                {
+                    //Debug.Log("能倒出水");
+                    hasChanged = true;
                     return true;
+                }
                 else
+                {
+                    Debug.Log("不能倒出水");
                     return false;
+                }
             case PourPointSide.Right://采用(-120,0)度限制
                 float minangleRight = EquationsOfTwoUnknowns(ContainerCurrentVolume, new Vector2(0, rightRotateLimits.y), new Vector2(containerMaxVolume, 0));
 
-                if (containerTra.localRotation.eulerAngles.z < minangleRight)
+                //if (containerTra.localRotation.eulerAngles.z < minangleRight)
+                //{ return true; }
+                //else
+                //{ return false; }
 
+                if (minangleRight<-90.0f)
+                {
+                    minangleRight = -90.0f;
+                }
+                Debug.Log(interactionPourWater.FeaturesObjectController.transform.parent.name + "是能否倒出水的旋转中心");
+                if (interactionPourWater.FeaturesObjectController.transform.parent.eulerAngles.z < minangleRight)
+                {
+                    hasChanged = true;
                     return true;
+                }
                 else
-                    return false;
+                { return false; }
             default:
                 return false;
         }

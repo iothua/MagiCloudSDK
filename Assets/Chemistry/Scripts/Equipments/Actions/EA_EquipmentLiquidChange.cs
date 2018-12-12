@@ -39,13 +39,22 @@ namespace Chemistry.Equipments.Actions
         /// <returns>变化后液体量</returns>
         public float ChangeLiquid(float startV,float changeVolume, float time = 0.5f)
         {
+            Debug.Log(this.name + "液面变化量为" + changeVolume);
             if (time < 0.0f)
             {
                 Debug.LogError("时间不能为负");
                 return startV;
             }
 
+            //若改变量趋近于0，则不变--防止误差
+            if (Mathf.Abs(changeVolume)<0.001f)
+            {
+                return startV;
+            }
+
             float endV = startV + changeVolume;
+
+            
 
             //防止溢出
             //startV = DrugSystemIns.AllDrugs[DrugName].Volume;
@@ -62,6 +71,17 @@ namespace Chemistry.Equipments.Actions
             {
                 Debug.Log("液体已耗完" + endV);
                 endV = 0.0f;
+            }
+
+
+            Debug.Log("开始值" + startV);
+            Debug.Log("结束值" + endV);
+
+
+            if (time == 0.0f)
+            {
+                LiquidEffect.SetValue(endV, ContainerVolume);
+                return endV;
             }
 
             //是否正在变化--防止冲突
@@ -81,6 +101,7 @@ namespace Chemistry.Equipments.Actions
                 return startV;
             }
 
+
             changeCoroutine = StartCoroutine(OnLiquidChange(startV, endV, time));
 
             return endV;
@@ -97,18 +118,22 @@ namespace Chemistry.Equipments.Actions
         /// <returns></returns>
         IEnumerator OnLiquidChange(float _startV, float _endV, float time)
         {
+            //Debug.Log(this.name);
+
+            //突变
+            if (time <= 0.0f)
+            {
+                Debug.Log("time <=0.0f");
+            }
+
             //初始键值
             animationCurve.MoveKey(0, new Keyframe(0.0f, _startV));
 
             //最终键值
-            animationCurve.MoveKey(1, new Keyframe(time, _endV));
+            animationCurve.MoveKey(1, new Keyframe(time + 0.1f, _endV));
 
 
-            //突变
-            if (time == 0.0f)
-            {
-                LiquidEffect.SetValue(_endV, ContainerVolume);
-            }
+            
 
 
             while (true)

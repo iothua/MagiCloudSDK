@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 222392620348647198}
   - component: {fileID: 114380221432096456}
   - component: {fileID: 223293754920468212}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: PourImg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.28627452}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

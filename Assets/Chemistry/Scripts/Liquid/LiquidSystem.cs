@@ -96,6 +96,7 @@ namespace Chemistry.Liquid
         public void SetValue(float curValue, float sumValue)
         {
             _liquidVolume.level = curValue / sumValue;
+            OpenLiquidVolume();
         }
 
         /// <summary>
