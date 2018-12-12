@@ -20,15 +20,15 @@ namespace Chemistry.Data
 
         public static bool IsInitialized = false;
         
-        /// <summary>
-        /// 仪器信息
-        /// </summary>
-        public static Dictionary<string,DI_EquipmentInfo> DicEquipmentLoadingInfo = new Dictionary<string,DI_EquipmentInfo>();
+        ///// <summary>
+        ///// 仪器信息
+        ///// </summary>
+        //public static Dictionary<string,DI_EquipmentInfo> DicEquipmentLoadingInfo = new Dictionary<string,DI_EquipmentInfo>();
 
-        /// <summary>
-        /// 仪器药品信息
-        /// </summary>
-        public static Dictionary<string,DI_EquipmentDrugInfo> DicEquipmentDrugLoadingInfo = new Dictionary<string,DI_EquipmentDrugInfo>();
+        ///// <summary>
+        ///// 仪器药品信息
+        ///// </summary>
+        //public static Dictionary<string,DI_EquipmentDrugInfo> DicEquipmentDrugLoadingInfo = new Dictionary<string,DI_EquipmentDrugInfo>();
 
         /// <summary>
         /// 药品检索信息
@@ -50,10 +50,10 @@ namespace Chemistry.Data
         /// </summary>
         public static Dictionary<string,DI_ReactionInfo> DicReactionLoadingInfo = new Dictionary<string,DI_ReactionInfo>();
 
-        /// <summary>
-        /// 容器水体模型信息
-        /// </summary>
-        public static Dictionary<string,DI_ContainerWaterModelInfo> DicContainerWaterModelLoadingInfo=new Dictionary<string, DI_ContainerWaterModelInfo>();
+        ///// <summary>
+        ///// 容器水体模型信息
+        ///// </summary>
+        //public static Dictionary<string,DI_ContainerWaterModelInfo> DicContainerWaterModelLoadingInfo=new Dictionary<string, DI_ContainerWaterModelInfo>();
 
         public static void OnInitialize()
         {
@@ -63,78 +63,78 @@ namespace Chemistry.Data
 
             LoadChemicalEquation();
             //LoadExcelChemicalEquation();
-            LoadEquipmentInfo();
-            LoadEquipmentDrugInfo();
+            //LoadEquipmentInfo();
+            //LoadEquipmentDrugInfo();
 
-            LoadContainerWaterModel();
+            //LoadContainerWaterModel();
 
             ReactionManager.OnInitialize(DicReactionLoadingInfo);//获取到反应信息
 
             IsInitialized =true;
         }
 
-        #region 添加
+        //#region 添加
 
-        /// <summary>
-        /// 添加仪器数据
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="isModify"></param>
-        public static void AddEquipmentInfo(DI_EquipmentInfo info, bool isModify = false)
-        {
-            DicEquipmentLoadingInfo.Add(info.equipmentName, info, () =>
-              WriteJson(DicEquipmentLoadingInfo.Values, Application.streamingAssetsPath + DefineConst.PATH_JSON_EQUIPMENT), isModify);
-        }
+        ///// <summary>
+        ///// 添加仪器数据
+        ///// </summary>
+        ///// <param name="info"></param>
+        ///// <param name="isModify"></param>
+        //public static void AddEquipmentInfo(DI_EquipmentInfo info, bool isModify = false)
+        //{
+        //    DicEquipmentLoadingInfo.Add(info.equipmentName, info, () =>
+        //      WriteJson(DicEquipmentLoadingInfo.Values, Application.streamingAssetsPath + DefineConst.PATH_JSON_EQUIPMENT), isModify);
+        //}
 
-        /// <summary>
-        /// 添加仪器药品数据
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="isModify"></param>
-        public static void AddEquipmentDrugInfo(DI_EquipmentDrugInfo info, bool isModify = false)
-        {
-            DicEquipmentDrugLoadingInfo.Add(info.equipmentName, info, () =>
-                WriteJson(DicEquipmentDrugLoadingInfo.Values, Application.streamingAssetsPath + DefineConst.PATH_JSON_EQUIPMENT_DRUG), isModify
-            );
-        }
+        ///// <summary>
+        ///// 添加仪器药品数据
+        ///// </summary>
+        ///// <param name="info"></param>
+        ///// <param name="isModify"></param>
+        //public static void AddEquipmentDrugInfo(DI_EquipmentDrugInfo info, bool isModify = false)
+        //{
+        //    DicEquipmentDrugLoadingInfo.Add(info.equipmentName, info, () =>
+        //        WriteJson(DicEquipmentDrugLoadingInfo.Values, Application.streamingAssetsPath + DefineConst.PATH_JSON_EQUIPMENT_DRUG), isModify
+        //    );
+        //}
 
-        #endregion
+        //#endregion
 
         #region LoadEquipment
 
-        /// <summary>
-        /// 加载仪器
-        /// </summary>
-        /// <param name="path"></param>
-        private static void LoadEquipmentInfo()
-        {
-            DicEquipmentLoadingInfo.Clear();
-            var jsonData = JsonHelper.ReadJsonString(Application.streamingAssetsPath+DefineConst.PATH_JSON_EQUIPMENT);
-            if (jsonData==null) return;
-            List<DI_EquipmentInfo> list = JsonHelper.JsonToList<DI_EquipmentInfo>(jsonData);
+        ///// <summary>
+        ///// 加载仪器
+        ///// </summary>
+        ///// <param name="path"></param>
+        //private static void LoadEquipmentInfo()
+        //{
+        //    DicEquipmentLoadingInfo.Clear();
+        //    var jsonData = JsonHelper.ReadJsonString(Application.streamingAssetsPath+DefineConst.PATH_JSON_EQUIPMENT);
+        //    if (jsonData==null) return;
+        //    List<DI_EquipmentInfo> list = JsonHelper.JsonToList<DI_EquipmentInfo>(jsonData);
 
-            foreach (var item in list)
-            {
-                DicEquipmentLoadingInfo.Add(item.equipmentName,item);
-            }
-        }
+        //    foreach (var item in list)
+        //    {
+        //        DicEquipmentLoadingInfo.Add(item.equipmentName,item);
+        //    }
+        //}
 
-        /// <summary>
-        /// 加载仪器药品信息
-        /// </summary>
-        /// <param name="path"></param>
-        private static void LoadEquipmentDrugInfo()
-        {
-            DicEquipmentDrugLoadingInfo.Clear();
-            var jsonData = JsonHelper.ReadJsonString(Application.streamingAssetsPath+DefineConst.PATH_JSON_EQUIPMENT_DRUG);
-            if (jsonData==null) return;
-            List<DI_EquipmentDrugInfo> list = JsonHelper.JsonToList<DI_EquipmentDrugInfo>(jsonData);
+        ///// <summary>
+        ///// 加载仪器药品信息
+        ///// </summary>
+        ///// <param name="path"></param>
+        //private static void LoadEquipmentDrugInfo()
+        //{
+        //    DicEquipmentDrugLoadingInfo.Clear();
+        //    var jsonData = JsonHelper.ReadJsonString(Application.streamingAssetsPath+DefineConst.PATH_JSON_EQUIPMENT_DRUG);
+        //    if (jsonData==null) return;
+        //    List<DI_EquipmentDrugInfo> list = JsonHelper.JsonToList<DI_EquipmentDrugInfo>(jsonData);
 
-            foreach (var item in list)
-            {
-                DicEquipmentDrugLoadingInfo.Add(item.equipmentName,item);
-            }
-        }
+        //    foreach (var item in list)
+        //    {
+        //        DicEquipmentDrugLoadingInfo.Add(item.equipmentName,item);
+        //    }
+        //}
 
         /// <summary>
         /// 加载药品类型相关信息
@@ -212,33 +212,33 @@ namespace Chemistry.Data
             }
         }
 
-        /// <summary>
-        /// 从Json中加载水体模型相关信息
-        /// </summary>
-        private static void LoadContainerWaterModel()
-        {
-            DicContainerWaterModelLoadingInfo.Clear();
+        ///// <summary>
+        ///// 从Json中加载水体模型相关信息
+        ///// </summary>
+        //private static void LoadContainerWaterModel()
+        //{
+        //    DicContainerWaterModelLoadingInfo.Clear();
 
-            var jsonData = JsonHelper.ReadJsonString(Application.streamingAssetsPath + DefineConst.PATH_JSON_EQUIPMENT_WATERMODEL);
+        //    var jsonData = JsonHelper.ReadJsonString(Application.streamingAssetsPath + DefineConst.PATH_JSON_EQUIPMENT_WATERMODEL);
 
-            if (jsonData == null) 
-            {
-                return;
-            }
+        //    if (jsonData == null) 
+        //    {
+        //        return;
+        //    }
 
-            List<DI_ContainerWaterModelInfo> waterModelInfos = JsonHelper.JsonToList<DI_ContainerWaterModelInfo>(jsonData);
+        //    List<DI_ContainerWaterModelInfo> waterModelInfos = JsonHelper.JsonToList<DI_ContainerWaterModelInfo>(jsonData);
 
-            if (waterModelInfos==null)
-            {
-                //Debug.Log("水体模型信息列表为空");
-                return;
-            }
+        //    if (waterModelInfos==null)
+        //    {
+        //        //Debug.Log("水体模型信息列表为空");
+        //        return;
+        //    }
 
-            foreach (var info in waterModelInfos)
-            {
-                DicContainerWaterModelLoadingInfo.Add(info.equipmentName, info);
-            }
-        }
+        //    foreach (var info in waterModelInfos)
+        //    {
+        //        DicContainerWaterModelLoadingInfo.Add(info.equipmentName, info);
+        //    }
+        //}
         #endregion
 
         #region 共用方法

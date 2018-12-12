@@ -22,9 +22,9 @@ namespace Chemistry.Editor.Window
         private ChemicalEquationWindow chemicalEquationWindow; //化学方程式
         private DrugInfoWindow drugInfoWindow;
         private EquipmentGeneratorWindow generatorWindow;
-        private EquipmentWindow equipmentWindow;
-        private EquipmentWaterModelWindow equipmentWaterModelWindow;
-        private EquipmentDrugInfoWindow equipmentDrugInfo;
+        //private EquipmentWindow equipmentWindow;
+        //private EquipmentWaterModelWindow equipmentWaterModelWindow;
+        //private EquipmentDrugInfoWindow equipmentDrugInfo;
 
         private Dictionary<string, Action> DicWindow;
 
@@ -46,10 +46,10 @@ namespace Chemistry.Editor.Window
             if (DicWindow == null)
                 DicWindow = new Dictionary<string, Action>();
 
-            //if (!DicWindow.ContainsKey("读取文件数据"))
-            //{
-            //    DicWindow.Add("读取文件数据", InitializeDataLoading);
-            //}
+            if (!DicWindow.ContainsKey("读取文件数据"))
+            {
+                DicWindow.Add("读取文件数据", InitializeDataLoading);
+            }
 
             generatorWindow = new EquipmentGeneratorWindow(this,"创建仪器");
             if (!DicWindow.ContainsKey(generatorWindow.WindowName))

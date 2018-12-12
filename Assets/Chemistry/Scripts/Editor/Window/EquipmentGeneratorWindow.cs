@@ -26,32 +26,6 @@ namespace Chemistry.Editor.Window
 
             OnInspectorSuccess();
 
-            OnInspectorDefault();
-
-            EditorGUILayout.EndHorizontal();
-        }
-
-        private void OnInspectorDefault()
-        {
-            //配置初始的仪器列表
-            EditorGUILayout.BeginHorizontal("box", GUILayout.Width(chemicalEditor.position.width / 2));
-
-            EditorGUILayout.BeginVertical();
-            if (DataLoading.IsInitialized == false)
-                ChemicalEditorWindows.InitializeDataLoading();
-
-            GUILayout.Label("原始仪器，只有最基本的数据配置", chemicalEditor.titleStyle);
-
-            foreach (var item in DataLoading.DicEquipmentLoadingInfo)
-            {
-                if (GUILayout.Button(item.Key, GUILayout.Width(120)))
-                {
-                    EquipmentInitializationHelper.CreateOrGetEquipment(item.Value);
-                }
-            }
-
-            EditorGUILayout.EndVertical();
-
             EditorGUILayout.EndHorizontal();
         }
 
@@ -78,5 +52,7 @@ namespace Chemistry.Editor.Window
 
             EditorGUILayout.EndHorizontal();
         }
+
+
     }
 }

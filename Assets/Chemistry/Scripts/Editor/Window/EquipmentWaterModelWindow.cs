@@ -9,6 +9,9 @@ namespace Chemistry.Editor.Window
 {
     public class EquipmentWaterModelWindow
     {
+        /*
+       
+
         //选中的或正在编辑的水体模型信息
         private DI_ContainerWaterModelInfo waterModelInfo;
         //对应数据的JSON文件路径
@@ -187,5 +190,6 @@ namespace Chemistry.Editor.Window
 
             GUILayout.EndVertical();
         }
+         */
     }
 }

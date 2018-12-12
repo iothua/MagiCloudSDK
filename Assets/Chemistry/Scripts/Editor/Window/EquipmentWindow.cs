@@ -9,6 +9,10 @@ namespace Chemistry.Editor.Window
 {
     public class EquipmentWindow
     {
+        /*
+
+        
+
         private DI_EquipmentInfo equipmentInfo;
 
         private bool equipmentAdd = false;
@@ -277,5 +281,6 @@ namespace Chemistry.Editor.Window
 
             GUILayout.EndVertical();
         }
+        */
     }
 }

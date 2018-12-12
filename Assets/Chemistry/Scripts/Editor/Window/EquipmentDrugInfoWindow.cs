@@ -9,6 +9,7 @@ namespace Chemistry.Editor.Window
 {
     public class EquipmentDrugInfoWindow
     {
+        /*
         private DI_EquipmentDrugInfo equipmentDrugInfo;
         private bool isEquipmentAdd = false; //仪器添加
         private string equipmentDrugPath = string.Empty;
@@ -270,6 +271,6 @@ namespace Chemistry.Editor.Window
             GUILayout.EndVertical();
 
         }
-        
+        */
     }
 }
