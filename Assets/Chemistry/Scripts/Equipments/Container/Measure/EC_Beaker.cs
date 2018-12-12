@@ -16,8 +16,8 @@ namespace Chemistry.Equipments
         [SerializeField]
         private EA_EquipmentLiquidChange LiquidChange;
 
-        [Header("初始液体体积(为负则取默认配置值)")]
-        public float CurV = -1.0f;
+        //[Header("初始液体体积(为负则取默认配置值)")]
+        //public float CurV = -1.0f;
 
         [Header("放入的仪器下降至的高度值(如：温度计,玻璃棒)")]
         public float FallHight = 1.03f;
@@ -56,9 +56,9 @@ namespace Chemistry.Equipments
 
             containerType = EContainerType.烧杯;
 
-            var boxCollider = Collider as BoxCollider;
-            boxCollider.center = new Vector3(0.0f, 0.5f, 0.0f);
-            boxCollider.size = new Vector3(0.74f, 1.0f, 0.74f);
+            //var boxCollider = Collider as BoxCollider;
+            //boxCollider.center = new Vector3(0.0f, 0.5f, 0.0f);
+            //boxCollider.size = new Vector3(0.74f, 1.0f, 0.74f);
             //添加容器液面升降行为
             LiquidChange = gameObject.AddComponent<EA_EquipmentLiquidChange>();
 

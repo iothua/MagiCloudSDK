@@ -7,6 +7,8 @@ using UnityEngine.UI;
 using System;
 using MagiCloud;
 using MagiCloud.Core.Events;
+using Chemistry.Equipments;
+using Chemistry.Data;
 
 namespace Chemistry.Interactions
 {
@@ -27,11 +29,12 @@ namespace Chemistry.Interactions
     /// 倒水距离检测
     /// 开发者：阮榆皓
     /// </summary>
+    [RequireComponent(typeof(PourInterationHelper))]
     public class InteractionPourWater : DistanceInteraction, IExternalInteraction
     {
         //需要手动去挂载此脚本
         public PourInterationHelper pourHelper;
-
+        
         private Image ReadingImg;
 
         //上一帧光标的位置
@@ -50,6 +53,9 @@ namespace Chemistry.Interactions
         /// </summary>
         public PourContainer pourContainer;
 
+        public EC_Container CurContainer;
+
+
         /// <summary>
         /// 倒水点在左边还是右边
         /// </summary>
@@ -61,6 +67,9 @@ namespace Chemistry.Interactions
 
         //是否吸附
         bool isAdsorbed = false;
+
+        bool startPour = true;
+        bool endPour = false;
 
         ////是否吸附完毕
         //bool adsorbOver = false;
@@ -112,16 +121,26 @@ namespace Chemistry.Interactions
             //}
         }
 
+        protected override void Start()
+        {
+            base.Start();
+
+            //注意父子层级关系
+            CurContainer = this.transform.parent.parent.GetComponent<EC_Container>();
+
+        }
+
+
         //void adsorbTo
 
         ///计算光标与空间中某点的屏幕距离
         float CaculateScreenPtDistance(Vector3 pt)
         {
             Vector3 tmpPt = new Vector3(MUtility.MainWorldToScreenPoint(pt).x, MUtility.MainWorldToScreenPoint(pt).y, 0);
-            Debug.Log("光标坐标"+MOperateManager.GetHandScreenPoint(0));
-            Debug.Log("倒水点坐标" + tmpPt);
+            //Debug.Log("光标坐标"+MOperateManager.GetHandScreenPoint(0));
+            //Debug.Log("倒水点坐标" + tmpPt);
             float tmpDistance = Vector3.Distance(MOperateManager.GetHandScreenPoint(0), tmpPt);
-            Debug.Log(tmpDistance);
+            //Debug.Log(tmpDistance);
             return tmpDistance;
         }
 
@@ -164,13 +183,14 @@ namespace Chemistry.Interactions
                     GameObject tmpPrefabs = Resources.Load(pourHelper.PourImgPrefabsPath) as GameObject;
                     pourHelper.ReadingImgObj = Instantiate(tmpPrefabs);
                     pourHelper.ReadingImgObj.transform.SetParent(this.transform);
-                    pourHelper.ReadingImgObj.transform.eulerAngles = Vector3.zero; 
+                    pourHelper.ReadingImgObj.transform.eulerAngles = Vector3.zero;
+                    pourHelper.ReadingImgObj.transform.localPosition = Vector3.zero;
 
                     ReadingImg = pourHelper.ReadingImgObj.GetComponent<Image>();
                 }
 
-                Debug.Log(distanceInteraction.transform.name + "进入可倒水操作范围");
-                Debug.Log(distanceInteraction.transform.parent.parent.name + "进入可倒水操作范围");
+                //Debug.Log(distanceInteraction.transform.name + "进入可倒水操作范围");
+                //Debug.Log(distanceInteraction.transform.parent.parent.name + "进入可倒水操作范围");
             }
 
             base.OnDistanceEnter(distanceInteraction);
@@ -200,7 +220,7 @@ namespace Chemistry.Interactions
             {
                 if (IsGrab)
                 {
-                    Debug.Log(this.transform.parent.parent.name + "开始吸附读条");
+                    //Debug.Log(this.transform.parent.parent.name + "开始吸附读条");
 
                     //进入倒水操作读条
                     curTime += Time.deltaTime;
@@ -234,6 +254,7 @@ namespace Chemistry.Interactions
 
                         Debug.Log(this.transform.parent.parent.name + "吸附成功");
 
+                        startPour = true;
                         //关闭功能控制端
                         //distanceInteraction.FeaturesObjectController.IsEnable = false;
                         //Debug.Log(distanceInteraction.FeaturesObjectController.name + "抓取功能关闭");
@@ -253,7 +274,58 @@ namespace Chemistry.Interactions
             else
             {
 
-                //如果已经吸附，则进入旋转操作--旋转的是操作对象
+                //如果已经吸附，则进入能否倒出水的判断操作
+
+                if (IsGrab)
+                {
+                    if (pourContainer.ISCanPourOut(this))
+                    {
+                        //发送开始倒水通知
+                        if (startPour)
+                        {
+                            startPour = false;
+                            endPour = false;
+                            OnBeginPourOperate(interaction);
+                            interaction.OnBeginPourOperate(this);
+                            Debug.Log(this.transform.parent.parent.name + "开始往" + distanceInteraction.transform.parent.parent.name + "里倒水");
+                        }
+
+                        
+
+                        //接水倒水
+                        float pourOutV = pourContainer.PourOut(this);
+                        float receiveV = interaction.pourContainer.ReceiveIn(pourContainer);
+
+                        if (pourOutV>0.001f)
+                        {
+                            //发送倒水中的通知
+                            OnPouring(interaction);
+                            interaction.OnPouring(this);
+                        }
+
+                        if (pourOutV <= 0.001f && !endPour)
+                        {
+                            //发送结束倒水操作通知
+                            endPour = true;
+                            OnEndPourOperate(interaction);
+                            interaction.OnEndPourOperate(this);
+                        }
+
+                        if (CurContainer.containerType == EContainerType.烧杯)
+                        {
+                            (CurContainer as EC_Beaker).ChangeLiquid(-1.0f * pourOutV, 0);
+                            (interaction.CurContainer as EC_Beaker).ChangeLiquid(receiveV, 0);
+                        }
+                        else if (CurContainer.containerType == EContainerType.量筒)
+                        {
+                            (CurContainer as EC_M_MeasuringCylinder).ChangeLiquid(-1.0f * pourOutV, 0);
+                            (interaction.CurContainer as EC_M_MeasuringCylinder).ChangeLiquid(receiveV, 0);
+                        }
+
+                    }
+                }
+
+                
 
 
                 //if (interaciton.pointSide == PourPointSide.Left)
@@ -288,7 +360,7 @@ namespace Chemistry.Interactions
                     this.FeaturesObjectController.transform.eulerAngles = Vector3.zero;
 
                     //发送倒水结束事件
-                    OnEndPourOperate(distanceInteraction as InteractionPourWater);
+                    //OnEndPourOperate(distanceInteraction as InteractionPourWater);
 
                     //发送离开倒水范围事件
                     OnExitPourDistance(distanceInteraction as InteractionPourWater);
@@ -343,7 +415,7 @@ namespace Chemistry.Interactions
         void OnUpdateObject(GameObject target, Vector3 position, Quaternion quaternion, int handIndex)
         {
 
-            Debug.Log("旋转中心为：" + target.transform.parent.name);
+            //Debug.Log("旋转中心为：" + target.transform.parent.name);
 
             float tmpAngle = target.transform.parent.eulerAngles.z + (MOperateManager.GetHandScreenPoint(handIndex).y - lastMousePos.y) * pourHelper.RotSpeed;
 
@@ -384,28 +456,40 @@ namespace Chemistry.Interactions
         /// <param name="distanceInteraction"></param>
         public override void OnDistanceRelesae(DistanceInteraction distanceInteraction)
         {
-
+            Debug.Log(distanceInteraction.transform.parent.parent.name + "距离范围内直接放手333333333333");
             if (!IsCanInteraction(distanceInteraction)) return;
             //进行放手操作 容器解开移动限制
 
             var interaction = distanceInteraction as InteractionPourWater;
 
-            //取消吸附
-            interaction.isAdsorbed = false;
-            isAdsorbed = false;
-            distanceInteraction.FeaturesObjectController.SetParent(null);
-            curTime = 0.0f;
+          
 
-
-            //发送倒水结束事件
-            OnEndPourOperate(distanceInteraction as InteractionPourWater);
             if (IsGrab)
             {
+                if (isAdsorbed)
+                {
+                    FeaturesObjectController.transform.parent.eulerAngles = Vector3.zero;
+                }
+                FeaturesObjectController.SetParent(null);
                 FeaturesObjectController.gameObject.RemoveUpdateObject(OnUpdateObject);
                 //旋转状态恢复为无旋转
                 this.FeaturesObjectController.transform.eulerAngles = Vector3.zero;
-                Debug.Log(distanceInteraction.transform.parent.parent.name + "距离范围内直接放手");
+                Debug.Log(distanceInteraction.transform.parent.parent.name + "距离范围内直接放手11111");
             }
+
+            //取消吸附
+            interaction.isAdsorbed = false;
+            isAdsorbed = false;
+            curTime = 0.0f;
+
+            Debug.Log(distanceInteraction.transform.parent.parent.name + "距离范围内直接放手2222222");
+
+            //发送倒水结束事件
+            //if (endPour)
+            //{
+
+            //}
+            OnEndPourOperate(distanceInteraction as InteractionPourWater);
 
             base.OnDistanceRelesae(distanceInteraction);
         }
@@ -436,6 +520,7 @@ namespace Chemistry.Interactions
 
             //}
             ////
+            Debug.Log("进入可倒水范围");
             OnEnterPour.Invoke(interactionPourWater);
         }
 
@@ -449,6 +534,7 @@ namespace Chemistry.Interactions
             {
                 return;
             }
+            Debug.Log("开始倒水操作");
             OnBeginPour.Invoke(interactionPourWater);
         }
 
@@ -462,6 +548,7 @@ namespace Chemistry.Interactions
             {
                 return;
             }
+            Debug.Log("倒水中");
             OnStayPour.Invoke(interactionPourWater);
         }
 
@@ -475,6 +562,7 @@ namespace Chemistry.Interactions
             {
                 return;
             }
+            Debug.Log("结束倒水操作");
             OnEndPour.Invoke(interactionPourWater);
         }
 
@@ -488,6 +576,7 @@ namespace Chemistry.Interactions
             {
                 return;
             }
+            Debug.Log("离开倒水范围");
             OnExitPour.Invoke(interactionPourWater);
         }
 

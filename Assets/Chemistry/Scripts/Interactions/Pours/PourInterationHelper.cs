@@ -10,7 +10,7 @@ namespace Chemistry.Interactions
     /// 倒水交互控制
     /// 开发者：阮榆皓
     /// </summary>
-    [RequireComponent(typeof(InteractionPourWater))]
+    //[RequireComponent(typeof(InteractionPourWater))]
     public class PourInterationHelper : MonoBehaviour
     {
         [Header("读条UI对象")]
@@ -36,6 +36,9 @@ namespace Chemistry.Interactions
 
         [Header("倒水旋转的速度")]
         public float RotSpeed = 1.0f;
+
+        [Header("倒水水流的速度(ml/帧)")]
+        public float WaterSpeed = 1.0f;
 
 
         //public void ResetAllData()

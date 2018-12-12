@@ -1810,7 +1810,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1734687712245740
 GameObject:
   m_ObjectHideFlags: 1
@@ -2592,7 +2592,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 720, y: 300, z: 1}
+  m_Size: {x: 1920, y: 1080, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &65915126606347866
 BoxCollider:
@@ -4519,7 +4519,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 8f91bbc4939d3a8429a884ca6bfb2849, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cfa56ebb581c68d439e9cf2751f14adb, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6401,6 +6401,7 @@ MonoBehaviour:
   errorImage: {fileID: 114214551281488626}
   tableManager: {fileID: 114224811748241090}
   showButtom: {fileID: 114584193281247086}
+  backButton: {fileID: 114843630518809170}
 --- !u!114 &114671518865923214
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7339,10 +7340,10 @@ MonoBehaviour:
   buttonType: 1
   spriteRenderer: {fileID: 0}
   image: {fileID: 114273954508371638}
-  normalSprite: {fileID: 21300000, guid: 8f91bbc4939d3a8429a884ca6bfb2849, type: 3}
-  enterSprite: {fileID: 21300000, guid: 16463e573374b484a96c6105878b44ee, type: 3}
-  pressedSprite: {fileID: 21300000, guid: 16463e573374b484a96c6105878b44ee, type: 3}
-  disableSprite: {fileID: 21300000, guid: 495aecdc2f4d04a40bd913bb634e53c0, type: 3}
+  normalSprite: {fileID: 21300000, guid: cfa56ebb581c68d439e9cf2751f14adb, type: 3}
+  enterSprite: {fileID: 21300000, guid: 73d8b2e15213d704985689d42ea5adb5, type: 3}
+  pressedSprite: {fileID: 21300000, guid: 73d8b2e15213d704985689d42ea5adb5, type: 3}
+  disableSprite: {fileID: 21300000, guid: cfa56ebb581c68d439e9cf2751f14adb, type: 3}
   normalObject: {fileID: 0}
   enterObject: {fileID: 0}
   pressedObject: {fileID: 0}
@@ -7353,18 +7354,7 @@ MonoBehaviour:
   IsStartAudio: 1
   onClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 114670733963137178}
-        m_MethodName: Close
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onEnter:
@@ -9969,8 +9959,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -800, y: 400}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: -753, y: 476}
+  m_SizeDelta: {x: 414, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224295221200285212
 RectTransform:
