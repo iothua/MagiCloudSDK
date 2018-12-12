@@ -325,7 +325,8 @@ public class PourContainer
                     return false;
                 }
             case PourPointSide.Right://采用(-120,0)度限制
-                float minangleRight = EquationsOfTwoUnknowns(ContainerCurrentVolume, new Vector2(0, rightRotateLimits.y), new Vector2(containerMaxVolume, 0));
+                //Debug.Log("当前量---" + ContainerCurrentVolume + "容器容积---" + containerMaxVolume);
+                float minangleRight = EquationsOfTwoUnknowns(ContainerCurrentVolume, new Vector2(0, rightRotateLimits.x), new Vector2(containerMaxVolume, 0));
 
                 //if (containerTra.localRotation.eulerAngles.z < minangleRight)
                 //{ return true; }
@@ -336,8 +337,13 @@ public class PourContainer
                 {
                     minangleRight = -90.0f;
                 }
-                Debug.Log(interactionPourWater.FeaturesObjectController.transform.parent.name + "是能否倒出水的旋转中心");
-                if (interactionPourWater.FeaturesObjectController.transform.parent.eulerAngles.z < minangleRight)
+                //Debug.Log(interactionPourWater.FeaturesObjectController.transform.parent.name + "是能否倒出水的旋转中心" + "临界角度为--" + minangleRight);
+                float tmpAngle = interactionPourWater.FeaturesObjectController.transform.parent.eulerAngles.z;
+                if (tmpAngle > 0.0f)
+                {
+                    tmpAngle -= 360.0f;
+                }
+                if (tmpAngle < minangleRight)
                 {
                     hasChanged = true;
                     return true;

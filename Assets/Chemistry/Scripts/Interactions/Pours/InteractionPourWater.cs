@@ -153,9 +153,14 @@ namespace Chemistry.Interactions
         /// <returns></returns>
         public override bool IsCanInteraction(DistanceInteraction distanceInteraction)
         {
-           //倒水量允许
-           //两个杯子可以相互交互条件允许
-           //没有自锁
+            //倒水量允许
+            //两个杯子可以相互交互条件允许
+            //没有自锁
+            var interaction = distanceInteraction as InteractionPourWater;
+            if (interaction==null||interaction.pointSide==this.pointSide)
+            {
+                return false;
+            }
 
             return true;
         }
@@ -185,10 +190,13 @@ namespace Chemistry.Interactions
                     pourHelper.ReadingImgObj.transform.SetParent(this.transform);
                     pourHelper.ReadingImgObj.transform.eulerAngles = Vector3.zero;
                     pourHelper.ReadingImgObj.transform.localPosition = Vector3.zero;
-
-                    ReadingImg = pourHelper.ReadingImgObj.GetComponent<Image>();
+                }
+                else
+                {
+                    pourHelper.ReadingImgObj.SetActive(true);
                 }
 
+                ReadingImg = pourHelper.ReadingImgObj.GetComponent<Image>();
                 //Debug.Log(distanceInteraction.transform.name + "进入可倒水操作范围");
                 //Debug.Log(distanceInteraction.transform.parent.parent.name + "进入可倒水操作范围");
             }
@@ -202,6 +210,8 @@ namespace Chemistry.Interactions
         /// <param name="distanceInteraction"></param>
         public override void OnDistanceStay(DistanceInteraction distanceInteraction)
         {
+            if (!IsCanInteraction(distanceInteraction)) return;
+
             var interaction = distanceInteraction as InteractionPourWater;
 
             if (interaction==null)
@@ -220,7 +230,7 @@ namespace Chemistry.Interactions
             {
                 if (IsGrab)
                 {
-                    //Debug.Log(this.transform.parent.parent.name + "开始吸附读条");
+                    Debug.Log(this.transform.parent.parent.name + "开始吸附读条");
 
                     //进入倒水操作读条
                     curTime += Time.deltaTime;
@@ -262,6 +272,8 @@ namespace Chemistry.Interactions
                         //关闭物体跟随光标移动的功能
                         lastMousePos = MOperateManager.GetHandScreenPoint(0);
 
+                        ReadingImg.fillAmount = 0.0f;
+                        pourHelper.ReadingImgObj.SetActive(false);
 
                         FeaturesObjectController.gameObject.AddUpdateObject(OnUpdateObject);
 
@@ -349,11 +361,15 @@ namespace Chemistry.Interactions
                 if (CaculateScreenPtDistance(interaction.transform.position) > interaction.pourHelper.LeaveDistance)
                 {
                     Debug.Log("光标超出范围");
+
+                    ReadingImg.fillAmount = 0.0f;
+                    pourHelper.ReadingImgObj.SetActive(false);
+
                     FeaturesObjectController.gameObject.RemoveUpdateObject(OnUpdateObject);
                     curTime = 0.0f;
                     isAdsorbed = false;
                     interaction.isAdsorbed = false;
-
+                    interaction.curTime = 0.0f;
                     FeaturesObjectController.SetParent(null);
 
 
@@ -417,24 +433,40 @@ namespace Chemistry.Interactions
 
             //Debug.Log("旋转中心为：" + target.transform.parent.name);
 
-            float tmpAngle = target.transform.parent.eulerAngles.z + (MOperateManager.GetHandScreenPoint(handIndex).y - lastMousePos.y) * pourHelper.RotSpeed;
+            float tmpAngle = 0.0f;
 
             //依据当前操作对象来判断，即当前操作倒水点的左右，来限制旋转角度范围
             //根据左右限制
             if (pointSide == PourPointSide.Left)
             {
+                tmpAngle = target.transform.parent.eulerAngles.z + (MOperateManager.GetHandScreenPoint(handIndex).y - lastMousePos.y) * pourHelper.RotSpeed;
+                Debug.Log("旋转角度1----" + tmpAngle);
                 tmpAngle = Mathf.Clamp(tmpAngle, pourContainer.leftRotateLimits.x, pourContainer.leftRotateLimits.y);
             }
             else if (pointSide == PourPointSide.Right)
             {
+                tmpAngle = target.transform.parent.eulerAngles.z;
+                Debug.Log("初始角度" + tmpAngle);
+                if (tmpAngle>0.0f)
+                {
+                    tmpAngle = (tmpAngle - 360.0f) - (MOperateManager.GetHandScreenPoint(handIndex).y - lastMousePos.y) * pourHelper.RotSpeed;
+                }
+                else
+                {
+                    tmpAngle -= (MOperateManager.GetHandScreenPoint(handIndex).y - lastMousePos.y) * pourHelper.RotSpeed;
+                }
+                Debug.Log("旋转角度2--***" + tmpAngle);
                 tmpAngle = Mathf.Clamp(tmpAngle, pourContainer.rightRotateLimits.x, pourContainer.rightRotateLimits.y);
             }
 
 
             //使用其父物体自身旋转来完成倒水旋转
+            //Debug.Log("--*******---" + target.transform.parent.name);
             target.transform.parent.eulerAngles = new Vector3(0, 0, tmpAngle);
 
+            //Debug.Log("上一帧" + lastMousePos);
             lastMousePos = MOperateManager.GetHandScreenPoint(handIndex);
+            //Debug.Log("当前帧" + lastMousePos);
         }
 
         /// <summary>
@@ -447,6 +479,15 @@ namespace Chemistry.Interactions
             //进行离开操作 容器解开移动限制
             Debug.Log(distanceInteraction.transform.parent.parent.name + "离开");
 
+            if (ReadingImg)
+            {
+                ReadingImg.fillAmount = 0.0f;
+            }
+            if (pourHelper.ReadingImgObj)
+            {
+                pourHelper.ReadingImgObj.SetActive(false);
+            }
+
             base.OnDistanceExit(distanceInteraction);
         }
 
@@ -456,7 +497,6 @@ namespace Chemistry.Interactions
         /// <param name="distanceInteraction"></param>
         public override void OnDistanceRelesae(DistanceInteraction distanceInteraction)
         {
-            Debug.Log(distanceInteraction.transform.parent.parent.name + "距离范围内直接放手333333333333");
             if (!IsCanInteraction(distanceInteraction)) return;
             //进行放手操作 容器解开移动限制
 
@@ -466,9 +506,18 @@ namespace Chemistry.Interactions
 
             if (IsGrab)
             {
+                if (ReadingImg)
+                {
+                    ReadingImg.fillAmount = 0.0f;
+                }
+                if (pourHelper.ReadingImgObj)
+                {
+                    pourHelper.ReadingImgObj.SetActive(false);
+                }
                 if (isAdsorbed)
                 {
                     FeaturesObjectController.transform.parent.eulerAngles = Vector3.zero;
+                    isAdsorbed = false;
                 }
                 FeaturesObjectController.SetParent(null);
                 FeaturesObjectController.gameObject.RemoveUpdateObject(OnUpdateObject);
@@ -478,7 +527,6 @@ namespace Chemistry.Interactions
             }
 
             //取消吸附
-            interaction.isAdsorbed = false;
             isAdsorbed = false;
             curTime = 0.0f;
 

@@ -2580,7 +2580,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 150, y: 150, z: 1}
+  m_Size: {x: 414, y: 128, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &65388435378761968
 BoxCollider:
@@ -2593,7 +2593,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1920, y: 1080, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 100, z: 0}
 --- !u!65 &65915126606347866
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -2604,7 +2604,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 150, y: 150, z: 1}
+  m_Size: {x: 212, y: 86, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!82 &82457309340264472
 AudioSource:
@@ -9584,7 +9584,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 23.799988, y: 1000}
+  m_AnchoredPosition: {x: 23.799988, y: 1080}
   m_SizeDelta: {x: 978.69995, y: 617.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224153161465025028
