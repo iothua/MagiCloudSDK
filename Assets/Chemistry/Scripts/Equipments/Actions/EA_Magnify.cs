@@ -8,7 +8,7 @@ namespace Chemistry.Equipments
     public class EA_Magnify : MonoBehaviour
     {
         [SerializeField]
-        private Camera camera;
+        private Camera cameraMagnify;
 
         [SerializeField]
         private GameObject show;
@@ -26,12 +26,12 @@ namespace Chemistry.Equipments
             renderTexture = Resources.Load<RenderTexture>("MagnifierUsedFreedom");
 
             if (renderTexture == null) return;
-            camera.targetTexture = renderTexture;
+            cameraMagnify.targetTexture = renderTexture;
             if (show != null)
                 if (show.GetComponent<RawImage>() != null)
                     show.GetComponent<RawImage>().texture = renderTexture;
 
-            magnifier = new EO_Magnifier(camera, 0f);
+            magnifier = new EO_Magnifier(cameraMagnify, 0f);
         }
 
         // Update is called once per frame

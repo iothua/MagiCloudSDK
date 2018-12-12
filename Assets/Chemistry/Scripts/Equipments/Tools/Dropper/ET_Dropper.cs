@@ -136,7 +136,7 @@ namespace Chemistry.Equipments
             if (interactionEquipmentBase != null && interactionEquipmentBase != interaction.Equipment) return false;
             if (interaction.Equipment is I_ET_D_BreatheIn)
             {
-                I_ET_D_BreatheIn breatheIn = interaction.Equipment as I_ET_D_BreatheIn;
+                //I_ET_D_BreatheIn breatheIn = interaction.Equipment as I_ET_D_BreatheIn;
                 if (OnlyDrugName == "")         //是一个新的滴管
                 {
                     return true;
@@ -147,13 +147,13 @@ namespace Chemistry.Equipments
                     //if (save.DrugSystemIns.IsHaveDrugForName(OnlyDrugName))   //对于存储混合物的容器可能会出问题
                     interactionEquipmentBase = interaction.Equipment;
                     return true;
-                    if (OnlyDrugName.Equals(breatheIn.DrugName))                //药品名字是否相等
-                    {
-                        interactionEquipmentBase = interaction.Equipment;
-                        return true;
-                    }
-                    else
-                        return false;
+                    //if (OnlyDrugName.Equals(breatheIn.DrugName))                //药品名字是否相等
+                    //{
+                    //    interactionEquipmentBase = interaction.Equipment;
+                    //    return true;
+                    //}
+                    //else
+                        //return false;
                 }
             }
             if (interaction.Equipment is I_ET_D_Drip)

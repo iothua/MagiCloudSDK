@@ -17,7 +17,8 @@ namespace Chemistry.Equipments
         /// <summary>
         /// 胶头滴管下落的高度
         /// </summary>
-        public float Height { get { return 0.75f; } set { } }
+        public float Height { get { return 0.75f; } }
+
         public DropperInteractionType InteractionEquipment
         {
             get
@@ -48,44 +49,18 @@ namespace Chemistry.Equipments
         public override void OnInitializeEquipment()
         {
             containerType = EContainerType.细口瓶;
-            if (_Cap != null)
-            {
-                //OpenCap();      //初始打开，滴管初始交互后关闭
-
-            }
 
             base.OnInitializeEquipment();
         }
 
         public override bool IsCanInteraction(InteractionEquipment interaction)
         {
-            //普通盖子
-            if (interaction.Equipment is EO_Cap)
-            {
-                if (_Cap.IsCap)     //盖子打开状态
-                    return true;
-                else
-                    return false;
-            }
+            if (!base.IsCanInteraction(interaction)) return false;
+
             //滴管
             if (interaction.Equipment is ET_Dropper)
             {
                 return true;
-                //if (InInteractionEquipment != null && InInteractionEquipment != interaction.Equipment) return false;
-                //if (_Cap == null) return true;
-                //if (_Cap.IsCap)     //盖子打开状态
-                //{
-                //    ET_Dropper dropper = interaction.Equipment as ET_Dropper;
-                //    if (DrugSystemIns.CurSumVolume >= dropper.maxVolume)
-                //    {
-                //        InInteractionEquipment = interaction.Equipment;
-                //        return true;
-                //    }
-                //    else
-                //        return false;
-                //}
-                //else
-                //    return false;
             }
             return _Cap.IsCap;
         }

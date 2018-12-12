@@ -27,9 +27,9 @@ namespace Chemistry.Help
                 throw new ArgumentException("message",nameof(name));
             }
 
-#if UNITY_EDITOR
-            Transform[] selectedObject = UnityEditor.Selection.GetTransforms(UnityEditor.SelectionMode.TopLevel |UnityEditor.SelectionMode.ExcludePrefab);
-#endif
+//#if UNITY_EDITOR
+//            Transform[] selectedObject = UnityEditor.Selection.GetTransforms(UnityEditor.SelectionMode.TopLevel |UnityEditor.SelectionMode.ExcludePrefab);
+//#endif
 
 
             Transform parent = EquipmentUtility.GetSeleteTransform();

@@ -50,6 +50,7 @@ namespace Chemistry.Equipments
         {
 
             containerType=EContainerType.酒精灯;
+
             if (isInitFire)
             {
                 OpenCap();
@@ -62,18 +63,24 @@ namespace Chemistry.Equipments
             {
                 CloseCap();
             }
+
             base.OnInitializeEquipment();
         }
 
         public override bool IsCanInteraction(InteractionEquipment interaction)
         {
-            if (_Cap== interaction.Equipment)
-                return isOpen;
-            if (interaction.Equipment.GetComponent<IFire>()!=null)
+            if( !base.IsCanInteraction(interaction))
+            {
+                return false;
+            }
+
+            if (interaction.Equipment.GetComponent<IFire>() != null)
                 return !fire.Burning;
-            if (interaction.Equipment.GetComponent<ICombustible>()!=null)
+
+            if (interaction.Equipment.GetComponent<ICombustible>() != null)
                 return true;
-            return true;
+
+            return false;
         }
 
 
@@ -133,8 +140,7 @@ namespace Chemistry.Equipments
         public override void OnInitializeEquipment_Editor(string equipmentName)
         {
             base.OnInitializeEquipment_Editor(equipmentName);
-            // effect_Fire=EffectNode.gameObject.AddComponent<Effect_Fire>();
-            //effect_Fire.OnInitialize_Editor();
+
             fire=EffectNode.gameObject.AddComponent<Fire>();
             containerType =EContainerType.酒精灯;
             var boxCol = Collider as BoxCollider;

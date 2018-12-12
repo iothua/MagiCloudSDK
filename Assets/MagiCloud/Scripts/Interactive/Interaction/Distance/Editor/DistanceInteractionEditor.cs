@@ -37,24 +37,24 @@ namespace MagiCloud.Interactive.Distance
 
         protected void OnDestroyInteraction()
         {
-            DistanceStorage.DeleteDistanceData(interaction.distanceData);
+            DistanceStorage.DeleteDistanceData(interaction);
             DestroyImmediate(interaction);
         }
 
         protected void GetDistanceInfo()
         {
-            List<DistanceData> distances = new List<DistanceData>();
+            List<DistanceInteraction> distances = new List<DistanceInteraction>();
 
             switch (interaction.distanceData.interactionType)
             {
                 case InteractionType.Send:
 
                     //根据这个发送端，获取到所有的接收点信息
-                    distances = DistanceStorage.GetReceiveDistanceDatas(interaction.distanceData);
+                    distances = DistanceStorage.GetReceiveDistanceDatas(interaction);
                     break;
                 case InteractionType.Receive:
 
-                    var managers = DistanceStorage.GetSendDistaceDataAll(interaction.distanceData, InteractionType.Send);
+                    var managers = DistanceStorage.GetSendDistaceDataAll(interaction, InteractionType.Send);
 
                     foreach (var item in managers)
                     {
@@ -64,7 +64,7 @@ namespace MagiCloud.Interactive.Distance
                     break;
                 case InteractionType.All:
 
-                    var managerAlls = DistanceStorage.GetSendDistaceDataAll(interaction.distanceData, InteractionType.All);
+                    var managerAlls = DistanceStorage.GetSendDistaceDataAll(interaction, InteractionType.All);
 
                     foreach (var item in managerAlls)
                     {
@@ -73,7 +73,7 @@ namespace MagiCloud.Interactive.Distance
 
                     break;
                 case InteractionType.Pour:
-                    var managerPours = DistanceStorage.GetSendDistaceDataAll(interaction.distanceData, InteractionType.Pour);
+                    var managerPours = DistanceStorage.GetSendDistaceDataAll(interaction, InteractionType.Pour);
 
                     foreach (var item in managerPours)
                     {
@@ -96,12 +96,12 @@ namespace MagiCloud.Interactive.Distance
             //距离信息遍历
             foreach (var distance in distances)
             {
-                if (distance.Interaction == null) continue;
+                if (distance == null) continue;
 
-                if (GUILayout.Button(distance.interactionType.ToString() + "：" + (distance.Interaction != null ? distance.Interaction.name : "获取绑定物体失败"), GUILayout.Width(250)))
+                if (GUILayout.Button(distance.distanceData.interactionType.ToString() + "：" + (distance != null ? distance.name : "获取绑定物体失败"), GUILayout.Width(250)))
                 {
-                    if (distance.Interaction != null)
-                        Selection.activeGameObject = distance.Interaction.gameObject;
+                    if (distance != null)
+                        Selection.activeGameObject = distance.gameObject;
                 }
             }
 
@@ -237,9 +237,9 @@ namespace MagiCloud.Interactive.Distance
 
                         foreach (var send in sends)
                         {
-                            if (string.IsNullOrEmpty(send.sendData.TagID)) continue;
+                            if (string.IsNullOrEmpty(send.sendData.distanceData.TagID)) continue;
 
-                            AddMenuItemForValue(menu, send.sendData.TagID);
+                            AddMenuItemForValue(menu, send.sendData.distanceData.TagID);
                         }
 
                         menu.ShowAsContext();
@@ -277,8 +277,8 @@ namespace MagiCloud.Interactive.Distance
 
                         foreach (var all in alls)
                         {
-                            if (string.IsNullOrEmpty(all.sendData.TagID)) continue;
-                            AddMenuItemForValue(menu, all.sendData.TagID);
+                            if (string.IsNullOrEmpty(all.sendData.distanceData.TagID)) continue;
+                            AddMenuItemForValue(menu, all.sendData.distanceData.TagID);
                         }
                         menu.ShowAsContext();
                     }

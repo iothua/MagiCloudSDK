@@ -24,12 +24,14 @@ namespace MagiCloud.Interactive
                 case DistanceType.D3D:
                     return Vector3.Distance(v1, v2);
                 case DistanceType.DScreen:
+
                     Vector2 v21 = Camera.main.WorldToScreenPoint(v1);
                     Vector2 v22 = Camera.main.WorldToScreenPoint(v2);
                     float zoom = 750 / Mathf.Sqrt(Mathf.Pow(1920, 2) + Mathf.Pow(1080, 2));
                     zoom = Mathf.Sqrt(Mathf.Pow(Screen.height, 2) + Mathf.Pow(Screen.width, 2)) * zoom;
 
                     return Vector3.Distance(v21, v22) / zoom;
+
                 default:
                     return 0;
             }

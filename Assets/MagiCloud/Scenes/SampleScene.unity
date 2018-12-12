@@ -165,7 +165,6 @@ MonoBehaviour:
     IsGrabOwn: 1
     IsOnly: 1
     maxCount: -1
-    Interaction: {fileID: 38481685}
   OnEnter:
     m_PersistentCalls:
       m_Calls: []
@@ -401,7 +400,6 @@ MonoBehaviour:
     IsGrabOwn: 1
     IsOnly: 0
     maxCount: -1
-    Interaction: {fileID: 294686813}
   OnEnter:
     m_PersistentCalls:
       m_Calls: []
@@ -509,7 +507,6 @@ MonoBehaviour:
     IsGrabOwn: 1
     IsOnly: 0
     maxCount: -1
-    Interaction: {fileID: 435315069}
   OnEnter:
     m_PersistentCalls:
       m_Calls: []
@@ -805,7 +802,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 925021915}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.78, y: -1.38, z: 1}
+  m_LocalPosition: {x: 0.78, y: -0.58, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1459494232}
@@ -1139,7 +1136,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1248396066}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.64, y: -0.88, z: 1}
+  m_LocalPosition: {x: -1.64, y: -0.08, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 166803561}
@@ -1181,7 +1178,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 179.84534, y: -403.8523}
+  m_AnchoredPosition: {x: 130.69104, y: -253.50925}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1377586253
@@ -1265,7 +1262,6 @@ MonoBehaviour:
     IsGrabOwn: 1
     IsOnly: 0
     maxCount: -1
-    Interaction: {fileID: 1421007292}
   OnEnter:
     m_PersistentCalls:
       m_Calls: []
@@ -1421,7 +1417,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1452528584}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.28, y: -1.38, z: 1}
+  m_LocalPosition: {x: -3.28, y: -0.58, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1015018632}
@@ -1649,7 +1645,6 @@ MonoBehaviour:
     IsGrabOwn: 1
     IsOnly: 1
     maxCount: -1
-    Interaction: {fileID: 1719198807}
   OnEnter:
     m_PersistentCalls:
       m_Calls: []
@@ -1837,7 +1832,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -143.34247, y: -350.43286}
+  m_AnchoredPosition: {x: -250.36005, y: -316.4929}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1943727727
@@ -1934,7 +1929,6 @@ MonoBehaviour:
     IsGrabOwn: 1
     IsOnly: 0
     maxCount: -1
-    Interaction: {fileID: 2044377721}
   OnEnter:
     m_PersistentCalls:
       m_Calls: []

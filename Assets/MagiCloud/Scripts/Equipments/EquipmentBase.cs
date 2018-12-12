@@ -102,10 +102,10 @@ namespace MagiCloud.Equipments
         /// <summary>
         /// 初始化仪器（编辑器下调用）
         /// </summary>
-        /// <param name="name"></param>
-        public virtual void OnInitializeEquipment_Editor(string name)
+        /// <param name="equipmentName"></param>
+        public virtual void OnInitializeEquipment_Editor(string equipmentName)
         {
-            gameObject.name = name;
+            gameObject.name = equipmentName;
         }
 
         public virtual void OnDistanceNotRelease()
@@ -117,6 +117,7 @@ namespace MagiCloud.Equipments
         {
             return true;
         }
+
 
         public virtual void OnDistanceEnter(InteractionEquipment interaction)
         {

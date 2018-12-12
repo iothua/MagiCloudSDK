@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.Events;
 using MagiCloud.Interactive.Actions;
+using System.Collections.Generic;
 
 namespace MagiCloud.Interactive.Distance
 {
@@ -43,6 +44,7 @@ namespace MagiCloud.Interactive.Distance
 
         public bool ActiveParent;
         public bool ActiveShadow;
+
         public InteractionParent interactionParent; //父子关系
         public InteractionShadow interactionShadow; //虚影关系
 
@@ -50,6 +52,13 @@ namespace MagiCloud.Interactive.Distance
         /// 是否被抓取
         /// </summary>
         public bool IsGrab { get; set; }
+
+        public Vector3 Position
+        {
+            get {
+                return transform.position;
+            }
+        }
 
         protected virtual void Awake()
         {
@@ -78,7 +87,8 @@ namespace MagiCloud.Interactive.Distance
                 distanceData = new DistanceData();
             }
 
-            distanceData.Interaction = this;
+            //distanceData.Interaction = this;
+            //distanceData.InteractionObject = gameObject;
 
             if (FeaturesObjectController == null)
             {
@@ -109,8 +119,9 @@ namespace MagiCloud.Interactive.Distance
 
         protected virtual void OnEnable()
         {
-            distanceData.IsEnabel = true;
+            //distanceData.IsEnabel = true;
             //统一调用，去匹配数据，还需要一个数据，每隔一段时间校验一次，用于匹配执行顺序等情况
+            DistanceStorage.AddDistanceData(this);
         }
 
         protected virtual void Start()
@@ -145,7 +156,8 @@ namespace MagiCloud.Interactive.Distance
 
         protected virtual void OnDisable()
         {
-            distanceData.IsEnabel = false;
+            //distanceData.IsEnabel = false;
+            DistanceStorage.DeleteDistanceData(this);
         }
 
         public virtual bool IsCanInteraction(DistanceInteraction distanceInteraction)
@@ -313,6 +325,278 @@ namespace MagiCloud.Interactive.Distance
         }
 
         #endregion
+
+        #region 距离互动处理
+
+        public DistanceInteraction OnlyDistance { get; set; }
+        public List<DistanceInteraction> Distanced { get; set; }
+        public List<DistanceInteraction> Distancing { get; set; }
+
+        /// <summary>
+        /// 交互移入处理
+        /// </summary>
+        /// <param name="interaction">Interaction.</param>
+        public void OnInteractionEnter(DistanceInteraction interaction)
+        {
+            switch(distanceData.interactionType)
+            {
+                case InteractionType.Receive:
+                case InteractionType.All:
+                case InteractionType.Pour:
+                    AddReceiveDistancing(interaction);
+                    OnDistanceEnter(interaction);
+
+                    break;
+                case InteractionType.Send:
+                    OnDistanceEnter(interaction);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 交互离开处理
+        /// </summary>
+        /// <param name="interaction">Interaction.</param>
+        public void OnInteractionExit(DistanceInteraction interaction)
+        {
+            switch (distanceData.interactionType)
+            {
+                case InteractionType.Receive:
+                case InteractionType.All:
+                case InteractionType.Pour:
+
+                    if (distanceData.IsOnly)
+                    {
+                        OnlyDistance = null;
+                    }
+                    else
+                    {
+                        RemoveReceiveDistancing(interaction);
+                        RemoveReceiveDistanced(interaction);
+                    }
+
+                    OnDistanceExit(interaction);
+
+                    break;
+                case InteractionType.Send:
+
+                    OnlyDistance = null;
+
+                    OnDistanceExit(interaction);
+
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 交互停留处理
+        /// </summary>
+        /// <param name="interaction">Interaction.</param>
+        public void OnInteractionStay(DistanceInteraction interaction)
+        {
+            OnDistanceStay(interaction);
+        }
+
+        /// <summary>
+        /// 交互松手处理
+        /// </summary>
+        /// <param name="interaction">Target.</param>
+        public void OnInteractionRelease(DistanceInteraction interaction)
+        {
+
+            switch (distanceData.interactionType)
+            {
+                case InteractionType.Receive:
+                case InteractionType.All:
+                case InteractionType.Pour:
+
+                    if (distanceData.IsOnly)
+                    {
+                        if (OnlyDistance == interaction)
+                        {
+                            OnDistanceRelesae(interaction);
+                            OnDistanceRelease(interaction, InteractionReleaseStatus.Inside);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (Distanced != null && Distanced.Contains(interaction))
+                        {
+                            OnDistanceRelesae(interaction);
+                            OnDistanceRelease(interaction, InteractionReleaseStatus.Inside);
+                            return;
+                        }
+                    }
+
+                    if (!OnInteractionCheck()) return;
+
+                    OnDistanceRelesae(interaction);
+                    OnDistanceRelease(interaction, InteractionReleaseStatus.Once);
+
+                    if (distanceData.IsOnly)
+                    {
+                        OnlyDistance = interaction;
+
+                        return;
+                    }
+                    else
+                    {
+                        AddReceiveDistanced(interaction);
+                    }
+
+                    break;
+                case InteractionType.Send:
+
+                    if (!OnInteractionCheck())
+                    {
+                        OnDistanceRelesae(interaction);
+                        OnDistanceRelease(interaction, InteractionReleaseStatus.Inside);
+
+                        return;
+                    }
+
+                    OnDistanceRelesae(interaction);
+                    OnDistanceRelease(interaction, InteractionReleaseStatus.Once);
+
+                    AddSendDistance(interaction);
+
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 没有执行交互时释放
+        /// </summary>
+        public void OnInteractionNotRelease()
+        {
+            OnDistanceNotInteractionRelease();
+            OnDistanceRelease(null, InteractionReleaseStatus.None);
+        }
+
+        /// <summary>
+        /// 校验是否可以进行交互
+        /// </summary>
+        /// <returns></returns>
+        public bool OnInteractionCheck()
+        {
+            switch (distanceData.interactionType)
+            {
+                case InteractionType.Receive:
+                case InteractionType.All:
+                case InteractionType.Pour:
+
+                    if (distanceData.IsOnly)
+                    {
+                        if (OnlyDistance != null) return false;
+                    }
+                    else
+                    {
+                        if (distanceData.maxCount == 0) return false;
+                    }
+
+                    break;
+                case InteractionType.Send:
+
+                    if (OnlyDistance != null) return false;
+
+                    break;
+            }
+
+
+            return true;
+        }
+
+        /// <summary>
+        /// 往接收端中添加发送端信息
+        /// </summary>
+        /// <param name="send"></param>
+        public void AddReceiveDistanced(DistanceInteraction send)
+        {
+            if (Distanced == null)
+                Distanced = new List<DistanceInteraction>();
+
+            //移除正在交互的
+            if (Distancing.Contains(send))
+                Distancing.Remove(send);
+
+            if (Distanced.Contains(send)) return;
+
+            Distanced.Add(send);
+
+            if (distanceData.maxCount == -1)
+                return;
+
+            distanceData.maxCount--;
+        }
+
+
+        /// <summary>
+        /// 添加接收端信息
+        /// </summary>
+        /// <param name="send">Send.</param>
+        public void AddReceiveDistancing(DistanceInteraction send)
+        {
+            if (Distancing == null)
+                Distancing = new List<DistanceInteraction>();
+
+            if (Distancing.Contains(send))
+                return;
+
+            Distancing.Add(send);
+        }
+
+        /// <summary>
+        /// 往发送端中添加接收信息，
+        /// </summary>
+        /// <param name="receive">Receive.</param>
+        public void AddSendDistance(DistanceInteraction receive)
+        {
+            OnlyDistance = receive;
+        }
+
+        /// <summary>
+        /// 移除接收距离交互信息
+        /// </summary>
+        /// <param name="send">Send.</param>
+        public void RemoveReceiveDistancing(DistanceInteraction send)
+        {
+            if (Distancing == null) return;
+            if (!Distancing.Contains(send)) return;
+            Distancing.Remove(send);
+        }
+
+        /// <summary>
+        /// 移除已经交互的距离信息
+        /// </summary>
+        /// <param name="send">Send.</param>
+        public void RemoveReceiveDistanced(DistanceInteraction send)
+        {
+            if (Distanced == null) return;
+            if (!Distanced.Contains(send)) return;
+
+            Distanced.Remove(send);
+
+            if (distanceData.maxCount != -1)
+                distanceData.maxCount++;
+        }
+
+
+
+        #endregion
+
+        public override bool Equals(object other)
+        {
+            var distanceInteraction = (DistanceInteraction)other;
+            if (distanceInteraction == null) return false;
+
+            return distanceData.TagID.Equals(distanceInteraction.distanceData.TagID) && this == distanceInteraction;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
 
     }
 }

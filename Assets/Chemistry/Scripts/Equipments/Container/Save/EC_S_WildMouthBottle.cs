@@ -15,7 +15,9 @@ namespace Chemistry.Equipments
     {
         #region I_ET_S_SpoonTake接口属性
         [SerializeField, Header("小份药品在药匙内的本地坐标")]
+#pragma warning disable CS0436
         private Vector3 localPosition;
+#pragma warning restore CS0436
         public Vector3 LocalPosition { get { return localPosition; } }
 
         [SerializeField, Header("小份药品在药匙内的本地旋转")]
@@ -49,6 +51,7 @@ namespace Chemistry.Equipments
 
         [SerializeField, Header("药匙取药时动画下降的数值")]
         private float height;
+
         public float Height { get { return height; } } 
         #endregion
 

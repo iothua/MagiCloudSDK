@@ -14,7 +14,7 @@ namespace Chemistry.Editor.Window
     {
         private DI_ReactionInfo reactionInfo;
 
-        private bool reactionAdd = false;
+        private bool reactionAdd;
         private string reactionPath = string.Empty;
 
         private ChemicalEditorWindows chemicalEditor;

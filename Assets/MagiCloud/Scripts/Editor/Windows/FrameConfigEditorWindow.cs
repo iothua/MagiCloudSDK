@@ -29,7 +29,7 @@ namespace MagiCloud
         [MenuItem("MagiCloud/框架初始化[统一配置]")]
         static void CreateFrameConfig()
         {
-            FrameConfigEditorWindow window = (FrameConfigEditorWindow)EditorWindow.GetWindow(typeof(FrameConfigEditorWindow));
+            EditorWindow.GetWindow(typeof(FrameConfigEditorWindow));
 
             initialize = FindObjectOfType<MInitialize>();
         }

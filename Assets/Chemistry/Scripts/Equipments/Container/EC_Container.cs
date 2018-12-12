@@ -13,7 +13,7 @@ namespace Chemistry.Equipments
 
         [Title("药品数据配置")]
         [SerializeField]
-        private Data.EquipmentDrugInfo EquipmentDrug;
+        protected Data.EquipmentDrugInfo EquipmentDrug;
 
         #endregion
 

@@ -46,7 +46,7 @@ namespace MagiCloud.Interactive
             foreach (var interaction in interactionSends)
             {
                 //根据指定key获取到接收点
-                var managers = DistanceStorage.GetSendDistaceDataKey(interaction.distanceData);
+                var managers = DistanceStorage.GetSendDistaceDataKey(interaction);
 
                 List<DistanceDataManager> distanceManagers;
                 dataManagers.TryGetValue(target, out distanceManagers);
@@ -78,13 +78,13 @@ namespace MagiCloud.Interactive
                         distances[i] = new DistanceDataManager
                         {
                             sendData = distanceManagers[i].sendData,
-                            Distances = new List<DistanceData>()
+                            Distances = new List<DistanceInteraction>()
                         };
 
                         for (int j = 0; j < distanceManagers[i].Distances.Count; j++)
                         {
                             var distance = distanceManagers[i].Distances[j];
-                            if (distance.Interaction.AutoDetection)
+                            if (distance.AutoDetection)
                             {
                                 distances[i].AddDistance(distance);
                             }
@@ -150,7 +150,7 @@ namespace MagiCloud.Interactive
             foreach (var interaction in interactionPours)
             {
                 //获取到其他的接收点（All、Pour）
-                var managers = DistanceStorage.GetSendDistaceDataAll(interaction.distanceData, interactionType);
+                var managers = DistanceStorage.GetSendDistaceDataAll(interaction, interactionType);
                 
                 //如果没有获取到其他的，则跳过
                 if (managers.Count == 0) continue;
@@ -165,15 +165,15 @@ namespace MagiCloud.Interactive
 
                 //在当前的距离管理端中，找是否存在的，
                 DistanceDataManager distanceManager = distanceManagers.Count == 0 ? new DistanceDataManager() :
-                    distanceManagers.Find(obj => obj.sendData.EqualsObject(interaction.distanceData)) ?? new DistanceDataManager();
+                    distanceManagers.Find(obj => obj.sendData.Equals(interaction.distanceData)) ?? new DistanceDataManager();
 
-                distanceManager.sendData = interaction.distanceData;
+                distanceManager.sendData = interaction;
 
                 interaction.IsGrab = true;
 
                 foreach (var item in managers)
                 {
-                    distanceManager.AddDistance(interaction.distanceData, item.sendData);
+                    distanceManager.AddDistance(interaction, item.sendData);
                 }
 
                 distanceManagers.Add(distanceManager);

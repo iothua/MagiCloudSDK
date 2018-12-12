@@ -65,7 +65,7 @@ namespace Chemistry.Equipments
         {
             if (stirInteraction!=null)
             {
-                InteractionDistanceController.OnExit(send.distanceData,stirInteraction.distanceData);
+                InteractionDistanceController.OnExit(send,stirInteraction);
                 stirInteraction=null;
             }
             StopStir();

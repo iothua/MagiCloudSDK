@@ -92,17 +92,17 @@ namespace Chemistry.Chemicals
                 {
                     _dicAllDrugs = new Dictionary<string, Drug>();
                 }
-                if (_dicAllDrugs.Count != AllDrugMixtures.Count + AllDrugs.Count)
-                {
-                    foreach (var item in AllDrugs)
-                    {
-                        _dicAllDrugDatas.Add(item.Key, new DrugData(item.Value));
-                    }
 
-                    foreach (var item in AllDrugMixtures)
-                    {
-                        _dicAllDrugDatas.Add(item.Key, new DrugData(item.Value));
-                    }
+                _dicAllDrugDatas.Clear(); //清理元素，保证最新的
+
+                foreach (var item in AllDrugs)
+                {
+                    _dicAllDrugDatas.Add(item.Key, new DrugData(item.Value));
+                }
+
+                foreach (var item in AllDrugMixtures)
+                {
+                    _dicAllDrugDatas.Add(item.Key, new DrugData(item.Value));
                 }
 
                 return _dicAllDrugDatas;
@@ -381,7 +381,9 @@ namespace Chemistry.Chemicals
 
                 if (drugObject.drugStyle == DrugStyle.纯净物)
                 {
-                    Drug drug = (Drug)drugObject.DrugObject;
+
+
+                    Drug drug = AllDrugs[drugObject.DrugName];
                     drug.ReduceDrug(volume);
 
                     if (drug.Volume <= 0 && isClear)
@@ -390,11 +392,12 @@ namespace Chemistry.Chemicals
 
                         AllDrugs.Remove(name);
                     }
+
                 }
 
                 if (drugObject.drugStyle == DrugStyle.混合物)
                 {
-                    DrugMixture drugMixture = (DrugMixture)drugObject.DrugObject;
+                    DrugMixture drugMixture = AllDrugMixtures[drugObject.DrugName];
                     drugMixture.ReduceDrugMixture(volume);
 
                     if (drugMixture.Volume <= 0 && isClear)
