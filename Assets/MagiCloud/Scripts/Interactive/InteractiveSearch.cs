@@ -89,27 +89,7 @@ namespace MagiCloud.Interactive
                                 distances[i].AddDistance(distance);
                             }
                         }
-                        //var distanceings = new DistanceData[distanceManagers[i].Distanceing.Count];
-                        //distanceManagers[i].Distanceing.CopyTo(distanceings);
-
-                        //distances[i].Distanceing = distanceings.ToList();
                     }
-
-                    //distances = distances.Select((obj) =>
-                    //{
-                    //    obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
-
-                    //    return obj;
-
-                    //}).ToList();
-
-                    //distances = distances.Select((obj) =>
-                    //{
-                    //    obj.Distances = obj.Distances.Where(_ => _.Interaction.AutoDetection).ToList();
-
-                    //    return obj;
-
-                    //}).ToArray();
 
 
                     if (!dataManagers.ContainsKey(target))
@@ -125,11 +105,6 @@ namespace MagiCloud.Interactive
                     else
                         dataManagers[target] = distanceManagers;
                 }
-
-                //if (!dataManagers.ContainsKey(target))
-                //    dataManagers.Add(target, distanceManagers);
-                //else
-                //    dataManagers[target] = distanceManagers;
             }
         }
 
@@ -165,7 +140,7 @@ namespace MagiCloud.Interactive
 
                 //在当前的距离管理端中，找是否存在的，
                 DistanceDataManager distanceManager = distanceManagers.Count == 0 ? new DistanceDataManager() :
-                    distanceManagers.Find(obj => obj.sendData.Equals(interaction.distanceData)) ?? new DistanceDataManager();
+                    distanceManagers.Find(obj => obj.sendData.Equals(interaction)) ?? new DistanceDataManager();
 
                 distanceManager.sendData = interaction;
 

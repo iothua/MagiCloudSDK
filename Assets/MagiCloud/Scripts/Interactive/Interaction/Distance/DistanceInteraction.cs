@@ -238,6 +238,8 @@ namespace MagiCloud.Interactive.Distance
         /// <param name="status"></param>
         public virtual void OnDistanceRelease(DistanceInteraction distanceInteraction,InteractionReleaseStatus status)
         {
+            IsGrab = false;
+
             if (OnStatusRelease != null)
             {
                 OnStatusRelease.Invoke(distanceInteraction, status);
@@ -587,6 +589,7 @@ namespace MagiCloud.Interactive.Distance
 
         public override bool Equals(object other)
         {
+            if (other == null) return false;
             var distanceInteraction = (DistanceInteraction)other;
             if (distanceInteraction == null) return false;
 
