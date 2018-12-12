@@ -71,12 +71,20 @@ namespace Chemistry.Equipments.Data
             if (addLiquid)
             {
                 liquidModelData.geneterItem.Assignment();
+
+                if (liquidModelData.geneterItem.modelObject == null)
+                    liquidModelData.resourcesItem.Assignment(liquidModelData.geneterItem.modelObject.transform);
             }
 
             if (addModel)
             {
                 drugModelData.geneterItem.Assignment();
+
+                if (liquidModelData.geneterItem.modelObject == null)
+                    drugModelData.resourcesItem.Assignment(drugModelData.geneterItem.modelObject.transform);
             }
+
+
         }
 
         private void OnInitializeDrug()

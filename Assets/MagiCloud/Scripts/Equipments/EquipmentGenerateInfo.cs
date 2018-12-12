@@ -96,11 +96,13 @@ namespace MagiCloud.Equipments
             for (int i = 0; i < modelDatas.Count; i++)
             {
                 modelDatas[i].geneterItem.Assignment();
+                modelDatas[i].resourcesItem.Assignment(modelDatas[i].geneterItem.modelObject.transform);
             }
 
             for (int i = 0; i < effectDatas.Count; i++)
             {
                 effectDatas[i].geneterItem.Assignment();
+                effectDatas[i].resourcesItem.Assignment(effectDatas[i].geneterItem.modelObject.transform);
             }
 
             childs = gameObject.GetComponentsInChildren<EquipmentGenerateInfo>().Where(arg => !arg.Equals(this)).ToList();
