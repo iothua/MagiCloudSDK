@@ -230,7 +230,7 @@ namespace Chemistry.Interactions
             {
                 if (IsGrab)
                 {
-                    Debug.Log(this.transform.parent.parent.name + "开始吸附读条");
+                    //Debug.Log(this.transform.parent.parent.name + "开始吸附读条");
 
                     //进入倒水操作读条
                     curTime += Time.deltaTime;
@@ -440,13 +440,13 @@ namespace Chemistry.Interactions
             if (pointSide == PourPointSide.Left)
             {
                 tmpAngle = target.transform.parent.eulerAngles.z + (MOperateManager.GetHandScreenPoint(handIndex).y - lastMousePos.y) * pourHelper.RotSpeed;
-                Debug.Log("旋转角度1----" + tmpAngle);
+                //Debug.Log("旋转角度1----" + tmpAngle);
                 tmpAngle = Mathf.Clamp(tmpAngle, pourContainer.leftRotateLimits.x, pourContainer.leftRotateLimits.y);
             }
             else if (pointSide == PourPointSide.Right)
             {
                 tmpAngle = target.transform.parent.eulerAngles.z;
-                Debug.Log("初始角度" + tmpAngle);
+                //Debug.Log("初始角度" + tmpAngle);
                 if (tmpAngle>0.0f)
                 {
                     tmpAngle = (tmpAngle - 360.0f) - (MOperateManager.GetHandScreenPoint(handIndex).y - lastMousePos.y) * pourHelper.RotSpeed;
@@ -455,7 +455,7 @@ namespace Chemistry.Interactions
                 {
                     tmpAngle -= (MOperateManager.GetHandScreenPoint(handIndex).y - lastMousePos.y) * pourHelper.RotSpeed;
                 }
-                Debug.Log("旋转角度2--***" + tmpAngle);
+                //Debug.Log("旋转角度2--***" + tmpAngle);
                 tmpAngle = Mathf.Clamp(tmpAngle, pourContainer.rightRotateLimits.x, pourContainer.rightRotateLimits.y);
             }
 
@@ -537,7 +537,7 @@ namespace Chemistry.Interactions
             //{
 
             //}
-            OnEndPourOperate(distanceInteraction as InteractionPourWater);
+            OnEndPourOperate(interaction);
 
             base.OnDistanceRelesae(distanceInteraction);
         }

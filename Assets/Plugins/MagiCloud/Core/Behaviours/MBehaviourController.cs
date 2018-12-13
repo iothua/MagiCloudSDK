@@ -15,8 +15,6 @@ namespace MagiCloud.Core
 
         private static MBehaviourController behaviourController;
 
-        private static bool IsInitialize = false;
-
         internal static int Count {
             get {
                 return Behaviours.Count;

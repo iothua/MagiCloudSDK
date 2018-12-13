@@ -241,6 +241,10 @@ public class PourContainer
                 sumV += item.Value;
             }
         }
+        if (sumV>0.01f)
+        {
+            hasChanged = true;
+        }
         Debug.Log("接水   " + ContainerCurrentVolume + "结果");
 
         return sumV;
@@ -278,7 +282,7 @@ public class PourContainer
         //速率的系数--几倍速
         int modulus = Mathf.CeilToInt((currentAngel - 90.0f) / 10.0f);
         float resultV = Mathf.Clamp(modulus, 1, 4)* interactionPourWater.pourHelper.WaterSpeed;
-
+        
         Debug.Log("resultV" + resultV);
 
         return resultV;

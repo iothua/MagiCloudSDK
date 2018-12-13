@@ -63,7 +63,7 @@ using UnityEngine.Events;
 /// 倒水液体控制
 /// 开发者：阮榆皓
 /// </summary>
-
+[DefaultExecutionOrder(300)]
 public class PourLiquidControl : MonoBehaviour
 {
     //容器初始化
@@ -103,10 +103,12 @@ public class PourLiquidControl : MonoBehaviour
 
         dictionaryCup = new Dictionary<string, float>();
 
+        Debug.Log("PourLiquidControl 的Start被调用");
 
         //液体初始化
         //此处应遍历容器中的所有药品，然后添加至改集合中--可扩展TODO
         //倒水容器类与这个类---有时间还能优化
+        
         float tmpV = CurContainer.DrugSystemIns.GetDrug(CurContainer.DrugName).Volume;
 
         dictionaryCup.Add(CurContainer.DrugName, tmpV);
