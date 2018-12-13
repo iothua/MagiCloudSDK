@@ -8,15 +8,13 @@ namespace Chemistry.Interactions
     [CanEditMultipleObjects]
     public class InteractionPourWaterEditor : DistanceInteractionEditor
     {
-        private SerializedObject test;
         private SerializedProperty PourPointSide;
         private InteractionPourWater interactionPourWater;
 
         protected override void OnEnable()
         {
-            test = new SerializedObject(target);
             interactionPourWater = serializedObject.targetObject as InteractionPourWater;
-            PourPointSide = test.FindProperty("pointSide");
+            PourPointSide = serializedObject.FindProperty("pointSide");
 
             base.OnEnable();
         }
