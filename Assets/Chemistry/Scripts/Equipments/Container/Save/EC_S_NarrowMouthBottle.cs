@@ -26,19 +26,6 @@ namespace Chemistry.Equipments
                 return DropperInteractionType.细口瓶;
             }
         }
-        private EquipmentBase inInteractionEquipment;
-        public EquipmentBase InInteractionEquipment
-        {
-            get
-            {
-                return inInteractionEquipment;
-            }
-
-            set
-            {
-                inInteractionEquipment = value;
-            }
-        }
 
         protected override void Start()
         {
@@ -67,12 +54,9 @@ namespace Chemistry.Equipments
 
         public override void OnDistanceRelease(InteractionEquipment interaction)
         {
-
             base.OnDistanceRelease(interaction);
 
             if (interaction.Equipment is EO_Cap)
-                DropperJoin();
-            if (interaction.Equipment is ET_Dropper)
                 DropperJoin();
         }
 
@@ -82,11 +66,6 @@ namespace Chemistry.Equipments
 
             if (interaction.Equipment is EO_Cap)
                 DropperLeave();
-            if (interaction.Equipment is ET_Dropper)
-            {
-                InInteractionEquipment = null;
-                DropperLeave();
-            }
         }
 
         /// <summary>

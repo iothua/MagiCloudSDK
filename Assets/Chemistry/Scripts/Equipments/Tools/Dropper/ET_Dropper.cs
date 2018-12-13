@@ -21,7 +21,7 @@ namespace Chemistry.Equipments
     /// 滴药接口：I_ET_D_Drip
     /// </summary>
     //[ExecuteInEditMode]
-    public class ET_Dropper : EquipmentBase, I_EO_Cap
+    public class ET_Dropper : EO_Cap
     {
         [HideInInspector]
         public int maxVolume = 10;            //最大容量
@@ -48,20 +48,24 @@ namespace Chemistry.Equipments
                     _numberOfDrop = value;
             }
         }
+
         private int remainderNumber;            //剩余多少滴
 
         private EquipmentBase interactionEquipmentBase;     //与滴管交互的仪器，排除一个滴管与多个仪器交互
         private EA_DropperTrajectoryContent dropperTrajectoryContent;
+
         [SerializeField, Header("滴管液面下降曲线")]
         private AnimationCurve animationCurve;
         private float animationCurveTime;       //使用AnimationCurve的时间累积
         private float startTime;                //开始取值时间
         private float endTime;                  //结束取值时间
+
         [SerializeField]
         private EA_Dropper eA_Dropper;          //胶帽变化动画
 
         [HideInInspector]
         public LiquidSystem liquidEffect;       //滴管内液体特效
+
         [HideInInspector]
         public Effect_Dropper Effect_Dropper;   //吸药或滴药过程动画
 
@@ -86,32 +90,12 @@ namespace Chemistry.Equipments
             get { return _drugSystem ?? (_drugSystem = new DrugSystem(maxVolume)); }
         }
 
-        [SerializeField]
-        private string _onlyDrugName;           //滴管内吸取过的药品名字
-        public string OnlyDrugName
-        {
-            get { return _onlyDrugName ?? (_onlyDrugName = ""); }
-        }
-        private EO_Cap eC_Cap;
-        public EO_Cap EC_Cap
-        {
-            get
-            {
-                if (eC_Cap == null)
-                    eC_Cap = GetComponent<EO_Cap>();
-                return eC_Cap;
-            }
-            set
-            {
+        //当前已经操作的物体
+        private I_ET_D_BreatheIn currentBreatheIn = null;
 
-            }
-        }
-
-        public bool ActivationCap { get { return EC_Cap.enabled; } set { EC_Cap.enabled = value; } }
-        [Header("可配置的初始化药品")]
-        //public ContainerDrugInfo containerDrugInfo;
         private bool isEmpty = true;            //滴管内是否有药（会修改为根据滴管内药品量判断）
         private Coroutine coroutine;
+
         protected override void Start()
         {
             base.Start();
@@ -125,48 +109,43 @@ namespace Chemistry.Equipments
             if (liquidEffect == null)
                 liquidEffect = GetComponent<LiquidSystem>();
 
-            //liquidEffect.OnInitialize(DrugSystemIns, LiquidVolumeFX.TOPOLOGY.Cylinder);
-            //if (containerDrugInfo.drugName != "")
-                //BreatheInDrug("稀盐酸");
         }
 
         public override bool IsCanInteraction(InteractionEquipment interaction)
         {
             base.IsCanInteraction(interaction);
             if (interactionEquipmentBase != null && interactionEquipmentBase != interaction.Equipment) return false;
+
             if (interaction.Equipment is I_ET_D_BreatheIn)
             {
-                //I_ET_D_BreatheIn breatheIn = interaction.Equipment as I_ET_D_BreatheIn;
-                if (OnlyDrugName == "")         //是一个新的滴管
+                if (currentBreatheIn == null)
                 {
-                    return true;
-                }
-                else
-                {
-                    //EC_Save save = interaction.Equipment as EC_Save;
-                    //if (save.DrugSystemIns.IsHaveDrugForName(OnlyDrugName))   //对于存储混合物的容器可能会出问题
                     interactionEquipmentBase = interaction.Equipment;
                     return true;
-                    //if (OnlyDrugName.Equals(breatheIn.DrugName))                //药品名字是否相等
-                    //{
-                    //    interactionEquipmentBase = interaction.Equipment;
-                    //    return true;
-                    //}
-                    //else
-                        //return false;
+                }
+
+                else
+                { 
+                    if(currentBreatheIn.Equals(interaction.Equipment as I_ET_D_BreatheIn))
+                    {
+                        interactionEquipmentBase = interaction.Equipment;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
+
+            //滴药
             if (interaction.Equipment is I_ET_D_Drip)
             {
                 if (isEmpty) return false;
-                //I_ET_D_Drip drip = interaction.Equipment as I_ET_D_Drip;
-                if (OnlyDrugName == "")
-                    return false;
-                else
-                {
-                    interactionEquipmentBase = interaction.Equipment;
-                    return true;
-                }
+
+                interactionEquipmentBase = interaction.Equipment;
+                return true;
+
             }
             return false;
         }
@@ -174,7 +153,8 @@ namespace Chemistry.Equipments
         public override void OnDistanceRelease(InteractionEquipment interaction)
         {
             base.OnDistanceRelease(interaction);
-            GetComponent<FeaturesObjectController>().spaceLimit.CloseLimit();
+            FeaturesObject.spaceLimit.CloseLimit();
+
             //吸药
             if (interaction.Equipment is I_ET_D_BreatheIn)
             {
@@ -188,6 +168,9 @@ namespace Chemistry.Equipments
                 {
                     BreatheInDrug(breatheIn.DrugName);
                 });
+
+                currentBreatheIn = breatheIn;
+
                 return;
             }
             //滴药
@@ -244,8 +227,7 @@ namespace Chemistry.Equipments
                 DrugSystemIns.AddDrug(drugName, maxVolume);
             }
 
-            if (_onlyDrugName == "")
-                _onlyDrugName = drugName;
+
             //设置液面
             //liquidEffect.SetValue(DrugSystemIns.CurSumVolume);
             liquidEffect.SetValue(maxVolume);                   //一次加满

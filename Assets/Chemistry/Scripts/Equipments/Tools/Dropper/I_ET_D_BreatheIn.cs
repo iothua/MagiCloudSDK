@@ -23,10 +23,5 @@ namespace Chemistry.Equipments
         /// 提供给滴管自己所属的仪器类型
         /// </summary>
         DropperInteractionType InteractionEquipment { get;}
-
-        /// <summary>
-        /// 记录与改接口正在交互的仪器（用于屏蔽其他同类仪器与该接口交互）
-        /// </summary>
-        EquipmentBase InInteractionEquipment { get; set; }
     }
 }

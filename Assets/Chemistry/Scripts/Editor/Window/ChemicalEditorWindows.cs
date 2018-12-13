@@ -22,9 +22,6 @@ namespace Chemistry.Editor.Window
         private ChemicalEquationWindow chemicalEquationWindow; //化学方程式
         private DrugInfoWindow drugInfoWindow;
         private EquipmentGeneratorWindow generatorWindow;
-        //private EquipmentWindow equipmentWindow;
-        //private EquipmentWaterModelWindow equipmentWaterModelWindow;
-        //private EquipmentDrugInfoWindow equipmentDrugInfo;
 
         private Dictionary<string, Action> DicWindow;
 
@@ -55,21 +52,9 @@ namespace Chemistry.Editor.Window
             if (!DicWindow.ContainsKey(generatorWindow.WindowName))
                 DicWindow.Add(generatorWindow.WindowName, generatorWindow.OnGUI);
 
-            //equipmentWindow = new EquipmentWindow(this,"仪器数据");
-            //if (!DicWindow.ContainsKey(equipmentWindow.WindowName))
-            //    DicWindow.Add(equipmentWindow.WindowName, equipmentWindow.OnGUI);
-
             drugInfoWindow = new DrugInfoWindow(this, "药品数据");
             if (!DicWindow.ContainsKey(drugInfoWindow.WindowName))
                 DicWindow.Add(drugInfoWindow.WindowName, drugInfoWindow.OnGUI);
-
-            //equipmentDrugInfo = new EquipmentDrugInfoWindow(this, "仪器药品");
-            //if (!DicWindow.ContainsKey(equipmentDrugInfo.WindowName))
-            //    DicWindow.Add(equipmentDrugInfo.WindowName, equipmentDrugInfo.OnGUI);
-
-            //equipmentWaterModelWindow = new EquipmentWaterModelWindow(this, "仪器水模型");
-            //if (!DicWindow.ContainsKey(equipmentWaterModelWindow.WindowName))
-            //    DicWindow.Add(equipmentWaterModelWindow.WindowName, equipmentWaterModelWindow.OnGUI);
 
             chemicalEquationWindow = new ChemicalEquationWindow(this, "化学方程式");
 

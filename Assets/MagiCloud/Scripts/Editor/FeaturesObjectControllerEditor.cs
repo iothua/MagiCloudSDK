@@ -145,12 +145,13 @@ namespace MagiCloud.Features
 
             //创建距离界面
             InspectorDistance();
+
+            EditorGUILayout.EndVertical();
         }
 
         /// <summary>
         /// 操作状态
         /// </summary>
-        /// <param name="operaType"></param>
         public void OnOperaStatus()
         {
             if (features.operaType != features.beforeChange)
