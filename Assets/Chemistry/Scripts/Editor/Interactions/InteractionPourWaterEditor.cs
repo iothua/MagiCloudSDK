@@ -13,10 +13,10 @@ namespace Chemistry.Interactions
 
         protected override void OnEnable()
         {
-            interactionPourWater = serializedObject.targetObject as InteractionPourWater;
-            PourPointSide = serializedObject.FindProperty("pointSide");
 
             base.OnEnable();
+            interactionPourWater = interaction as InteractionPourWater;
+            PourPointSide = serializedObject.FindProperty("pointSide");
         }
 
         public override void OnInspectorGUI()
