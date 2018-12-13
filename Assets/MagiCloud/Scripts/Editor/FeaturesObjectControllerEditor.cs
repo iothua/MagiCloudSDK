@@ -405,7 +405,7 @@ namespace MagiCloud.Features
 
 
             EditorGUILayout.EndHorizontal();
-            _objectRatationController.roatteSpeed=EditorGUILayout.FloatField("    *旋转速度：",_objectRatationController.roatteSpeed);
+            _objectRatationController.rotateSpeed=EditorGUILayout.FloatField("    *旋转速度：",_objectRatationController.rotateSpeed);
 
         }
         /// <summary>
