@@ -1,14 +1,9 @@
-﻿using System.Collections;
-//using MagiCloud.RotateAndZoomTool;
-//using MCKinect;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
 using MagiCloud.Interactive.Distance;
-using UnityEngine.Events;
-using System;
-using MagiCloud.KGUI;
+using MagiCloud.Interactive;
 
 namespace MagiCloud.Features
 {
@@ -149,7 +144,7 @@ namespace MagiCloud.Features
             EditorGUILayout.EndVertical();
 
             //创建距离界面
-            //InspectorDistance();
+            InspectorDistance();
         }
 
         /// <summary>
@@ -529,11 +524,6 @@ namespace MagiCloud.Features
 
             GUILayout.Box("需要通过FeaturesObjectController对象访问Customize对象，然后注册OnOnCustomizeUpdate事件");
 
-            //EditorGUILayout.PropertyField(OnCustomizeUpdate, true, null);
-
-            //_customize.OnCustomizeUpdate = EditorGUILayout.ObjectField("    *被抓取物体", _customize.OnCustomizeUpdate,
-            //    typeof(EventCustomizeUpdate), true);
-
         }
 
         /// <summary>
@@ -546,31 +536,28 @@ namespace MagiCloud.Features
 
             distanceName = EditorGUILayout.TextField("距离物体名称：",distanceName);
 
-            if (GUILayout.Button("创建距离检测点",GUILayout.Width(100)))
+            EditorGUILayout.BeginHorizontal();
+
+            GUILayout.Space(5);
+            if (GUILayout.Button("创建【默认距离】检测点",GUILayout.Width(150)))
             {
-                Transform parent = features.transform.Find("distanceParent");
-                if (parent == null)
-                {
-                    parent = new GameObject("distanceParent").transform;
-                    parent.SetParent(features.transform);
-                    parent.localPosition = Vector3.zero;
-                    parent.localRotation = Quaternion.identity;
-                    parent.localScale = Vector3.one;
-                }
 
-                GameObject distanceObject = new GameObject("distanceObject_" + distanceName);
-                var distance = distanceObject.AddComponent<DistanceInteraction>();
-                distanceObject.transform.SetParent(parent);
-                distanceObject.transform.localPosition = Vector3.zero;
+                CreateDistanceInteraction<DistanceInteraction>(FindDistanceParent());
 
-                distances.Add(distance);
+                Dismantling();
+            }
+            GUILayout.Space(5);
 
-                Selection.activeGameObject = distanceObject;
+            if(GUILayout.Button("创建【仪器距离】检测点",GUILayout.Width(150)))
+            {
+                CreateDistanceInteraction<InteractionEquipment>(FindDistanceParent());
 
                 Dismantling();
             }
 
-            GUILayout.Space(20);
+            EditorGUILayout.EndHorizontal();
+
+            GUILayout.Space(5);
             GUILayout.Label("该功能控制端下的距离检测点【只针对distanceParent下的】");
             for (int i = 0; i < distanceSums.Count; i++)
             {
@@ -588,6 +575,35 @@ namespace MagiCloud.Features
             }
 
             EditorGUILayout.EndVertical();
+        }
+
+        Transform FindDistanceParent()
+        {
+            Transform parent = features.transform.Find("distanceParent");
+            if (parent == null)
+            {
+                parent = new GameObject("distanceParent").transform;
+                parent.SetParent(features.transform);
+                parent.localPosition = Vector3.zero;
+                parent.localRotation = Quaternion.identity;
+                parent.localScale = Vector3.one;
+            }
+
+            return parent;
+        }
+
+        void CreateDistanceInteraction<T>(Transform parent) where T:DistanceInteraction
+        {
+            GameObject distanceObject = new GameObject("distanceObject_" + distanceName);
+            var distance = distanceObject.AddComponent<T>();
+            distanceObject.transform.SetParent(parent);
+            distanceObject.transform.localPosition = Vector3.zero;
+
+            distances.Add(distance);
+
+            Selection.activeGameObject = distanceObject;
+
+            distance.distanceData.TagID = distanceName;
         }
     }
 }

@@ -299,6 +299,12 @@ namespace MagiCloud.Interactive.Distance
                 default:
                     break;
             }
+
+            GUILayout.Width(5);
+            if(GUILayout.Button("刷新数据",GUILayout.Width(100)))
+            {
+                DistanceStorage.CheckDistanceData();
+            }
         }
     }
 }
