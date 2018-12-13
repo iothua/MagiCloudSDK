@@ -11,6 +11,7 @@ namespace MagiCloud.Equipments
     /// 仪器基类
     /// </summary>
     [RequireComponent(typeof(FeaturesObjectController))]
+    [DefaultExecutionOrder(0)]
     public class EquipmentBase : MonoBehaviour
     {
         private FeaturesObjectController _featuresObjectController;

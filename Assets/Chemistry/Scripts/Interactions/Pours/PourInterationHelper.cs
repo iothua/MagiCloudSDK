@@ -16,7 +16,7 @@ namespace Chemistry.Interactions
         [Header("读条UI对象")]
         public GameObject ReadingImgObj;
         [Header("读条UI预制体路径")]
-        public string PourImgPrefabsPath = "PourImg";
+        public string PourImgPrefabsPath = "Prefabs/UI/PourImg";
 
         //[Header("倒水点")]--自己
         //public Transform PourPt;

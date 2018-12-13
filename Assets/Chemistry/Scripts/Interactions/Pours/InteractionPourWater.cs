@@ -502,8 +502,6 @@ namespace Chemistry.Interactions
 
             var interaction = distanceInteraction as InteractionPourWater;
 
-          
-
             if (IsGrab)
             {
                 if (ReadingImg)

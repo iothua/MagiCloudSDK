@@ -91,7 +91,7 @@ namespace Chemistry.Equipments
         /// </summary>
         public void OnInitializeDrug()
         {
-            
+            Debug.Log("呵呵呵，执行这里了");
             DrugSystemIns.AddDrug(EquipmentDrug.drugName, EquipmentDrug.drugVolume);
 
             if (LiquidEffect != null)

@@ -34,7 +34,7 @@ namespace Chemistry.Equipments
         protected override void Start()
         {
             base.Start();
-
+            Debug.Log("EC_M_MeasuringCylinder 的Start被调用");
             OnInitializeEquipment();
         }
 
@@ -42,6 +42,11 @@ namespace Chemistry.Equipments
         {
             containerType = EContainerType.量筒;
             base.OnInitializeEquipment();
+
+            if (LiquidChange == null)
+            {
+                LiquidChange = GetComponent<EA_EquipmentLiquidChange>();
+            }
 
             LiquidChange.OnInit(LiquidEffect, Volume);
         }
@@ -69,18 +74,18 @@ namespace Chemistry.Equipments
         /// <summary>
         /// 测试
         /// </summary>
-        protected override void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                ChangeLiquid(20.0f);
-            }
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                ChangeLiquid(-20.0f);
-            }
-            base.Update();
-        }
+        //protected override void Update()
+        //{
+        //    if (Input.GetKeyDown(KeyCode.Q))
+        //    {
+        //        ChangeLiquid(20.0f);
+        //    }
+        //    if (Input.GetKeyDown(KeyCode.W))
+        //    {
+        //        ChangeLiquid(-20.0f);
+        //    }
+        //    base.Update();
+        //}
 
 
         /// <summary>
