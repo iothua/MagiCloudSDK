@@ -15,13 +15,13 @@ namespace Chemistry.Equipments
 #pragma warning restore CS0436 // 类型与导入类型冲突
 
         public bool isOpen = true;
-        public EO_Cap _Cap;
+        public EO_Cover cover;
 
         public override bool IsCanInteraction(InteractionEquipment interaction)
         {
 
             //如果是瓶盖的话，则进行瓶盖处理
-            if(interaction.Equipment is EO_Cap)
+            if(interaction.Equipment is EO_Cover)
             {
                 switch(capOperate)
                 {
@@ -30,7 +30,7 @@ namespace Chemistry.Equipments
 #pragma warning restore CS0436 // 类型与导入类型冲突
 
                         //如果是相等的，则可进行交互
-                        if (_Cap == interaction.Equipment)
+                        if (cover == interaction.Equipment)
                             return isOpen;
 
                         return false;
@@ -39,7 +39,7 @@ namespace Chemistry.Equipments
                     case CapOperateType.交互型:
 #pragma warning restore CS0436 // 类型与导入类型冲突
 
-                        var cap = interaction.Equipment as EO_Cap;
+                        var cap = interaction.Equipment as EO_Cover;
 
                         if (!cap.capOperate.Equals(capOperate)) return false;
 
@@ -59,7 +59,7 @@ namespace Chemistry.Equipments
         /// </summary>
         public void OpenCap()
         {
-            _Cap.IsCap = true;
+            cover.IsCover = true;
             isOpen=true;
         }
 
@@ -68,7 +68,7 @@ namespace Chemistry.Equipments
         /// </summary>
         public void CloseCap()
         {
-            _Cap.IsCap = false;
+            cover.IsCover = false;
             isOpen=false;
         }
     }

@@ -13,6 +13,9 @@ namespace Chemistry.Equipments
     /// </summary>
     public class ET_Spoon : EquipmentBase
     {
+
+        public float amount;
+
         private DrugSystem _drugSystem;         //药品系统
         /// <summary>
         /// 药品系统
@@ -23,12 +26,9 @@ namespace Chemistry.Equipments
         }
         private EquipmentBase interactionEquipmentBase;     //与药匙交互的仪器，排除一个滴管与多个仪器交互
         private EA_SpoonTrajectoryContent spoonTrajectoryContent;
-        [SerializeField]
-        private string _onlyDrugName;           //滴管内吸取过的药品名字
-        public string OnlyDrugName
-        {
-            get { return _onlyDrugName ?? (_onlyDrugName = ""); }
-        }
+
+        private I_ET_S_SpoonTake currentSpoonTake;
+
         private bool isEmpty = true;            //药匙内是否有药（会修改为根据药匙内药品量判断）
         protected override void Start()
         {
@@ -46,35 +46,29 @@ namespace Chemistry.Equipments
             if (interactionEquipmentBase != null) return false;
             if (interaction.Equipment is I_ET_S_SpoonTake)
             {
-                I_ET_S_SpoonTake spoonTake = interaction.Equipment as I_ET_S_SpoonTake;
-                if (spoonTake.InInteractionEquipment != null)
-                    return false;
+                if (currentSpoonTake == null)
+                {
+                    interactionEquipmentBase = interaction.Equipment;
+                    return true;
+                }
                 else
                 {
-                    if (OnlyDrugName == "")         //是一个新的药匙
-                        return true;
-                    else
-                    {
-                        if (OnlyDrugName.Equals(spoonTake.DrugName))                //药品名字是否相等
-                            return true;
-                        else
-                            return false;
-                    }
+                    I_ET_S_SpoonTake spoonTake = interaction.Equipment as I_ET_S_SpoonTake;
+
+                    if (!currentSpoonTake.Equals(spoonTake)) return false;
+
+                    if (spoonTake.InInteractionEquipment != null)
+                        return false;
+
+                    return true;
                 }
+
             }
             if (interaction.Equipment is I_ET_S_SpoonPut)
             {
                 if (isEmpty) return false;
-                I_ET_S_SpoonPut spoonPut = interaction.Equipment as I_ET_S_SpoonPut;
-                if (OnlyDrugName == "")
-                    return false;
-                else
-                {
-                    if (spoonPut.InInteractionEquipment != null)
-                        return false;
-                    else
-                        return true;
-                }
+
+                return true;
             }
             return false;
         }
@@ -134,7 +128,7 @@ namespace Chemistry.Equipments
         /// <param name="drugName"></param>
         private void SpoonTakeDrug(string drugName)
         {
-            
+           
         }
 
         /// <summary>

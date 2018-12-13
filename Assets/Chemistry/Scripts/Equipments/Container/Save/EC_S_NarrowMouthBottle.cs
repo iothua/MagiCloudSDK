@@ -49,14 +49,14 @@ namespace Chemistry.Equipments
             {
                 return true;
             }
-            return _Cap.IsCap;
+            return cover.IsCover;
         }
 
         public override void OnDistanceRelease(InteractionEquipment interaction)
         {
             base.OnDistanceRelease(interaction);
 
-            if (interaction.Equipment is EO_Cap)
+            if (interaction.Equipment is EO_Cover)
                 DropperJoin();
         }
 
@@ -64,7 +64,7 @@ namespace Chemistry.Equipments
         {
             base.OnDistanceExit(interaction);
 
-            if (interaction.Equipment is EO_Cap)
+            if (interaction.Equipment is EO_Cover)
                 DropperLeave();
         }
 

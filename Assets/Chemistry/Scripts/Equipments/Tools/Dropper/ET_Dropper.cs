@@ -21,7 +21,7 @@ namespace Chemistry.Equipments
     /// 滴药接口：I_ET_D_Drip
     /// </summary>
     //[ExecuteInEditMode]
-    public class ET_Dropper : EO_Cap
+    public class ET_Dropper : EO_Cover
     {
         [HideInInspector]
         public int maxVolume = 10;            //最大容量
@@ -171,6 +171,8 @@ namespace Chemistry.Equipments
 
                 currentBreatheIn = breatheIn;
 
+                IsCover = true;
+
                 return;
             }
             //滴药
@@ -190,6 +192,8 @@ namespace Chemistry.Equipments
                 {
                     DripDrug(interaction.Equipment as I_ET_D_Drip, 1.0f);
                 });
+
+                IsCover = true;
             }
         }
 
@@ -208,8 +212,11 @@ namespace Chemistry.Equipments
                 Effect_Dropper effect_Dropper = GetComponent<Effect_Dropper>();
                 effect_Dropper.HideDripEffect();
                 effect_Dropper.HidePoppleEffect();
+
                 interactionEquipmentBase = null;
             }
+
+            IsCover = false;
         }
         /// <summary>
         /// 吸药
@@ -240,24 +247,15 @@ namespace Chemistry.Equipments
         /// </summary>
         public void DripDrug(I_ET_D_Drip drip, float percent)
         {
-            List<Drug> drugs = new List<Drug>();
 
-            //foreach (var item in DrugSystemIns.DicAllDrugs.Values.ToList())
-            //{
-            //    if (item.DrugType == EDrugType.Liquid)
-            //    {
-            //        float val = maxVolume * percent;
-            //        DrugSystemIns.ReduceDrug(item.Name, val, false);
-            //        drugs.Add(new Drug(item.Name, val));
-            //    }
-            //    //else if (item.DrugType == EDrugType.Solid_Powder)
-            //    //{
-            //    //    float val = volume * percent * _solubility;
-            //    //    DrugSystemIns.ReduceDrug(item.Name, val, false);
-            //    //    drugs.Add(new Drug(item.Name, val));
-            //    //}
-            //}
-            drip.OnDripDrug(drugs);
+            DrugData drugData = DrugSystemIns.OnTakeDrug(EDrugType.Liquid);
+
+            drugData.Volume -= percent;
+
+            var dripDrug = new DrugData(drugData.DrugName, percent);
+
+            drip.OnDripDrug(dripDrug);
+
             if (remainderNumber <= 0)
                 isEmpty = true;
         }

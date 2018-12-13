@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using MagiCloud.Equipments;
 using DG.Tweening;
-using MagiCloud.Interactive;
 
 namespace Chemistry.Equipments
 {
@@ -22,45 +19,12 @@ namespace Chemistry.Equipments
     /// <summary>
     /// 盖子
     /// </summary>
-    public class EO_Cap : EquipmentBase
+    public class EO_Cap : EO_Cover
     {
         public bool IsRotate;
 
-
-        public CapOperateType capOperate = CapOperateType.唯一型;
-
         private Tween _tweenRotate;
         public Vector3 rotateValue;
-
-        private bool isCap;
-        
-        /// <summary>
-        /// 盖子状态
-        /// </summary>
-        public bool IsCap {
-            get { return isCap; }
-            set {
-
-                if (isCap == value) return;
-                isCap = value;
-
-                if (isCap)
-                {
-                    OpenCap();
-                }
-                else
-                {
-                    CloseCap();
-                }
-            }
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-
-            OnInitializeEquipment();
-        }
 
         public override void OnInitializeEquipment()
         {
@@ -73,7 +37,7 @@ namespace Chemistry.Equipments
         /// <summary>
         /// 打开盖子(第一次离开)
         /// </summary>
-        public virtual void OpenCap()
+        public override void OpenCover()
         {
             transform.SetParent(null);
             if (_tweenRotate != null)
@@ -83,7 +47,7 @@ namespace Chemistry.Equipments
         /// <summary>
         /// 关闭盖子（第一次进入）
         /// </summary>
-        public virtual void CloseCap()
+        public override void CloseCover()
         {
             if (_tweenRotate != null)
                 _tweenRotate.PlayBackwards();

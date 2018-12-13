@@ -37,7 +37,7 @@ namespace Chemistry.Equipments
 
         private Action action;
 
-        public void OnDripDrug(List<Drug> drugs)
+        public void OnDripDrug(DrugData drugData)
         {
 
         }

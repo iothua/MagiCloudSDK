@@ -14,7 +14,7 @@ namespace Chemistry.Equipments
 
         public bool isInitFire = false;
         public Fire fire;
-        public bool CanIgnite { get { return _Cap.IsCap&&!Fire.Burning; } }      //是否可以点燃
+        public bool CanIgnite { get { return cover.IsCover&&!Fire.Burning; } }      //是否可以点燃
 
 
         public IFire Fire
@@ -32,7 +32,7 @@ namespace Chemistry.Equipments
             OnInitializeEquipment();
             //KinectEventHandGrabObjectKey.AddListener(_Cap.gameObject,EventLevel.B,OnClick);
 
-            _Cap.gameObject.AddGrabObject(OnClick);
+            cover.gameObject.AddGrabObject(OnClick);
         }
 
         private void OnClick(int obj)
@@ -41,8 +41,8 @@ namespace Chemistry.Equipments
         }
         protected override void OnDestroy()
         {
-            if (_Cap!=null)
-                _Cap.gameObject.RemoveGrabObject(OnClick);
+            if (cover!=null)
+                cover.gameObject.RemoveGrabObject(OnClick);
 
             base.OnDestroy();
         }
@@ -54,7 +54,7 @@ namespace Chemistry.Equipments
             if (isInitFire)
             {
                 OpenCap();
-                if (_Cap!=null) _Cap.transform.position+=new Vector3(4f,-3f,0);
+                if (cover!=null) cover.transform.position+=new Vector3(4f,-3f,0);
 
 
                 Ignite();
@@ -97,7 +97,7 @@ namespace Chemistry.Equipments
         {
 
             base.OnDistanceRelease(interaction);
-            if (_Cap==interaction.Equipment)
+            if (cover==interaction.Equipment)
             {
                 CapJion();
 

@@ -409,6 +409,19 @@ namespace Chemistry.Chemicals
         }
 
         /// <summary>
+        /// 消耗药品
+        /// </summary>
+        /// <returns>The drug.</returns>
+        /// <param name="volume">消耗量.</param>
+        /// <param name="isClear">移除 <c>true</c> 不移除.</param>
+        public string ReduceDrug(float volume,bool isClear)
+        {
+            string drugName = FirstName;
+            ReduceDrug(drugName, volume);
+            return drugName;
+        }
+
+        /// <summary>
         /// 获取颜色
         /// </summary>
         /// <returns></returns>

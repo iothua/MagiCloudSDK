@@ -23,7 +23,7 @@ namespace Chemistry.Equipments
         /// 从药匙获取到的药品
         /// </summary>
         /// <param name="drugs"></param>
-        void OnDripDrug(List<Drug> drugs);
+        void OnDripDrug(DrugData drugData);
 
         /// <summary>
         /// 记录与改接口正在交互的仪器（用于屏蔽其他同类仪器与该接口交互）

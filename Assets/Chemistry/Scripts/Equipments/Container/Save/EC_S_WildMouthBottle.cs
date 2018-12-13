@@ -72,16 +72,16 @@ namespace Chemistry.Equipments
             //普通盖子
             if (interaction.Equipment is EO_Cap)
             {
-                if (interaction.Equipment == _Cap) return true;
-                if (_Cap.IsCap)     //盖子打开状态
+                if (interaction.Equipment == cover) return true;
+                if (cover.IsCover)     //盖子打开状态
                     return true;
                 else
                     return false;
             }
             if (interaction.Equipment as ET_Spoon)
             {
-                if (_Cap == null) return true;
-                if (_Cap.IsCap)     //盖子打开状态
+                if (cover == null) return true;
+                if (cover.IsCover)     //盖子打开状态
                 {
                     return true;    //药品系统暂时有问题
                     //if (DrugSystemIns.CurSumVolume >= takeAmount)
@@ -92,7 +92,7 @@ namespace Chemistry.Equipments
                 else
                     return false;
             }
-            return _Cap.IsCap;
+            return cover.IsCover;
         }
         public override void OnDistanceRelease(InteractionEquipment interaction)
         {
