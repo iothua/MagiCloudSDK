@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
 namespace MagiCloud.Common
 {
     /// <summary>
@@ -46,6 +48,7 @@ namespace MagiCloud.Common
         public FeaturesObjectController features;
         private MCLimitMove limit;
         Vector3[] track;
+        public UnityEvent updateComplete;
         private void Start()
         {
             if (self==null) self=transform;
@@ -70,7 +73,7 @@ namespace MagiCloud.Common
             //temp.y=0;
             keys.Clear();
             self.localPosition=Vector3.zero;
-            track = Track(self,precision,longR,shortR,Vector3.forward,center.position);
+            track = Track(self,precision,longR,shortR,dir,center.position);
             int startIndex = Convert.ToInt32(precision*(down ? (start+0.5f) : start));     //起始点索引
             num =   Convert.ToInt32(Range*precision);              //截取点的数量
             int endIndex = startIndex+ num;                        //终点索引
@@ -81,9 +84,11 @@ namespace MagiCloud.Common
                 over=endIndex-track.Length+1;
                 endIndex =track.Length-1;
             }
-            limit.xRange.x=(float)Math.Round(track[endIndex].x-center.position.x,5);
-            limit.xRange.y=(float)Math.Round(track[startIndex].x-center.position.x,5);
+            var min = (float)Math.Round(track[endIndex].x-center.position.x,5);
+            var max = (float)Math.Round(track[startIndex].x-center.position.x,5);
 
+            limit.xRange.x=min<max ? min : max;
+            limit.xRange.y=min<max ? max : min;
             for (int i = limit.minYCurve.keys.Length-1; i >=0; i--)
             {
                 limit.minYCurve.RemoveKey(i);
@@ -107,7 +112,7 @@ namespace MagiCloud.Common
             }
             SeetSmooth(limit.maxYCurve);
             SeetSmooth(limit.minYCurve);
-
+            updateComplete?.Invoke();
         }
 
         private void TrackToLimit(int i)

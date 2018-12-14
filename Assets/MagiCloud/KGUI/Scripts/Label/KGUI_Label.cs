@@ -121,7 +121,7 @@ namespace MagiCloud.KGUI
             Data=data;
 #if UNITY_EDITOR
             if (Application.isPlaying) return;
-            LateUpdate();
+            //  LateUpdate();
 #endif
         }
         #endregion

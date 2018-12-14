@@ -19,6 +19,8 @@ namespace MagiCloud.KGUI
         public KGUI_Button showButtom;
         private Color color = Color.white;
         public KGUI_Button backButton;
+        public Vector3 fromPos = new Vector3(-1545f,0f,0f);
+        public Vector3 toPos = new Vector3(-375f,0f,0f);
         void Start()
         {
             if (recordButton!=null)
@@ -46,23 +48,27 @@ namespace MagiCloud.KGUI
                 trueImage.color=color;
                 trueImage.DOFade(0,1f).SetEase(Ease.InQuint);
                 //记录数据到表格
-                tableManager.SetDataToTable(record.GetData(),1);
+                tableManager.SetDataToTable(record.GetData(),1,record.IsCover);
             }
         }
 
 
         public void Show()
         {
-            tableManager.transform.DOLocalMoveY(0,0.5f);
+            backButton.gameObject.SetActive(true);
             showButtom.gameObject.SetActive(false);
+            tableManager.transform.DOLocalMove(toPos,0.5f);
         }
 
 
 
         public void Close(int i)
         {
-            tableManager.transform.DOLocalMoveY(1080,0.5f);
-            showButtom.gameObject.SetActive(true);
+            tableManager.transform.DOLocalMove(fromPos,0.5f).OnComplete(() =>
+            {
+                backButton.gameObject.SetActive(false);
+                showButtom.gameObject.SetActive(true);
+            });
         }
 
         private void OnDestroy()

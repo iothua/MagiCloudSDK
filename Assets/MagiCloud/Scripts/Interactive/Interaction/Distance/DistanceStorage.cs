@@ -194,11 +194,11 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static List<DistanceDataManager> GetSendDistaceDataAll(DistanceInteraction data,InteractionType interactionType)
+        public static List<DistanceDataManager> GetSendDistaceDataAll(DistanceInteraction data, InteractionType interactionType)
         {
             if (dataManagers == null) return null;
 
-            return dataManagers.FindAll(obj => obj.sendData.distanceData.TagID.Equals(data.distanceData.TagID)
+            return dataManagers.FindAll(obj => obj.sendData != null && obj.sendData.distanceData.TagID.Equals(data.distanceData.TagID)
             && obj.sendData.distanceData.interactionType.Equals(interactionType)
             && !obj.sendData.Equals(data)
                                         && !obj.sendData.FeaturesObjectController.Equals(data.FeaturesObjectController));
@@ -262,7 +262,7 @@ namespace MagiCloud.Interactive.Distance
         {
             if (dataManagers == null) return null;
 
-            return dataManagers.Find(obj => obj.sendData.Equals(data));//寻找到一个GUID与TadID一致的对象
+            return dataManagers.Find(obj => obj.sendData != null && obj.sendData.Equals(data));//寻找到一个GUID与TadID一致的对象
         }
 
         /// <summary>

@@ -84,7 +84,9 @@ namespace MagiCloud.KGUI
         {
             //根据行列宽与行列数，计算出高度，以及间隔
             Vector2 size = new Vector2(rowParent.sizeDelta.x,cellSize.y * Ranks.x + spacing * (Ranks.x - 1));
+           
             rowParent.sizeDelta=size;
+            GetComponent<RectTransform>().sizeDelta=size;
         }
 
         public void CreatRow(int i)
@@ -118,7 +120,7 @@ namespace MagiCloud.KGUI
             }
             //添加行
             Rows.Add(kguiRow);
-            //Ranks.x++;
+            Ranks.x++;
             UpdateContentRect();
         }
 

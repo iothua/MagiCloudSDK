@@ -56,7 +56,9 @@ namespace MagiCloud.Equipments
             }
 
             Transform modelNode = equipment == null ? transform : equipment.ModelNode;
-            modelNode.DestroyImmediateChildObject();
+
+            if (equipment != null)
+                modelNode.DestroyImmediateChildObject();
 
             for (int i = 0; i < modelDatas.Count; i++)
             {
@@ -66,7 +68,8 @@ namespace MagiCloud.Equipments
 
             Transform effectNode = equipment == null ? transform : equipment.EffectNode;
 
-            effectNode.DestroyImmediateChildObject();
+            if (equipment != null)
+                effectNode.DestroyImmediateChildObject();
 
             for (int i = 0; i < effectDatas.Count; i++)
             {
@@ -74,7 +77,8 @@ namespace MagiCloud.Equipments
                 effectDatas[i].CreateModel(effectNode);
             }
 
-            equipment.OnInitializeEquipment_Editor(EquipmentName);
+            if (equipment != null)
+                equipment.OnInitializeEquipment_Editor(EquipmentName);
         }
 
         [ButtonGroup]

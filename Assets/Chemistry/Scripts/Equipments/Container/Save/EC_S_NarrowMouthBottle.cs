@@ -3,6 +3,7 @@ using UnityEngine;
 using MagiCloud.Interactive;
 using Chemistry.Data;
 using MagiCloud.Equipments;
+using Sirenix.OdinInspector;
 
 namespace Chemistry.Equipments
 {
@@ -14,10 +15,14 @@ namespace Chemistry.Equipments
     /// </summary>
     public class EC_S_NarrowMouthBottle : EC_Save, I_ET_D_BreatheIn
     {
+        [SerializeField]
+        [LabelText("胶头滴管下落高度")]
+        private float breatheHeight = 0.75f;
+
         /// <summary>
         /// 胶头滴管下落的高度
         /// </summary>
-        public float Height { get { return 0.75f; } }
+        public float Height { get { return breatheHeight; } }
 
         public DropperInteractionType InteractionEquipment
         {

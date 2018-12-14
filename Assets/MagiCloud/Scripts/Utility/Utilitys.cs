@@ -68,6 +68,8 @@ namespace MagiCloud
         public static T AddEquipmentScript<T>(this Transform transform,string namespaces,string scriptName)
             where T:EquipmentBase
         {
+            if (string.IsNullOrEmpty(scriptName)) return default(T);
+
             string script = !string.IsNullOrEmpty(namespaces) ? namespaces + "." + scriptName : scriptName;
             var component = transform.AddEquipmentByName(script);
 

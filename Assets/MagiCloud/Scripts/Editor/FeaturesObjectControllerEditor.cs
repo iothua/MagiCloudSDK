@@ -143,10 +143,11 @@ namespace MagiCloud.Features
 
             EditorGUILayout.EndVertical();
 
+            EditorGUILayout.EndVertical();
+
             //创建距离界面
             InspectorDistance();
 
-            EditorGUILayout.EndVertical();
         }
 
         /// <summary>
@@ -235,6 +236,7 @@ namespace MagiCloud.Features
                 _spaceLimit = features.AddSpaceLimit();
                 if (_spaceLimit == null) return;
                 EditorGUILayout.BeginVertical();
+
                 _spaceLimit.limitObj = EditorGUILayout.ObjectField("    *被限制的物体",_spaceLimit.limitObj,typeof(GameObject),true) as GameObject;
                 if (_spaceLimit.limitObj == null)
                     EditorGUILayout.HelpBox("请赋值被抓取物体本身",MessageType.None,false);
@@ -243,6 +245,7 @@ namespace MagiCloud.Features
                 _spaceLimit.leftLimit = EditorGUILayout.Toggle("    *左边限制",_spaceLimit.leftLimit);
                 _spaceLimit.rightLimit = EditorGUILayout.Toggle("    *右边限制",_spaceLimit.rightLimit);
                 _spaceLimit.offset = EditorGUILayout.FloatField("    *偏移量",0.5f);
+
                 EditorGUILayout.EndVertical();
             }
             else
@@ -322,6 +325,10 @@ namespace MagiCloud.Features
 
                 _labelController.clearAreaZ = EditorGUILayout.Vector2Field(new GUIContent("    *在显示范围内的缩放","clearAreaZ"),_labelController.clearAreaZ);
                 _labelController.label.OnUpdate();
+                if (GUILayout.Button("在编辑器下更新标签位置",GUILayout.Width(200)))
+                {
+                    _labelController.label.LateUpdate();
+                }
                 EditorGUILayout.EndVertical();
 
             }
@@ -549,7 +556,7 @@ namespace MagiCloud.Features
             }
             GUILayout.Space(5);
 
-            if(GUILayout.Button("创建【仪器距离】检测点",GUILayout.Width(150)))
+            if (GUILayout.Button("创建【仪器距离】检测点",GUILayout.Width(150)))
             {
                 CreateDistanceInteraction<InteractionEquipment>(FindDistanceParent());
 
@@ -593,7 +600,7 @@ namespace MagiCloud.Features
             return parent;
         }
 
-        void CreateDistanceInteraction<T>(Transform parent) where T:DistanceInteraction
+        void CreateDistanceInteraction<T>(Transform parent) where T : DistanceInteraction
         {
             GameObject distanceObject = new GameObject("distanceObject_" + distanceName);
             var distance = distanceObject.AddComponent<T>();

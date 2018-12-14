@@ -24,7 +24,7 @@ namespace Chemistry.Equipments
             }
         }
 
-        public int Count { get { return slideEquipments.Count; } }
+        public int Count { get { return slideEquipments==null ? 0 : slideEquipments.Count; } }
 
         public float max;
         public float min;

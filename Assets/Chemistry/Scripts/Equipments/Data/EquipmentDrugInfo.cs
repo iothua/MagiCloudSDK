@@ -72,7 +72,7 @@ namespace Chemistry.Equipments.Data
             {
                 liquidModelData.geneterItem.Assignment();
 
-                if (liquidModelData.geneterItem.modelObject == null)
+                if (liquidModelData.geneterItem.modelObject != null)
                     liquidModelData.resourcesItem.Assignment(liquidModelData.geneterItem.modelObject.transform);
             }
 
@@ -80,7 +80,7 @@ namespace Chemistry.Equipments.Data
             {
                 drugModelData.geneterItem.Assignment();
 
-                if (liquidModelData.geneterItem.modelObject == null)
+                if (liquidModelData.geneterItem.modelObject != null)
                     drugModelData.resourcesItem.Assignment(drugModelData.geneterItem.modelObject.transform);
             }
 

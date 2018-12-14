@@ -23,7 +23,6 @@ namespace Chemistry.Equipments
     //[ExecuteInEditMode]
     public class ET_Dropper : EO_Cover
     {
-        [HideInInspector]
         public int maxVolume = 10;            //最大容量
 
         [Header("该次滴多少滴，耗时为滴数 * 0.5"), Range(1, 10), SerializeField]
@@ -153,7 +152,9 @@ namespace Chemistry.Equipments
         public override void OnDistanceRelease(InteractionEquipment interaction)
         {
             base.OnDistanceRelease(interaction);
-            FeaturesObject.spaceLimit.CloseLimit();
+
+            if (FeaturesObject.ActiveSpaceLimit)
+                FeaturesObject.spaceLimit.CloseLimit();
 
             //吸药
             if (interaction.Equipment is I_ET_D_BreatheIn)
@@ -200,7 +201,10 @@ namespace Chemistry.Equipments
         public override void OnDistanceExit(InteractionEquipment interaction)
         {
             base.OnDistanceExit(interaction);
-            GetComponent<FeaturesObjectController>().spaceLimit.OpenLimit();
+
+            if (FeaturesObject.ActiveSpaceLimit)
+                FeaturesObject.spaceLimit.OpenLimit();
+
             if (interaction.Equipment is I_ET_D_BreatheIn)
             {
                 //I_ET_D_BreatheIn breatheIn = interaction.Equipment as I_ET_D_BreatheIn;
@@ -318,30 +322,20 @@ namespace Chemistry.Equipments
 
         public override void OnInitializeEquipment_Editor(string name)
         {
-            CreateLiquidEffect("胶头滴管模型", Vector3.up * -0.737f);
-            Effect_Dropper = EffectNode.gameObject.AddComponent<Effect_Dropper>();
-            maxVolume = 9;
+            CreateLiquidEffect();
+            Effect_Dropper = EffectNode.gameObject.GetComponent<Effect_Dropper>()??EffectNode.gameObject.AddComponent<Effect_Dropper>();
 
-            eA_Dropper = gameObject.AddComponent<EA_Dropper>();
+            eA_Dropper = gameObject.GetComponent<EA_Dropper>() ?? gameObject.AddComponent<EA_Dropper>();
 
             eA_Dropper.meshRenderer = ModelNode.GetComponentInChildren<SkinnedMeshRenderer>();
-
-            //设置这个物体的碰撞体
-            var boxCollider = (BoxCollider)Collider;
-            boxCollider.center = new Vector3(0.008f, -0.4414f, -0.0136f);
-            boxCollider.size = new Vector3(0.2274f, 1.24f, 0.221f);
         }
 
-        private void CreateLiquidEffect(string name, Vector3 pos)
+        private void CreateLiquidEffect()
         {
-            GameObject go = Instantiate(Resources.Load<GameObject>("Models\\LiquidVolume\\" + name));
-            go.name = "LiquidVolume";
-            //go.hideFlags = HideFlags.HideInHierarchy;
-            go.transform.SetParent(LiquidNode);
-            go.transform.localPosition = pos;
+            liquidEffect = gameObject.GetComponent<LiquidSystem>() ?? gameObject.AddComponent<LiquidSystem>();
 
-            liquidEffect = gameObject.AddComponent<LiquidSystem>();
-            liquidEffect.OnInitialize_Editor(DrugSystemIns, go, LiquidVolumeFX.TOPOLOGY.Cylinder);
+            liquidEffect.OnInitialize_Editor(DrugSystemIns, null, LiquidVolumeFX.TOPOLOGY.Cylinder);
+
             liquidEffect.SetWaterColorToTarget(new LiquidColorNode());
         }
 

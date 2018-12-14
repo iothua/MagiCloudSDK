@@ -26,6 +26,12 @@ namespace Chemistry.Liquid
         [HideInInspector]
         private float _fltColorChangeSpeed; //颜色变化速率
 
+        private void Awake()
+        {
+            if (_liquidVolume == null)
+                _liquidVolume = gameObject.GetComponentInChildren<LiquidVolume>();
+        }
+
         /// <summary>
         /// 编辑器生成初始化
         /// </summary>
@@ -35,7 +41,11 @@ namespace Chemistry.Liquid
         {
             //初始化液面
             this.drugSystem = drugSystem;
-            _liquidVolume = liquid.AddComponent<LiquidVolume>();
+            if (liquid != null)
+                _liquidVolume = liquid.GetComponent<LiquidVolume>() ?? liquid.AddComponent<LiquidVolume>();
+            else
+                _liquidVolume = gameObject.GetComponentInChildren<LiquidVolume>();
+
             InitData(oPOLOGY);
 
             ////更改颜色
@@ -96,7 +106,14 @@ namespace Chemistry.Liquid
         public void SetValue(float curValue, float sumValue)
         {
             _liquidVolume.level = curValue / sumValue;
-            OpenLiquidVolume();
+            if (_liquidVolume.level<0.001f)
+            {
+                CloseLiquidVolume();
+            }
+            else
+            {
+                OpenLiquidVolume();
+            }
         }
 
         /// <summary>

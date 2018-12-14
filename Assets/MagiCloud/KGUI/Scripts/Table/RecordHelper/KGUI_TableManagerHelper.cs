@@ -48,7 +48,8 @@ namespace MagiCloud.KGUI
         /// </summary>
         /// <param name="datas">数据</param>
         /// <param name="i">默认为第一个表格（暂时只记录第一个表格数）</param>
-        public void SetDataToTable(string[] datas,int i = 1)
+        /// <param name="isCover">是否覆盖</param>
+        public void SetDataToTable(string[] datas,int i = 1,bool isCover = false)
         {
             if (datas == null) return;
             if (index >= tableManager.Tables[i].Rows.Count-1)

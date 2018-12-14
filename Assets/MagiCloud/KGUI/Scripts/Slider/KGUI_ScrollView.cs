@@ -17,7 +17,7 @@ namespace MagiCloud.KGUI
     /// <summary>
     /// KGUI滚动视图
     /// </summary>
-    public class KGUI_ScrollView : MonoBehaviour
+    public class KGUI_ScrollView :MonoBehaviour
     {
         public KGUI_ScrollBar vertical; //垂直滚动
         public KGUI_ScrollBar horizontal; //水平滚动
@@ -77,14 +77,14 @@ namespace MagiCloud.KGUI
                     vertical.IsEnable = false;//禁止滚动条
 
                     RectTransform rectParent = content.parent.GetComponent<RectTransform>();
-                    rectParent.sizeDelta = new Vector2(rectParent.parent.GetComponent<RectTransform>().sizeDelta.x, rectParent.sizeDelta.y);
-                    rectParent.localPosition = new Vector3(0, rectParent.localPosition.y, rectParent.localPosition.z);
+                    rectParent.sizeDelta = new Vector2(rectParent.parent.GetComponent<RectTransform>().sizeDelta.x,rectParent.sizeDelta.y);
+                    rectParent.localPosition = new Vector3(0,rectParent.localPosition.y,rectParent.localPosition.z);
 
                     var parentBox = rectParent.GetComponent<BoxCollider>();
-                    parentBox.size = new Vector3(rectParent.sizeDelta.x, parentBox.size.y, parentBox.size.z);
+                    parentBox.size = new Vector3(rectParent.sizeDelta.x,parentBox.size.y,parentBox.size.z);
                     parentBox.center = Vector3.zero;
 
-                    content.sizeDelta = new Vector2(rectParent.sizeDelta.x, content.sizeDelta.y);
+                    content.sizeDelta = new Vector2(rectParent.sizeDelta.x,content.sizeDelta.y);
 
                     //var contentBox = rectParent.GetComponent<BoxCollider>();
                     //contentBox.size = new Vector3(content.sizeDelta.x, contentBox.size.y, contentBox.size.z);
@@ -97,17 +97,20 @@ namespace MagiCloud.KGUI
                     RectTransform rectParent = content.parent.GetComponent<RectTransform>();
                     //根据滚动条的X轴宽度和RectParent的父对象，去计算出此时该容器的大小
                     rectParent.sizeDelta = new Vector2(rectParent.parent.GetComponent<RectTransform>().sizeDelta.x -
-                        vertical.handleRect.sizeDelta.x, rectParent.sizeDelta.y);
+                        vertical.handleRect.sizeDelta.x,rectParent.sizeDelta.y);
 
                     //计算出匹配的坐标
-                    rectParent.localPosition = new Vector3(-vertical.handleRect.sizeDelta.x / 2, rectParent.localPosition.y, rectParent.localPosition.z);
+                    rectParent.localPosition = new Vector3(-vertical.handleRect.sizeDelta.x / 2,rectParent.localPosition.y,rectParent.localPosition.z);
 
 
                     var parentBox = rectParent.GetComponent<BoxCollider>();
-                    parentBox.size = new Vector3(rectParent.sizeDelta.x, rectParent.sizeDelta.y, parentBox.size.z);
+                    parentBox.size = new Vector3(rectParent.sizeDelta.x,rectParent.sizeDelta.y,parentBox.size.z);
                     parentBox.center = Vector3.zero;
 
-                    content.sizeDelta = new Vector2(rectParent.sizeDelta.x, content.sizeDelta.y);
+                    content.sizeDelta = new Vector2(rectParent.sizeDelta.x,content.sizeDelta.y);
+                    var pos = content.localPosition;
+                    pos.y =(rectParent.sizeDelta.y-content.sizeDelta.y)*0.5f;
+                    content.localPosition=pos;
                     //var contentBox = rectParent.GetComponent<BoxCollider>();
                     //contentBox.size = new Vector3(content.sizeDelta.x, contentBox.size.y, contentBox.size.z);
                     //contentBox.center = Vector3.zero;
@@ -174,7 +177,7 @@ namespace MagiCloud.KGUI
             float y = viewInfoY.minValue + Mathf.Abs(viewInfoY.maxValue - viewInfoY.minValue) * value;
             viewInfoY.currentValue = y;
 
-            content.localPosition = new Vector3(content.localPosition.x, y, content.localPosition.z);
+            content.localPosition = new Vector3(content.localPosition.x,y,content.localPosition.z);
         }
 
         /// <summary>
@@ -186,7 +189,7 @@ namespace MagiCloud.KGUI
             float x = viewInfoX.minValue + Mathf.Abs(viewInfoX.maxValue - viewInfoX.minValue) * value;
             viewInfoX.currentValue = x;
 
-            content.localPosition = new Vector3(x, content.localPosition.y, content.localPosition.z);
+            content.localPosition = new Vector3(x,content.localPosition.y,content.localPosition.z);
         }
 
 

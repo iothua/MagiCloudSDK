@@ -6,10 +6,10 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.U2D;
 using MagiCloud.Core.Events;
+using UnityEngine.Events;
 
 namespace MagiCloud.KGUI
 {
-    
     /// <summary>
     /// KGUI背包
     /// </summary>
@@ -25,6 +25,8 @@ namespace MagiCloud.KGUI
 
         private bool _isHandOnBag;                          //标记手是否在背包上
         private int _handIndex;                             //标记哪只手在背包
+
+        public UnityEvent action;
 
         /// <summary>
         /// 背包图集
@@ -272,7 +274,10 @@ namespace MagiCloud.KGUI
 
             //areaPanel.enabled = false;
             areaPanel.transform.DOLocalMove(closePosition, 1.0f);
-
+            if (action != null)
+            {
+                action.Invoke();
+            }
         }
 
         public void OpenBag(int handIndex)

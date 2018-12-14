@@ -27,7 +27,8 @@ namespace Chemistry.Equipments.Actions
                 {
                     start += Time.deltaTime * 100;
                 }
-                meshRenderer.SetBlendShapeWeight(0, start);
+
+                //meshRenderer.SetBlendShapeWeight(0, start);
             }
 
             StopCoroutine(coroutineExtrusion);

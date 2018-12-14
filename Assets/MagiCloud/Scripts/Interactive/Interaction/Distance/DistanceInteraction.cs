@@ -19,6 +19,8 @@ namespace MagiCloud.Interactive.Distance
     {
         public DistanceData distanceData;
 
+        #region 事件
+
         //靠近、停留、离开、放下、中断(OnBreak)
         public EventDistanceInteraction OnEnter, OnStay, OnExit;
 
@@ -26,10 +28,23 @@ namespace MagiCloud.Interactive.Distance
         public EventDistanceInteractionRelease OnStatusRelease; //交互后，第二次释放
         public UnityEvent OnNotRelease;//没有交互时的释放
 
+        #endregion
+
+        private Features.FeaturesObjectController featuresObject;
         /// <summary>
         /// 功能对象
         /// </summary>
-        public Features.FeaturesObjectController FeaturesObjectController { get; set; }
+        public Features.FeaturesObjectController FeaturesObjectController {
+            get {
+
+                if (featuresObject == null)
+                {
+                    featuresObject = gameObject.GetComponentInParent<Features.FeaturesObjectController>();
+                }
+
+                return featuresObject;
+            }
+        }
 
         /// <summary>
         /// 外部交互对象
@@ -85,17 +100,6 @@ namespace MagiCloud.Interactive.Distance
             if (distanceData == null)
             {
                 distanceData = new DistanceData();
-            }
-
-            //distanceData.Interaction = this;
-            //distanceData.InteractionObject = gameObject;
-
-            if (FeaturesObjectController == null)
-            {
-                FeaturesObjectController = gameObject.GetComponent<Features.FeaturesObjectController>();
-
-                if (FeaturesObjectController == null)
-                    FeaturesObjectController = gameObject.GetComponentInParent<Features.FeaturesObjectController>();
             }
 
             if (ActiveShadow)
