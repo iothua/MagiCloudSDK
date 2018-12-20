@@ -12,27 +12,49 @@ namespace Chemistry.Equipments
     /// </summary>
     public class ET_Thermometer : EquipmentBase
     {
+        //    [Header("温度条搜寻路径")]
+        //    public string BarPath = "Model/wen du di_01/sheng";
         //温度条
         public Transform TempBar;
 
         [Header("初始温度")]
-        public float DefaultTemperature = 25.0f;
+        public float DefaultTemperature = 0.0f;
 
-        [Header("当前温度")]
+        [Header("实时温度")]
         public float CurTemperature;
 
-        [Header("最高温度(默认为50摄氏度)")]
-        public float MaxTemp = 50.0f;
+        [Header("最高温度(默认为110摄氏度)")]
+        public float MaxTemp = 110.0f;
 
-        [Header("当前温度(默认为-50摄氏度)")]
-        public float MinTemp = -50.0f;
-        
+        [Header("当前温度(默认为-20摄氏度)")]
+        public float MinTemp = -20.0f;
+        [Header("是否有温度计下降动画")]
+        public bool HaveAnimation = true;
+        //温度与温度条缩放的比率系数的倒数
+        float rate = 1.0f;
+        //float testNum = 0.5f;
+
+        Tween t;
 
         protected override void Start()
         {
             base.Start();
             CurTemperature = DefaultTemperature;
-            TempBar = this.transform.Find("Model/Object001");
+            if (TempBar==null)
+            {
+                Debug.Log("温度条为空");
+            }
+            //if (!string.IsNullOrEmpty(BarPath))
+            //{
+            //    TempBar = this.transform.Find(BarPath);
+            //}
+            //else
+            //{
+            //    Debug.LogError("温度条路径为空");
+            //}
+
+            rate = DefaultTemperature - MinTemp;
+            //Tween t = DOTween.To(() => testNum, x => testNum = x, 100, 5);
         }
 
 
@@ -43,31 +65,29 @@ namespace Chemistry.Equipments
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                Debug.Log("qqq");
-                TemperatureChange(0.0f);
+                TemperatureChangeWithTime(25.0f);
             }
 
             if (Input.GetKeyDown(KeyCode.W))
             {
-                TemperatureChange(20.0f);
+                TemperatureChangeWithTime(34.0f);
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                TemperatureChange(10.0f);
+                TemperatureChangeWithTime(51.0f);
             }
             if (Input.GetKeyDown(KeyCode.R))
             {
-                TemperatureChange(-15.0f);
+                TemperatureChangeWithTime(87.0f);
             }
             if (Input.GetKeyDown(KeyCode.T))
             {
-                TemperatureChange(MaxTemp);
+                TemperatureChangeWithTime(MaxTemp);
             }
             if (Input.GetKeyDown(KeyCode.Y))
             {
-                TemperatureChange(MinTemp);
+                TemperatureChangeWithTime(MinTemp);
             }
-
         }
 
 
@@ -80,13 +100,16 @@ namespace Chemistry.Equipments
                 var tmpInteractionObj = interaction.Equipment as EC_M_MeasuringCylinder;
                 hight = tmpInteractionObj.FallHight;
             }
-            else if(interaction.Equipment as EC_Beaker)
+            else if (interaction.Equipment as EC_Beaker)
             {
                 var tmpInteractionObj = interaction.Equipment as EC_Beaker;
                 hight = tmpInteractionObj.FallHight;
             }
-            
-            this.transform.DOLocalMoveY(hight, 0.5f);
+
+            if (HaveAnimation)
+            {
+                this.transform.DOLocalMoveY(hight, 0.5f).OnComplete(OnCompleteOperate);
+            }
 
             base.OnDistanceRelease(interaction);
         }
@@ -104,18 +127,55 @@ namespace Chemistry.Equipments
         }
 
         /// <summary>
-        /// 温度改变
+        /// 温度改变(随传入的时间，实时改变)
         /// </summary>
         /// <param name="endValue">终值</param>
         /// <param name="time">变化所需时间</param>
-        public void TemperatureChange(float endValue, float time = 1.0f)
+        public virtual void TemperatureChangeWithTime(float endValue, float time = 2.0f)
         {
-            TempBar.DOScaleZ(((endValue - MinTemp) / (DefaultTemperature - MinTemp)), time).OnComplete(() =>
+            if (t != null && t.IsPlaying())
             {
-                CurTemperature = endValue;
-            });
+                t.Kill();
+            }
+
+            float targetScaleZ = CaculateScaleWithTemperature(endValue);
+            if (TempBar!=null)
+            {
+                t = TempBar.DOScaleZ(targetScaleZ, time).OnUpdate(() =>
+                {
+                    CurTemperature = (TempBar.transform.localScale.z - 1) * rate;
+                });
+            }
+            
+            
         }
 
+        /// <summary>
+        /// 温度改变（温度值为立刻变化，但液柱升降效果仍在）
+        /// </summary>
+        /// <param name="endValue">终值</param>
+        /// <param name="isComplete">在变化效果后/前赋值</param>
+        /// <param name="time">液柱变化时间</param>
+        public virtual void TemperatureChangeInstant(float endValue,bool isComplete=false,float time=2.0f)
+        {
+            float targetScaleZ = CaculateScaleWithTemperature(endValue);
+
+            if (TempBar != null)
+            {
+                var tmpTween = TempBar.DOScaleZ(targetScaleZ, time);
+
+                if (!isComplete)
+                {
+                    CurTemperature = endValue;
+                }
+                else
+                {
+                    tmpTween.OnComplete(() => { CurTemperature = endValue; });
+                }
+            }
+
+            
+        }
 
         //public override void OnInitializeEquipment_Editor(string name)
         //{
@@ -125,6 +185,20 @@ namespace Chemistry.Equipments
         //    //col.size = new Vector3(0.4f, 0.3f, 0.4f);
         //}
 
+        /// <summary>
+        /// 计算缩放的数学公式
+        /// </summary>
+        /// <param name="curT"></param>
+        /// <returns></returns>
+        float CaculateScaleWithTemperature(float curT)
+        {
+            return 1.0f + curT / rate;
+        }
 
+        //放入温度计播放完毕后的回调
+        public virtual void OnCompleteOperate()
+        {
+
+        }
     }
 }

@@ -13,8 +13,6 @@ namespace Chemistry.Equipments
     public class EC_Beaker : EC_Container
     {
         //液面变化功能--在编辑器初始化时附加对应脚本
-        [SerializeField]
-        private EA_EquipmentLiquidChange LiquidChange;
 
         //[Header("初始液体体积(为负则取默认配置值)")]
         //public float CurV = -1.0f;
@@ -44,12 +42,6 @@ namespace Chemistry.Equipments
             containerType = EContainerType.烧杯;
             base.OnInitializeEquipment();
 
-            if (LiquidChange==null)
-            {
-                LiquidChange = GetComponent<EA_EquipmentLiquidChange>();
-            }
-
-            LiquidChange.OnInit(LiquidEffect, Volume);
         }
 
         //这里在编辑器窗口进行了设置
@@ -67,8 +59,6 @@ namespace Chemistry.Equipments
             //boxCollider.center = new Vector3(0.0f, 0.5f, 0.0f);
             //boxCollider.size = new Vector3(0.74f, 1.0f, 0.74f);
             //添加容器液面升降行为
-            LiquidChange = gameObject.AddComponent<EA_EquipmentLiquidChange>();
-
         }
 
         /// <summary>
@@ -93,11 +83,11 @@ namespace Chemistry.Equipments
         /// </summary>
         /// <param name="changeVolume">变化量(正为增，负为减)</param>
         /// <param name="time">时间（为0时突变）</param>
-        public void ChangeLiquid(float changeVolume, float time = 0.5f)
+        public override void ChangeLiquid(float changeVolume, float time = 0.5F)
         {
-            //DrugSystemIns.AllDrugs[DrugName].Volume = LiquidChange.ChangeLiquid(DrugSystemIns.AllDrugs[DrugName].Volume, changeVolume, time);
+            //base.ChangeLiquid(changeVolume, time);
             var drug = DrugSystemIns.GetDrug(DrugName);
-            drug.Volume = LiquidChange.ChangeLiquid(drug.Volume, changeVolume, time);
+            drug.Volume = LiquidEffect.ChangeLiquid(drug.Volume, changeVolume, time);
         }
 
         /// <summary>

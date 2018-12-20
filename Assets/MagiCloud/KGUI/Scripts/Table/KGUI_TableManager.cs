@@ -81,7 +81,7 @@ namespace MagiCloud.KGUI
         public void AddRow(KGUI_Table table)
         {
             int i = table.Rows.Count;
-            table.CreatRow(i);
+            table.AddRow(i);
         }
 
         public void AddCloumn(KGUI_Table table)

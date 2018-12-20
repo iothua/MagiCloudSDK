@@ -28,7 +28,7 @@ namespace Chemistry.Equipments.Actions
                     start += Time.deltaTime * 100;
                 }
 
-                //meshRenderer.SetBlendShapeWeight(0, start);
+                meshRenderer.SetBlendShapeWeight(0, start);
             }
 
             StopCoroutine(coroutineExtrusion);
@@ -36,12 +36,21 @@ namespace Chemistry.Equipments.Actions
 
         public void OnStart(float start, float end)
         {
+            if (coroutineExtrusion != null)
+            {
+                StopCoroutine(coroutineExtrusion);
+                coroutineExtrusion = null;
+            }
+
             coroutineExtrusion = StartCoroutine(OnExtrusion(start, end));
         }
         public void OnDestroy()
         {
             if (coroutineExtrusion != null)
+            {
                 StopCoroutine(coroutineExtrusion);
+                coroutineExtrusion = null;
+            }
         }
     }
 }

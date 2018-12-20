@@ -1,5 +1,6 @@
 ﻿using Chemistry.Chemicals;
 using MagiCloud.Interactive;
+using UnityEngine;
 
 namespace Chemistry.Equipments
 {
@@ -68,6 +69,7 @@ namespace Chemistry.Equipments
         /// </summary>
         public void CloseCap()
         {
+
             cover.IsCover = false;
             isOpen=false;
         }

@@ -12,7 +12,7 @@ namespace MagiCloud.Interactive
     /// 2、所有的距离检测点，在Awake初始化的时候，添加到集合点中
     /// </summary>
     [ExecuteInEditMode]
-    public class InteractiveController : MonoBehaviour
+    public class InteractiveController :MonoBehaviour
     {
         private bool isEnable = false;
 
@@ -33,11 +33,14 @@ namespace MagiCloud.Interactive
         /// <summary>
         /// 是否激活
         /// </summary>
-        public bool IsEnable {
-            get {
+        public bool IsEnable
+        {
+            get
+            {
                 return isEnable;
             }
-            set {
+            set
+            {
 
                 if (isEnable == value) return;
 
@@ -55,10 +58,10 @@ namespace MagiCloud.Interactive
         /// </summary>
         public void OnInteractiveEnable()
         {
-            EventHandGrabObject.AddListener(OnGrabObject, Core.ExecutionPriority.High);
-            EventHandReleaseObject.AddListener(OnIdleObject, Core.ExecutionPriority.High);
-
-            coroutineUpdate = StartCoroutine(OnUpdate());
+            EventHandGrabObject.AddListener(OnGrabObject,Core.ExecutionPriority.High);
+            EventHandReleaseObject.AddListener(OnIdleObject,Core.ExecutionPriority.High);
+            if (coroutineUpdate==null)
+                coroutineUpdate = StartCoroutine(OnUpdate());
         }
 
         /// <summary>
@@ -70,23 +73,36 @@ namespace MagiCloud.Interactive
             EventHandReleaseObject.RemoveListener(OnIdleObject);
 
             Search.dataManagers.Clear();
-
-            StopCoroutine(coroutineUpdate);
-            coroutineUpdate = null;
+            if (coroutineUpdate!=null)
+            {
+                StopCoroutine(coroutineUpdate);
+                coroutineUpdate = null;
+            }
 
         }
 
-        void OnGrabObject(GameObject target, int handIndex)
+        void OnGrabObject(GameObject target,int handIndex)
         {
-            Search.OnStartInteraction(target, true);
+            Search.OnStartInteraction(target,true);
         }
 
-        void OnIdleObject(GameObject target, int handIndex)
+        void OnIdleObject(GameObject target,int handIndex)
         {
             Search.OnStopInteraction(target);
 
         }
 
+        // /// <summary>
+        // /// Update is called every frame, if the MonoBehaviour is enabled.
+        // /// </summary>
+        // void Update()
+        // {
+        //     if(!IsEnable)return;
+            
+        //     if(Time.frameCount % 5 == 0)
+        //         Search.OnUpdate(); //先执行一次
+
+        // }
         IEnumerator OnUpdate()
         {
             while (true)

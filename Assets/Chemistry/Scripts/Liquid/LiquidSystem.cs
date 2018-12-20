@@ -2,9 +2,13 @@
 using LiquidVolumeFX;
 using Chemistry.Chemicals;
 using UnityEngine;
+using System;
+using System.Collections;
+using Sirenix.OdinInspector;
 
 namespace Chemistry.Liquid
 {
+    //[RequireComponent(typeof(EquipmentLiquidChange))]
     public class LiquidSystem : MonoBehaviour
     {
         [HideInInspector]
@@ -25,6 +29,13 @@ namespace Chemistry.Liquid
         public float _fltSparklingIntensity;
         [HideInInspector]
         private float _fltColorChangeSpeed; //颜色变化速率
+
+        [HideInInspector]
+        public EquipmentLiquidChange liquidChange;
+
+        //下降动画及其曲线
+        [SerializeField, LabelText("液面下降动画曲线")]
+        public AnimationCurve animationCurve;
 
         private void Awake()
         {
@@ -77,6 +88,16 @@ namespace Chemistry.Liquid
             SetSurfaceColorUpdate(_colorSurfaceTarget, _fltColorChangeSpeed);
             //设置杂质
             SetSparklingIntensityUpdate(_fltSparklingIntensity, _fltColorChangeSpeed);
+        }
+
+        public void OnInitializeLiquidChange(float containerVolume, Action spillAction = null, Action overAction = null)
+        {
+            //if (liquidChange == null)
+            //    liquidChange = GetComponent<EquipmentLiquidChange>();
+            if (liquidChange == null)
+                liquidChange = new EquipmentLiquidChange(this, containerVolume, spillAction, overAction);
+
+            //liquidChange.OnInit(this, containerVolume, spillAction, overAction);
         }
 
         /// <summary>
@@ -163,140 +184,14 @@ namespace Chemistry.Liquid
             curSparklingIntensity = color.SparklingIntensity;
             curWaterColor = color.WaterColor;
             curSurfaceColor = color.SurfaceColor;
+
+            _liquidVolume.liquidColor2 = curWaterColor; //水体
+            _liquidVolume.foamColor = curSurfaceColor; //水面
         }
 
         //private List<Drug> _lstAllColorDrugs = new List<Drug>();
         //private float _sumVolume;
-
-        /// <summary>
-        /// 自己变换颜色
-        /// </summary>
-        private void SelfChangeColor()
-        {
-            #region 注释
-
-
-            ////颜色权重 + 颜色数量 + 颜色 + 稀释程度
-            //_lstAllColorDrugs.Clear();
-            //_sumVolume = 0;
-            //object drug;
-            //if (drugSystem.FindDrugForName("酚酞", out drug, DrugStyle.纯净物))
-            //{
-            //    _lstAllColorDrugs.Add((Drug)drug);
-            //}
-            //if (drugSystem.FindDrugForName("石蕊", out drug, DrugStyle.纯净物))
-            //{
-            //    _lstAllColorDrugs.Add(drug);
-            //}
-            //if (drugSystem.FindDrugForName("硫酸铜", out drug, DrugStyle.纯净物))
-            //{
-            //    _lstAllColorDrugs.Add(drug);
-            //}
-            //if (drugSystem.FindDrugForName("硫酸亚铁", out drug, DrugStyle.纯净物))
-            //{
-            //    _lstAllColorDrugs.Add(drug);
-            //}
-            //if (drugSystem.FindDrugForName("铁离子", out drug, DrugStyle.纯净物))
-            //{
-            //    _lstAllColorDrugs.Add(drug);
-            //}
-            //if (drugSystem.FindDrugForName("碳酸钙", out drug, DrugStyle.纯净物))
-            //{
-            //    _lstAllColorDrugs.Add(drug);
-            //}
-            //if (drugSystem.FindDrugForName("沙", out drug, DrugStyle.纯净物))
-            //{
-            //    _lstAllColorDrugs.Add(drug);
-            //}
-            //if (drugSystem.FindDrugForName("盐酸", out drug, DrugStyle.纯净物))
-            //{
-            //    _lstAllColorDrugs.Add(drug);
-            //}
-
-            //if (_drugSystem.FindDrugForName("水", out drug))
-            //{
-            //    _lstAllColorDrugs.Add(drug);
-            //}
-            //foreach (Drug item in _lstAllColorDrugs)
-            //{
-            //    _sumVolume += item.Volume;
-            //}
-
-            #endregion
-
-            Color color = new Color(1f, 1f, 1f, 0);
-
-            #region 注释
-
-
-            //if (drugSystem.IsHaveDrugForName("水"))
-            //{
-            //    color.a = 0.2f;
-
-            //    if (drugSystem.FindDrugForName("硫酸铜", out drug))
-            //    {
-            //        color += (new LiquidColorBlue()).WaterColor * (drug.Volume / _sumVolume);
-            //    }
-            //    if (drugSystem.FindDrugForName("硫酸亚铁", out drug))
-            //    {
-            //        color += (new LiquidColorGreen()).WaterColor * (drug.Volume / _sumVolume);
-            //    }
-            //    if (drugSystem.FindDrugForName("铁离子", out drug))
-            //    {
-            //        color += (new LiquidColorYellow()).WaterColor * (drug.Volume / _sumVolume);
-            //    }
-            //    if (drugSystem.FindDrugForName("碳酸钙", out drug))
-            //    {
-            //        color += (new LiquidColorWhite()).WaterColor * (drug.Volume / _sumVolume);
-            //    }
-            //    if (drugSystem.FindDrugForName("沙", out drug))
-            //    {
-            //        color += (new LiquidColorYellow_Soil()).WaterColor * (drug.Volume / _sumVolume);
-            //    }
-            //    //if (drugSystem.FindDrugForName("盐酸", out drug))
-            //    //{
-            //    //    //color += (new LiquidColorNode()).WaterColor * (drug.Volume / _sumVolume);
-            //    //}
-            //}
-            #endregion
-            DrugData drugMixture;
-
-            if (drugSystem.FindDrugForName("硫酸铜溶液", out drugMixture))
-            {
-                color.a = 0.2f;
-                color += (new LiquidColorBlue()).WaterColor * (drugMixture.Volume / drugSystem.CurSumVolume);
-            }
-
-            #region 注释
-
-            //if (drugSystem.FindDrugForName("硫酸亚铁", out drug))
-            //{
-            //    color += (new LiquidColorGreen()).WaterColor * (drug.Volume / _sumVolume);
-            //}
-            //if (drugSystem.FindDrugForName("铁离子", out drug))
-            //{
-            //    color += (new LiquidColorYellow()).WaterColor * (drug.Volume / _sumVolume);
-            //}
-            //if (drugSystem.FindDrugForName("碳酸钙", out drug))
-            //{
-            //    color += (new LiquidColorWhite()).WaterColor * (drug.Volume / _sumVolume);
-            //}
-            //if (drugSystem.FindDrugForName("沙", out drug))
-            //{
-            //    color += (new LiquidColorYellow_Soil()).WaterColor * (drug.Volume / _sumVolume);
-            //}
-
-            #endregion
-
-            SetWaterColorTarget(color, 0.5f);
-            //液体颜色
-
-            //液面颜色
-
-            //浑浊度
-
-        }
-
+        
         #region 私有方法
 
         /// <summary>
@@ -407,6 +302,32 @@ namespace Chemistry.Liquid
         #endregion
 
 
+        /// <summary>
+        /// 液体量变化
+        /// </summary>
+        /// <param name="startV">起始变化量</param>
+        /// <param name="changeVolume">变化量(正为增，负为减)</param>
+        /// <param name="time">变化时间（为0时突变）</param>
+        /// <returns>变化后液体量</returns>
+        public float ChangeLiquid(float startV, float changeVolume, float time = 0.5f)
+        {
+            return liquidChange.ChangeLiquid(startV, changeVolume, time);
+        }
+
+
+
+        /// <summary>
+        /// 液体量变化--连接药品系统--实时更新药品量--若对变化过程不严格建议使用上一个
+        /// </summary>
+        /// <param name="drugSystem">当前容器的药品系统</param>
+        /// <param name="changeVolume">变化量(正为增，负为减)</param>
+        /// <param name="drugName">需要增减量的药品名</param>
+        /// <param name="time">变化时间（为0时突变）</param>
+        /// <returns>变化后液体量</returns>
+        public void ChangeLiquid(DrugSystem drugSystem, float changeVolume, string drugName = "", float time = 0.5f, Action<string, float> actionTrans = null)
+        {
+            liquidChange.ChangeLiquid(drugSystem, changeVolume, drugName, time, actionTrans);
+        }
 
     }
 

@@ -137,7 +137,6 @@ namespace MagiCloud.Features
             {
                 Mesh meshS = new Mesh();
                 meshS = skinnedMesh.sharedMesh;
-
                 go = CreateMesh(parent, meshS, skinnedMesh.transform, skinnedMesh.materials, child.name);
             }
             else
@@ -191,6 +190,7 @@ namespace MagiCloud.Features
 
             for (int i = 0; i < meshRen.materials.Length; i++)
             {
+
                 meshRen.materials[i].shader = ghostShader;//设置xray效果
                 meshRen.materials[i].renderQueue = renderQueue;
                 meshRen.materials[i].SetColor("_Color", new Color(1f, 1f, 1f, Intension));

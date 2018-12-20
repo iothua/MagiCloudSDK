@@ -20,7 +20,7 @@ namespace Chemistry.Equipments
             get { return viewValue; }
             set { viewValue = value; }
         }
-
+        
         private Camera camera;
 
         float LastFrameView = -1f;
@@ -47,6 +47,34 @@ namespace Chemistry.Equipments
             }
             LastFrameView = -1f;
             //camera.fieldOfView = aas;
+            return false;
+        }
+
+
+        /// <summary>
+        /// 正交相机视野参数
+        /// </summary>
+        float sizeValue;
+
+        public float FieldOfSize
+        {
+            get { return sizeValue; }
+            set { sizeValue = value; }
+        }
+        float LastFrameSize = -1f;
+
+
+        public bool IsChangeFieldOfSize { get { return IsChangeSize(); } }
+
+        private bool IsChangeSize()
+        {
+            if (sizeValue != LastFrameSize)
+            {
+                camera.orthographicSize = sizeValue;
+                LastFrameSize = sizeValue;
+                return true;
+            }
+            LastFrameSize = -1f;
             return false;
         }
     }

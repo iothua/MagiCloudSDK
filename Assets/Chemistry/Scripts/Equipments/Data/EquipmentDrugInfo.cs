@@ -40,6 +40,9 @@ namespace Chemistry.Equipments.Data
         [ShowIf("addModel")]
         public EquipmentModelData drugModelData;
 
+        [LabelText("仪器交互药品对象")]
+        [ShowIf("addModel")]
+        public EquipmentModelDataItem drugInteractionModel;
 
         [ButtonGroup]
         [Button("创建药品")]

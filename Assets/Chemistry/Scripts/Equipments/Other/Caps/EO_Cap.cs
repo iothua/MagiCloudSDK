@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using MagiCloud.Equipments;
 using DG.Tweening;
+using MagiCloud.Interactive;
 
 namespace Chemistry.Equipments
 {
@@ -34,6 +35,14 @@ namespace Chemistry.Equipments
 
         }
 
+        public override void OnDistanceEnter(InteractionEquipment interaction)
+        {
+            base.OnDistanceEnter(interaction);
+
+            if (_tweenRotate != null)
+                _tweenRotate.PlayBackwards();
+        }
+
         /// <summary>
         /// 打开盖子(第一次离开)
         /// </summary>
@@ -49,8 +58,6 @@ namespace Chemistry.Equipments
         /// </summary>
         public override void CloseCover()
         {
-            if (_tweenRotate != null)
-                _tweenRotate.PlayBackwards();
         }
     }
 }

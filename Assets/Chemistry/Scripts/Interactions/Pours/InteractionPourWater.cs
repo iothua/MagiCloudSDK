@@ -9,6 +9,7 @@ using MagiCloud;
 using MagiCloud.Core.Events;
 using Chemistry.Equipments;
 using Chemistry.Data;
+using Substance.Water;
 
 namespace Chemistry.Interactions
 {
@@ -159,6 +160,7 @@ namespace Chemistry.Interactions
             var interaction = distanceInteraction as InteractionPourWater;
             if (interaction==null||interaction.pointSide==this.pointSide)
             {
+                //Debug.Log("不允许倒水交互");
                 return false;
             }
 
@@ -248,15 +250,16 @@ namespace Chemistry.Interactions
                     {
                         //吸附--不设置为父子物体，改为获取旋转中心点
 
+                        isAdsorbed = true;
+                        interaction.isAdsorbed = true;
+                        curTime = 0.0f;
+
                         //pourHelper.RotPt=interaction
                         this.FeaturesObjectController.SetParent(distanceInteraction.transform, pourHelper.localPos, pourHelper.localRot);
                         
                         //distanceInteraction.FeaturesObjectController.SetParent(this.transform, pourHelper.localPos, pourHelper.localRot);
 
-                        isAdsorbed = true;
-                        interaction.isAdsorbed = true;
 
-                        curTime = 0.0f;
                         
                         ////吸附结束,发送开始倒水通知
                         //OnBeginPourOperate(interaction);
@@ -323,16 +326,37 @@ namespace Chemistry.Interactions
                             interaction.OnEndPourOperate(this);
                         }
 
-                        if (CurContainer.containerType == EContainerType.烧杯)
-                        {
-                            (CurContainer as EC_Beaker).ChangeLiquid(-1.0f * pourOutV, 0);
-                            (interaction.CurContainer as EC_Beaker).ChangeLiquid(receiveV, 0);
-                        }
-                        else if (CurContainer.containerType == EContainerType.量筒)
-                        {
-                            (CurContainer as EC_M_MeasuringCylinder).ChangeLiquid(-1.0f * pourOutV, 0);
-                            (interaction.CurContainer as EC_M_MeasuringCylinder).ChangeLiquid(receiveV, 0);
-                        }
+                        //液面和药品升降
+                        CurContainer.ChangeLiquid(-1.0f * pourOutV, 0);
+                        interaction.CurContainer.ChangeLiquid(receiveV, 0);
+
+                        //if (CurContainer.containerType == EContainerType.烧杯)
+                        //{
+                        //    (CurContainer as EC_Beaker).ChangeLiquid(-1.0f * pourOutV, 0);
+                        //    (interaction.CurContainer as EC_Beaker).ChangeLiquid(receiveV, 0);
+                        //}
+                        //else if (CurContainer.containerType == EContainerType.量筒)
+                        //{
+                        //    (CurContainer as EC_M_MeasuringCylinder).ChangeLiquid(-1.0f * pourOutV, 0);
+                        //    (interaction.CurContainer as EC_M_MeasuringCylinder).ChangeLiquid(receiveV, 0);
+                        //}
+
+
+                        //else if (CurContainer.containerType == EContainerType.普通瓶子一)
+                        //{
+                        //    (CurContainer as PlasticBottleOne).ChangeLiquid(-1.0f * pourOutV, 0);
+                        //    (interaction.CurContainer as EC_M_MeasuringCylinder).ChangeLiquid(receiveV, 0);
+                        //}
+                        //else if (CurContainer.containerType == EContainerType.普通瓶子二)
+                        //{
+                        //    (CurContainer as PlasticBottleTwo).ChangeLiquid(-1.0f * pourOutV, 0);
+                        //    (interaction.CurContainer as PlasticBottleTwo).ChangeLiquid(receiveV, 0);
+                        //}
+                        //else if (CurContainer.containerType == EContainerType.普通瓶子三)
+                        //{
+                        //    (CurContainer as PlasticBottleThree).ChangeLiquid(-1.0f * pourOutV, 0);
+                        //    (interaction.CurContainer as PlasticBottleThree).ChangeLiquid(receiveV, 0);
+                        //}
 
                     }
                 }
@@ -365,6 +389,7 @@ namespace Chemistry.Interactions
                     ReadingImg.fillAmount = 0.0f;
                     pourHelper.ReadingImgObj.SetActive(false);
 
+                    Debug.Log("移除自定义抓取事件成功");
                     FeaturesObjectController.gameObject.RemoveUpdateObject(OnUpdateObject);
                     curTime = 0.0f;
                     isAdsorbed = false;
@@ -375,6 +400,7 @@ namespace Chemistry.Interactions
 
                     this.FeaturesObjectController.transform.eulerAngles = Vector3.zero;
 
+                    Debug.Log("this ------");
                     //发送倒水结束事件
                     //OnEndPourOperate(distanceInteraction as InteractionPourWater);
 
@@ -477,7 +503,10 @@ namespace Chemistry.Interactions
         {
             if (!IsCanInteraction(distanceInteraction)) return;
             //进行离开操作 容器解开移动限制
-            Debug.Log(distanceInteraction.transform.parent.parent.name + "离开");
+
+
+            //Debug.Log("移除自定义抓取事件成功");
+            //FeaturesObjectController.gameObject.RemoveUpdateObject(OnUpdateObject);
 
             if (ReadingImg)
             {
@@ -488,7 +517,12 @@ namespace Chemistry.Interactions
                 pourHelper.ReadingImgObj.SetActive(false);
             }
 
-            base.OnDistanceExit(distanceInteraction);
+            if (!isAdsorbed)
+            {
+                Debug.Log(distanceInteraction.transform.parent.parent.name + "离开");
+
+                base.OnDistanceExit(distanceInteraction);
+            }
         }
 
         /// <summary>
@@ -518,6 +552,7 @@ namespace Chemistry.Interactions
                     isAdsorbed = false;
                 }
                 FeaturesObjectController.SetParent(null);
+                Debug.Log("移除自定义抓取事件成功");
                 FeaturesObjectController.gameObject.RemoveUpdateObject(OnUpdateObject);
                 //旋转状态恢复为无旋转
                 this.FeaturesObjectController.transform.eulerAngles = Vector3.zero;

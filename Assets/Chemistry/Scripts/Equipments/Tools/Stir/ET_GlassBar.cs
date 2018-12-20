@@ -145,6 +145,7 @@ namespace Chemistry.Equipments
                 time+=Time.fixedDeltaTime;
                 yield return Time.fixedDeltaTime;
             }
+            StopStir();
             yield break;
         }
 

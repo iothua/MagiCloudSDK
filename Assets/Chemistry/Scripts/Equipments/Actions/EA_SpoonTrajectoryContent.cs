@@ -57,7 +57,7 @@ namespace Chemistry.Equipments.Actions
                 case DropperInteractionType.集气瓶:
                     break;
                 case DropperInteractionType.烧杯:
-                    equipmentBase.transform.DOLocalMoveY(equipmentBase.transform.localPosition.y - i_ET_S_SpoonPut.Height, 0.5f).OnComplete(() => onCompleteAction.Invoke(i_ET_S_SpoonPut));
+                    equipmentBase.transform.DOLocalMoveY(equipmentBase.transform.localPosition.y - i_ET_S_SpoonPut.SpoonPutHeight, 0.5f).OnComplete(() => onCompleteAction.Invoke(i_ET_S_SpoonPut));
                     break;
                 case DropperInteractionType.试管:
                     break;
@@ -72,7 +72,7 @@ namespace Chemistry.Equipments.Actions
                 case DropperInteractionType.广口瓶:
                     break;
                 default:
-                    equipmentBase.transform.DOLocalMoveY(equipmentBase.transform.localPosition.y - i_ET_S_SpoonPut.Height, 0.5f).OnComplete(() => onCompleteAction.Invoke(i_ET_S_SpoonPut));
+                    equipmentBase.transform.DOLocalMoveY(equipmentBase.transform.localPosition.y - i_ET_S_SpoonPut.SpoonPutHeight, 0.5f).OnComplete(() => onCompleteAction.Invoke(i_ET_S_SpoonPut));
                     break;
             }
         }

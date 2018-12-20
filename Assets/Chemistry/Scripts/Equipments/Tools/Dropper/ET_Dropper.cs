@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using MagiCloud.Equipments;
 using Chemistry.Chemicals;
 using Chemistry.Data;
 using MagiCloud.Interactive;
-using DG.Tweening;
 using Chemistry.Liquid;
 using Chemistry.Effects;
-using System.Linq;
 using Chemistry.Equipments.Actions;
 using System.Collections;
-using MagiCloud.Features;
 
 namespace Chemistry.Equipments
 {
@@ -34,14 +29,14 @@ namespace Chemistry.Equipments
         {
             get
             {
-                if (_numberOfDrop >= remainderNumber)
+                if (_numberOfDrop > remainderNumber)
                     return remainderNumber;
                 else
                     return _numberOfDrop;
             }
             set
             {
-                if (value >= remainderNumber)
+                if (value > remainderNumber)
                     _numberOfDrop = remainderNumber;
                 else
                     _numberOfDrop = value;
@@ -52,12 +47,6 @@ namespace Chemistry.Equipments
 
         private EquipmentBase interactionEquipmentBase;     //与滴管交互的仪器，排除一个滴管与多个仪器交互
         private EA_DropperTrajectoryContent dropperTrajectoryContent;
-
-        [SerializeField, Header("滴管液面下降曲线")]
-        private AnimationCurve animationCurve;
-        private float animationCurveTime;       //使用AnimationCurve的时间累积
-        private float startTime;                //开始取值时间
-        private float endTime;                  //结束取值时间
 
         [SerializeField]
         private EA_Dropper eA_Dropper;          //胶帽变化动画
@@ -105,9 +94,14 @@ namespace Chemistry.Equipments
         {
             base.OnInitializeEquipment();
 
+            if (Effect_Dropper == null)
+                Effect_Dropper = EffectNode.GetComponent<Effect_Dropper>();
+
             if (liquidEffect == null)
                 liquidEffect = GetComponent<LiquidSystem>();
 
+            //实例化液体
+            liquidEffect.OnInitializeLiquidChange(maxVolume);
         }
 
         public override bool IsCanInteraction(InteractionEquipment interaction)
@@ -167,7 +161,7 @@ namespace Chemistry.Equipments
                 }, 2.5f);               //eA_Dropper时间 + EA_DropperTrajectoryContent时间 + BreatheInAnimComplete时间
                 handle.OnComplete(() =>
                 {
-                    BreatheInDrug(breatheIn.DrugName);
+                    BreatheInDrug(breatheIn);
                 });
 
                 currentBreatheIn = breatheIn;
@@ -191,7 +185,7 @@ namespace Chemistry.Equipments
                 }, time);                               //一滴0.5秒，最少2秒
                 handle.OnComplete(() =>
                 {
-                    DripDrug(interaction.Equipment as I_ET_D_Drip, 1.0f);
+                    //DripDrug(interaction.Equipment as I_ET_D_Drip, 1.0f);
                 });
 
                 IsCover = true;
@@ -213,9 +207,12 @@ namespace Chemistry.Equipments
             if (interaction.Equipment is I_ET_D_Drip)
             {
                 //I_ET_D_Drip drip = interaction.Equipment as I_ET_D_Drip;
-                Effect_Dropper effect_Dropper = GetComponent<Effect_Dropper>();
-                effect_Dropper.HideDripEffect();
-                effect_Dropper.HidePoppleEffect();
+                //Effect_Dropper effect_Dropper = GetComponent<Effect_Dropper>();
+                if (Effect_Dropper != null)
+                {
+                    Effect_Dropper.HideDripEffect();
+                    Effect_Dropper.HidePoppleEffect();
+                }
 
                 interactionEquipmentBase = null;
             }
@@ -226,42 +223,27 @@ namespace Chemistry.Equipments
         /// 吸药
         /// </summary>
         /// <param name="drugName"></param>
-        public void BreatheInDrug(string drugName)
+        public void BreatheInDrug(I_ET_D_BreatheIn breatheIn)
         {
-            if (DrugSystemIns.IsHaveDrugForName(drugName))
+            float breatheValue = 0;
+
+            if (DrugSystemIns.IsHaveDrugForName(breatheIn.DrugName))
             {
-                DrugSystemIns.ReduceDrug(drugName, maxVolume, false);
-                DrugSystemIns.AddDrug(drugName, maxVolume);
+                breatheValue = maxVolume - DrugSystemIns.GetDrug(breatheIn.DrugName).Volume;
             }
             else
             {
-                DrugSystemIns.AddDrug(drugName, maxVolume);
+                breatheValue = maxVolume;
             }
 
+            liquidEffect.SetWaterColorToTarget(DrugSystem.GetColor(breatheIn.DrugName));
 
-            //设置液面
-            //liquidEffect.SetValue(DrugSystemIns.CurSumVolume);
-            liquidEffect.SetValue(maxVolume);                   //一次加满
+            liquidEffect.ChangeLiquid(DrugSystemIns, breatheValue, breatheIn.DrugName);
+
+            breatheIn.OnBreatheIn(breatheValue);
+
             isEmpty = false;
             remainderNumber = maxVolume;
-        }
-
-        /// <summary>
-        /// 滴药
-        /// </summary>
-        public void DripDrug(I_ET_D_Drip drip, float percent)
-        {
-
-            DrugData drugData = DrugSystemIns.OnTakeDrug(EDrugType.Liquid);
-
-            drugData.Volume -= percent;
-
-            var dripDrug = new DrugData(drugData.DrugName, percent);
-
-            drip.OnDripDrug(dripDrug);
-
-            if (remainderNumber <= 0)
-                isEmpty = true;
         }
 
         /// <summary>
@@ -277,39 +259,20 @@ namespace Chemistry.Equipments
         /// </summary>
         public void DripAnimComplete(I_ET_D_Drip drip)
         {
-            Effect_Dropper effect_Dropper = GetComponent<Effect_Dropper>();
-
             eA_Dropper.OnStart(0, 150);
-            effect_Dropper.ShowDripEffect(drip, NumberOfDrop);
-            effect_Dropper.ShowPoppleEffect(drip, NumberOfDrop);
 
-            startTime = 5 - remainderNumber * 0.5f;                     //根据remainderNumber设置AnimationCurve开始取值时间
-            endTime = startTime + NumberOfDrop * 0.5f;                  //根据NumberOfDrop设置AnimationCurve结束取值时间
+            Effect_Dropper.ShowDripEffect(drip, NumberOfDrop);
+            Effect_Dropper.ShowPoppleEffect(drip, NumberOfDrop);
+
+            liquidEffect.ChangeLiquid(DrugSystemIns, -1 * NumberOfDrop, time: 0.5f * NumberOfDrop, actionTrans: (name, percent) =>
+               {
+                   drip.OnDripDrug(new DrugData(name, Mathf.Abs(percent)));
+               });
+
             remainderNumber -= NumberOfDrop;                            //设置剩余滴数
-            animationCurveTime = startTime;
-            coroutine = StartCoroutine(LiquidHeightTween());
-        }
 
-        /// <summary>
-        /// 协程设置液面高度
-        /// </summary>
-        /// <returns></returns>
-        IEnumerator LiquidHeightTween()
-        {
-            while (true)
-            {
-                animationCurveTime += Time.deltaTime;
-                if (animationCurveTime <= endTime)
-                {
-                    liquidEffect.SetValue(animationCurve.Evaluate(animationCurveTime));
-                }
-                else
-                {
-                    StopCoroutine(coroutine);
-                    yield return null;
-                }
-                yield return null;
-            }
+            if (remainderNumber == 0)
+                isEmpty = true;
         }
 
         protected override void OnDestroy()

@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+
 namespace MagiCloud.Common
 {
     /// <summary>
@@ -10,8 +11,8 @@ namespace MagiCloud.Common
     /// </summary>
     public class TimeController :SerializedMonoBehaviour
     {
-        public float virtualTime = 10;      //虚拟时间
-        public float realTime = 20;         //真实时间
+        public float virtualTime = 10;      //虚拟时间，单位秒
+        public float realTime = 20;         //真实时间，单位秒
         public KGUI_Toggle timeToggle;      //控制开关
         public Text showTimeText;           //显示文本
 
@@ -24,6 +25,9 @@ namespace MagiCloud.Common
         public UnityEvent stopEvent;
         public UnityEvent<float> playingEvent;
 
+        //public int h => virtualTime/3600;
+        //public int min => virtualTime/60;
+        //public float s => virtualTime;
         public string TimeString => (time).ToString("f1");
         public float Progress { get; private set; }
 
@@ -37,7 +41,7 @@ namespace MagiCloud.Common
         }
 
         #region 计时
-        private void OnChange(bool play)
+        public void OnChange(bool play)
         {
             if (status==-1)
                 Play();
@@ -59,7 +63,8 @@ namespace MagiCloud.Common
 
         private void OnCompleted()
         {
-            timeToggle.IsValue=false;
+            if (timeToggle!=null)
+                timeToggle.IsValue=false;
             stopEvent?.Invoke();
             status=-1;
         }
@@ -85,7 +90,10 @@ namespace MagiCloud.Common
                 timer.StartTiming(realTime,OnCompleted,OnTime);
             }
             else
+            {
+                timer.ConnitueTimer();
                 timer.ReStartTimer();
+            }
             playEvent?.Invoke();
             status =1;
         }

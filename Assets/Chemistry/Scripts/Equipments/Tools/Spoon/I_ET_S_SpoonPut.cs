@@ -13,7 +13,7 @@ namespace Chemistry.Equipments
         /// <summary>
         /// 药匙放药动画下降的数值
         /// </summary>
-        float Height { get; set; }
+        float SpoonPutHeight { get;}
         /// <summary>
         /// 提供给药匙自己所属的仪器类型
         /// </summary>

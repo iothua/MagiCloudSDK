@@ -23,5 +23,11 @@ namespace Chemistry.Equipments
         /// 提供给滴管自己所属的仪器类型
         /// </summary>
         DropperInteractionType InteractionEquipment { get;}
+
+        /// <summary>
+        /// 要吸收的体积
+        /// </summary>
+        /// <param name="volume"></param>
+        void OnBreatheIn(float volume);
     }
 }

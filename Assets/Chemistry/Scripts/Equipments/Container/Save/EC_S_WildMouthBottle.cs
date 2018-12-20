@@ -14,22 +14,42 @@ namespace Chemistry.Equipments
     public class EC_S_WildMouthBottle : EC_Save, I_ET_S_SpoonTake
     {
         #region I_ET_S_SpoonTake接口属性
-        [SerializeField, Header("小份药品在药匙内的本地坐标")]
-#pragma warning disable CS0436
-        private Vector3 localPosition;
-#pragma warning restore CS0436
-        public Vector3 LocalPosition { get { return localPosition; } }
+        
 
-        [SerializeField, Header("小份药品在药匙内的本地旋转")]
-        private Vector3 localRotation;
+        public Vector3 LocalPosition {
+            get {
+                if (EquipmentDrug == null) return Vector3.zero;
+                if (!EquipmentDrug.addModel) return Vector3.zero;
+
+                return EquipmentDrug.drugInteractionModel.transformData.localPosition.Vector;
+            }
+        }
+
         public Vector3 LocalRotation
         {
-            get { return Vector3.zero; }
+            get {
+                if (EquipmentDrug == null) return Vector3.zero;
+                if (!EquipmentDrug.addModel) return Vector3.zero;
+
+                return EquipmentDrug.drugInteractionModel.transformData.localRotation.Vector;
+            }
+        }
+
+        /// <summary>
+        /// 药品模型
+        /// </summary>
+        public GameObject DrugObject {
+            get {
+                if (EquipmentDrug == null) return null;
+                if (!EquipmentDrug.addModel) return null;
+
+                return EquipmentDrug.drugInteractionModel.modelObject;
+            }
         }
 
         [SerializeField, Header("药匙一次取药的量")]
         private float takeAmount = 10;
-        float I_ET_S_SpoonTake.TakeAmount { get { return takeAmount; } }
+        public float TakeAmount { get { return takeAmount; } }
 
         private EquipmentBase inInteractionEquipment;
         public EquipmentBase InInteractionEquipment
@@ -41,18 +61,14 @@ namespace Chemistry.Equipments
         public DropperInteractionType InteractionEquipment { get { return DropperInteractionType.广口瓶; } }
         private DrugSystem _drugSystem;         //药品系统
         
-
-        [SerializeField]
-        private string _onlyDrugName;           //滴管内吸取过的药品名字
-        public string OnlyDrugName
-        {
-            get { return _onlyDrugName ?? (_onlyDrugName = ""); }
-        }
-
         [SerializeField, Header("药匙取药时动画下降的数值")]
         private float height;
 
-        public float Height { get { return height; } } 
+        /// <summary>
+        /// 药匙下降高度
+        /// </summary>
+        public float Height { get { return height; } }
+
         #endregion
 
         protected override void Start()
@@ -64,39 +80,27 @@ namespace Chemistry.Equipments
         public override void OnInitializeEquipment()
         {
             base.OnInitializeEquipment();
-            CloseCap();
         }
         
         public override bool IsCanInteraction(InteractionEquipment interaction)
         {
-            //普通盖子
-            if (interaction.Equipment is EO_Cap)
+            if ( InInteractionEquipment!= null && InInteractionEquipment != interaction.Equipment) return false;
+
+
+            if (!base.IsCanInteraction(interaction)) return false;
+
+            if (!isOpen) return false;
+
+            if (interaction.Equipment is ET_Spoon)
             {
-                if (interaction.Equipment == cover) return true;
-                if (cover.IsCover)     //盖子打开状态
-                    return true;
-                else
-                    return false;
+                return true;
             }
-            if (interaction.Equipment as ET_Spoon)
-            {
-                if (cover == null) return true;
-                if (cover.IsCover)     //盖子打开状态
-                {
-                    return true;    //药品系统暂时有问题
-                    //if (DrugSystemIns.CurSumVolume >= takeAmount)
-                    //    return true;
-                    //else
-                    //    return false;
-                }
-                else
-                    return false;
-            }
-            return cover.IsCover;
+            return true;
         }
         public override void OnDistanceRelease(InteractionEquipment interaction)
         {
             base.OnDistanceRelease(interaction);
+
             if (interaction.Equipment is EO_Cap)
                 DropperJoin();
             if (interaction.Equipment is ET_Spoon)
@@ -116,6 +120,7 @@ namespace Chemistry.Equipments
                 DropperLeave();
             }
         }
+
         /// <summary>
         /// 盖子加入
         /// </summary>

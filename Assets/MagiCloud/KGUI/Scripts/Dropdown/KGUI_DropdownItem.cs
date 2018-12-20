@@ -16,6 +16,8 @@ namespace MagiCloud.KGUI
 
         public Text text;
 
+
+
         /// <summary>
         /// 初始化
         /// </summary>
@@ -44,6 +46,7 @@ namespace MagiCloud.KGUI
             var box = gameObject.GetComponent<BoxCollider>();
             box.size = new Vector3(size.x, size.y, box.size.z);
         }
+
 
         public override void OnClick(int handIndex)
         {

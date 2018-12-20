@@ -93,7 +93,7 @@ public class PourLiquidControl : MonoBehaviour
 
 
     // Use this for initialization
-    IEnumerator Start()
+    void Start()
     {
         //容器trasfrom
         tra = this.transform;
@@ -103,21 +103,16 @@ public class PourLiquidControl : MonoBehaviour
 
         dictionaryCup = new Dictionary<string, float>();
 
-        Debug.Log("PourLiquidControl 的Start被调用");
+        //Debug.Log("PourLiquidControl 的Start被调用");
 
         //液体初始化
         //此处应遍历容器中的所有药品，然后添加至改集合中--可扩展TODO
         //倒水容器类与这个类---有时间还能优化
 
-        yield return new WaitForFixedUpdate();
-
         float tmpV = CurContainer.DrugSystemIns.GetDrug(CurContainer.DrugName).Volume;
 
         dictionaryCup.Add(CurContainer.DrugName, tmpV);
-
-
-
-
+        
         //for (int i = 0; i < fluidData.Length; i++)
         //{
         //    if (!dictionaryCup.ContainsKey(fluidData[i].FluidName))

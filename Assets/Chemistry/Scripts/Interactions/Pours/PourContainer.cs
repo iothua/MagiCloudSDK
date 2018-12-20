@@ -302,7 +302,7 @@ public class PourContainer
         //没有了也不能倒水
         if (interactionPourWater.pourContainer.ContainerCurrentVolume<=0.1f)
         {
-            Debug.Log("容器已空，不能倒水");
+            Debug.Log("容器" + interactionPourWater.transform.parent.parent.name + "已空，不能倒水");
             return false;
         }
 

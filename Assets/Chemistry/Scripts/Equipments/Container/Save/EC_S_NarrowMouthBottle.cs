@@ -4,6 +4,7 @@ using MagiCloud.Interactive;
 using Chemistry.Data;
 using MagiCloud.Equipments;
 using Sirenix.OdinInspector;
+using Chemistry.Equipments.Actions;
 
 namespace Chemistry.Equipments
 {
@@ -47,14 +48,17 @@ namespace Chemistry.Equipments
 
         public override bool IsCanInteraction(InteractionEquipment interaction)
         {
+
             if (!base.IsCanInteraction(interaction)) return false;
+
+            if (!isOpen) return false;
 
             //滴管
             if (interaction.Equipment is ET_Dropper)
             {
                 return true;
             }
-            return cover.IsCover;
+            return true;
         }
 
         public override void OnDistanceRelease(InteractionEquipment interaction)
@@ -98,6 +102,11 @@ namespace Chemistry.Equipments
             var boxCollider = Collider as BoxCollider;
             boxCollider.center = new Vector3(0.00414f, 0.347f, -0.012f);
             boxCollider.size = new Vector3(0.537f, 0.708f, 0.457f);
+        }
+
+        public void OnBreatheIn(float volume)
+        {
+            ChangeLiquid(-volume);
         }
     }
 }

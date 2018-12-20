@@ -4,6 +4,7 @@ using Chemistry.Chemicals;
 using Chemistry.Liquid;
 using Chemistry.Data;
 using Sirenix.OdinInspector;
+using Chemistry.Equipments.Actions;
 
 namespace Chemistry.Equipments
 {
@@ -81,8 +82,13 @@ namespace Chemistry.Equipments
         {
             if (LiquidEffect == null)
                 LiquidEffect = GetComponent<LiquidSystem>();
+
+
             if (LiquidEffect != null)
+            {
                 LiquidEffect.OnInitialize(DrugSystemIns);
+                LiquidEffect.OnInitializeLiquidChange(Volume);
+            }
         }
 
         
@@ -92,7 +98,8 @@ namespace Chemistry.Equipments
         public void OnInitializeDrug()
         {
 
-            DrugSystemIns.AddDrug(EquipmentDrug.drugName, EquipmentDrug.drugVolume);
+            if(!string.IsNullOrEmpty(EquipmentDrug.drugName))
+                DrugSystemIns.AddDrug(EquipmentDrug.drugName, EquipmentDrug.drugVolume);
 
             if (LiquidEffect != null)
             {
@@ -100,6 +107,15 @@ namespace Chemistry.Equipments
             }
         }
 
+        /// <summary>
+        /// 液体量变化
+        /// </summary>
+        /// <param name="changeVolume">变化量(正为增，负为减)</param>
+        /// <param name="time">时间（为0时突变）</param>
+        public virtual void ChangeLiquid(float changeVolume, float time = 0.5f)
+        {
+            LiquidEffect.ChangeLiquid(DrugSystemIns, changeVolume);
+        }
         /// <summary>
         /// 这个方法一般是从外部去调用
         /// </summary>

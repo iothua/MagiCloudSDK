@@ -27,6 +27,12 @@ namespace Chemistry.Equipments
         /// 药品在药匙内的本地旋转
         /// </summary>
         Vector3 LocalRotation { get; }
+
+        /// <summary>
+        /// 药品模型
+        /// </summary>
+        GameObject DrugObject { get; }
+
         /// <summary>
         /// 药匙一次获取的量
         /// </summary>

@@ -24,10 +24,14 @@ namespace Chemistry.Equipments
         {
             get { return _drugSystem ?? (_drugSystem = new DrugSystem()); }
         }
+
         private EquipmentBase interactionEquipmentBase;     //与药匙交互的仪器，排除一个滴管与多个仪器交互
         private EA_SpoonTrajectoryContent spoonTrajectoryContent;
 
         private I_ET_S_SpoonTake currentSpoonTake;
+
+        public EA_Spoon ea_Spoon;
+
 
         private bool isEmpty = true;            //药匙内是否有药（会修改为根据药匙内药品量判断）
         protected override void Start()
@@ -39,11 +43,16 @@ namespace Chemistry.Equipments
         public override void OnInitializeEquipment()
         {
             base.OnInitializeEquipment();
+            if (ea_Spoon == null)
+            {
+                ea_Spoon = gameObject.GetComponentInChildren<EA_Spoon>();
+            }
         }
         public override bool IsCanInteraction(InteractionEquipment interaction)
         {
             base.IsCanInteraction(interaction);
-            if (interactionEquipmentBase != null) return false;
+            if (interactionEquipmentBase != null && interactionEquipmentBase != interaction.Equipment) return false;
+
             if (interaction.Equipment is I_ET_S_SpoonTake)
             {
                 if (currentSpoonTake == null)
@@ -128,7 +137,7 @@ namespace Chemistry.Equipments
         /// <param name="drugName"></param>
         private void SpoonTakeDrug(string drugName)
         {
-           
+
         }
 
         /// <summary>
@@ -137,7 +146,13 @@ namespace Chemistry.Equipments
         /// <param name="spoonPut"></param>
         private void SpoonPutDrug(I_ET_S_SpoonPut spoonPut)
         {
-            
+            //执行放药动画
+            var drugData = DrugSystemIns.OnTakeDrug(Chemistry.Data.EDrugType.Solid_Powder);
+            spoonPut.OnDripDrug(new DrugData(drugData.DrugName, drugData.Volume));
+
+            DrugSystemIns.ReduceDrug(drugData.Volume, true);
+
+            isEmpty = true;
         }
 
         /// <summary>
@@ -146,7 +161,17 @@ namespace Chemistry.Equipments
         /// <param name="spoonTake"></param>
         private void SpoonTakeAnimComplete(I_ET_S_SpoonTake spoonTake)
         {
-            
+            //显示药品
+            if (spoonTake.DrugObject == null) return;
+
+            var drugObject = Instantiate(spoonTake.DrugObject, transform).transform;
+            drugObject.name = spoonTake.DrugObject.name;
+            drugObject.localPosition = spoonTake.LocalPosition;
+            drugObject.localRotation = Quaternion.Euler(spoonTake.LocalRotation);
+
+            DrugSystemIns.AddDrug(spoonTake.DrugName, spoonTake.TakeAmount, Chemistry.Data.EMeasureUnit.g);
+
+            isEmpty = false;
         }
 
         /// <summary>
@@ -155,7 +180,14 @@ namespace Chemistry.Equipments
         /// <param name="spoonPut"></param>
         private void SpoonPutAnimComplete(I_ET_S_SpoonPut spoonPut)
         {
+            
+        }
 
+        public override void OnInitializeEquipment_Editor(string equipmentName)
+        {
+            base.OnInitializeEquipment_Editor(equipmentName);
+
+            ea_Spoon = GetComponent<EA_Spoon>() ?? gameObject.AddComponent<EA_Spoon>();
         }
     }
 }

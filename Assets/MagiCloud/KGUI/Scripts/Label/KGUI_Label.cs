@@ -23,7 +23,7 @@ namespace MagiCloud.KGUI
         private LabelData _Data;
         public LabelData Data { get { return _Data; } set { _Data=value; } }
 
-        private RectTransform rectTransform;
+        private readonly RectTransform rectTransform = null;
         public RectTransform Rect
         {
             get

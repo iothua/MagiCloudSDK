@@ -17,7 +17,6 @@ namespace MagiCloud.KGUI
         private void OnEnable()
         {
             dropdownItem = serializedObject.targetObject as KGUI_DropdownItem;
-
             if(buttonType==null)
                 buttonType=new KGUIButtonTypeEditor();
 
@@ -32,6 +31,10 @@ namespace MagiCloud.KGUI
         {
             buttonType.OnInspectorButtonType(dropdownItem);
             buttonAudio.OnInspectorButtonAudio(dropdownItem);
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+            }
         }
     }
 }

@@ -1107,6 +1107,11 @@
             Gets a texture of a scene asset icon symbol.
             </summary>
         </member>
+        <member name="P:Sirenix.Utilities.Editor.EditorIcons.UnityGameObjectIcon">
+            <summary>
+            Gets an icon representing a GameObject.
+            </summary>
+        </member>
         <member name="P:Sirenix.Utilities.Editor.EditorIcons.UnityInfoIcon">
             <summary>
             Gets an icon of a unity info icon.
@@ -2338,6 +2343,11 @@
         <member name="P:Sirenix.Utilities.Editor.GUITable.TableRect">
             <summary>
             The Table Rect.
+            </summary>
+        </member>
+        <member name="F:Sirenix.Utilities.Editor.GUITable.RespectIndentLevel">
+            <summary>
+            Whether to respect the current GUI indent level.
             </summary>
         </member>
         <member name="P:Sirenix.Utilities.Editor.GUITable.Item(System.Int32,System.Int32)">
@@ -7849,24 +7859,24 @@
             <param name="sprite"></param>
             <returns></returns>
         </member>
-        <member name="P:Sirenix.OdinInspector.Editor.Drawers.IResizableColumn.ColWidth">
+        <member name="P:Sirenix.OdinInspector.Editor.IResizableColumn.ColWidth">
             <summary>
             Gets or sets the width of the col.
             </summary>
         </member>
-        <member name="P:Sirenix.OdinInspector.Editor.Drawers.IResizableColumn.MinWidth">
+        <member name="P:Sirenix.OdinInspector.Editor.IResizableColumn.MinWidth">
             <summary>
             Gets or sets the minimum width.
             </summary>
         </member>
-        <member name="P:Sirenix.OdinInspector.Editor.Drawers.IResizableColumn.PreserveWidth">
+        <member name="P:Sirenix.OdinInspector.Editor.IResizableColumn.PreserveWidth">
             <summary>
             Gets a value indicating whether the width should be preserved when the table itself gets resiszed.
             </summary>
         </member>
-        <member name="P:Sirenix.OdinInspector.Editor.Drawers.IResizableColumn.Resizable">
+        <member name="P:Sirenix.OdinInspector.Editor.IResizableColumn.Resizable">
             <summary>
-            Gets a value indicating whether this <see cref="T:Sirenix.OdinInspector.Editor.Drawers.IResizableColumn"/> is resizable.
+            Gets a value indicating whether this <see cref="T:Sirenix.OdinInspector.Editor.IResizableColumn"/> is resizable.
             </summary>
         </member>
     </members>

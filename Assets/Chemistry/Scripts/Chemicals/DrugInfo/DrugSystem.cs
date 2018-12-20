@@ -307,6 +307,7 @@ namespace Chemistry.Chemicals
                     }
 
                 case EDrugType.Solid:
+                case EDrugType.Solid_Powder:
 
                     return TakeDrug(drugType);
 
@@ -450,6 +451,29 @@ namespace Chemistry.Chemicals
             return wc;
         }
 
+        /// <summary>
+        /// 根据名称，获取到溶液对象信息
+        /// </summary>
+        /// <param name="drugName"></param>
+        /// <returns></returns>
+        public static IWaterColor GetColor(string drugName)
+        {
+            switch (drugName)
+            {
+                case "硫酸铜溶液":
+                    return new LiquidColorBlue();
+                case "菜油":
+                    return new LiquidColorYellow_Oil();
+                case "紫色石磊":
+                    return new LiquidColorPurple();
+                case "碘酒":
+                    return new LiquidColorRed();
+                case "泥土":
+                    return new LiquidColorYellow_Soil();
+                default:
+                    return new LiquidColorNode();
+            }
+        }
 
         /// <summary>
         /// 移除药品

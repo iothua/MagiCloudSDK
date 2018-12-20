@@ -885,10 +885,10 @@ MonoBehaviour:
   buttonType: 1
   spriteRenderer: {fileID: 0}
   image: {fileID: 114757227217355436}
-  normalSprite: {fileID: 21300000, guid: 4c0374a8e1e267645b4f6e6e2371ddfc, type: 3}
-  enterSprite: {fileID: 21300000, guid: 4c0374a8e1e267645b4f6e6e2371ddfc, type: 3}
-  pressedSprite: {fileID: 21300000, guid: 4c0374a8e1e267645b4f6e6e2371ddfc, type: 3}
-  disableSprite: {fileID: 21300000, guid: 4c0374a8e1e267645b4f6e6e2371ddfc, type: 3}
+  normalSprite: {fileID: 21300000, guid: ec7b0745c62ff6b4692b68c5e80e0268, type: 3}
+  enterSprite: {fileID: 21300000, guid: ec7b0745c62ff6b4692b68c5e80e0268, type: 3}
+  pressedSprite: {fileID: 21300000, guid: ec7b0745c62ff6b4692b68c5e80e0268, type: 3}
+  disableSprite: {fileID: 21300000, guid: ec7b0745c62ff6b4692b68c5e80e0268, type: 3}
   normalObject: {fileID: 0}
   enterObject: {fileID: 0}
   pressedObject: {fileID: 0}
@@ -1469,7 +1469,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 4c0374a8e1e267645b4f6e6e2371ddfc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ec7b0745c62ff6b4692b68c5e80e0268, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

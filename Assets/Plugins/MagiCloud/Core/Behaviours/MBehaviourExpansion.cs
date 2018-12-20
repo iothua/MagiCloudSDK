@@ -82,6 +82,8 @@ namespace MagiCloud.Core
 
         private static void OnExcuteDisableDestroy(MBehaviour behaviour)
         {
+            if (behaviour == null) return;
+
             if (!behaviour.IsEnable) return;
             behaviour.onDisable.SendListener();
         }

@@ -13,8 +13,6 @@ namespace Chemistry.Equipments
     public class EC_M_MeasuringCylinder : EC_Container
     {
         //液面变化功能--在编辑器初始化时附加对应脚本
-        [SerializeField]
-        private EA_EquipmentLiquidChange LiquidChange;
         //当前所装液体的体积
         //[Header("初始液体体积(为负则取默认配置值)")]
         //public float CurV = -1.0f;
@@ -34,7 +32,7 @@ namespace Chemistry.Equipments
         protected override void Start()
         {
             base.Start();
-            Debug.Log("EC_M_MeasuringCylinder 的Start被调用");
+            //Debug.Log("EC_M_MeasuringCylinder 的Start被调用");
             OnInitializeEquipment();
         }
 
@@ -42,13 +40,7 @@ namespace Chemistry.Equipments
         {
             containerType = EContainerType.量筒;
             base.OnInitializeEquipment();
-
-            if (LiquidChange == null)
-            {
-                LiquidChange = GetComponent<EA_EquipmentLiquidChange>();
-            }
-
-            LiquidChange.OnInit(LiquidEffect, Volume);
+            
         }
 
 
@@ -67,8 +59,6 @@ namespace Chemistry.Equipments
             //boxCollider.center = new Vector3(0.0f, 0.7f, 0.0f);
             //boxCollider.size = new Vector3(0.18f, 1.2f, 0.2f);
             //添加容器液面升降行为
-            LiquidChange = gameObject.AddComponent<EA_EquipmentLiquidChange>();
-
         }
 
         /// <summary>
@@ -87,16 +77,17 @@ namespace Chemistry.Equipments
         //    base.Update();
         //}
 
-
+        
         /// <summary>
         /// 液体量变化
         /// </summary>
         /// <param name="changeVolume">变化量(正为增，负为减)</param>
         /// <param name="time">时间（为0时突变）</param>
-        public void ChangeLiquid(float changeVolume, float time = 0.5f)
+        public override void ChangeLiquid(float changeVolume, float time = 0.5F)
         {
+            //base.ChangeLiquid(changeVolume, time);
             var drug = DrugSystemIns.GetDrug(DrugName);
-            drug.Volume = LiquidChange.ChangeLiquid(DrugSystemIns.GetDrug(DrugName).Volume, changeVolume, time);
+            drug.Volume = LiquidEffect.ChangeLiquid(DrugSystemIns.GetDrug(DrugName).Volume, changeVolume, time);
         }
     }
 }
