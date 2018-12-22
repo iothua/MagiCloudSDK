@@ -1,12 +1,11 @@
 ﻿using MagiCloud;
+using MagiCloud.Common;
+using MagiCloud.Core;
 using MagiCloud.Features;
-using MagiCloud.KGUI;
+using MagiCloud.Interactive;
+using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
-using MagiCloud.Core.Events;
-using MagiCloud.Interactive;
-using MagiCloud.Core;
-using MagiCloud.Common;
 
 namespace Chemistry.Equipments
 {
@@ -18,13 +17,15 @@ namespace Chemistry.Equipments
     /// </summary>
     public class EO_GlassPiece :EO_Cover, ISlideCover
     {
-        [Header("是否需要释放")]
-        public bool needRelease = false;
+
         public Transform left;
         public Transform right;
-
         public ProgressBar bar;
+        [SerializeField, Header("是否需要释放")]
+        private bool isRelease = true;
+        [ShowIf("isRelease",false)]
         public ProgressBar timeBar;
+        [ShowIf("isRelease",false)]
         public TimeController timeController;
 
 
@@ -93,7 +94,7 @@ namespace Chemistry.Equipments
         public override void OnDistanceEnter(InteractionEquipment interaction)
         {
             base.OnDistanceEnter(interaction);
-            if (!needRelease)
+            if (!isRelease)
             {
                 if (Interaction(interaction))
                 {
@@ -104,7 +105,7 @@ namespace Chemistry.Equipments
         }
         public override void OnDistanceExit(InteractionEquipment interaction)
         {
-            if (!needRelease)
+            if (!isRelease)
             {
                 if (Interaction(interaction))
                 {
@@ -118,7 +119,7 @@ namespace Chemistry.Equipments
         public override void OnDistanceRelease(InteractionEquipment interaction)
         {
             base.OnDistanceRelease(interaction);
-            if (needRelease)
+            if (isRelease)
             {
                 if (Interaction(interaction))
                     Active(_bound,_bound.LimitRange,_bound.AxisLimits);

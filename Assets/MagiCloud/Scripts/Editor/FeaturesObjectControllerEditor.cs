@@ -585,7 +585,7 @@ namespace MagiCloud.Features
             EditorGUILayout.EndVertical();
         }
 
-        Transform FindDistanceParent()
+        public Transform FindDistanceParent()
         {
             Transform parent = features.transform.Find("distanceParent");
             if (parent == null)

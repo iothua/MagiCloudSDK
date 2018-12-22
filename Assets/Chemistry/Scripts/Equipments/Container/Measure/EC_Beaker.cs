@@ -12,6 +12,7 @@ namespace Chemistry.Equipments
     /// </summary>
     public class EC_Beaker : EC_Container
     {
+
         //液面变化功能--在编辑器初始化时附加对应脚本
 
         //[Header("初始液体体积(为负则取默认配置值)")]
@@ -19,6 +20,7 @@ namespace Chemistry.Equipments
 
         [Header("放入的仪器下降至的高度值(如：温度计,玻璃棒)")]
         public float FallHight = 1.03f;
+
 
         //用于胶头滴管获取当前仪器类型--可能会用到
         //public DropperInteractionType InteractionEquipment
@@ -83,11 +85,12 @@ namespace Chemistry.Equipments
         /// </summary>
         /// <param name="changeVolume">变化量(正为增，负为减)</param>
         /// <param name="time">时间（为0时突变）</param>
-        public override void ChangeLiquid(float changeVolume, float time = 0.5F)
+        public override void ChangeLiquid(float changeVolume, float time = 0.5F, string curDrugName = "")
         {
-            //base.ChangeLiquid(changeVolume, time);
-            var drug = DrugSystemIns.GetDrug(DrugName);
-            drug.Volume = LiquidEffect.ChangeLiquid(drug.Volume, changeVolume, time);
+            base.ChangeLiquid(changeVolume, time, curDrugName);
+            ////base.ChangeLiquid(changeVolume, time);
+            //var drug = DrugSystemIns.GetDrug(DrugName);
+            //drug.Volume = LiquidEffect.ChangeLiquid(drug.Volume, changeVolume, time);
         }
 
         /// <summary>

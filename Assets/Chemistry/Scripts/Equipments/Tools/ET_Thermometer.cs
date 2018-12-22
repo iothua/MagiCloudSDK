@@ -65,29 +65,29 @@ namespace Chemistry.Equipments
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                TemperatureChangeWithTime(25.0f);
+                TemperatureChangeWithTime(10.0f);
             }
 
             if (Input.GetKeyDown(KeyCode.W))
             {
-                TemperatureChangeWithTime(34.0f);
+                TemperatureChangeWithTime(0.0f);
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                TemperatureChangeWithTime(51.0f);
+                TemperatureChangeWithTime(-10.0f);
             }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                TemperatureChangeWithTime(87.0f);
-            }
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                TemperatureChangeWithTime(MaxTemp);
-            }
-            if (Input.GetKeyDown(KeyCode.Y))
-            {
-                TemperatureChangeWithTime(MinTemp);
-            }
+            //if (Input.GetKeyDown(KeyCode.R))
+            //{
+            //    TemperatureChangeWithTime(87.0f);
+            //}
+            //if (Input.GetKeyDown(KeyCode.T))
+            //{
+            //    TemperatureChangeWithTime(MaxTemp);
+            //}
+            //if (Input.GetKeyDown(KeyCode.Y))
+            //{
+            //    TemperatureChangeWithTime(MinTemp);
+            //}
         }
 
 
@@ -108,7 +108,7 @@ namespace Chemistry.Equipments
 
             if (HaveAnimation)
             {
-                this.transform.DOLocalMoveY(hight, 0.5f).OnComplete(OnCompleteOperate);
+                this.transform.DOLocalMoveY(transform.localPosition.y - hight, 0.5f).OnComplete(OnCompleteOperate);
             }
 
             base.OnDistanceRelease(interaction);
@@ -150,14 +150,26 @@ namespace Chemistry.Equipments
             
         }
 
+
         /// <summary>
         /// 温度改变（温度值为立刻变化，但液柱升降效果仍在）
         /// </summary>
         /// <param name="endValue">终值</param>
         /// <param name="isComplete">在变化效果后/前赋值</param>
         /// <param name="time">液柱变化时间</param>
-        public virtual void TemperatureChangeInstant(float endValue,bool isComplete=false,float time=2.0f)
+        /// <returns>返回温度变化状态(-1 失败，0成功，1超量程，2低于量程)</returns>
+        public virtual int TemperatureChangeInstant(float endValue,bool isComplete=false,float time=2.0f)
         {
+
+            if (endValue > MaxTemp)
+            {
+                return 1;
+            }
+            else if (endValue < MinTemp)
+            {
+                return 2;
+            }
+
             float targetScaleZ = CaculateScaleWithTemperature(endValue);
 
             if (TempBar != null)
@@ -172,9 +184,10 @@ namespace Chemistry.Equipments
                 {
                     tmpTween.OnComplete(() => { CurTemperature = endValue; });
                 }
+                return 0;
             }
 
-            
+            return -1;
         }
 
         //public override void OnInitializeEquipment_Editor(string name)

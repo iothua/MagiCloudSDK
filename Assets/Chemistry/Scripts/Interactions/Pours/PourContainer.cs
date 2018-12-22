@@ -300,7 +300,7 @@ public class PourContainer
     public bool ISCanPourOut(InteractionPourWater interactionPourWater)
     {
         //没有了也不能倒水
-        if (interactionPourWater.pourContainer.ContainerCurrentVolume<=0.1f)
+        if (interactionPourWater.pourContainer.ContainerCurrentVolume<=0.01f)
         {
             Debug.Log("容器" + interactionPourWater.transform.parent.parent.name + "已空，不能倒水");
             return false;

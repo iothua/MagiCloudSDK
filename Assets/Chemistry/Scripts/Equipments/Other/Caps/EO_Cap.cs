@@ -58,6 +58,7 @@ namespace Chemistry.Equipments
         /// </summary>
         public override void CloseCover()
         {
+
         }
     }
 }

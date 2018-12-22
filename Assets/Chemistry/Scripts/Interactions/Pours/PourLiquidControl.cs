@@ -5,6 +5,9 @@ using UnityEngine;
 using Chemistry.Equipments;
 using Chemistry.Chemicals;
 using UnityEngine.Events;
+using Sirenix.OdinInspector;
+using MagiCloud.Interactive.Distance;
+using System.Linq;
 
 /*
  *  倒水功能挂载脚本
@@ -63,18 +66,141 @@ using UnityEngine.Events;
 /// 倒水液体控制
 /// 开发者：阮榆皓
 /// </summary>
+
 [DefaultExecutionOrder(300)]
+[ExecuteInEditMode]
 public class PourLiquidControl : MonoBehaviour
 {
-    //容器初始化
-    PourContainer pourContainer;
 
-    [Header("当前容器对应的类")]
+    //容器初始化
+    public PourContainer pourContainer;
+
+    [HideInInspector]
     public EC_Container CurContainer;
-    [Header("默认自己")]
+
+    [HideInInspector]
     public Transform tra;
 
+
+    #region 编辑器调用
+    [LabelText("倒水点交互名称")]
+    public string pourPtName = "倒水交互";
+
+    [LabelText("倒水点类型")]
+    public PourPointSide curPourType = PourPointSide.Left;
+
+    public List<InteractionPourWater> interactionLst = new List<InteractionPourWater>();
+
+    [ButtonGroup]
+    [Button("刷新")]
+    public void GetPourPt()
+    {
+        interactionLst.Clear();
+
+        interactionLst = transform.GetComponentsInChildren<InteractionPourWater>().ToList();
+    }
+
+    [ButtonGroup]
+    [Button("创建倒水检测点")]
+    public void OnCreate()
+    {
+        string tmpType = "";
+        switch (curPourType)
+        {
+            case PourPointSide.Left:
+                tmpType = "左";
+                break;
+            case PourPointSide.Right:
+                tmpType = "右";
+                break;
+            default:
+                break;
+        }
+        GameObject pourPtObj = new GameObject("pourObj_" + pourPtName + "_" + tmpType);
+        var pourObj = pourPtObj.AddComponent<InteractionPourWater>();
+        pourPtObj.transform.SetParent(FindDistanceParent());
+        pourPtObj.transform.localPosition = Vector3.zero;
+
+        pourObj.pointSide = curPourType;
+        pourObj.distanceData.TagID = pourPtName;
+        pourObj.distanceData.interactionType = InteractionType.Pour;
+        pourObj.distanceData.detectType = InteractionDetectType.And;
+        pourObj.distanceData.IsOnly = true;
+
+        interactionLst.Add(pourObj);
+    }
+
+
+    //void CreatePourInteraction<T>(Transform parent) where T : DistanceInteraction
+    //{
+    //    GameObject distanceObject = new GameObject("distanceObject_" + distanceName);
+    //    var distance = distanceObject.AddComponent<T>();
+    //    distanceObject.transform.SetParent(parent);
+    //    distanceObject.transform.localPosition = Vector3.zero;
+
+    //    distances.Add(distance);
+
+    //    Selection.activeGameObject = distanceObject;
+
+    //    distance.distanceData.TagID = distanceName;
+    //}
+
+    Transform FindDistanceParent()
+    {
+        Transform parent = this.transform.Find("distanceParent");
+        if (parent == null)
+        {
+            parent = new GameObject("distanceParent").transform;
+            parent.SetParent(this.transform);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+        }
+
+        return parent;
+    }
+
+    private void OnEnable()
+    {
+        if (!Application.isPlaying)
+        {
+            for (int i = 0; i < interactionLst.Count; i++)
+            {
+                interactionLst[i].gameObject.SetActive(true);
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (!Application.isPlaying)
+        {
+            for (int i = 0; i < interactionLst.Count; i++)
+            {
+                interactionLst[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        //Destroy
+        //DestroyImmediate
+
+        if (!Application.isPlaying)
+        {
+            for (int i = 0; i < interactionLst.Count; i++)
+            {
+                DestroyImmediate(interactionLst[i].gameObject);
+            }
+        }
+    }
+
+
+    #endregion
+
     //public float maxValume;
+
 
 
     //此处应从容器中获取药品信息--暂不处理//TODO--
@@ -90,6 +216,14 @@ public class PourLiquidControl : MonoBehaviour
     InteractionPourWater interactionPourWater_Right;
 
 
+    private int valoue = 100;
+    public bool IsCanInteraction(PourLiquidControl pourLiquid)
+    {
+
+
+
+        return false;
+    }
 
 
     // Use this for initialization
@@ -112,7 +246,7 @@ public class PourLiquidControl : MonoBehaviour
         float tmpV = CurContainer.DrugSystemIns.GetDrug(CurContainer.DrugName).Volume;
 
         dictionaryCup.Add(CurContainer.DrugName, tmpV);
-        
+
         //for (int i = 0; i < fluidData.Length; i++)
         //{
         //    if (!dictionaryCup.ContainsKey(fluidData[i].FluidName))
@@ -123,35 +257,70 @@ public class PourLiquidControl : MonoBehaviour
 
         //产生容器对象
         pourContainer = new PourContainer(tra, CurContainer.Volume, dictionaryCup);
-        Debug.Log(this.transform.name + "的容器对象中有液体" + pourContainer.ContainerCurrentVolume);
+
+        foreach (var item in interactionLst)
+        {
+            switch (item.pointSide)
+            {
+                case PourPointSide.Left:
+                    {
+                        interactionPourWater_Left = item;
+                        item.pourContainer = this.pourContainer;
+                        if (true)
+                        {
+
+                        }
+                        //interactionPourWater_Left.OnEnterDistance.AddListener();
+
+                        break;
+                    }
+                case PourPointSide.Right:
+                    {
+                        interactionPourWater_Right = item;
+                        item.pourContainer = this.pourContainer;
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+
+        /*
         //pourContainer = new PourContainer(tra, 100.0f, dictionaryCup);
         //两个距离检测点的初始化 并把容器对象给两个距离检测点
         //if (transform.GetComponentsInChildren<InteractionPourWater>().Length == 2)
         //{
-            foreach (var item in transform.GetComponentsInChildren<InteractionPourWater>())
-            {
-                switch (item.pointSide)
-                {
-                    case PourPointSide.Left:
-                        interactionPourWater_Left = item;
-                        item.pourContainer = this.pourContainer;
 
-                        //interactionPourWater_Left.OnEnterDistance.AddListener();
+        //foreach (var item in transform.GetComponentsInChildren<InteractionPourWater>())
+        //{
+        //    switch (item.pointSide)
+        //    {
+        //        case PourPointSide.Left:
+        //        { 
+        //            interactionPourWater_Left = item;
+        //            item.pourContainer = this.pourContainer;
+        //            leftNum++;
+        //            //interactionPourWater_Left.OnEnterDistance.AddListener();
 
-                        break;
-                    case PourPointSide.Right:
-                        interactionPourWater_Right = item;
-                        item.pourContainer = this.pourContainer;
-                        break;
-                    default:
-                        break;
-                }
-            }
+        //            break;
+        //        }
+        //    case PourPointSide.Right:
+        //        {
+        //            rightNum++;
+        //            interactionPourWater_Right = item;
+        //            item.pourContainer = this.pourContainer;
+        //            break;
+        //        }
+        //    default:
+        //            break;
+        //    }
+        //}
         //}
         //else
         //{
         //    Debug.LogError("未找到2个倒水的距离检测点,请重新配置");
         //}
+        */
     }
 
 

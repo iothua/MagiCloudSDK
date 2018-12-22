@@ -73,9 +73,9 @@ namespace Chemistry.Equipments
 
         public override bool IsCanInteraction(InteractionEquipment interaction)
         {
-            if (interaction.Equipment as  IStir!=null)
+            if (interaction.Equipment is IStir)
             {
-                return stir==null;
+                return stir == null;
             }
             return base.IsCanInteraction(interaction);
         }
@@ -83,6 +83,28 @@ namespace Chemistry.Equipments
         public override void OnDistanceRelease(InteractionEquipment interaction)
         {
             base.OnDistanceRelease(interaction);
+
+            float hight = 0.0f;
+
+            if (interaction.Equipment as EC_Beaker)
+            {
+                var tmpInteractionObj = interaction.Equipment as EC_Beaker;
+                hight = tmpInteractionObj.FallHight;
+
+                this.transform.DOLocalMoveY(transform.localPosition.y - hight, 0.5f).OnComplete(() =>
+                {
+                    //此处添加玻璃棒搅拌动画;
+                    if (interaction.Equipment as IStir != null)
+                    {
+                        stir = interaction.Equipment as IStir;
+                        stirInteraction = interaction;
+                        StartStir();
+                    }
+                });
+
+                return;
+            }
+
             if (interaction.Equipment as Funnel)
             {
                 funnel=interaction.Equipment as Funnel;
@@ -94,20 +116,7 @@ namespace Chemistry.Equipments
                 StartStir();
             }
             Transport("水",1);
-
-            float hight = 0.0f;
-
-            if (interaction.Equipment as EC_Beaker)
-            {
-                var tmpInteractionObj = interaction.Equipment as EC_Beaker;
-                hight = tmpInteractionObj.FallHight;
-            }
-
-            this.transform.DOLocalMoveY(transform.localPosition.y-hight,0.5f).OnComplete(() =>
-           {
-               //此处添加玻璃棒搅拌动画;
-           });
-
+            
         }
 
         public override void OnDistanceExit(InteractionEquipment interaction)
@@ -145,6 +154,7 @@ namespace Chemistry.Equipments
                 time+=Time.fixedDeltaTime;
                 yield return Time.fixedDeltaTime;
             }
+            //---
             StopStir();
             yield break;
         }

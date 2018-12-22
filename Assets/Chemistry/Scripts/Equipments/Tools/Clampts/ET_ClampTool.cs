@@ -22,7 +22,19 @@ namespace Chemistry.Equipments
             get { return _drugSystem ?? (_drugSystem = new DrugSystem()); }
         }
         private EquipmentBase interactionEquipmentBase;     //与镊子交互的仪器，排除一个滴管与多个仪器交互
-        private EA_TweezerTrajectoryContent tweezerTrajectoryContent;
+        private EA_ClampTrajectoryContent clampTrajectoryContent;
+
+        /// <summary>
+        /// 读条特效是否播放中
+        /// </summary>
+        private bool _ProgressEffectStatus;
+        public bool ProgressEffectStatus
+        {
+            get { return _ProgressEffectStatus; }
+            set { _ProgressEffectStatus = value; }
+        }
+        [Header("读条特效")]
+        public GameObject progressEffect;
         private float timeProgress;     //夹取或放物体时间进度
         private bool isSuccess;
         protected override void Start()
@@ -38,7 +50,7 @@ namespace Chemistry.Equipments
         public override bool IsCanInteraction(InteractionEquipment interaction)
         {
             base.IsCanInteraction(interaction);
-            if (interactionEquipmentBase != null) return false;
+            if (interactionEquipmentBase != null && interactionEquipmentBase != interaction.Equipment) return false;
             if (interaction.Equipment is I_ET_C_CanClamp)
             {
                 I_ET_C_CanClamp canClamp = interaction.Equipment as I_ET_C_CanClamp;
@@ -46,7 +58,11 @@ namespace Chemistry.Equipments
                 if (canClamp.InInteractionEquipment != null)
                     return false;
                 else
+                {
+                    interactionEquipmentBase = interaction.Equipment;
                     return true;
+                }
+                    
             }
             if (interaction.Equipment is I_ET_C_ClampPut)
             {
@@ -55,7 +71,10 @@ namespace Chemistry.Equipments
                 if (clampPut.InInteractionEquipment != null)
                     return false;
                 else
+                {
+                    interactionEquipmentBase = interaction.Equipment;
                     return true;
+                }
             }
             return false;
         }
@@ -67,34 +86,27 @@ namespace Chemistry.Equipments
                 if (!isSuccess)
                 {
                     I_ET_C_CanClamp canClamp = interaction.Equipment as I_ET_C_CanClamp;
-                    canClamp.ProgressEffectStatus = true;
-                    canClamp.ProgressEffect.SetActive(true);
-                    interactionEquipmentBase = interaction.Equipment;
-
+                    SetProgressEffectStatus(true);
                     timeProgress += Time.deltaTime * 10;
                     if (timeProgress >= 2)
                     {
+                        //取药代码。。。
                         isSuccess = true;
-                        interaction.Equipment.gameObject.transform.SetParent(transform);
-                        interaction.Equipment.gameObject.transform.localPosition = canClamp.LocalPosition;
-                        interaction.Equipment.gameObject.transform.localEulerAngles = canClamp.LocalRotation;
-
-                        interaction.Equipment.IsEnable = false;
-                        canClamp.ProgressEffectStatus = false;
-                        canClamp.ProgressEffect.SetActive(false);
-                        canClamp.CanClamp = false;
+                        Clamp(canClamp, interaction);
                     }
                 }
             }
             if (interaction.Equipment is I_ET_C_ClampPut)
             {
-                interactionEquipmentBase = interaction.Equipment;
                 if (!isSuccess)
                 {
+                    I_ET_C_ClampPut clampPut = interaction.Equipment as I_ET_C_ClampPut;
                     timeProgress += Time.deltaTime;
                     if (timeProgress >= 2)
                     {
+                        //放药代码。。。
                         isSuccess = true;
+                        Put(clampPut, interaction);
                     }
                 }
             }
@@ -108,8 +120,8 @@ namespace Chemistry.Equipments
                 interactionEquipmentBase = null;
                 timeProgress = 0;
                 isSuccess = false;
-                canClamp.ProgressEffectStatus = false;
-                canClamp.ProgressEffect.SetActive(false);
+                SetProgressEffectStatus(false);
+                
                 canClamp.CanClamp = true;
             }
             if (interaction.Equipment is I_ET_C_ClampPut)
@@ -118,6 +130,41 @@ namespace Chemistry.Equipments
                 timeProgress = 0;
                 isSuccess = false;
             }
+        }
+
+        /// <summary>
+        /// 设置读条特效的方法
+        /// </summary>
+        void SetProgressEffectStatus(bool status)
+        {
+            ProgressEffectStatus = status;
+            progressEffect.SetActive(status);
+        }
+
+        /// <summary>
+        /// 夹取成功
+        /// </summary>
+        /// <param name="canClamp"></param>
+        /// <param name="interaction"></param>
+        public void Clamp(I_ET_C_CanClamp canClamp, InteractionEquipment interaction)
+        {
+            interaction.Equipment.gameObject.transform.SetParent(transform);
+            interaction.Equipment.gameObject.transform.localPosition = canClamp.LocalPosition;
+            interaction.Equipment.gameObject.transform.localEulerAngles = canClamp.LocalRotation;
+
+            interaction.Equipment.IsEnable = false;
+            SetProgressEffectStatus(false);
+            canClamp.CanClamp = false;
+        }
+
+        /// <summary>
+        /// 释放成功
+        /// </summary>
+        /// <param name="clampPut"></param>
+        /// <param name="interaction"></param>
+        public void Put(I_ET_C_ClampPut clampPut, InteractionEquipment interaction)
+        {
+
         }
     }
 }

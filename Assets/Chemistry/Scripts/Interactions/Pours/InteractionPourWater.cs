@@ -30,8 +30,9 @@ namespace Chemistry.Interactions
     /// 倒水距离检测
     /// 开发者：阮榆皓
     /// </summary>
+    [Serializable]
     [RequireComponent(typeof(PourInterationHelper))]
-    public class InteractionPourWater : DistanceInteraction, IExternalInteraction
+    public class InteractionPourWater : InteractionEquipment
     {
         //需要手动去挂载此脚本
         public PourInterationHelper pourHelper;
@@ -125,10 +126,8 @@ namespace Chemistry.Interactions
         protected override void Start()
         {
             base.Start();
-
-            //注意父子层级关系
-            CurContainer = this.transform.parent.parent.GetComponent<EC_Container>();
-
+            
+            CurContainer = Equipment as EC_Container;
         }
 
 
@@ -157,14 +156,21 @@ namespace Chemistry.Interactions
             //倒水量允许
             //两个杯子可以相互交互条件允许
             //没有自锁
+
             var interaction = distanceInteraction as InteractionPourWater;
             if (interaction==null||interaction.pointSide==this.pointSide)
             {
-                //Debug.Log("不允许倒水交互");
+                Debug.Log("不允许倒水交互");
                 return false;
             }
 
-            return true;
+            //if (true)
+            //{
+
+            //}
+
+
+            return base.IsCanInteraction(distanceInteraction);
         }
 
         
@@ -255,8 +261,9 @@ namespace Chemistry.Interactions
                         curTime = 0.0f;
 
                         //pourHelper.RotPt=interaction
-                        this.FeaturesObjectController.SetParent(distanceInteraction.transform, pourHelper.localPos, pourHelper.localRot);
-                        
+                        this.FeaturesObjectController.SetParent(interaction.transform, interaction.pourHelper.localPos, interaction.pourHelper.localRot);
+
+                        interaction.transform.localRotation = Quaternion.identity;
                         //distanceInteraction.FeaturesObjectController.SetParent(this.transform, pourHelper.localPos, pourHelper.localRot);
 
 
@@ -328,7 +335,8 @@ namespace Chemistry.Interactions
 
                         //液面和药品升降
                         CurContainer.ChangeLiquid(-1.0f * pourOutV, 0);
-                        interaction.CurContainer.ChangeLiquid(receiveV, 0);
+                        //CurContainer.DrugSystemInsdrugSystem.FirstName;
+                        interaction.CurContainer.ChangeLiquid(receiveV, 0, CurContainer.DrugSystemIns.FirstName);
 
                         //if (CurContainer.containerType == EContainerType.烧杯)
                         //{
@@ -601,7 +609,7 @@ namespace Chemistry.Interactions
 
             //}
             ////
-            Debug.Log("进入可倒水范围");
+            Debug.Log(this.name+"diaoyong进入可倒水范围");
             OnEnterPour.Invoke(interactionPourWater);
         }
 

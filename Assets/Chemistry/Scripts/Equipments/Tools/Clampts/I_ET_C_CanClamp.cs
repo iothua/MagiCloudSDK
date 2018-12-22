@@ -25,21 +25,6 @@ namespace Chemistry.Equipments
         Vector3 LocalRotation { get; }
 
         /// <summary>
-        /// 读条特效是否播放中
-        /// </summary>
-        bool ProgressEffectStatus { get; set; }
-
-        /// <summary>
-        /// 读条特效
-        /// </summary>
-        GameObject ProgressEffect { get; }
-
-        /// <summary>
-        /// 设置读条特效的方法
-        /// </summary>
-        void SetProgressEffectStatus();
-
-        /// <summary>
         /// 当前是否可以被夹取（比如盖上盖子的广口瓶中的物品不能被夹取）
         /// </summary>
         bool CanClamp { get; set; }

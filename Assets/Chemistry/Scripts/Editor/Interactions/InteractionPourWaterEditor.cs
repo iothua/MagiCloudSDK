@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using MagiCloud.Interactive.Distance;
+using MagiCloud.Interactive;
 
 namespace Chemistry.Interactions
 {
     [CustomEditor(typeof(InteractionPourWater))]
     [CanEditMultipleObjects]
-    public class InteractionPourWaterEditor : DistanceInteractionEditor
+    public class InteractionPourWaterEditor : InteractionEquipmentEditor
     {
         private SerializedProperty PourPointSide;
         private InteractionPourWater interactionPourWater;

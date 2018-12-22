@@ -60,7 +60,8 @@ namespace Chemistry.Equipments
         /// </summary>
         public void OpenCap()
         {
-            cover.IsCover = true;
+            if (cover != null)
+                cover.IsCover = true;
             isOpen=true;
         }
 
@@ -69,8 +70,9 @@ namespace Chemistry.Equipments
         /// </summary>
         public void CloseCap()
         {
+            if (cover != null)
+                cover.IsCover = false;
 
-            cover.IsCover = false;
             isOpen=false;
         }
     }

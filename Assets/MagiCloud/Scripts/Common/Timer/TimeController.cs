@@ -41,6 +41,7 @@ namespace MagiCloud.Common
         }
 
         #region 计时
+
         public void OnChange(bool play)
         {
             if (status==-1)
@@ -56,8 +57,10 @@ namespace MagiCloud.Common
         {
             Progress=t;
             time =t*virtualTime;
+
             if (showTimeText!=null)
                 showTimeText.text=TimeString;
+
             playingEvent?.Invoke(t);
         }
 
@@ -86,7 +89,8 @@ namespace MagiCloud.Common
         {
             if (timer==null)
             {
-                timer  =new GameObject("timer").AddComponent<Timer>();
+                timer = new GameObject("timer").AddComponent<Timer>();
+                timer.transform.SetParent(transform);
                 timer.StartTiming(realTime,OnCompleted,OnTime);
             }
             else
@@ -103,6 +107,7 @@ namespace MagiCloud.Common
         {
 
             timeToggle?.OnValueChanged.RemoveListener(OnChange);
+
             if (timer!=null)
                 Destroy(timer);
         }

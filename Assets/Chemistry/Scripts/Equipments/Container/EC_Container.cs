@@ -107,15 +107,19 @@ namespace Chemistry.Equipments
             }
         }
 
+
         /// <summary>
         /// 液体量变化
         /// </summary>
         /// <param name="changeVolume">变化量(正为增，负为减)</param>
         /// <param name="time">时间（为0时突变）</param>
-        public virtual void ChangeLiquid(float changeVolume, float time = 0.5f)
+        /// <param name="curDrugName">改变的药品名（默认第一个）</param>
+        public virtual void ChangeLiquid(float changeVolume, float time = 0.5f,string curDrugName="")
         {
-            LiquidEffect.ChangeLiquid(DrugSystemIns, changeVolume);
+            LiquidEffect.ChangeLiquid(DrugSystemIns, changeVolume, curDrugName, time);
         }
+
+
         /// <summary>
         /// 这个方法一般是从外部去调用
         /// </summary>

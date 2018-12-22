@@ -83,11 +83,13 @@ namespace Chemistry.Equipments
         /// </summary>
         /// <param name="changeVolume">变化量(正为增，负为减)</param>
         /// <param name="time">时间（为0时突变）</param>
-        public override void ChangeLiquid(float changeVolume, float time = 0.5F)
+        public override void ChangeLiquid(float changeVolume, float time = 0.5F, string curDrugName = "")
         {
-            //base.ChangeLiquid(changeVolume, time);
-            var drug = DrugSystemIns.GetDrug(DrugName);
-            drug.Volume = LiquidEffect.ChangeLiquid(DrugSystemIns.GetDrug(DrugName).Volume, changeVolume, time);
+
+            base.ChangeLiquid(changeVolume, time, curDrugName);
+            ////base.ChangeLiquid(changeVolume, time);
+            //var drug = DrugSystemIns.GetDrug(DrugName);
+            //drug.Volume = LiquidEffect.ChangeLiquid(DrugSystemIns.GetDrug(DrugName).Volume, changeVolume, time);
         }
     }
 }

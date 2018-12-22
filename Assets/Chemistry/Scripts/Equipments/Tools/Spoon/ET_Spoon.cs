@@ -32,8 +32,8 @@ namespace Chemistry.Equipments
 
         public EA_Spoon ea_Spoon;
 
+        private GameObject drugObject;//药品模型,药匙内是否有药（会修改为根据药匙内药品量判断）
 
-        private bool isEmpty = true;            //药匙内是否有药（会修改为根据药匙内药品量判断）
         protected override void Start()
         {
             base.Start();
@@ -75,7 +75,7 @@ namespace Chemistry.Equipments
             }
             if (interaction.Equipment is I_ET_S_SpoonPut)
             {
-                if (isEmpty) return false;
+                if (drugObject == null) return false;
 
                 return true;
             }
@@ -146,13 +146,15 @@ namespace Chemistry.Equipments
         /// <param name="spoonPut"></param>
         private void SpoonPutDrug(I_ET_S_SpoonPut spoonPut)
         {
+
             //执行放药动画
             var drugData = DrugSystemIns.OnTakeDrug(Chemistry.Data.EDrugType.Solid_Powder);
             spoonPut.OnDripDrug(new DrugData(drugData.DrugName, drugData.Volume));
 
             DrugSystemIns.ReduceDrug(drugData.Volume, true);
 
-            isEmpty = true;
+            if (drugObject != null)
+                Destroy(drugObject);
         }
 
         /// <summary>
@@ -164,14 +166,12 @@ namespace Chemistry.Equipments
             //显示药品
             if (spoonTake.DrugObject == null) return;
 
-            var drugObject = Instantiate(spoonTake.DrugObject, transform).transform;
+            drugObject = Instantiate(spoonTake.DrugObject, transform);
             drugObject.name = spoonTake.DrugObject.name;
-            drugObject.localPosition = spoonTake.LocalPosition;
-            drugObject.localRotation = Quaternion.Euler(spoonTake.LocalRotation);
+            drugObject.transform.localPosition = spoonTake.LocalPosition;
+            drugObject.transform.localRotation = Quaternion.Euler(spoonTake.LocalRotation);
 
             DrugSystemIns.AddDrug(spoonTake.DrugName, spoonTake.TakeAmount, Chemistry.Data.EMeasureUnit.g);
-
-            isEmpty = false;
         }
 
         /// <summary>

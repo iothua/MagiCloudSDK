@@ -155,9 +155,8 @@ namespace MagiCloud
                         OnNoRayTarget();
                         return;
                     }
-
-                    if (operaObject != null && operaObject.gameObject == hit.collider.gameObject) return;
-
+                  
+                   // if (operaObject != null && operaObject.gameObject == hit.collider.gameObject) return;
                     if (operaObject != null)
                     {
                         //处理之前的
@@ -169,7 +168,6 @@ namespace MagiCloud
 
                     if (operaObject == null) return;
                     ShowLabel();
-
                     //显示高亮
                     ShowHightLight(false);
 
