@@ -38,5 +38,15 @@ namespace Chemistry.Equipments
         /// 提供给夹取工具自己所属的仪器类型
         /// </summary>
         DropperInteractionType InteractionEquipment { get; }
+
+        /// <summary>
+        /// 可被夹取的Object
+        /// </summary>
+        GameObject ClampObject { get; }
+
+        /// <summary>
+        /// 当被夹取时
+        /// </summary>
+        GameObject OnClamp();
     }
 }

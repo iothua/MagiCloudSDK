@@ -239,6 +239,18 @@ namespace Chemistry.Chemicals
         }
 
         /// <summary>
+        /// 查看是否存在此类型的药品
+        /// </summary>
+        /// <param name="drugType"></param>
+        /// <returns></returns>
+        public bool FindDrug(EDrugType drugType)
+        {
+            var drugs = GetDrug(drugType);
+
+            return drugs.Any();
+        }
+
+        /// <summary>
         /// 是否存在指定药
         /// </summary>
         /// <param name="name"></param>

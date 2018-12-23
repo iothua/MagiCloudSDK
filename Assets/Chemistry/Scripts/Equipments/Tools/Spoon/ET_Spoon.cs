@@ -91,7 +91,7 @@ namespace Chemistry.Equipments
                 I_ET_S_SpoonTake spoonTake = interaction.Equipment as I_ET_S_SpoonTake;
                 var handle = this.DoEquipmentHandle(() =>
                 {
-                    spoonTrajectoryContent = new EA_SpoonTrajectoryContent(this, spoonTake, SpoonTakeAnimComplete);
+                    spoonTrajectoryContent = new EA_SpoonTrajectoryContent(this, spoonTake, interaction.gameObject.transform, SpoonTakeAnimComplete);
                 }, 2.5f);
                 handle.OnComplete(() =>
                 {
@@ -106,7 +106,7 @@ namespace Chemistry.Equipments
                 I_ET_S_SpoonPut spoonPut = interaction.Equipment as I_ET_S_SpoonPut;
                 var handle = this.DoEquipmentHandle(() =>
                 {
-                    spoonTrajectoryContent = new EA_SpoonTrajectoryContent(this, spoonPut, SpoonPutAnimComplete);
+                    spoonTrajectoryContent = new EA_SpoonTrajectoryContent(this, spoonPut, interaction.gameObject.transform, SpoonPutAnimComplete);
                 }, 2.5f);
                 handle.OnComplete(() =>
                 {

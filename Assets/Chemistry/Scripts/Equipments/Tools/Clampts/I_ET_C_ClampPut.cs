@@ -17,7 +17,7 @@ namespace Chemistry.Equipments
         /// <summary>
         /// 夹取动画下移的高度
         /// </summary>
-        float Height { get; set; }
+        float ClampPutHeight { get; set; }
         /// <summary>
         /// 提供给夹取工具自己所属的仪器类型
         /// </summary>
@@ -32,11 +32,16 @@ namespace Chemistry.Equipments
         /// 从夹取工具获取到的药品
         /// </summary>
         /// <param name="drugs"></param>
-        void OnDripDrug(List<Drug> drugs);
+        void OnDripDrug(DrugData drugs);
 
         /// <summary>
         /// 记录与改接口正在交互的仪器（用于屏蔽其他同类仪器与该接口交互）
         /// </summary>
         EquipmentBase InInteractionEquipment { get; set; }
+
+        /// <summary>
+        /// 当夹取被释放时
+        /// </summary>
+        void OnClampPut();
     }
 }

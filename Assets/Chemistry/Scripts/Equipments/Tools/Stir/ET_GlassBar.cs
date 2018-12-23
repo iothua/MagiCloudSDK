@@ -75,7 +75,7 @@ namespace Chemistry.Equipments
         {
             if (interaction.Equipment is IStir)
             {
-                return stir == null;
+                return (interaction.Equipment as IStir).AllowStir;
             }
             return base.IsCanInteraction(interaction);
         }

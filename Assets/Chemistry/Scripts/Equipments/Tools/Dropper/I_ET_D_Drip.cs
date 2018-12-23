@@ -23,7 +23,7 @@ namespace Chemistry.Equipments
         /// <summary>
         /// 滴管放药时动画下落的高度（滴管作为子物体后）
         /// </summary>
-        float Height { get; set; }
+        float ClampPutHeight { get; set; }
 
         /// <summary>
         /// 提供给滴管自己所属的仪器类型

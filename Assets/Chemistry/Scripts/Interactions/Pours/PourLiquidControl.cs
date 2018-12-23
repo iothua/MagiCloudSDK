@@ -229,6 +229,8 @@ public class PourLiquidControl : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        if (!Application.isPlaying) return;
+
         //容器trasfrom
         tra = this.transform;
 

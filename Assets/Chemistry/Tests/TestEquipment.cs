@@ -13,7 +13,7 @@ using MagiCloud.Interactive;
 namespace Chemistry.Equipments
 {
     //[ExecuteInEditMode]
-    public class TestEquipment : EquipmentBase, I_ET_D_Drip
+    public class TestEquipment : EquipmentBase, I_ET_D_Drip, I_ET_C_CanClamp, I_ET_C_ClampPut
     {
         private EquipmentBase inInteractionEquipment;
         public EquipmentBase InInteractionEquipment
@@ -28,15 +28,34 @@ namespace Chemistry.Equipments
         }
 
         public float LowestY { get { return 0.4f; } set { } }
-        public float Height { get { return 0.6f; } set { } }
+        public float ClampPutHeight { get { return 0.6f; } set { } }
 
         public DropperInteractionType InteractionEquipment
         {
             get { return DropperInteractionType.烧杯; }
         }
 
-        private Action action;
+        public string DrugName
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
+        public Vector3 LocalPosition { get { return Vector3.zero; } }
+
+        public Vector3 LocalRotation { get { return Vector3.zero; } }
+
+        public bool CanClamp { get { return true; } set { } }
+
+        public bool CanReceive { get { return true; } set { } }
+
+        private Action action;
+        public GameObject ClampObject
+        {
+            get { return gameObject; }
+        }
         public void OnDripDrug(DrugData drugData)
         {
 
@@ -75,13 +94,38 @@ namespace Chemistry.Equipments
                 InInteractionEquipment = interaction.Equipment;
                 return true;
             }
+            if (interaction.Equipment is ET_ClampTool)
+            {
+                InInteractionEquipment = interaction.Equipment;
+                return true;
+            }
             return false;
+        }
+        public override void OnDistanceStay(InteractionEquipment interaction)
+        {
+            base.OnDistanceStay(interaction);
         }
         public override void OnDistanceExit(InteractionEquipment interaction)
         {
             base.OnDistanceExit(interaction);
             if (interaction.Equipment is ET_Dropper)
                 InInteractionEquipment = null;
+            if (interaction.Equipment is ET_ClampTool)
+                InInteractionEquipment = null;
+        }
+
+        public void OnDripDrug(List<Drug> drugs)
+        {
+            
+        }
+
+        public GameObject OnClamp()
+        {
+            return gameObject;
+        }
+        public void OnClampPut()
+        {
+
         }
     }
 }
