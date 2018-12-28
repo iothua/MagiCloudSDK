@@ -23,7 +23,7 @@ namespace MagiCloud.Common
         public Text txtTime;
 
         public Core.Events.Handlers.EventFloat OnPercet = new Core.Events.Handlers.EventFloat();
-        public Core.Events.Handlers.EventNone OnStart = new Core.Events.Handlers.EventNone();
+        public Core.Events.Handlers.EventFloat OnStart = new Core.Events.Handlers.EventFloat();
         public Core.Events.Handlers.EventNone OnParus = new Core.Events.Handlers.EventNone();
         public Core.Events.Handlers.EventNone OnStop = new Core.Events.Handlers.EventNone();
 
@@ -73,8 +73,8 @@ namespace MagiCloud.Common
             {
                 IsComplete = false;
                 Value = 0;
-                OnUpdate();
-                StartDoTween();
+                //OnUpdate();
+                //StartDoTween();
 
                 OnStop.SendListener();
             }
@@ -82,7 +82,7 @@ namespace MagiCloud.Common
             {
                 if (result)
                 {
-                    OnStart.SendListener();
+                    OnStart.SendListener(SumTime);
                     tween.Play();
                 }
                 else

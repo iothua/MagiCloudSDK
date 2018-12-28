@@ -49,9 +49,10 @@ namespace MagiCloud.Core
         {
             if (Actions == null) return;
 
-            foreach (var item in Actions)
+            for (int i = 0; i < Actions.Count; i++)
             {
-                item();
+                if (Actions[i] != null)
+                    Actions[i]();
             }
         }
     }

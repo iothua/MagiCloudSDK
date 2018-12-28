@@ -88,9 +88,14 @@ namespace MagiCloud.Interactive.Distance
         public void OnComputeDistance()
         {
 
+            if (!sendData.FeaturesObjectController.IsEnable)
+                return;
+
             foreach (var receive in Distances)
             {
                 if (receive == null) continue;
+
+                if (!receive.FeaturesObjectController.IsEnable) continue;
 
                 //如果在距离范围内
                 if (OnDistance(receive, sendData))

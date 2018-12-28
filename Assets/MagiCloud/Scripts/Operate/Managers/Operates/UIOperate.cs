@@ -91,6 +91,8 @@ namespace MagiCloud
 
             if (Physics.Raycast(ray, out hit, 10000, 1 << MOperateManager.layerUI))
             {
+                //1、如果照射到了，将此碰撞体加0.5f
+                //2、如果是握拳时，碰撞体范围还是以0.5f为算，如果默认，则以0.5为计算
 
                 if (uiObject == null)
                 {
@@ -130,21 +132,29 @@ namespace MagiCloud
             }
             else
             {
-
-                if (uiObject != null)
-                {
-                    EventHandUIRayExit.SendListener(uiObject, InputHand.HandIndex);
-
-                    uiObject = null;
-                }
-
-                rayObject = null;
-                if (IsButtonPress) return true;
-                SetButton(null);
+                NotUIRay();
 
                 return false;
             }
         }
+
+        /// <summary>
+        /// Not UI射线处理
+        /// </summary>
+        void NotUIRay()
+        {
+            if (uiObject != null)
+            {
+                EventHandUIRayExit.SendListener(uiObject, InputHand.HandIndex);
+
+                uiObject = null;
+            }
+
+            rayObject = null;
+            if (IsButtonPress) return;
+            SetButton(null);
+        }
+
 
         private void OnButtonRelease(int handIndex)
         {

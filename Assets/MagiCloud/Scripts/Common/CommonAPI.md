@@ -1,4 +1,8 @@
-#计时功能 TimerController:
+#进度条
+预制体：ImageProgressBar、SRProgressBar
+
+---
+#计时功能 TimeController:
 virtualTime:用于设置指定的虚拟时间
 realTime:   设置对应虚拟时间的真实时间，单位 秒
 playEvent:  开启事件

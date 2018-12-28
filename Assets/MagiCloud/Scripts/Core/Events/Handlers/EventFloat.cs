@@ -68,11 +68,6 @@ namespace MagiCloud.Core.Events.Handlers
             {
                 Values[i].Action(lerp);
             }
-
-            //foreach (var item in Values)
-            //{
-            //    item.Action(lerp);
-            //}
         }
     }
 }

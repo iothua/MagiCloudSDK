@@ -92,6 +92,8 @@ namespace MagiCloud.Core
         {
             OnExcuteDisableDestroy(behaviour);
 
+            if (behaviour == null) return;
+
             behaviour.onDestroy.SendListener();
 
             behaviour.onAwake.RemoveListenerAll();

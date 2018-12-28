@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using MagiCloud.Core.UI;
 //using MagiCloud.Core;
+using DG.Tweening;
 
 namespace MagiCloud.KGUI
 {
@@ -269,7 +270,13 @@ namespace MagiCloud.KGUI
                     if (cmd.Equals("click"))
                     {
                         if (pressedSprite != null)
+                        {
                             image.sprite = pressedSprite;
+                            if (image.transform.localScale == Vector3.one)
+                            {
+                                image.transform.DOPunchScale(new Vector3(-0.2f, -0.2f, 0), 0.4f, 12, 0.5f);
+                            }
+                        }
                     }
                     else if (cmd.Equals("enter"))
                     {

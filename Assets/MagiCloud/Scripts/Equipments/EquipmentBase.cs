@@ -108,7 +108,7 @@ namespace MagiCloud.Equipments
 
         public virtual bool IsCanInteraction(InteractionEquipment interaction)
         {
-            return true;
+            return IsEnable;
         }
 
 

@@ -28,7 +28,7 @@ namespace MagiCloud.KGUI
             if (backButton!=null) backButton.onClick.AddListener(Close);
         }
 
-        private void OnClick(int arg)
+        public void OnClick(int arg)
         {
             if (record==null)
             {
@@ -48,7 +48,7 @@ namespace MagiCloud.KGUI
                 trueImage.color=color;
                 trueImage.DOFade(0,1f).SetEase(Ease.InQuint);
                 //记录数据到表格
-                tableManager.SetDataToTable(record.GetData(),1,record.IsCover);
+                tableManager.SetDataToTable(record.GetData(),1,record.IsCover,record.IsColumn);
             }
         }
 

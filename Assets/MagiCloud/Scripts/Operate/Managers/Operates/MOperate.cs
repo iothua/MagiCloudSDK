@@ -156,7 +156,7 @@ namespace MagiCloud
                         return;
                     }
                   
-                   // if (operaObject != null && operaObject.gameObject == hit.collider.gameObject) return;
+                    // if (operaObject != null && operaObject.gameObject == hit.collider.gameObject) return;
                     if (operaObject != null)
                     {
                         //处理之前的

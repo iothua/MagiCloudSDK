@@ -49,23 +49,47 @@ namespace MagiCloud.KGUI
         /// <param name="datas">数据</param>
         /// <param name="i">默认为第一个表格（暂时只记录第一个表格数）</param>
         /// <param name="isCover">是否覆盖</param>
-        public void SetDataToTable(string[] datas,int i = 1,bool isCover = false)
+        public void SetDataToTable(string[] datas,int i = 1,bool isCover = false,bool isColumn = false)
         {
             if (datas == null) return;
-            if (index >= tableManager.Tables[i].Rows.Count-1)
+            if (!isColumn)
             {
-                tableManager.AddRow(tableManager.Tables[i]);
-                scrollView.SetRectData();
-                scrollView.vertical.SetRectData();
+                if (isCover)
+                {
+                    if (index >= tableManager.Tables[i].Rows.Count-1)
+                        index=-1;
+                }
+                else
+                {
+                    if (index >= tableManager.Tables[i].Rows.Count-1)
+                    {
+                        tableManager.AddRow(tableManager.Tables[i]);
+                        scrollView.SetRectData();
+                        scrollView.vertical.SetRectData();
+                    }
+                }
+            }
+            else
+            {
+                if (isCover)
+                {
+                    if (index >= tableManager.Tables[i].Ranks.y-1)
+                        index=-1;
+                }
             }
             index++;
             Dictionary<Vector2Int,string> dict = new Dictionary<Vector2Int,string>();
+
             for (int j = 0; j < datas.Length; j++)
             {
-                dict.Add(new Vector2Int(index,j),datas[j]);
+                if (isColumn)
+                    dict.Add(new Vector2Int(j,index),datas[j]);
+                else
+                    dict.Add(new Vector2Int(index,j),datas[j]);
             }
             tableManager.AddData(tableManager.Tables[i],dict);
 
+            //}
         }
     }
 }

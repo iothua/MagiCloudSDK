@@ -28,7 +28,8 @@ namespace MagiCloud.Common
         //public int h => virtualTime/3600;
         //public int min => virtualTime/60;
         //public float s => virtualTime;
-        public string TimeString => (time).ToString("f1");
+        public string TimeString => (time%1!=0) ? (time).ToString("f1") : time.ToString();
+
         public float Progress { get; private set; }
 
         public bool Playing => status==1;

@@ -12,6 +12,11 @@ namespace MagiCloud.KGUI
         /// 数据记录完成后是否覆盖
         /// </summary>
         public virtual bool IsCover => false;
+
+        public virtual bool IsColumn => false;
+
+
+
         public abstract string[] GetData();
 
     }
