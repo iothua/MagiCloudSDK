@@ -26,7 +26,7 @@ namespace MagiCloud.Features
         [Header("指定该物体下的所有物体高亮，默认为父物体")]
         public Transform highLightTransform;                //高亮位置
 
-        void Start()
+        void Awake()
         {
             OnAddHighLight();
         }
@@ -36,7 +36,8 @@ namespace MagiCloud.Features
             if (highLightTransform == null)
                 highLightTransform = transform.parent;
 
-            h = highLightTransform.GetComponent<Highlighter>() ?? highLightTransform.gameObject.AddComponent<Highlighter>();
+            if (h == null)
+                h = highLightTransform.GetComponent<Highlighter>() ?? highLightTransform.gameObject.AddComponent<Highlighter>();
         }
 
         public void OnRemoveHighLight()

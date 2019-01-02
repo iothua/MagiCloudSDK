@@ -150,38 +150,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &1784103774605550
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4915903705284620}
-  - component: {fileID: 114865417304989912}
-  m_Layer: 0
-  m_Name: MouseController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1923759390634890
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4356346185136506}
-  - component: {fileID: 114001268774298556}
-  m_Layer: 0
-  m_Name: KinectController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
 --- !u!4 &4013934561707870
 Transform:
   m_ObjectHideFlags: 1
@@ -205,8 +173,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4915903705284620}
-  - {fileID: 4356346185136506}
   - {fileID: 4531006789146910}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -225,19 +191,6 @@ Transform:
   m_Father: {fileID: 4531006789146910}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4356346185136506
-Transform:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1923759390634890}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4076663986306170}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4531006789146910
 Transform:
   m_ObjectHideFlags: 1
@@ -252,7 +205,7 @@ Transform:
   - {fileID: 4091011334733404}
   - {fileID: 4909530956687894}
   m_Father: {fileID: 4076663986306170}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4659434692260554
 Transform:
@@ -294,19 +247,6 @@ Transform:
   - {fileID: 4659434692260554}
   m_Father: {fileID: 4531006789146910}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4915903705284620
-Transform:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1784103774605550}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4076663986306170}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &20146341618963040
 Camera:
@@ -475,29 +415,6 @@ AudioListener:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1062879222029684}
   m_Enabled: 1
---- !u!114 &114001268774298556
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1923759390634890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6894e46a6f2263f43ae2ad5d25266b5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rightHandSprite:
-    IdelIcon: {fileID: 21300000, guid: e299647c10a12384895f7d197aa69d02, type: 3}
-    GripIcon: {fileID: 21300000, guid: 2dc8aa515b44c464ca0ab5db2cd1f3e3, type: 3}
-    InvalidIcon: {fileID: 0}
-    ErrorIcon: {fileID: 0}
-  leftHandSprite:
-    IdelIcon: {fileID: 21300000, guid: a5e07e76b00215647ae9723c760ba96c, type: 3}
-    GripIcon: {fileID: 21300000, guid: 79fb0c850b45bcd44b51bbc2f64b8299, type: 3}
-    InvalidIcon: {fileID: 0}
-    ErrorIcon: {fileID: 0}
-  handSize: {x: 160, y: 160}
-  kinectHandStartStatus: 2
 --- !u!114 &114064914236487624
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -705,23 +622,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &114865417304989912
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1784103774605550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6ed83b6f330f6e4086778ad24b736e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handSprite:
-    IdelIcon: {fileID: 0}
-    GripIcon: {fileID: 0}
-    InvalidIcon: {fileID: 0}
-    ErrorIcon: {fileID: 0}
-  handSize: {x: 160, y: 160}
 --- !u!223 &223663814397262712
 Canvas:
   m_ObjectHideFlags: 1
@@ -731,7 +631,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 20146341618963040}
+  m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1

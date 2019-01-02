@@ -133,7 +133,7 @@ namespace MagiCloud.KGUI
 
             rectTransform.localPosition = new Vector3(0,-(rectTransform.sizeDelta.y / 2 - parentRect.sizeDelta.y / 2),0);
 
-            if (!KGUI_Utility.IsAreaContains(rectTransform,handIndex))
+            if (!MUtility.IsAreaContains(rectTransform,handIndex))
             {
                 Template.SetActive(false);
             }

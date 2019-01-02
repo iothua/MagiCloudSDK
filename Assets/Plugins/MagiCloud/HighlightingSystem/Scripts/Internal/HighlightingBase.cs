@@ -315,17 +315,22 @@ namespace HighlightingSystem
 				isDepthAvailable = depthAvailable;
 				// Update ZWrite value for all highlighting shaders correspondingly (isDepthAvailable ? ZWrite Off : ZWrite On)
 				Highlighter.SetZWrite(isDepthAvailable ? 0 : 1);
-				if (isDepthAvailable)
+#if UNITY_EDITOR
+                if (isDepthAvailable)
 				{
-					Debug.LogWarning("HighlightingSystem : Framebuffer depth data is available back again. Depth occlusion enabled, highlighting occluders disabled. (This message is harmless)");
+
+
+                    Debug.LogWarning("HighlightingSystem : Framebuffer depth data is available back again. Depth occlusion enabled, highlighting occluders disabled. (This message is harmless)");
 				}
 				else
 				{
 					Debug.LogWarning("HighlightingSystem : Framebuffer depth data is not available. Depth occlusion disabled, highlighting occluders enabled. (This message is harmless)");
 				}
-			}
+#endif
 
-			updateHighlightingBuffer |= (highlightingBuffer == null || cam.pixelWidth != cachedWidth || cam.pixelHeight != cachedHeight || aa != cachedAA);
+            }
+
+            updateHighlightingBuffer |= (highlightingBuffer == null || cam.pixelWidth != cachedWidth || cam.pixelHeight != cachedHeight || aa != cachedAA);
 
 			if (updateHighlightingBuffer)
 			{

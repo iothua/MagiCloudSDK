@@ -24,11 +24,11 @@ namespace MagiCloud.Common
         public UnityEvent pauseEvent;
         public UnityEvent stopEvent;
         public UnityEvent<float> playingEvent;
-
+        public int DecimalNum = 1;
         //public int h => virtualTime/3600;
         //public int min => virtualTime/60;
         //public float s => virtualTime;
-        public string TimeString => (time%1!=0) ? (time).ToString("f1") : time.ToString();
+        public string TimeString => (time%1>=0.1f) ? (time).ToString("f"+DecimalNum.ToString()) : time.ToString("f0");
 
         public float Progress { get; private set; }
 
@@ -58,7 +58,6 @@ namespace MagiCloud.Common
         {
             Progress=t;
             time =t*virtualTime;
-
             if (showTimeText!=null)
                 showTimeText.text=TimeString;
 

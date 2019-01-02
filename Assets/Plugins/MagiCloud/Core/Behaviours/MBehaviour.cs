@@ -52,7 +52,7 @@ namespace MagiCloud.Core
             for (int i = 0; i < Actions.Count; i++)
             {
                 if (Actions[i] != null)
-                    Actions[i]();
+                    Actions[i].Invoke();
             }
         }
     }

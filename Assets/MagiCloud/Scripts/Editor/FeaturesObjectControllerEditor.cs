@@ -77,7 +77,7 @@ namespace MagiCloud.Features
 
             //空间限制面板
             EditorGUILayout.BeginVertical("box");
-            features.ActiveSpaceLimit = GUILayout.Toggle(features.ActiveSpaceLimit,"  激活空间限制--------------------------------------------------------------");
+            features.ActiveSpaceLimit_ = GUILayout.Toggle(features.ActiveSpaceLimit_,"  激活空间限制--------------------------------------------------------------");
             InspectorSpaceLimit();
             EditorGUILayout.EndVertical();
 
@@ -231,7 +231,7 @@ namespace MagiCloud.Features
         /// </summary>
         private void InspectorSpaceLimit()
         {
-            if (features.ActiveSpaceLimit)
+            if (features.ActiveSpaceLimit_)
             {
                 _spaceLimit = features.AddSpaceLimit();
                 if (_spaceLimit == null) return;
@@ -239,12 +239,23 @@ namespace MagiCloud.Features
 
                 _spaceLimit.limitObj = EditorGUILayout.ObjectField("    *被限制的物体",_spaceLimit.limitObj,typeof(GameObject),true) as GameObject;
                 if (_spaceLimit.limitObj == null)
-                    EditorGUILayout.HelpBox("请赋值被抓取物体本身",MessageType.None,false);
-                _spaceLimit.topLimit = EditorGUILayout.Toggle("    *上边限制",_spaceLimit.topLimit);
-                _spaceLimit.bottomLimit = EditorGUILayout.Toggle("    *下边限制",_spaceLimit.bottomLimit);
-                _spaceLimit.leftLimit = EditorGUILayout.Toggle("    *左边限制",_spaceLimit.leftLimit);
-                _spaceLimit.rightLimit = EditorGUILayout.Toggle("    *右边限制",_spaceLimit.rightLimit);
-                _spaceLimit.offset = EditorGUILayout.FloatField("    *偏移量",0.5f);
+                    EditorGUILayout.HelpBox("请赋值被抓取物体本身，不赋值则为功能控制端所在物体",MessageType.None,false);
+                EditorGUILayout.BeginHorizontal();
+                _spaceLimit.topLimit = EditorGUILayout.Toggle("    *上边限制", _spaceLimit.topLimit);
+                _spaceLimit.topOffset = EditorGUILayout.FloatField("    上偏移量", 0.5f);
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
+                _spaceLimit.bottomLimit = EditorGUILayout.Toggle("    *下边限制", _spaceLimit.bottomLimit);
+                _spaceLimit.bottomOffset = EditorGUILayout.FloatField("    下偏移量", 0.5f);
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
+                _spaceLimit.leftLimit = EditorGUILayout.Toggle("    *左边限制", _spaceLimit.leftLimit);
+                _spaceLimit.leftOffset = EditorGUILayout.FloatField("    左偏移量", 0.5f);
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
+                _spaceLimit.rightLimit = EditorGUILayout.Toggle("    *右边限制", _spaceLimit.rightLimit);
+                _spaceLimit.rightOffset = EditorGUILayout.FloatField("    右偏移量", 0.5f);
+                EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.EndVertical();
             }
@@ -352,7 +363,7 @@ namespace MagiCloud.Features
                 {
                     _shadowController.traModelNode = EditorGUILayout.ObjectField("    ·虚影模型：",_shadowController.traModelNode,typeof(Transform),true) as Transform;
                 }
-
+                _shadowController.Intension=EditorGUILayout.Slider("    ·虚影透明度：",_shadowController.Intension,0.1f,0.5f);
                 _shadowController.renderQueue = EditorGUILayout.IntField("    ·Shader渲染层级：",_shadowController.renderQueue);
             }
             else

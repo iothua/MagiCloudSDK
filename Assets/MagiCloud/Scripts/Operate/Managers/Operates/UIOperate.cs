@@ -73,7 +73,6 @@ namespace MagiCloud
             {
                 currentButton.OnDown(handIndex);
                 IsButtonPress = true;
-
             }
         }
 
@@ -111,21 +110,64 @@ namespace MagiCloud
 
                 if (hit.collider.gameObject.CompareTag("button"))
                 {
-                    //照射到的物体
-                    rayObject = hit.collider.gameObject;
+                    if (!IsButtonPress)
+                    {
+                        if (rayObject == null)
+                        {
+                            //移入
+                            currentButton = hit.collider.GetComponent<IButton>();
+                            if (currentButton == null) return true;
 
-                    if (IsButtonPress || MOperateManager.GetHandStatus(InputHand.HandIndex) != Core.MInputHandStatus.Idle)
-                        return true;
+                            OnButtonEnter(hit.collider.gameObject);
 
-                    SetButton(rayObject);
+                        }
+                        else if (currentObject == hit.collider.gameObject)
+                        {
+                            //如果相等，计算下
+
+                            currentButton.Collider.IsShake = false;
+
+                            RaycastHit detectionHit;
+                            //如果在扫描时，不是这个物体则进行清空
+                            if (Physics.Raycast(ray, out detectionHit, 10000, 1 << MOperateManager.layerUI))
+                            {
+                                if (currentObject != detectionHit.collider.gameObject)
+                                {
+                                    ClearButton();
+                                    return true;
+                                }
+                                else
+                                {
+                                    currentButton.Collider.IsShake = true;
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                NotUIRay();
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            ClearButton();
+
+                            //移入
+                            currentButton = hit.collider.GetComponent<IButton>();
+                            if (currentButton == null) return true;
+
+                            OnButtonEnter(hit.collider.gameObject);
+                        }
+                    }
+                    else
+                    {
+                        rayObject = hit.collider.gameObject;
+                        //如果握拳，则进行处理
+                    }
                 }
                 else
                 {
-                    //如果没有照射到button，表示没有在UI上了。
-                    rayObject = null;
-                    if (IsButtonPress) return true;
-
-                    SetButton(null);
+                    NotUIRay();
                 }
 
                 return true;
@@ -152,7 +194,10 @@ namespace MagiCloud
 
             rayObject = null;
             if (IsButtonPress) return;
-            SetButton(null);
+
+            ClearButton();
+
+            //SetButton(null);
         }
 
 
@@ -177,11 +222,14 @@ namespace MagiCloud
                 if (currentButton != null)
                     currentButton.OnUpRange(handIndex, false);
 
-                SetButton(null);
+                //SetButton(null);
+
+                ClearButton();
 
                 currentButton = null;
                 currentObject = null;
                 IsScroll = false;
+                rayObject = null;
 
                 return;
             }
@@ -227,18 +275,32 @@ namespace MagiCloud
             }
         }
 
+        void OnButtonEnter(GameObject hitObject)
+        {
+            currentButton.Collider.IsShake = true;
+
+            rayObject = hitObject;
+
+            currentButton.OnEnter(InputHand.HandIndex);
+
+            currentObject = rayObject;
+        }
+
         /// <summary>
         /// 清空Button信息
         /// </summary>
-        public void ClearButton()
+        void ClearButton()
         {
-            if (currentButton != null)
-            {
-                currentButton.OnExit(InputHand.HandIndex);
-            }
+            if (currentButton == null) return;
+
+            currentButton.OnExit(InputHand.HandIndex);
+
+            //清除原来的大小
+            currentButton.Collider.IsShake = false;
 
             currentButton = null;
             currentObject = null;
+            rayObject = null;
         }
 
         /// <summary>

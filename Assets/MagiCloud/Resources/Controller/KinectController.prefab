@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1560056015162476}
+  m_IsPrefabAsset: 1
+--- !u!1 &1560056015162476
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4281619758275306}
+  - component: {fileID: 114895359737087686}
+  m_Layer: 0
+  m_Name: KinectController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4281619758275306
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1560056015162476}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114895359737087686
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1560056015162476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6894e46a6f2263f43ae2ad5d25266b5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightHandSprite:
+    IdelIcon: {fileID: 21300000, guid: e299647c10a12384895f7d197aa69d02, type: 3}
+    GripIcon: {fileID: 21300000, guid: 2dc8aa515b44c464ca0ab5db2cd1f3e3, type: 3}
+    InvalidIcon: {fileID: 0}
+    ErrorIcon: {fileID: 0}
+  leftHandSprite:
+    IdelIcon: {fileID: 21300000, guid: a5e07e76b00215647ae9723c760ba96c, type: 3}
+    GripIcon: {fileID: 21300000, guid: 79fb0c850b45bcd44b51bbc2f64b8299, type: 3}
+    InvalidIcon: {fileID: 0}
+    ErrorIcon: {fileID: 0}
+  handSize: {x: 160, y: 160}
+  kinectActiveHandStatus: 2

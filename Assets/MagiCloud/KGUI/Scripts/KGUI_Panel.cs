@@ -192,7 +192,7 @@ namespace MagiCloud.KGUI
 
                 foreach (var item in OtherRects)
                 {
-                    if (KGUI_Utility.IsAreaContains(item, hand))
+                    if (MUtility.IsAreaContains(item, hand))
                     {
                         return true;//如果存在，就可以直接返回了
                     }
@@ -206,7 +206,7 @@ namespace MagiCloud.KGUI
                 {
                     Vector3 screenPoint = MUtility.UIWorldToScreenPoint(item.transform.position);
 
-                    if (KGUI_Utility.IsAreaContains(screenPoint, item.panelSize, hand))
+                    if (MUtility.IsAreaContains(screenPoint, item.panelSize, hand))
                     {
                         return true;
                     }
@@ -225,13 +225,13 @@ namespace MagiCloud.KGUI
         {
             if (panelType == PanelType.UI)
             {
-                return KGUI_Utility.IsAreaContains(transform, handIndex) || OtherRectAreaContains(handIndex);
+                return MUtility.IsAreaContains(transform, handIndex) || OtherRectAreaContains(handIndex);
             }
             else
             {
                 Vector3 screenPoint = MUtility.UIWorldToScreenPoint(transform.position);
 
-                return KGUI_Utility.IsAreaContains(screenPoint, panelSize, handIndex) || OtherRectAreaContains(handIndex);
+                return MUtility.IsAreaContains(screenPoint, panelSize, handIndex) || OtherRectAreaContains(handIndex);
             }
         }
 

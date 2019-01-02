@@ -12,14 +12,17 @@ namespace MagiCloud.Features
         public bool bottomLimit = true;
         public bool leftLimit = true;
         public bool rightLimit = true;
-        public float offset = 0.5f;
-        
+        public float topOffset = 0.5f;
+        public float bottomOffset = 0.5f;
+        public float leftOffset = 0.5f;
+        public float rightOffset = 0.5f;
+
         private Vector3 meshMin;
         private Vector3 meshMax;
         Coroutine coroutine;
         void Start()
         {
-
+            if (limitObj == null) limitObj = gameObject.transform.parent.gameObject;
             EventHandGrabObject.AddListener(OnGrab, Core.ExecutionPriority.High);
             EventHandReleaseObject.AddListener(OnIdle, Core.ExecutionPriority.High);
         }
@@ -83,7 +86,7 @@ namespace MagiCloud.Features
                 if (meshMax.y >= screenMaxPointToWorld.y)   //上边越界
                 {
                     float temp = meshMax.y - screenMaxPointToWorld.y;
-                    limitObjPos.y -= temp + offset;
+                    limitObjPos.y -= temp + topOffset;
                 }
             }
             if (bottomLimit)
@@ -91,7 +94,7 @@ namespace MagiCloud.Features
                 if (meshMin.y <= screenMinPointToWorld.y)   //下边越界
                 {
                     float temp = meshMin.y - screenMinPointToWorld.y;
-                    limitObjPos.y -= temp - offset;
+                    limitObjPos.y -= temp - bottomOffset;
                 }
             }
             if (leftLimit)
@@ -99,7 +102,7 @@ namespace MagiCloud.Features
                 if (meshMin.x <= screenMinPointToWorld.x)   //左边越界
                 {
                     float temp = meshMin.x - screenMinPointToWorld.x;
-                    limitObjPos.x -= temp - offset;
+                    limitObjPos.x -= temp - leftOffset;
                 }
             }
             if (rightLimit)
@@ -107,7 +110,7 @@ namespace MagiCloud.Features
                 if (meshMax.x >= screenMaxPointToWorld.x)   //右边越界
                 {
                     float temp = meshMax.x - screenMaxPointToWorld.x;
-                    limitObjPos.x -= temp + offset;
+                    limitObjPos.x -= temp + rightOffset;
                 }
             }
 

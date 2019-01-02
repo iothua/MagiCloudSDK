@@ -10,7 +10,7 @@ namespace MagiCloud.Features
     [ExecuteInEditMode]
     public class FeaturesObjectController :MonoBehaviour
     {
-        public bool ActiveSpaceLimit;                       //激活空间限制
+        public bool ActiveSpaceLimit_ = true;               //激活空间限制
         public bool ActiveHighlight;                        //激活高亮
         public bool ActiveShadow;                           //激活虚影
         public bool ActiveLabel;                            //激活标签
@@ -79,7 +79,7 @@ namespace MagiCloud.Features
 
         private void Awake()
         {
-            if (ActiveSpaceLimit)
+            if (ActiveSpaceLimit_)
                 AddSpaceLimit();
             else
                 RemoveSpaceLimit();

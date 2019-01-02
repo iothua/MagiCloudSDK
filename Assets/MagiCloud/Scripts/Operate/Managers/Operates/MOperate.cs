@@ -104,7 +104,7 @@ namespace MagiCloud
             //物体处理
             else if (Physics.Raycast(ray,out hit,10000,1 << MOperateManager.layerRay | 1 << MOperateManager.layerObject))
             {
-                OnRayTarget(hit);
+                OnRayTarget(hit, ray);
             }
             else
             {
@@ -124,6 +124,8 @@ namespace MagiCloud
             {
                 if (operaObject != null)
                 {
+                    operaObject.BoxCollider.IsShake = false;
+
                     EventHandRayTargetExit.SendListener(operaObject.FeaturesObject.gameObject,InputHand.HandIndex);
                 }
 
@@ -142,7 +144,7 @@ namespace MagiCloud
         /// 照射物体处理
         /// </summary>
         /// <param name="hit"></param>
-        void OnRayTarget(RaycastHit hit)
+        void OnRayTarget(RaycastHit hit,Ray ray)
         {
             EventHandRayTarget.SendListener(hit,InputHand.HandIndex);
 
@@ -150,26 +152,44 @@ namespace MagiCloud
             {
                 case MInputHandStatus.Idle:
 
-                    if (hit.collider == null)
+                    if (operaObject == null)
+                    {
+                        operaObject = hit.collider.GetComponent<OperaObject>();
+                        if (operaObject == null) return;
+                        IdleOperateEnter();
+                    }
+                    else if (operaObject.gameObject == hit.collider.gameObject)
+                    {
+                        operaObject.BoxCollider.IsShake = false;
+
+                        RaycastHit detectionHit;
+                        if (Physics.Raycast(ray, out detectionHit, 10000, 1 << MOperateManager.layerRay | 1 << MOperateManager.layerObject))
+                        {
+                            if (operaObject.gameObject != detectionHit.collider.gameObject)
+                            {
+                                OnNoRayTarget();
+                                return;
+                            }
+                            else
+                            {
+                                operaObject.BoxCollider.IsShake = true;
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            OnNoRayTarget();
+                            return;
+                        }
+                    }
+                    else
                     {
                         OnNoRayTarget();
-                        return;
-                    }
-                  
-                    // if (operaObject != null && operaObject.gameObject == hit.collider.gameObject) return;
-                    if (operaObject != null)
-                    {
-                        //处理之前的
-                        OnNoRayTarget();
-                    }
 
-                    operaObject = hit.collider.GetComponent<OperaObject>();
-                    EventHandRayTargetEnter.SendListener(operaObject.FeaturesObject.gameObject,InputHand.HandIndex);
-
-                    if (operaObject == null) return;
-                    ShowLabel();
-                    //显示高亮
-                    ShowHightLight(false);
+                        operaObject = hit.collider.GetComponent<OperaObject>();
+                        if (operaObject == null) return;
+                        IdleOperateEnter();
+                    }
 
                     break;
                 case MInputHandStatus.Grip:
@@ -227,6 +247,8 @@ namespace MagiCloud
                     break;
             }
         }
+
+
 
         /// <summary>
         /// 处理抓取
@@ -358,6 +380,24 @@ namespace MagiCloud
             HandleIdle(operaObject.FeaturesObject.operaType);
             OperateObject.HandStatus = MInputHandStatus.Idle;
 
+            operaObject.BoxCollider.IsShake = false;
+        }
+
+        private void IdleOperateEnter()
+        {
+            operaObject.BoxCollider.IsShake = true;
+            EventHandRayTargetEnter.SendListener(operaObject.FeaturesObject.gameObject, InputHand.HandIndex);
+            ShowLabel();
+            //显示高亮
+            ShowHightLight(false);
+        }
+
+        private void GrabOperateEnter()
+        {
+            ShowHightLight(true);
+            operaObject.BoxCollider.IsShake = true;
+            EventHandRayTargetEnter.SendListener(operaObject.FeaturesObject.gameObject, InputHand.HandIndex);
+
         }
 
         /// <summary>
@@ -381,6 +421,9 @@ namespace MagiCloud
                 throw new Exception("设置被抓取的物体不存在FeatureObjectController脚本");
 
             operaObject = feature.Opera;
+
+            GrabOperateEnter();
+
             OperateObject = HandleGrab(feature.operaType);
 
             if (OperateObject != null)

@@ -43,6 +43,7 @@ namespace MagiCloud.KGUI
     /// KGUI基类
     /// </summary>
     [DefaultExecutionOrder(-100)]
+    [RequireComponent(typeof(KGUI_BoxCollider))]
     public class KGUI_ButtonBase : KGUI_Base,IButton
     {
         public ButtonType buttonType;
@@ -56,7 +57,7 @@ namespace MagiCloud.KGUI
         protected bool IsEnter;
 
         private bool _IsEnable = true;
-        protected BoxCollider boxCollider;
+        protected KGUI_BoxCollider boxCollider;
 
         //protected MBehaviour behaviour;
 
@@ -81,7 +82,7 @@ namespace MagiCloud.KGUI
                 _IsEnable = value;
 
                 if (Collider != null)
-                    Collider.enabled = value;
+                    Collider.IsEnable = value;
 
                 IsEnter = false;
 
@@ -96,13 +97,13 @@ namespace MagiCloud.KGUI
             }
         }
 
-        public BoxCollider Collider {
+        public KGUI_BoxCollider Collider {
             get {
 
                 try
                 {
                     if (boxCollider == null)
-                        boxCollider = GetComponent<BoxCollider>();
+                        boxCollider = GetComponent<KGUI_BoxCollider>() ?? gameObject.AddComponent<KGUI_BoxCollider>();
 
                     return boxCollider;
                 }
@@ -152,7 +153,6 @@ namespace MagiCloud.KGUI
                 onUpRange = new PanelEvent();
 
             gameObject.tag = "button";
-
         }
 
         protected virtual void Start()

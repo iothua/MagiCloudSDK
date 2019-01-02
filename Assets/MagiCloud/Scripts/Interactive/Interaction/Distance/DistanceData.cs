@@ -34,7 +34,7 @@ namespace MagiCloud.Interactive.Distance
         public bool IsSelf;
 
         //距离类型
-        public DistanceType distanceType = DistanceType.DScreen;
+        public DistanceType distanceType = DistanceType.D2D;
 
         //交互类型
         public InteractionType interactionType = InteractionType.Send;

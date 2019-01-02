@@ -27,24 +27,19 @@ namespace MagiCloud.Core
 
         private void Awake()
         {
-            //behaviour = new MBehaviour(ExecutionPriority.Highest, -1000, enabled);
-
-            //behaviour.OnAwake_MBehaviour(() =>
-            //{
-            //    MUtility.CurrentPlatform = CurrentPlatform;
-
-            //    SwitchPlatform(Application.platform);
-            //});
-
-            //behaviour.OnDestroy_MBehaviour(() =>
-            //{
-            //    DestoryPlatform(Application.platform);
-            //});
-
-
-            //MBehaviourController.AddBehaviour(behaviour);
-
             MUtility.CurrentPlatform = CurrentPlatform;
+
+            switch (CurrentPlatform)
+            {
+                case OperatePlatform.Kinect:
+                    Instantiate(Resources.Load("Controller/KinectController"),transform);
+                    break;
+                case OperatePlatform.Mouse:
+                    Instantiate(Resources.Load("Controller/MouseController"), transform);
+                    break;
+                default:
+                    break;
+            }
 
             SwitchPlatform(Application.platform);
 
@@ -112,14 +107,6 @@ namespace MagiCloud.Core
         private void OnDestroy()
         {
             DestoryPlatform(Application.platform);
-            //try
-            //{
-            //    if (behaviour != null)
-            //        behaviour.OnExcuteDestroy();
-            //}
-            //catch 
-            //{
-            //}
         }
     }
 }

@@ -12,14 +12,15 @@ namespace MagiCloud.Features
     /// <summary>
     /// 虚影控制
     /// </summary>
-    public class ShadowController : MonoBehaviour
+    public class ShadowController :MonoBehaviour
     {
         //网格数据
         private MeshFilter[] _meshFilters;
         private MeshRenderer[] _meshRenderers;
         private SkinnedMeshRenderer[] _skinnedMeshRenderers;
         //虚影透明度
-        private float Intension = 0.25f;
+        [Range(0.1f,0.5f)]
+        public float Intension = 0.25f;
         private Shader ghostShader;
 
         //渲染层级
@@ -48,7 +49,23 @@ namespace MagiCloud.Features
 
                 CloseGhost();
             }
+        }
 
+        /// <summary>
+        /// 初始化虚影,当虚影对象发生变化时，需要重新调用该方法
+        /// </summary>
+        public void Initialized()
+        {
+            DestroyGhostModels();
+            if (shadowType == ShadowType.Manual)
+            {
+                if (traModelNode == null)
+                    traModelNode = transform.parent;
+                else
+                    CreateGhostModels(traModelNode);
+
+                CloseGhost();
+            }
         }
 
         private void OnDestroy()
@@ -99,13 +116,13 @@ namespace MagiCloud.Features
 
             ghostShader = Shader.Find("Legacy Shaders/Transparent/Diffuse");
 
-            _traShadowNode = CreateShadowObject(null, modelNode.transform).transform;
+            _traShadowNode = CreateShadowObject(null,modelNode.transform).transform;
 
             _traShadowNode.localPosition = modelNode.localPosition;
             _traShadowNode.localRotation = modelNode.localRotation;
             _traShadowNode.localScale = modelNode.localScale;
 
-            CreateNode(modelNode, _traShadowNode);
+            CreateNode(modelNode,_traShadowNode);
 
             //获取到模型的所有节点
             //然后生成Null的
@@ -131,13 +148,13 @@ namespace MagiCloud.Features
                 Mesh meshF = new Mesh();
                 meshF = meshFilter.sharedMesh;
 
-                go = CreateMesh(parent, meshF, meshFilter.transform, meshRenderer.sharedMaterials, child.name);
+                go = CreateMesh(parent,meshF,meshFilter.transform,meshRenderer.sharedMaterials,child.name);
             }
             else if (skinnedMesh != null)
             {
                 Mesh meshS = new Mesh();
                 meshS = skinnedMesh.sharedMesh;
-                go = CreateMesh(parent, meshS, skinnedMesh.transform, skinnedMesh.materials, child.name);
+                go = CreateMesh(parent,meshS,skinnedMesh.transform,skinnedMesh.materials,child.name);
             }
             else
             {
@@ -160,13 +177,14 @@ namespace MagiCloud.Features
         /// </summary>
         /// <param name="firstNode"></param>
         /// <param name="lastNode"></param>
-        private void CreateNode(Transform firstNode, Transform lastNode)
+        private void CreateNode(Transform firstNode,Transform lastNode)
         {
-            foreach (Transform child in firstNode)
+            for (int i = 0; i < firstNode.childCount; i++)
             {
-                var go = CreateShadowObject(lastNode, child);
+                var child = firstNode.GetChild(i);
+                var go = CreateShadowObject(lastNode,child);
 
-                CreateNode(child, go.transform);
+                CreateNode(child,go.transform);
             }
         }
 
@@ -177,7 +195,7 @@ namespace MagiCloud.Features
         /// <param passiveName="tra"></param>
         /// <param passiveName="materials"></param>
         /// <param passiveName="name"></param>
-        private GameObject CreateMesh(Transform parent, Mesh mesh, Transform tra, Material[] materials, string name = "")
+        private GameObject CreateMesh(Transform parent,Mesh mesh,Transform tra,Material[] materials,string name = "")
         {
             GameObject go = new GameObject(name);
 
@@ -193,7 +211,7 @@ namespace MagiCloud.Features
 
                 meshRen.materials[i].shader = ghostShader;//设置xray效果
                 meshRen.materials[i].renderQueue = renderQueue;
-                meshRen.materials[i].SetColor("_Color", new Color(1f, 1f, 1f, Intension));
+                meshRen.materials[i].SetColor("_Color",new Color(1f,1f,1f,Intension));
             }
 
             if (parent != null)
@@ -212,7 +230,7 @@ namespace MagiCloud.Features
         /// <param name="targetPos"></param>
         /// <param name="position"></param>
         /// <param name="rotate"></param>
-        public void OpenGhost(Transform targetPos, Vector3 position = default(Vector3), Vector3 scale = default(Vector3), Quaternion rotate = default(Quaternion))
+        public void OpenGhost(Transform targetPos,Vector3 position = default(Vector3),Vector3 scale = default(Vector3),Quaternion rotate = default(Quaternion))
         {
             if (shadowType == ShadowType.Auto)
                 CreateGhostModels(targetPos);

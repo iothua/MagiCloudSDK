@@ -189,7 +189,7 @@ namespace MagiCloud.KGUI
             else
             {
                 if (outline!=null)
-                    Destroy(outline);
+                    DestroyImmediate(outline);
             }
         }
 

@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
@@ -134,6 +133,5 @@ namespace MagiCloud.Equipments
         }
     }
 }
-#endif
 
 

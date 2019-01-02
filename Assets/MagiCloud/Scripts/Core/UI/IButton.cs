@@ -2,6 +2,8 @@
 {
     public interface IButton
     {
+        KGUI.KGUI_BoxCollider Collider { get; }
+
         bool IsEnable { get; set; }
 
         void OnClick(int handIndex);
