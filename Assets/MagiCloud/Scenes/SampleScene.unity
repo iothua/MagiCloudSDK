@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.496413, b: 0.5748175, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -207,6 +207,14 @@ MonoBehaviour:
     localPosition: {x: 0, y: 1, z: 0}
     localRotation: {x: 0, y: 0, z: 0}
     localScale: {x: 1, y: 1, z: 1}
+    shaderName: Legacy Shaders/Transparent/Diffuse
+    type: 0
+    renderQueue: 3000
+    intension: 0.25
+    traModelNode: {fileID: 0}
+    shadowController: {fileID: 0}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    isReUpdate: 0
 --- !u!1 &71081317
 GameObject:
   m_ObjectHideFlags: 0
@@ -442,6 +450,14 @@ MonoBehaviour:
     localPosition: {x: 0, y: 0, z: 0}
     localRotation: {x: 0, y: 0, z: 0}
     localScale: {x: 1, y: 1, z: 1}
+    shaderName: Legacy Shaders/Transparent/Diffuse
+    type: 0
+    renderQueue: 3000
+    intension: 0.25
+    traModelNode: {fileID: 0}
+    shadowController: {fileID: 0}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    isReUpdate: 0
 --- !u!4 &294686814
 Transform:
   m_ObjectHideFlags: 0
@@ -549,6 +565,14 @@ MonoBehaviour:
     localPosition: {x: 0, y: 0, z: 0}
     localRotation: {x: 0, y: 0, z: 0}
     localScale: {x: 1, y: 1, z: 1}
+    shaderName: Legacy Shaders/Transparent/Diffuse
+    type: 0
+    renderQueue: 3000
+    intension: 0.25
+    traModelNode: {fileID: 0}
+    shadowController: {fileID: 0}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    isReUpdate: 0
 --- !u!1 &475057085
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,12 +755,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d60dedc6f85427643955a4beb1ae0e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ActiveDeskLimit_: 0
   ActiveSpaceLimit: 0
   ActiveHighlight: 1
-  ActiveShadow: 1
   ActiveLabel: 1
   ActiveLimitMove: 0
-  shadowModel: {fileID: 0}
   highligheModel: {fileID: 0}
   highlightGameobject: {fileID: 0}
   LimitMove: {fileID: 0}
@@ -745,9 +768,9 @@ MonoBehaviour:
   objectButton: {fileID: 0}
   LabelController: {fileID: 1459494236}
   CanGrab: {fileID: 1459494234}
+  deskLimit: {fileID: 0}
   spaceLimit: {fileID: 0}
   highlightObject: {fileID: 1459494233}
-  ShadowController: {fileID: 1459494235}
   None: {fileID: 0}
   Customize: {fileID: 0}
   operaType: 1
@@ -900,7 +923,7 @@ MonoBehaviour:
   axisLimits: 2
   minAngle: -360
   maxAngle: 360
-  speed: 100
+  rotateSpeed: 90
 --- !u!114 &1015018635
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -912,9 +935,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 387e9c6ee355db84d9b378e59484cfa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderQueue: 3000
-  shadowType: 0
-  traModelNode: {fileID: 0}
 --- !u!114 &1070266443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1065,12 +1085,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d60dedc6f85427643955a4beb1ae0e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ActiveDeskLimit_: 0
   ActiveSpaceLimit: 0
   ActiveHighlight: 1
-  ActiveShadow: 0
   ActiveLabel: 1
   ActiveLimitMove: 0
-  shadowModel: {fileID: 0}
   highligheModel: {fileID: 0}
   highlightGameobject: {fileID: 0}
   LimitMove: {fileID: 0}
@@ -1079,9 +1098,9 @@ MonoBehaviour:
   objectButton: {fileID: 0}
   LabelController: {fileID: 166803564}
   CanGrab: {fileID: 166803562}
+  deskLimit: {fileID: 0}
   spaceLimit: {fileID: 0}
   highlightObject: {fileID: 166803563}
-  ShadowController: {fileID: 0}
   None: {fileID: 0}
   Customize: {fileID: 0}
   operaType: 1
@@ -1304,6 +1323,14 @@ MonoBehaviour:
     localPosition: {x: 0, y: 0, z: 0}
     localRotation: {x: 0, y: 0, z: 0}
     localScale: {x: 1, y: 1, z: 1}
+    shaderName: Legacy Shaders/Transparent/Diffuse
+    type: 0
+    renderQueue: 3000
+    intension: 0.25
+    traModelNode: {fileID: 0}
+    shadowController: {fileID: 0}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    isReUpdate: 0
 --- !u!4 &1421007293
 Transform:
   m_ObjectHideFlags: 0
@@ -1346,12 +1373,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d60dedc6f85427643955a4beb1ae0e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ActiveDeskLimit_: 0
   ActiveSpaceLimit: 0
   ActiveHighlight: 1
-  ActiveShadow: 1
   ActiveLabel: 0
   ActiveLimitMove: 0
-  shadowModel: {fileID: 0}
   highligheModel: {fileID: 0}
   highlightGameobject: {fileID: 0}
   LimitMove: {fileID: 0}
@@ -1360,9 +1386,9 @@ MonoBehaviour:
   objectButton: {fileID: 0}
   LabelController: {fileID: 0}
   CanGrab: {fileID: 0}
+  deskLimit: {fileID: 0}
   spaceLimit: {fileID: 0}
   highlightObject: {fileID: 1015018633}
-  ShadowController: {fileID: 1015018635}
   None: {fileID: 0}
   Customize: {fileID: 0}
   operaType: 2
@@ -1523,9 +1549,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 387e9c6ee355db84d9b378e59484cfa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderQueue: 3000
-  shadowType: 0
-  traModelNode: {fileID: 0}
 --- !u!114 &1459494236
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -1687,6 +1710,14 @@ MonoBehaviour:
     localPosition: {x: 0, y: 1, z: 0}
     localRotation: {x: 0, y: 0, z: 0}
     localScale: {x: 1, y: 1, z: 1}
+    shaderName: Legacy Shaders/Transparent/Diffuse
+    type: 0
+    renderQueue: 3000
+    intension: 0.25
+    traModelNode: {fileID: 0}
+    shadowController: {fileID: 0}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    isReUpdate: 0
 --- !u!1 &1852943763
 GameObject:
   m_ObjectHideFlags: 0
@@ -1971,6 +2002,14 @@ MonoBehaviour:
     localPosition: {x: 0, y: 0, z: 0}
     localRotation: {x: 0, y: 0, z: 0}
     localScale: {x: 1, y: 1, z: 1}
+    shaderName: Legacy Shaders/Transparent/Diffuse
+    type: 0
+    renderQueue: 3000
+    intension: 0.25
+    traModelNode: {fileID: 0}
+    shadowController: {fileID: 0}
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    isReUpdate: 0
 --- !u!4 &2044377722
 Transform:
   m_ObjectHideFlags: 0
@@ -2030,7 +2069,7 @@ Prefab:
       objectReference: {fileID: 2122945543}
     - target: {fileID: 1646362849330962, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
       propertyPath: m_Name
-      value: MagiCloud (1)
+      value: MagiCloud
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf48556c813bfd045a71b20acfac6bad, type: 2}
@@ -2139,9 +2178,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81d4687996ecc7b408609e914b2c213d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultTextColor: {r: 1, g: 1, b: 1, a: 1}
+  defaultTextColor: {r: 0.0588, g: 0.4241, b: 0.945, a: 1}
   defaultFont: {fileID: 12800000, guid: cc74136f0a3c40341bba0319eb8d9d30, type: 3}
-  defalutFontSize: 24
+  defalutFontSize: 14
   defaultSprite: {fileID: 0}
 --- !u!114 &2127415525
 MonoBehaviour:

@@ -17,12 +17,13 @@ namespace MagiCloud.Interactive
         /// <param name="v2">距离检测2</param>
         /// <param name="distanceType">类型</param>
         /// <returns></returns>
-        public static float Distance(Vector3 v1, Vector3 v2, DistanceType distanceType)
+        public static float Distance(Vector3 v1, Vector3 v2, DistanceType distanceType,out float distanceValue)
         {
+            
             switch (distanceType)
             {
                 case DistanceType.D3D:
-                    return Vector3.Distance(v1, v2);
+                    return distanceValue= Vector3.Distance(v1, v2);
                 case DistanceType.D2D:
 
                     //return Vector2.Distance(v1, v2);
@@ -32,18 +33,16 @@ namespace MagiCloud.Interactive
                     float zoom = 750 / Mathf.Sqrt(Mathf.Pow(1920, 2) + Mathf.Pow(1080, 2));
                     zoom = Mathf.Sqrt(Mathf.Pow(Screen.height, 2) + Mathf.Pow(Screen.width, 2)) * zoom;
 
-                    return Vector3.Distance(v21, v22) / zoom;
+                    return distanceValue = Vector3.Distance(v21, v22) / zoom;
 
                 case DistanceType.DScreen:
                     Vector3 screen1 = MUtility.MainCamera.WorldToScreenPoint(v1);
                     Vector3 screen2 = MUtility.MainCamera.WorldToScreenPoint(v2);
 
-                    Debug.Log("屏幕坐标值：" + Vector2.Distance(screen1, screen2));
-
-                    return Vector2.Distance(screen1, screen2);
+                    return distanceValue = Vector2.Distance(screen1, screen2);
 
                 default:
-                    return 0;
+                    return distanceValue = -1;
             }
         }
 
@@ -55,8 +54,10 @@ namespace MagiCloud.Interactive
         /// <param name="targetPosition"></param>
         /// <param name="distanceType"></param>
         /// <returns></returns>
-        public static bool CubeDistance(Vector3 position, Vector3 size,Vector3 targetPosition, DistanceType distanceType)
+        public static bool CubeDistance(Vector3 position, Vector3 size,Vector3 targetPosition, DistanceType distanceType,out float distanceValue)
         {
+            Distance(position, targetPosition, distanceType, out distanceValue);
+
             switch (distanceType)
             {
                 case DistanceType.D3D:

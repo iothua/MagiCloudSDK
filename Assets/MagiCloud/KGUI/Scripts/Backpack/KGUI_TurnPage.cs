@@ -22,9 +22,9 @@ namespace MagiCloud.KGUI
 
         void Start()
         {
-            StartCoroutine(EndAction());
             kGUI_Backpack.action.AddListener(OnReset);
 
+            StartCoroutine(EndAction());
         }
 
         private void OnDestroy()
@@ -41,7 +41,6 @@ namespace MagiCloud.KGUI
         {
             yield return new WaitForEndOfFrame();
             OnReset();
-
         }
 
         void OnReset()
@@ -61,6 +60,9 @@ namespace MagiCloud.KGUI
             {
                 buttonPre.IsEnable = false;
                 buttonNext.IsEnable = true;
+                buttonNext.gameObject.SetActive(true);
+                buttonPre.gameObject.SetActive(true);
+
             }
         }
 
@@ -92,10 +94,11 @@ namespace MagiCloud.KGUI
         }
         public void MoveNextPage()
         {
-            if (content.localPosition.x > -max)
+            if (content.localPosition.x >= -max)
             {
                 if (isPreComplete == true && isNextComplete == true)
                 {
+
                     isNextComplete = false;
                     content.DOLocalMoveX(-480, 1).SetRelative().OnComplete(() =>
                     {

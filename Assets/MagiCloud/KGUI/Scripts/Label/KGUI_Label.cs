@@ -100,6 +100,9 @@ namespace MagiCloud.KGUI
             Text.font=font;
             Text.horizontalOverflow=HorizontalWrapMode.Overflow;
             Text.alignment=TextAnchor.MiddleCenter;
+            Text.resizeTextForBestFit=true;
+            Text.resizeTextMinSize=10;
+            Text.resizeTextMaxSize=40;
             OnUpdate();
         }
         /// <summary>
@@ -184,7 +187,10 @@ namespace MagiCloud.KGUI
             if (useOutline)
             {
                 if (outline==null)
-                    Text.gameObject.AddComponent<Outline>();
+                {
+                    outline= Text.gameObject.AddComponent<Outline>();
+                    outline.effectColor=Color.white;
+                }
             }
             else
             {
@@ -214,7 +220,10 @@ namespace MagiCloud.KGUI
             if (useShadow)
             {
                 if (shadow==null)
-                    Text.gameObject.AddComponent<Shadow>();
+                {
+                    shadow= Text.gameObject.AddComponent<Shadow>();
+                    shadow.effectColor=Color.white;
+                }
             }
             else
             {

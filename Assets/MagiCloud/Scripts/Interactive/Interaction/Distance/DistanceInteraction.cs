@@ -7,15 +7,15 @@ using System.Collections.Generic;
 namespace MagiCloud.Interactive.Distance
 {
     [System.Serializable]
-    public class EventDistanceInteraction : UnityEvent<DistanceInteraction> { }
+    public class EventDistanceInteraction :UnityEvent<DistanceInteraction> { }
 
-    public class EventDistanceInteractionRelease : UnityEvent<DistanceInteraction, InteractionReleaseStatus> { }
+    public class EventDistanceInteractionRelease :UnityEvent<DistanceInteraction,InteractionReleaseStatus> { }
 
     /// <summary>
     /// 距离交互(挂在物体中)
     /// </summary>
     [ExecuteInEditMode]
-    public class DistanceInteraction : MonoBehaviour
+    public class DistanceInteraction :MonoBehaviour
     {
         public DistanceData distanceData;
 
@@ -34,8 +34,10 @@ namespace MagiCloud.Interactive.Distance
         /// <summary>
         /// 功能对象
         /// </summary>
-        public Features.FeaturesObjectController FeaturesObjectController {
-            get {
+        public Features.FeaturesObjectController FeaturesObjectController
+        {
+            get
+            {
 
                 if (featuresObject == null)
                 {
@@ -68,9 +70,12 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         public bool IsGrab { get; set; }
 
+        public int HandIndex = -1;
+
         public Vector3 Position
         {
-            get {
+            get
+            {
                 return transform.position;
             }
         }
@@ -133,7 +138,7 @@ namespace MagiCloud.Interactive.Distance
             if (Application.isPlaying)
             {
                 //目前只支持send端初始交互
-                if (distanceData.interactionType == InteractionType.Send)
+                if (distanceData.interactionType == InteractionType.Send && !IsGrab)
                     StartCoroutine(AutoInteraction(0.01f));
             }
         }
@@ -153,9 +158,9 @@ namespace MagiCloud.Interactive.Distance
 
             yield return new WaitForSeconds(delay);
             //初始交互
-            InteractiveController.Instance.Search.OnStartInteraction(FeaturesObjectController.gameObject, false, true);
+            InteractiveController.Instance.Search.OnStartInteraction(FeaturesObjectController.gameObject, false, 0, true);
             yield return new WaitForSeconds(0.15f);
-            InteractiveController.Instance.Search.OnStopInteraction(FeaturesObjectController.gameObject);
+            InteractiveController.Instance.Search.OnStopInteraction(FeaturesObjectController.gameObject,true);
         }
 
         protected virtual void OnDisable()
@@ -190,12 +195,12 @@ namespace MagiCloud.Interactive.Distance
 
             if (ActiveParent && interactionParent != null)
             {
-                interactionParent.OnClose(this, distanceInteraction);
+                interactionParent.OnClose(this,distanceInteraction);
             }
 
             if (ActiveShadow && interactionShadow != null)
             {
-                interactionShadow.OnClose(this, distanceInteraction);
+                interactionShadow.OnClose(this,distanceInteraction);
             }
         }
 
@@ -206,7 +211,7 @@ namespace MagiCloud.Interactive.Distance
         {
             if (ActiveShadow && interactionShadow != null)
             {
-                interactionShadow.OnOpen(this, distanceInteraction);
+                interactionShadow.OnOpen(this,distanceInteraction);
             }
 
             if (OnStay != null)
@@ -242,11 +247,12 @@ namespace MagiCloud.Interactive.Distance
         /// <param name="status"></param>
         public virtual void OnDistanceRelease(DistanceInteraction distanceInteraction,InteractionReleaseStatus status)
         {
+            //Debug.Log("OnDistanceRelease IsGrab");
             IsGrab = false;
 
             if (OnStatusRelease != null)
             {
-                OnStatusRelease.Invoke(distanceInteraction, status);
+                OnStatusRelease.Invoke(distanceInteraction,status);
             }
         }
 
@@ -271,7 +277,10 @@ namespace MagiCloud.Interactive.Distance
         public InteractionShadow AddShadow()
         {
             if (interactionShadow == null)
+            {
                 interactionShadow = new InteractionShadow();
+                interactionShadow.Init(transform);
+            }
 
             return interactionShadow;
         }
@@ -281,6 +290,7 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         public void RemoveShadow()
         {
+            interactionShadow?.OnDestory();
             interactionShadow = null;
         }
 
@@ -313,18 +323,18 @@ namespace MagiCloud.Interactive.Distance
                     case DistanceShape.Sphere:
 
                         Gizmos.color = Color.yellow;
-                        Gizmos.DrawSphere(transform.position, distanceData.distanceValue);
+                        Gizmos.DrawSphere(transform.position,distanceData.distanceValue);
 
                         break;
                     case DistanceShape.Cube:
 
                         Gizmos.color = Color.yellow;
-                        Gizmos.DrawCube(transform.position, distanceData.Size);
+                        Gizmos.DrawCube(transform.position,distanceData.Size);
 
                         break;
                 }
 
-                
+
             }
 #endif
 
@@ -344,7 +354,7 @@ namespace MagiCloud.Interactive.Distance
         /// <param name="interaction">Interaction.</param>
         public void OnInteractionEnter(DistanceInteraction interaction)
         {
-            switch(distanceData.interactionType)
+            switch (distanceData.interactionType)
             {
                 case InteractionType.Receive:
                 case InteractionType.All:
@@ -407,7 +417,7 @@ namespace MagiCloud.Interactive.Distance
         /// 交互松手处理
         /// </summary>
         /// <param name="interaction">Target.</param>
-        public void OnInteractionRelease(DistanceInteraction interaction)
+        public void OnInteractionRelease(DistanceInteraction interaction,bool isAuto = false)
         {
 
             switch (distanceData.interactionType)
@@ -421,7 +431,10 @@ namespace MagiCloud.Interactive.Distance
                         if (OnlyDistance == interaction)
                         {
                             OnDistanceRelesae(interaction);
-                            OnDistanceRelease(interaction, InteractionReleaseStatus.Inside);
+                            if (isAuto)
+                                OnDistanceRelease(interaction,InteractionReleaseStatus.IsAuto);
+                            else
+                                OnDistanceRelease(interaction,InteractionReleaseStatus.Inside);
                             return;
                         }
                     }
@@ -430,7 +443,10 @@ namespace MagiCloud.Interactive.Distance
                         if (Distanced != null && Distanced.Contains(interaction))
                         {
                             OnDistanceRelesae(interaction);
-                            OnDistanceRelease(interaction, InteractionReleaseStatus.Inside);
+                            if (isAuto)
+                                OnDistanceRelease(interaction,InteractionReleaseStatus.IsAuto);
+                            else
+                                OnDistanceRelease(interaction,InteractionReleaseStatus.Inside);
                             return;
                         }
                     }
@@ -438,7 +454,10 @@ namespace MagiCloud.Interactive.Distance
                     if (!OnInteractionCheck()) return;
 
                     OnDistanceRelesae(interaction);
-                    OnDistanceRelease(interaction, InteractionReleaseStatus.Once);
+                    if (isAuto)
+                        OnDistanceRelease(interaction,InteractionReleaseStatus.IsAuto);
+                    else
+                        OnDistanceRelease(interaction,InteractionReleaseStatus.Once);
 
                     if (distanceData.IsOnly)
                     {
@@ -457,13 +476,19 @@ namespace MagiCloud.Interactive.Distance
                     if (!OnInteractionCheck())
                     {
                         OnDistanceRelesae(interaction);
-                        OnDistanceRelease(interaction, InteractionReleaseStatus.Inside);
+                        if (isAuto)
+                            OnDistanceRelease(interaction,InteractionReleaseStatus.IsAuto);
+                        else
+                            OnDistanceRelease(interaction,InteractionReleaseStatus.Inside);
 
                         return;
                     }
 
                     OnDistanceRelesae(interaction);
-                    OnDistanceRelease(interaction, InteractionReleaseStatus.Once);
+                    if (isAuto)
+                        OnDistanceRelease(interaction,InteractionReleaseStatus.IsAuto);
+                    else
+                        OnDistanceRelease(interaction,InteractionReleaseStatus.Once);
 
                     AddSendDistance(interaction);
 
@@ -477,7 +502,7 @@ namespace MagiCloud.Interactive.Distance
         public void OnInteractionNotRelease()
         {
             OnDistanceNotInteractionRelease();
-            OnDistanceRelease(null, InteractionReleaseStatus.None);
+            OnDistanceRelease(null,InteractionReleaseStatus.None);
         }
 
         /// <summary>

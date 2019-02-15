@@ -96,6 +96,12 @@ namespace MagiCloud.Equipments
             colliderData = new ColliderData(equipment.FeaturesObject.Collider);
             transformData = new TransformData(transform);
 
+            //获取到根目录下的
+
+
+
+
+
             for (int i = 0; i < modelDatas.Count; i++)
             {
                 modelDatas[i].geneterItem.Assignment();

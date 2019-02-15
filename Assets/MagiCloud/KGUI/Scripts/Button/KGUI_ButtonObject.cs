@@ -22,19 +22,28 @@ namespace MagiCloud.KGUI
         [Header("当值为-1时为无穷。当值为0时，则自动禁用")]
         public int maxCount = -1;
 
-        private List<GameObject> targetObjects = new List<GameObject>();
+        protected List<GameObject> targetObjects = new List<GameObject>();//*****************************
 
-        private List<PanelRange> ranges = new List<PanelRange>();
+        protected List<PanelRange> ranges = new List<PanelRange>();//******************************
 
         public KGUI_Panel panel;
 
         public float zValue = 5f;
 
+        private int tempCount = 0;
+
+
+        protected override void Awake()
+        {
+            base.Awake();
+            tempCount = maxCount;
+        }
+
         public override void OnDown(int handIndex)
         {
             base.OnDown(handIndex);
 
-            if (maxCount == 0) return;
+            if (tempCount == 0) return;
 
             var targetObject = Instantiate(bindObject) as GameObject;
             var frontUI = targetObject.GetComponent<KGUI_ObjectFrontUI>() ?? targetObject.AddComponent<KGUI_ObjectFrontUI>();
@@ -45,10 +54,10 @@ namespace MagiCloud.KGUI
 
             targetObjects.Add(targetObject);
 
-            if (maxCount != -1)
-                maxCount--;
+            if (tempCount != -1)
+                tempCount--;
 
-            if (maxCount == 0)
+            if (tempCount == 0)
             {
                 IsEnable = false;
             }
@@ -105,7 +114,7 @@ namespace MagiCloud.KGUI
             Register();
         }
 
-        void OnPanelEnter(int handIndex)
+        protected virtual void OnPanelEnter(int handIndex)
         {
             PanelRange panelRange = ranges.Find(obj => obj.handIndex.Equals(handIndex));
 
@@ -121,7 +130,7 @@ namespace MagiCloud.KGUI
 
         }
 
-        void OnPanelExit(int handIndex)
+        protected virtual void OnPanelExit(int handIndex)
         {
             PanelRange panelRange = ranges.Find(obj => obj.handIndex.Equals(handIndex));
             if (panelRange != null)
@@ -130,14 +139,14 @@ namespace MagiCloud.KGUI
             }
         }
 
-        void OnGrabObject(GameObject target, int handIndex)
+        protected virtual void OnGrabObject(GameObject target, int handIndex)
         {
             if (!targetObjects.Contains(target)) return;
 
             target.GetComponent<KGUI_ObjectFrontUI>().OnSet();
         }
 
-        void OnReleaseObject(GameObject target, int handIndex)
+        protected virtual void OnReleaseObject(GameObject target, int handIndex)
         {
             //释放时，发送一次事件?
 
@@ -155,9 +164,9 @@ namespace MagiCloud.KGUI
 
                 Destroy(target);
 
-                if (maxCount != -1)
+                if (tempCount != -1 && tempCount <= maxCount)
                 {
-                    maxCount++;
+                    tempCount++;
                     IsEnable = true;
                 }
             }
@@ -165,7 +174,6 @@ namespace MagiCloud.KGUI
             {
                 target.GetComponent<KGUI_ObjectFrontUI>().OnReset();
             }
-
         }
 
         protected override void OnDisable()

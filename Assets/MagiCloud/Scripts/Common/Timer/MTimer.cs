@@ -1,172 +1,189 @@
-﻿using MagiCloud;
-using MagiCloud.Core.Events;
-using MagiCloud.Core;
-using UnityEngine;
+﻿using System;
 
 namespace MagiCloud.Common
 {
+    /// <summary>
+    /// 时间数值
+    /// </summary>
+    public struct MTimerValue
+    {
+        public int Value;
+
+        public MTimerValue(float value)
+        {
+            this.Value = (int)value;
+        }
+
+        public TimeSpan Time {
+            get {
+                return new TimeSpan(0, 0, 0, Value);
+            }
+        }
+
+        /// <summary>
+        /// 根据不同的格式，转化为相应的需求
+        /// </summary>
+        /// <returns>The format.</returns>
+        /// <param name="format">Format.</param>
+        public string ToFormat(string format)
+        {
+            string[] datas = format.Split(':');
+
+            switch (datas.Length)
+            {
+                case 0:
+                    return Value.ToString().PadLeft(2, '0');
+                case 1:
+                    return (Time.Minutes + (Time.Hours + Time.Days * 24) * 60).ToString().PadLeft(2, '0') + ":" + Time.Milliseconds.ToString().PadLeft(2, '0');
+                case 2:
+                    return (Time.Hours + Time.Days * 24).ToString().PadLeft(2, '0') + ":" + Time.Minutes.ToString().PadLeft(2, '0') + ":" + Time.Milliseconds.ToString().PadLeft(2, '0');
+                case 3:
+                    return Time.Days.ToString().PadLeft(2, '0') + ":" + Time.Hours.ToString().PadLeft(2, '0') + 
+                        ":" + Time.Minutes.ToString().PadLeft(2, '0') + ":" + Time.Milliseconds.ToString().PadLeft(2, '0');
+            }
+
+            //先暂时这么处理
+            return Value.ToString();
+        }
+    }
+
+    /// <summary>
+    /// 时间数据
+    /// 用途：比如你需要设置多少时间段，才开始执行你需要的功能。如铁钉生锈需要第七天才开始生锈，
+    /// 那么你可以实例化这个字段，设置初始值，之后在根据MTimer的Time属性与这个结构类的Time属性去做比对。
+    /// </summary>
+    [Serializable]
+    public struct MTimerData
+    {
+        public int day;//天
+        public int house;//时
+        public int minute;//分
+        public int second;//秒
+
+        public TimeSpan Time {
+            get {
+                return new TimeSpan(day, house, minute, second);
+            }
+        }
+
+        public MTimerData(int day, int house, int minute, int second)
+        {
+            this.day = day;
+            this.house = house;
+            this.minute = minute;
+            this.second = second;
+        }
+
+        public MTimerData(MTimerData timerData)
+        {
+            this.day = timerData.day;
+            this.house = timerData.house;
+            this.minute = timerData.minute;
+            this.second = timerData.second;
+        }
+    }
+
     /// <summary>
     /// 计时器
     /// </summary>
     public class MTimer
     {
-        public delegate void CompleteEvent();
-        public delegate void UpdateEvent(float t);
 
-        private Transform root;
+        public float startTime;
+        public Action onStart;
+        public MTimerData duration;
+        public Action onEnd;
 
-        bool isLog = true;
+        public float sumTime;
 
-        UpdateEvent updateEvent;
-
-        CompleteEvent onCompleted;
-
-        float timeTarget;   // 计时时间/  
-
-        float timeStart;    // 开始计时时间/  
-
-        float timeNow;     // 现在时间/  
-
-        float offsetTime;   // 计时偏差/  
-
-        bool isTimer;       // 是否开始计时/  
-
-        bool isDestory = true;     // 计时结束后是否销毁/  
-
-        bool isEnd;         // 计时是否结束/  
-
-        bool isIgnoreTimeScale = true;  // 是否忽略时间速率  
-
-        bool isRepeate;
-
-        float Time {
-            get { return isIgnoreTimeScale ? UnityEngine.Time.realtimeSinceStartup : UnityEngine.Time.time; }
+        public MTimerValue TimerValue {
+            get {
+                return new MTimerValue(sumTime);
+            }
         }
-        float now;
-
-        private MBehaviour behaviour;
 
         /// <summary>
-        /// 计时器
+        /// 时间运行速度，默认为1
         /// </summary>
-        /// <param name="root">物体跟随计时旋转一圈</param>
-        public MTimer(Transform root = default(Transform))
-        {
-            this.root = root;
+        /// <value>The time speed.</value>
+        public float TimeSpeed { get; set; }
 
-            behaviour = new MBehaviour();
-            behaviour.OnUpdate_MBehaviour(OnUpdate);
-        }
+        public bool IsPlaying { get; private set; }
+        public bool IsPaurse { get; set; }
 
-        void OnUpdate()
+        public Action<MTimerValue, float> TimerValues;
+
+        /// <summary>
+        /// 具有时间延迟
+        /// </summary>
+        /// <param name="startTime">开始时间.</param>
+        /// <param name="start">开始事件</param>
+        /// <param name="duration">时长</param>
+        /// <param name="end">结束事件</param>
+        public MTimer(float startTime = 0, Action start = null, Action<MTimerValue,float> timerValue = null, Action end = null,float timeSpeed = 1)
         {
-            if (isTimer)
+            this.startTime = startTime;
+            this.onStart = start;
+
+            this.duration = new MTimerData
             {
-                timeNow = Time - offsetTime;
-                now = timeNow - timeStart;
-                if (updateEvent != null)
-                {
-                    float t = Mathf.Clamp01(now / timeTarget);
-                    updateEvent(t);
-                    if (root != null)
-                        root.localEulerAngles = new Vector3(0, 0, -t * 360);
-                }
-                if (now > timeTarget)
-                {
-                    if (onCompleted != null)
-                        onCompleted();
-                    if (!isRepeate)
-                        Stop();
-                    else
-                        ReStartTimer();
-                }
-            }
+                second = -1
+            };
+
+            this.onEnd = end;
+
+            TimeSpeed = timeSpeed;
+            sumTime = 0;
+
+            IsPlaying = false;
+            IsPaurse = false;
+
+            TimerValues = timerValue;
+
+            MTimerController.Timers.Add(this);
         }
 
-        public float GetLeftTime()
+        /// <summary>
+        /// 每帧时长
+        /// </summary>
+        /// <param name="deletaTime">Deleta time.</param>
+        public void OnUpdate(float deletaTime)
         {
-            return Mathf.Clamp(timeTarget - now, 0, timeTarget);
-        }
+            if (IsPaurse) return;
 
-        public void Stop()
-        {
-            isTimer = false;
-            isEnd = true;
-            if (isDestory)
-                Destroy();
-        }
+            sumTime += deletaTime * TimeSpeed;//添加时间系数
 
-        public void Destroy()
-        {
-            behaviour.OnExcuteDestroy();
-        }
-
-        float pauseTime;
-        /// <summary>  
-        /// 暂停计时  
-        /// </summary>  
-        public void PauseTimer()
-        {
-            if (isEnd)
+            if (!IsPlaying)
             {
-                if (isLog) Debug.LogWarning("计时已经结束！");
+                if(sumTime>=startTime)
+                {
+                    IsPlaying = true;
+
+                    onStart?.Invoke();
+                }
             }
             else
             {
-                if (isTimer)
+                TimerValues?.Invoke(TimerValue, deletaTime);
+
+                if (duration.Time.TotalSeconds > 0)
                 {
-                    isTimer = false;
-                    pauseTime = Time;
+                    if (TimerValue.Time.TotalSeconds >= duration.Time.TotalSeconds)
+                    {
+
+                        OnDestoryTime();
+                    }
                 }
             }
         }
-        /// <summary>  
-        /// 继续计时  
-        /// </summary>  
-        public void ConnitueTimer()
-        {
-            if (isEnd)
-            {
-                if (isLog) Debug.LogWarning("计时已经结束！请从新计时！");
-            }
-            else
-            {
-                if (!isTimer)
-                {
-                    offsetTime += (Time - pauseTime);
-                    isTimer = true;
-                }
-            }
-        }
-        public void ReStartTimer()
-        {
-            timeStart = Time;
-            offsetTime = 0;
-        }
 
-        public void ChangeTargetTime(float time)
+        public void OnDestoryTime()
         {
-            timeTarget += time;
-        }
-        /// <summary>  
-        /// 开始计时 :   
-        /// </summary>  
-        public void StartTiming(float time, CompleteEvent onCompleted, UpdateEvent update = null, bool isIgnoreTimeScale = true, bool isRepeate = false, bool isDestory = true)
-        {
-            timeTarget = time;
-            if (onCompleted != null)
-                this.onCompleted = onCompleted;
-            if (update != null)
-                updateEvent = update;
-            this.isDestory = isDestory;
-            this.isIgnoreTimeScale = isIgnoreTimeScale;
-            this.isRepeate = isRepeate;
+            MTimerController.Timers.Remove(this);
 
-            timeStart = Time;
-            offsetTime = 0;
-            isEnd = false;
-            isTimer = true;
-        }
+            IsPlaying = false;
 
+            onEnd?.Invoke();
+        }
     }
 }

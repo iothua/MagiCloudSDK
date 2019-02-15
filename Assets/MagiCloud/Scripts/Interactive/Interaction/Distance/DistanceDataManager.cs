@@ -16,6 +16,9 @@ namespace MagiCloud.Interactive.Distance
 
         public List<DistanceInteraction> Distanceing;
 
+        private DistanceInteraction tempDistance = null;
+        private float tempValue = 0;
+
         public DistanceDataManager()
         {
             //sendData = new DistanceInteraction();
@@ -51,7 +54,7 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="distance"></param>
         /// <param name="target"></param>
-        public void AddDistance(DistanceInteraction distance, DistanceInteraction target)
+        public void AddDistance(DistanceInteraction distance,DistanceInteraction target)
         {
             if (sendData != distance) return;
 
@@ -91,107 +94,180 @@ namespace MagiCloud.Interactive.Distance
             if (!sendData.FeaturesObjectController.IsEnable)
                 return;
 
-            foreach (var receive in Distances)
+            if (sendData.distanceData.IsShort)
             {
-                if (receive == null) continue;
+                
 
-                if (!receive.FeaturesObjectController.IsEnable) continue;
-
-                //如果在距离范围内
-                if (OnDistance(receive, sendData))
+                foreach (var receive in Distances)
                 {
-                    switch (sendData.distanceData.detectType)
+                    if (receive == null) continue;
+
+                    if (!receive.FeaturesObjectController.IsEnable) continue;
+
+                    float distanceValue;
+
+                    if (OnDistance(receive, sendData, out distanceValue))
                     {
-                        //并且关系
-                        case InteractionDetectType.And:
 
-                            //如果都没有移入，则
-                            if (!InteractionDistanceController.IsEnter(sendData, receive))
-                            {
-                                //判断两者的条件是否都可以进行交互。
-                                if (receive.IsCanInteraction(sendData) &&
-                                    sendData.IsCanInteraction(receive))
-                                {
-                                    InteractionDistanceController.OnEnter(sendData, receive);
+                        if (tempDistance == null)
+                        {
+                            tempDistance = receive;
+                            tempValue = distanceValue;
 
-                                    if (!Distanceing.Contains(receive))
-                                        Distanceing.Add(receive);
-                                }
-                            }
-
-                            if (InteractionDistanceController.IsEnter(sendData, receive))
-                            {
-                                InteractionDistanceController.OnStay(sendData, receive);
-                            }
-
-                            break;
-                        case InteractionDetectType.Receive:
-
-                            //如果是接收端，那么只需要计算接收端的IsEnter和receiveData看是否可以进行交互。
-                            if (!InteractionDistanceController.IsEnter(sendData, receive)
-                                && receive.IsCanInteraction(sendData))
-                            {
-                                InteractionDistanceController.OnEnter(sendData, receive);
-
-                                if (!Distanceing.Contains(receive))
-                                    Distanceing.Add(receive);
-                            }
-
-                            if (InteractionDistanceController.IsEnter(sendData, receive))
+                            OnEnter(receive);
+                        }
+                        else
+                        {
+                            if (tempValue > distanceValue && tempDistance != receive)
                             {
 
-                                InteractionDistanceController.OnStay(sendData, receive);
+                                Debug.Log("距离值：" + distanceValue + "    距离对象：" + tempDistance);
+                                //先执行退出，然后在执行移入
+                                OnExit(tempDistance);
+
+                                tempDistance = receive;
+                                tempValue = distanceValue;
+
+                                OnEnter(receive);
+                                continue;
                             }
 
-                            break;
+                            OnEnter(receive);
+                        }
+                    }
+                    else
+                    {
+                        OnExit(receive);
+                        if (tempDistance == receive)
+                        {
+                            tempDistance = null;
+                            distanceValue = 0;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (var receive in Distances)
+                {
+                    if (receive == null) continue;
 
-                        case InteractionDetectType.Send:
+                    if (!receive.FeaturesObjectController.IsEnable) continue;
 
-                            //如果是发送端为主，那么只需要计算发射端的IsEnter和sendData看是否可以进行交互
-                            if (!InteractionDistanceController.IsEnter(sendData, receive)
-                                && sendData.IsCanInteraction(receive))
-                            {
+                    float distanceValue;
 
-                                InteractionDistanceController.OnEnter(sendData, receive);
+                    //如果在距离范围内
+                    if (OnDistance(receive, sendData, out distanceValue))
+                    {
+                        OnEnter(receive);
+                    }
+                    else
+                    {
+                        OnExit(receive);
+                    }
+                }
+            }
 
-                                if (!Distanceing.Contains(receive))
-                                    Distanceing.Add(receive);
-                            }
+        }
 
-                            if (InteractionDistanceController.IsEnter(sendData, receive))
-                            {
-                                InteractionDistanceController.OnStay(sendData, receive);
-                            }
+        void OnEnter(DistanceInteraction receive)
+        {
+            switch (sendData.distanceData.detectType)
+            {
+                //并且关系
+                case InteractionDetectType.And:
 
-                            break;
+                    //如果都没有移入，则
+                    if (!InteractionDistanceController.IsEnter(sendData, receive))
+                    {
+                        //判断两者的条件是否都可以进行交互。
+                        if (receive.IsCanInteraction(sendData) &&
+                            sendData.IsCanInteraction(receive))
+                        {
+                            InteractionDistanceController.OnEnter(sendData, receive);
 
-                        default:
-                            break;
+                            if (!Distanceing.Contains(receive))
+                                Distanceing.Add(receive);
+                        }
                     }
 
-                }
-                else
-                {
-                    //要加一层判断，否则一直执行是不好的
-                    InteractionDistanceController.OnExit(sendData, receive);
+                    if (InteractionDistanceController.IsEnter(sendData, receive))
+                    {
+                        if (!Distanceing.Contains(receive))
+                            Distanceing.Add(receive);
+                        InteractionDistanceController.OnStay(sendData, receive);
+                    }
 
-                    if (Distanceing.Count == 0) continue;
+                    break;
+                case InteractionDetectType.Receive:
 
-                    if (Distanceing.Contains(receive))
-                        Distanceing.Remove(receive);
-                }
+                    //如果是接收端，那么只需要计算接收端的IsEnter和receiveData看是否可以进行交互。
+                    if (!InteractionDistanceController.IsEnter(sendData, receive)
+                        && receive.IsCanInteraction(sendData))
+                    {
+                        InteractionDistanceController.OnEnter(sendData, receive);
+
+                        if (!Distanceing.Contains(receive))
+                            Distanceing.Add(receive);
+                    }
+
+                    if (InteractionDistanceController.IsEnter(sendData, receive))
+                    {
+                        if (!Distanceing.Contains(receive))
+                            Distanceing.Add(receive);
+                        InteractionDistanceController.OnStay(sendData, receive);
+                    }
+
+                    break;
+
+                case InteractionDetectType.Send:
+
+                    //如果是发送端为主，那么只需要计算发射端的IsEnter和sendData看是否可以进行交互
+                    if (!InteractionDistanceController.IsEnter(sendData, receive)
+                        && sendData.IsCanInteraction(receive))
+                    {
+
+                        InteractionDistanceController.OnEnter(sendData, receive);
+
+                        if (!Distanceing.Contains(receive))
+                            Distanceing.Add(receive);
+                    }
+
+                    if (InteractionDistanceController.IsEnter(sendData, receive))
+                    {
+                        if (!Distanceing.Contains(receive))
+                            Distanceing.Add(receive);
+                        InteractionDistanceController.OnStay(sendData, receive);
+                    }
+
+                    break;
+
+                default:
+                    break;
             }
         }
 
-        bool OnDistance(DistanceInteraction receiveDistance, DistanceInteraction sendDistance)
+        void OnExit(DistanceInteraction receive)
+        {
+            //要加一层判断，否则一直执行是不好的
+            InteractionDistanceController.OnExit(sendData, receive);
+
+            if (Distanceing.Count == 0) return;
+
+            if (Distanceing.Contains(receive))
+                Distanceing.Remove(receive);
+        }
+
+        bool OnDistance(DistanceInteraction receiveDistance,DistanceInteraction sendDistance,out float distanceValue)
         {
             switch (receiveDistance.distanceData.distanceShape)
             {
                 case DistanceShape.Sphere:
-                    return Utilitys.Distance(receiveDistance.Position, sendDistance.Position, receiveDistance.distanceData.distanceType) <= receiveDistance.distanceData.distanceValue;
+                    return Utilitys.Distance(receiveDistance.Position,sendDistance.Position,receiveDistance.distanceData.distanceType,out distanceValue) <= receiveDistance.distanceData.distanceValue;
                 case DistanceShape.Cube:
-                    return Utilitys.CubeDistance(receiveDistance.Position, receiveDistance.distanceData.Size, sendDistance.Position, receiveDistance.distanceData.distanceType);
+                    return Utilitys.CubeDistance(receiveDistance.Position,receiveDistance.distanceData.Size,sendDistance.Position,receiveDistance.distanceData.distanceType,out distanceValue);
                 default:
+                    distanceValue = -1;
                     return false;
             }
 
@@ -200,7 +276,7 @@ namespace MagiCloud.Interactive.Distance
         /// <summary>
         /// 计算释放
         /// </summary>
-        public void OnComputeRelesae()
+        public void OnComputeRelesae(bool isAuto=false )
         {
             if (Distanceing.Count == 0)
             {
@@ -215,7 +291,7 @@ namespace MagiCloud.Interactive.Distance
                 if (receive == null) continue;
 
                 //检测是否有正在交互中，如果没有，则执行notRelease释放。
-                if (!InteractionDistanceController.IsEnter(sendData, receive))
+                if (!InteractionDistanceController.IsEnter(sendData,receive))
                 {
                     isNotRelease = true;
                     continue;
@@ -230,15 +306,15 @@ namespace MagiCloud.Interactive.Distance
                         if (receive.IsCanInteraction(sendData) &&
                                 sendData.IsCanInteraction(receive))
                         {
-                            InteractionDistanceController.OnRelease(sendData, receive);
+                            InteractionDistanceController.OnRelease(sendData,receive,isAuto);
                         }
 
                         break;
                     case InteractionDetectType.Receive:
-                        
+
                         if (receive.IsCanInteraction(sendData))
                         {
-                            InteractionDistanceController.OnRelease(sendData, receive);
+                            InteractionDistanceController.OnRelease(sendData,receive,isAuto);
                         }
 
                         break;
@@ -246,7 +322,7 @@ namespace MagiCloud.Interactive.Distance
 
                         if (sendData.IsCanInteraction(receive))
                         {
-                            InteractionDistanceController.OnRelease(sendData, receive);
+                            InteractionDistanceController.OnRelease(sendData,receive,isAuto);
                         }
 
                         break;
@@ -255,11 +331,13 @@ namespace MagiCloud.Interactive.Distance
                 }
             }
 
+            //Debug.Log("SendData IsGrab");
             sendData.IsGrab = false;
+            sendData.HandIndex = -1;
 
             //如果不存在有交互的，就进行无释放。
-            if(isNotRelease)
-                sendData.OnInteractionNotRelease(); ;
+            if (isNotRelease)
+                sendData.OnInteractionNotRelease();
         }
     }
 }

@@ -27,12 +27,84 @@ namespace MagiCloud.KGUI
 
         private ScrollViewInfo viewInfoX;
         private ScrollViewInfo viewInfoY;
+        public bool isFollowHand = false;
+        //y
+        public int initNum = 4;
+        private float unitSize;
+        private float sumNum;
+        private int curHand = -1;
+        private Vector3 recordHandPos;
+        private Vector3 recordPos;
 
+        //x
+        public int initXNum = 4;
+        private float unitXSize;
+        private float sumXNum;
+        private int curXHand = -1;
+        private Vector3 recordXHandPos;
+        private Vector3 recordXPos;
         private void Start()
         {
             SetRectData();
+            if (panel != null)
+            {
+                if (vertical != null)
+                {
+                    panel.onDown.AddListener(OnDown);
+                    panel.onDirectionY.AddListener(PanelScrollY);
+                    panel.onUp.AddListener(OnUp);
+                }
+
+                if (horizontal != null)
+                {
+                    panel.onUp.AddListener(OnXUp);
+                    panel.onDown.AddListener(OnXDown);
+                    panel.onDirectionX.AddListener(PanelScrollX);
+                }
+            }
         }
 
+
+        private void OnUp(int arg0,bool arg1)
+        {
+            var pos = content.localPosition;
+            if ((pos.y-viewInfoY.minValue)%unitSize>0.5f)
+            {
+                pos.y=viewInfoY.minValue+((int)((pos.y-viewInfoY.minValue)/unitSize)+1)*unitSize;
+            }
+            else if ((pos.y-viewInfoY.minValue)%unitSize<=0.5f)
+            {
+                pos.y=viewInfoY.minValue+((int)((pos.y-viewInfoY.minValue)/unitSize))*unitSize;
+            }
+            pos.y=Mathf.Clamp(pos.y,viewInfoY.minValue,viewInfoY.maxValue);
+            content.localPosition=pos;
+        }
+        private void OnXUp(int arg0,bool arg1)
+        {
+            var pos = content.localPosition;
+            if ((pos.x-viewInfoX.minValue)%unitSize>0.5f)
+            {
+                pos.x=viewInfoX.minValue+((int)((pos.x-viewInfoX.minValue)/unitSize)+1)*unitSize;
+            }
+            else if ((pos.x-viewInfoX.minValue)%unitSize<=0.5f)
+            {
+                pos.x=viewInfoX.minValue+((int)((pos.x-viewInfoX.minValue)/unitSize))*unitSize;
+            }
+            pos.x=Mathf.Clamp(pos.x,viewInfoX.minValue,viewInfoX.maxValue);
+            content.localPosition=pos;
+        }
+        private void OnDown(int arg0,bool arg1)
+        {
+            curHand=arg0;
+            recordHandPos= MOperateManager.GetHandScreenPoint(curHand);
+            recordPos=content.localPosition;
+        }
+        private void OnXDown(int arg0,bool arg1)
+        {
+            curXHand=arg0;
+            recordXHandPos= MOperateManager.GetHandScreenPoint(curXHand);
+            recordXPos=content.localPosition;
+        }
         /// <summary>
         /// 设置RectData
         /// </summary>
@@ -47,6 +119,8 @@ namespace MagiCloud.KGUI
 
                 float size = content.sizeDelta.y;
                 float parentSize = content.parent.GetComponent<RectTransform>().sizeDelta.y;
+                unitSize = parentSize/initNum;
+                sumNum = (int)(size/unitSize);
 
                 //计算出父容器与当前容器的比例
                 float scale = size > parentSize ? size / parentSize : 1;
@@ -67,9 +141,9 @@ namespace MagiCloud.KGUI
                 vertical.IsFullHandle = true; //是否填充滚轮
                 vertical.Size = 1 / scale; //设置容器
 
-
-                //添加事件
-                vertical.OnValueChanged.AddListener(BindingVerticalValue);
+                if (!isFollowHand)
+                    //添加事件
+                    vertical.OnValueChanged.AddListener(BindingVerticalValue);
 
                 //如果高度一样
                 if (size <= parentSize)
@@ -123,7 +197,8 @@ namespace MagiCloud.KGUI
 
                 float size = content.sizeDelta.x;
                 float parentSize = content.parent.GetComponent<RectTransform>().sizeDelta.x;
-
+                unitXSize = parentSize/initXNum;
+                sumXNum = (int)(size/unitXSize);
                 //计算出父容器与当前容器的比例
                 float scale = size > parentSize ? size / parentSize : 1;
                 //根据比例，设置其值，同时当进行滑动时，也要同时设置滚轮的相应值
@@ -142,8 +217,8 @@ namespace MagiCloud.KGUI
 
                 horizontal.IsFullHandle = true;
                 horizontal.Size = 1 / scale;
-
-                horizontal.OnValueChanged.AddListener(BindingHorizontalValue);
+                if (!isFollowHand)
+                    horizontal.OnValueChanged.AddListener(BindingHorizontalValue);
 
                 if (size <= parentSize)
                 {
@@ -157,15 +232,10 @@ namespace MagiCloud.KGUI
                 }
             }
 
-            if (panel != null)
-            {
-                if (vertical != null)
-                    panel.onDirectionY.AddListener(PanelScrollY);
 
-                if (horizontal != null)
-                    panel.onDirectionX.AddListener(PanelScrollX);
-            }
         }
+
+
 
         /// <summary>
         ///  绑定垂直滚动数据
@@ -199,7 +269,19 @@ namespace MagiCloud.KGUI
         /// <param name="direction"></param>
         public void PanelScrollY(int direction)
         {
-            vertical.Value -= direction * 1.5f * Time.deltaTime;
+            if (isFollowHand)
+            {
+                var handPos = MOperateManager.GetHandScreenPoint(curHand);
+                var y = recordPos.y+  handPos.y-recordHandPos.y;
+                y=Mathf.Clamp(y,viewInfoY.minValue,viewInfoY.maxValue);
+                var pos = content.localPosition;
+                pos.y=y;
+                content.localPosition=pos;
+            }
+            else
+            {
+                vertical.Value -= direction * 1.5f * Time.deltaTime;
+            }
         }
 
         /// <summary>
@@ -208,7 +290,19 @@ namespace MagiCloud.KGUI
         /// <param name="direction"></param>
         public void PanelScrollX(int direction)
         {
-            horizontal.Value -= direction * 1.5f * Time.deltaTime;
+            if (isFollowHand)
+            {
+                var handXPos = MOperateManager.GetHandScreenPoint(curXHand);
+                var x = recordXPos.x+  handXPos.x-recordXHandPos.x;
+                x=Mathf.Clamp(x,viewInfoX.minValue,viewInfoX.maxValue);
+                var pos = content.localPosition;
+                pos.x=x;
+                content.localPosition=pos;
+            }
+            else
+            {
+                horizontal.Value -= direction * 1.5f * Time.deltaTime;
+            }
         }
     }
 }

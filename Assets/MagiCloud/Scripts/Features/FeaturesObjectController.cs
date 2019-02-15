@@ -10,12 +10,13 @@ namespace MagiCloud.Features
     [ExecuteInEditMode]
     public class FeaturesObjectController :MonoBehaviour
     {
-        public bool ActiveSpaceLimit_ = true;               //激活空间限制
+        public bool ActiveDeskLimit_;                        //激活桌面吸附及限制下陷
+        public bool ActiveSpaceLimit;                       //激活空间限制
         public bool ActiveHighlight;                        //激活高亮
-        public bool ActiveShadow;                           //激活虚影
+                                                            // public bool ActiveShadow;                           //激活虚影
         public bool ActiveLabel;                            //激活标签
         public bool ActiveLimitMove;                        //激活移动限制
-        public GameObject shadowModel;                      //显示虚影的模型
+                                                            //public GameObject shadowModel;                      //显示虚影的模型
         public GameObject highligheModel;                   //边框高亮模型
         public GameObject highlightGameobject;              //高亮物体
 
@@ -79,7 +80,12 @@ namespace MagiCloud.Features
 
         private void Awake()
         {
-            if (ActiveSpaceLimit_)
+            if (ActiveDeskLimit_)
+                AddDeskLimit();
+            else
+                RemoveDeskLimit();
+
+            if (ActiveSpaceLimit)
                 AddSpaceLimit();
             else
                 RemoveSpaceLimit();
@@ -89,10 +95,10 @@ namespace MagiCloud.Features
             else
                 RemoveHighlight();
 
-            if (ActiveShadow)
-                AddShadow();
-            else
-                RemoveShadow();
+            //if (ActiveShadow)
+            //    AddShadow();
+            //else
+            //    RemoveShadow();
 
             if (ActiveLabel)
                 AddLabel();
@@ -113,6 +119,11 @@ namespace MagiCloud.Features
         public MCCanGrab CanGrab;
 
         /// <summary>
+        /// 桌面吸附及限制下陷
+        /// </summary>
+        public MCDeskLimit deskLimit;
+
+        /// <summary>
         /// 空间限制
         /// </summary>
         public SpaceLimit spaceLimit;
@@ -122,10 +133,10 @@ namespace MagiCloud.Features
         /// </summary>
         public HighlightObject highlightObject;
 
-        /// <summary>
-        ///虚影控制端
-        /// </summary>
-        public ShadowController ShadowController;
+        ///// <summary>
+        /////虚影控制端
+        ///// </summary>
+        //public ShadowController ShadowController;
 
         public MCNone None;
 
@@ -212,6 +223,35 @@ namespace MagiCloud.Features
         }
 
         /// <summary>
+        /// 添加“桌面吸附及限制下陷”
+        /// </summary>
+        /// <returns></returns>
+        public MCDeskLimit AddDeskLimit()
+        {
+            if(deskLimit == null )
+                deskLimit = OperaObject.GetComponent<MCDeskLimit>() ?? OperaObject.AddComponent<MCDeskLimit>();
+            deskLimit.hideFlags = HideFlags.HideInInspector;
+            return deskLimit;
+        }
+
+        /// <summary>
+        /// 移除“桌面吸附及限制下陷”
+        /// </summary>
+        public void RemoveDeskLimit()
+        {
+            if (deskLimit == null) return;
+
+            if (!Application.isPlaying)
+            {
+                DestroyImmediate(deskLimit);
+            }
+            else
+                Destroy(deskLimit);
+
+            Debug.Log(this.gameObject.name);
+        }
+
+        /// <summary>
         /// 添加“空间限制”
         /// </summary>
         public SpaceLimit AddSpaceLimit()
@@ -228,8 +268,13 @@ namespace MagiCloud.Features
         public void RemoveSpaceLimit()
         {
             if (spaceLimit == null) return;
-
-            DestroyImmediate(spaceLimit);
+            spaceLimit.OnDestroy();
+            if (!Application.isPlaying)
+            {
+                DestroyImmediate(spaceLimit);
+            }
+            else
+                Destroy(spaceLimit);
         }
 
         /// <summary>
@@ -249,31 +294,34 @@ namespace MagiCloud.Features
         {
             if (highlightObject == null) return;
 
-            DestroyImmediate(highlightObject);
+            if (!Application.isPlaying)
+                DestroyImmediate(highlightObject);
+            else
+                Destroy(highlightObject);
         }
 
-        /// <summary>
-        /// 添加“虚影”
-        /// </summary>
-        public ShadowController AddShadow()
-        {
-            if (ShadowController == null)
-                ShadowController = OperaObject.GetComponent<ShadowController>() ?? OperaObject.AddComponent<ShadowController>();
+        ///// <summary>
+        ///// 添加“虚影”
+        ///// </summary>
+        //public ShadowController AddShadow()
+        //{
+        //    if (ShadowController == null)
+        //        ShadowController = OperaObject.GetComponent<ShadowController>() ?? OperaObject.AddComponent<ShadowController>();
 
-            ShadowController.hideFlags = HideFlags.HideInInspector;
-            return ShadowController;
-        }
+        //    ShadowController.hideFlags = HideFlags.HideInInspector;
+        //    return ShadowController;
+        //}
 
-        /// <summary>
-        /// 移除“虚影”
-        /// </summary>
-        public void RemoveShadow()
-        {
-            if (ShadowController == null)
-                return;
+        ///// <summary>
+        ///// 移除“虚影”
+        ///// </summary>
+        //public void RemoveShadow()
+        //{
+        //    if (ShadowController == null)
+        //        return;
 
-            DestroyImmediate(ShadowController);
-        }
+        //    DestroyImmediate(ShadowController);
+        //}
 
         /// <summary>
         /// 添加“标签”
@@ -295,8 +343,10 @@ namespace MagiCloud.Features
         {
             if (LabelController == null) return;
             KGUI.KGUI_LabelController.Instance.DestroyByLabelController(LabelController);
-
-            DestroyImmediate(LabelController);
+            if (!Application.isPlaying)
+                DestroyImmediate(LabelController);
+            else
+                Destroy(LabelController);
         }
 
         /// <summary>
@@ -316,7 +366,10 @@ namespace MagiCloud.Features
         public void RemoveCanGrab()
         {
             if (CanGrab == null) return;
-            DestroyImmediate(CanGrab);
+            if (!Application.isPlaying)
+                DestroyImmediate(CanGrab);
+            else
+                Destroy(CanGrab);
         }
 
         public MCNone AddNone()
@@ -330,7 +383,10 @@ namespace MagiCloud.Features
         {
             if (None == null)
                 return;
-            DestroyImmediate(None);
+            if (!Application.isPlaying)
+                DestroyImmediate(None);
+            else
+                Destroy(None);
         }
 
         /// <summary>
@@ -349,8 +405,10 @@ namespace MagiCloud.Features
         {
             if (Customize == null)
                 return;
-
-            DestroyImmediate(Customize);
+            if (!Application.isPlaying)
+                DestroyImmediate(Customize);
+            else
+                Destroy(Customize);
         }
 
         /// <summary>
@@ -370,7 +428,10 @@ namespace MagiCloud.Features
         public void RemoveRotation()
         {
             if (ObjectRatation == null) return;
-            DestroyImmediate(ObjectRatation);
+            if (!Application.isPlaying)
+                DestroyImmediate(ObjectRatation);
+            else
+                Destroy(ObjectRatation);
         }
 
         /// <summary>
@@ -391,7 +452,10 @@ namespace MagiCloud.Features
         public void RemoveCameraCenterObjectRotation()
         {
             if (cameraRotateAround == null) return;
-            DestroyImmediate(cameraRotateAround);
+            if (!Application.isPlaying)
+                DestroyImmediate(cameraRotateAround);
+            else
+                Destroy(cameraRotateAround);
         }
 
         /// <summary>
@@ -410,8 +474,11 @@ namespace MagiCloud.Features
         /// </summary>
         public void RemoveObjectButton()
         {
-            if (objectButton==null) return;
-            DestroyImmediate(objectButton);
+            if (objectButton == null) return;
+            if (!Application.isPlaying)
+                DestroyImmediate(objectButton);
+            else
+                Destroy(objectButton);
         }
 
         /// <summary>
@@ -430,7 +497,10 @@ namespace MagiCloud.Features
         public void RemoveLimitMove()
         {
             if (LimitMove == null) return;
-            DestroyImmediate(LimitMove);
+            if (!Application.isPlaying)
+                DestroyImmediate(LimitMove);
+            else
+                Destroy(LimitMove);
         }
 
         /// <summary>

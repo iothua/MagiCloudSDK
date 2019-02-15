@@ -3,6 +3,7 @@ using MagiCloud.Core.MInput;
 using UnityEngine;
 using MagiCloud.Core.Events;
 using MagiCloud.Core.UI;
+using MagiCloud.Operate;
 
 namespace MagiCloud
 {
@@ -27,11 +28,14 @@ namespace MagiCloud
         /// <summary>
         /// 是否激活
         /// </summary>
-        public bool IsEnable {
-            get {
+        public bool IsEnable
+        {
+            get
+            {
                 return isEnable;
             }
-            set {
+            set
+            {
                 if (isEnable == value) return;
                 isEnable = value;
 
@@ -78,6 +82,18 @@ namespace MagiCloud
 
         public bool OnUIRay(Ray ray)
         {
+            //if (ActionConstraint.IsBind(ActionConstraint.Camera_Rotate_Action)||ActionConstraint.IsBind(ActionConstraint.Camera_Zoom_Action)) return false;
+            //如果不是松手或者握拳，返回false
+            if (!(InputHand.HandStatus == Core.MInputHandStatus.Idle ||
+                InputHand.HandStatus == Core.MInputHandStatus.Grabing||
+                InputHand.HandStatus == Core.MInputHandStatus.Grab||
+                InputHand.HandStatus == Core.MInputHandStatus.Grip))
+                return false;
+            //如果不是长按并且握拳，返回false
+            if (!IsButtonPress && (InputHand.HandStatus == Core.MInputHandStatus.Grabing||
+                InputHand.HandStatus == Core.MInputHandStatus.Grab||
+                InputHand.HandStatus == Core.MInputHandStatus.Grip))
+                return false;
             if (!IsEnable) return false;
 
             RaycastHit hit;
@@ -88,7 +104,7 @@ namespace MagiCloud
                 currentButton.OnDownStay(InputHand.HandIndex);
             }
 
-            if (Physics.Raycast(ray, out hit, 10000, 1 << MOperateManager.layerUI))
+            if (Physics.Raycast(ray,out hit,10000,1 << MOperateManager.layerUI))
             {
                 //1、如果照射到了，将此碰撞体加0.5f
                 //2、如果是握拳时，碰撞体范围还是以0.5f为算，如果默认，则以0.5为计算
@@ -96,14 +112,14 @@ namespace MagiCloud
                 if (uiObject == null)
                 {
                     uiObject = hit.collider.gameObject;
-                    EventHandUIRayEnter.SendListener(uiObject, InputHand.HandIndex);
+                    EventHandUIRayEnter.SendListener(uiObject,InputHand.HandIndex);
                 }
                 else if (uiObject != hit.collider.gameObject)
                 {
-                    EventHandUIRayExit.SendListener(uiObject, InputHand.HandIndex);
+                    EventHandUIRayExit.SendListener(uiObject,InputHand.HandIndex);
 
                     uiObject = hit.collider.gameObject;
-                    EventHandUIRayEnter.SendListener(uiObject, InputHand.HandIndex);
+                    EventHandUIRayEnter.SendListener(uiObject,InputHand.HandIndex);
                 }
                 else
                 { }
@@ -129,7 +145,7 @@ namespace MagiCloud
 
                             RaycastHit detectionHit;
                             //如果在扫描时，不是这个物体则进行清空
-                            if (Physics.Raycast(ray, out detectionHit, 10000, 1 << MOperateManager.layerUI))
+                            if (Physics.Raycast(ray,out detectionHit,10000,1 << MOperateManager.layerUI))
                             {
                                 if (currentObject != detectionHit.collider.gameObject)
                                 {
@@ -187,7 +203,7 @@ namespace MagiCloud
         {
             if (uiObject != null)
             {
-                EventHandUIRayExit.SendListener(uiObject, InputHand.HandIndex);
+                EventHandUIRayExit.SendListener(uiObject,InputHand.HandIndex);
 
                 uiObject = null;
             }
@@ -220,10 +236,9 @@ namespace MagiCloud
             if (currentObject != rayObject)
             {
                 if (currentButton != null)
-                    currentButton.OnUpRange(handIndex, false);
+                    currentButton.OnUpRange(handIndex,false);
 
                 //SetButton(null);
-
                 ClearButton();
 
                 currentButton = null;
@@ -235,7 +250,7 @@ namespace MagiCloud
             }
 
             if (currentButton != null)
-                currentButton.OnUpRange(handIndex, true);
+                currentButton.OnUpRange(handIndex,true);
 
 
             if (currentButton != null && currentObject == rayObject && !IsScroll)
@@ -246,34 +261,34 @@ namespace MagiCloud
             IsScroll = false;
         }
 
-        public void SetButton(GameObject target)
-        {
+        //public void SetButton(GameObject target)
+        //{
 
-            if (target == currentObject) return;
+        //    if (target == currentObject) return;
 
-            if (target == null)
-            {
-                ClearButton();
-                return;
-            }
+        //    if (target == null)
+        //    {
+        //        ClearButton();
+        //        return;
+        //    }
 
-            if (target.CompareTag("button"))
-            {
-                ClearButton();
+        //    if (target.CompareTag("button"))
+        //    {
+        //        ClearButton();
 
-                currentButton = target.GetComponent<IButton>();
-                if (currentButton == null) return;
+        //        currentButton = target.GetComponent<IButton>();
+        //        if (currentButton == null) return;
 
-                currentButton.OnEnter(InputHand.HandIndex);
+        //        currentButton.OnEnter(InputHand.HandIndex);
 
-                currentObject = target;
+        //        currentObject = target;
 
-            }
-            else
-            {
-                ClearButton();
-            }
-        }
+        //    }
+        //    else
+        //    {
+        //        ClearButton();
+        //    }
+        //}
 
         void OnButtonEnter(GameObject hitObject)
         {
@@ -293,14 +308,23 @@ namespace MagiCloud
         {
             if (currentButton == null) return;
 
-            currentButton.OnExit(InputHand.HandIndex);
+            try
+            {
+                currentButton.OnExit(InputHand.HandIndex);
 
-            //清除原来的大小
-            currentButton.Collider.IsShake = false;
+                //清除原来的大小
+                currentButton.Collider.IsShake = false;
 
-            currentButton = null;
-            currentObject = null;
-            rayObject = null;
+                currentButton = null;
+                currentObject = null;
+                rayObject = null;
+            }
+            catch
+            {
+                currentButton = null;
+                currentObject = null;
+                rayObject = null;
+            }
         }
 
         /// <summary>

@@ -4,7 +4,7 @@ namespace MagiCloud.Common
     /// <summary>
     /// 计时器
     /// </summary>
-    public class Timer :MonoBehaviour
+    public class Timer : MonoBehaviour
     {
 
         #region 
@@ -74,7 +74,7 @@ namespace MagiCloud.Common
         }
         public float GetLeftTime()
         {
-            return Mathf.Clamp(timeTarget - now,0,timeTarget);
+            return Mathf.Clamp(timeTarget - now, 0, timeTarget);
         }
         //void OnApplicationPause(bool isPause_)
         //{
@@ -141,8 +141,10 @@ namespace MagiCloud.Common
                 }
             }
         }
-        public void ReStartTimer()
+        public void ReStartTimer(float? realTime = null)
         {
+            if (realTime.HasValue)
+                timeTarget = realTime.Value;
             timeStart = Time;
             offsetTime = 0;
         }
@@ -154,7 +156,7 @@ namespace MagiCloud.Common
         /// <summary>  
         /// 开始计时 :   
         /// </summary>  
-        public void StartTiming(float time,CompleteEvent onCompleted,UpdateEvent update = null,bool isIgnoreTimeScale = true,bool isRepeate = false,bool isDestory = true)
+        public void StartTiming(float time, CompleteEvent onCompleted, UpdateEvent update = null, bool isIgnoreTimeScale = true, bool isRepeate = false, bool isDestory = true)
         {
             timeTarget = time;
             if (onCompleted != null)

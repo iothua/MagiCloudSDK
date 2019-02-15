@@ -61,10 +61,12 @@ namespace MagiCloud.Core.MInput
             }
             set {
 
+                if (!value)
+                    SetIdle();
+
                 isEnable = value;
 
                 isPressed = false;
-                HandStatus = MInputHandStatus.Idle;
                 currentPoint = Vector3.zero;
                 lastPoint = null;
                 lerpPoint = Vector3.zero;

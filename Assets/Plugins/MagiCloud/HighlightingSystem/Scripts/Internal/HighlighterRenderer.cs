@@ -111,7 +111,6 @@ namespace HighlightingSystem
                         Material replacementMat = new Material(transparentShader);
                         //replacementMat.SetInt(ShaderPropertyID._ZTest, zTest);
                         //replacementMat.SetInt(ShaderPropertyID._StencilRef, stencilRef);
-
                         // To render both sides of the Sprite
                         if (r is SpriteRenderer) { replacementMat.SetInt(ShaderPropertyID._Cull,cullOff); }
 

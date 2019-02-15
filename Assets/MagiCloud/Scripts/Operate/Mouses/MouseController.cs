@@ -11,7 +11,6 @@ namespace MagiCloud.Operate
     /// <summary>
     /// 鼠标控制端
     /// </summary>
-    [DefaultExecutionOrder(-900)]
     public class MouseController : MonoBehaviour, IHandController
     {
         private MBehaviour behaviour;
@@ -32,6 +31,8 @@ namespace MagiCloud.Operate
         private IOperateObject operateObject;
 
         private Vector3 offset;
+        private bool isEnable;
+        private MOperate operate;
 
         /// <summary>
         /// 输入端
@@ -46,6 +47,26 @@ namespace MagiCloud.Operate
         public bool IsPlaying {
             get {
                 return isPlaying;
+            }
+        }
+
+        public bool IsEnable {
+            get {
+                return isEnable;
+            }
+            set {
+
+                if (isEnable == value) return;
+                isEnable = value;
+
+                if (isEnable)
+                {
+                    operate.OnEnable();
+                }
+                else
+                {
+                    operate.OnDisable();
+                }
             }
         }
 
@@ -69,26 +90,6 @@ namespace MagiCloud.Operate
         {
             behaviour = new MBehaviour(ExecutionPriority.Highest, -900, enabled);
 
-            //behaviour.OnAwake_MBehaviour(() =>
-            //{
-            //    InputHands = new Dictionary<int, MInputHand>();
-
-            //    //初始化手的种类
-            //    var handUI = MHandUIManager.CreateHandUI(transform, handSprite, handSize);
-            //    var inputHand = new MInputHand(0, handUI, OperatePlatform.Mouse);
-
-            //    InputHands.Add(0, inputHand);
-
-            //    isPlaying = true;
-
-            //    //注册操作者相关事件
-            //    var operate = MOperateManager.AddOperateHand(inputHand, this);
-            //    //注册方法
-            //    operate.OnGrab = OnGrabObject;
-            //    operate.OnSetGrab = SetGrabObject;
-            //    operate.OnEnable();
-            //});
-
             InputHands = new Dictionary<int, MInputHand>();
 
             //初始化手的种类
@@ -98,9 +99,10 @@ namespace MagiCloud.Operate
             InputHands.Add(0, inputHand);
 
             isPlaying = true;
+            isEnable = true;
 
             //注册操作者相关事件
-            var operate = MOperateManager.AddOperateHand(inputHand, this);
+            operate = MOperateManager.AddOperateHand(inputHand, this);
             //注册方法
             operate.OnGrab = OnGrabObject;
             operate.OnSetGrab = SetGrabObject;
@@ -114,6 +116,8 @@ namespace MagiCloud.Operate
         /// </summary>
         void OnMouseUpdate()
         {
+            if (!IsEnable) return;
+
             //将他的屏幕坐标传递出去
             InputHands[0].OnUpdate(Input.mousePosition);
 

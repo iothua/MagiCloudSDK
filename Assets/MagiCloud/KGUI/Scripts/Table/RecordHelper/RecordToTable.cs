@@ -1,5 +1,6 @@
 ﻿using System;
 using DG.Tweening;
+using MCScience;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,12 +22,20 @@ namespace MagiCloud.KGUI
         public KGUI_Button backButton;
         public Vector3 fromPos = new Vector3(-1545f,0f,0f);
         public Vector3 toPos = new Vector3(-375f,0f,0f);
+
+        [Header("开启时默认屏蔽order>0的层")]
+        public bool IsUIShield = false;
+
         void Start()
         {
             if (recordButton!=null)
                 recordButton.onClick.AddListener(OnClick);
+            if (backButton==null)
+                backButton=transform.GetChild(0).Find("返回").GetComponent<KGUI_Button>();
             if (backButton!=null) backButton.onClick.AddListener(Close);
+          
         }
+
 
         public void OnClick(int arg)
         {
@@ -55,19 +64,30 @@ namespace MagiCloud.KGUI
 
         public void Show()
         {
-            backButton.gameObject.SetActive(true);
-            showButtom.gameObject.SetActive(false);
+            backButton?.gameObject.SetActive(true);
+            showButtom?.gameObject.SetActive(false);
             tableManager.transform.DOLocalMove(toPos,0.5f);
+            // ExperimentNotification.AddReturn(Close);
+            // 关闭
+            if (IsUIShield)
+            {
+                UIShieldController.ShieldDownward(0);
+            }
         }
-
-
 
         public void Close(int i)
         {
             tableManager.transform.DOLocalMove(fromPos,0.5f).OnComplete(() =>
             {
-                backButton.gameObject.SetActive(false);
+                backButton?.gameObject.SetActive(false);
                 showButtom.gameObject.SetActive(true);
+
+                // 开启
+                if (IsUIShield)
+                {
+                    UIShieldController.UnShieldDownward();
+                }
+                //   ExperimentNotification.RemoveReturn(Close,true);
             });
         }
 

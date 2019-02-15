@@ -13,10 +13,10 @@ namespace MagiCloud.Features
     public class FeaturesObjectControllerEditor :Editor
     {
         private FeaturesObjectController features;
-
+        private MCDeskLimit _deskLimit;
         private SpaceLimit _spaceLimit;
         private HighlightObject _highlight;
-        private ShadowController _shadowController;
+        // private ShadowController _shadowController;
         private LabelData _labelController;
 
         private MCCanGrab _cangrabController;
@@ -31,12 +31,12 @@ namespace MagiCloud.Features
         private List<DistanceInteraction> distances;
         private List<List<DistanceInteraction>> distanceSums;
 
+        public static bool ShowOpera { get; private set; }
 
         private void OnEnable()
         {
             features = serializedObject.targetObject as FeaturesObjectController;
             distances = new List<DistanceInteraction>();
-
             if (distanceSums == null)
                 distanceSums = new List<List<DistanceInteraction>>();
 
@@ -47,7 +47,6 @@ namespace MagiCloud.Features
 
                 Dismantling();
             }
-
         }
 
         /// <summary>
@@ -71,13 +70,20 @@ namespace MagiCloud.Features
 
         public override void OnInspectorGUI()
         {
+
             GUILayout.Space(10);
 
             EditorGUILayout.BeginVertical("box");
 
+            //桌面吸附及限制下陷
+            EditorGUILayout.BeginVertical("box");
+            features.ActiveDeskLimit_ = GUILayout.Toggle(features.ActiveDeskLimit_, "  激活桌面吸附及限制下陷到桌面----------------------------------------------------");
+            InspectorDeskLimit();
+            EditorGUILayout.EndVertical();
+
             //空间限制面板
             EditorGUILayout.BeginVertical("box");
-            features.ActiveSpaceLimit_ = GUILayout.Toggle(features.ActiveSpaceLimit_,"  激活空间限制--------------------------------------------------------------");
+            features.ActiveSpaceLimit = GUILayout.Toggle(features.ActiveSpaceLimit,"  激活空间限制--------------------------------------------------------------");
             InspectorSpaceLimit();
             EditorGUILayout.EndVertical();
 
@@ -95,11 +101,11 @@ namespace MagiCloud.Features
             EditorGUILayout.EndVertical();
 
 
-            //虚影面板
-            EditorGUILayout.BeginVertical("box");
-            features.ActiveShadow = GUILayout.Toggle(features.ActiveShadow,"  激活虚影--------------------------------------------------------------");
-            InspectorShadow();
-            EditorGUILayout.EndVertical();
+            ////虚影面板
+            //EditorGUILayout.BeginVertical("box");
+            //features.ActiveShadow = GUILayout.Toggle(features.ActiveShadow,"  激活虚影--------------------------------------------------------------");
+            //InspectorShadow();
+            //EditorGUILayout.EndVertical();
 
 
 
@@ -140,14 +146,41 @@ namespace MagiCloud.Features
                 default:
                     break;
             }
-
+            DrawShowOperaBtn();
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.EndVertical();
 
             //创建距离界面
             InspectorDistance();
+        }
 
+        private void DrawShowOperaBtn()
+        {
+            if (ShowOpera)
+            {
+                if (GUILayout.Button("隐藏operaObject上的脚本",GUILayout.Width(150)))
+                {
+                    var monos = features.OperaObject.GetComponents<MonoBehaviour>();
+                    foreach (var item in monos)
+                    {
+                        item.hideFlags=HideFlags.HideInInspector;
+                    }
+                    ShowOpera=false;
+                }
+            }
+            else
+            {
+                if (GUILayout.Button("显示operaObject上的脚本",GUILayout.Width(150)))
+                {
+                    var monos = features.OperaObject.GetComponents<MonoBehaviour>();
+                    foreach (var item in monos)
+                    {
+                        item.hideFlags=HideFlags.None;
+                    }
+                    ShowOpera=true;
+                }
+            }
         }
 
         /// <summary>
@@ -227,11 +260,47 @@ namespace MagiCloud.Features
         }
 
         /// <summary>
+        /// 桌面吸附及限制下陷面板显示
+        /// </summary>
+        private void InspectorDeskLimit()
+        {
+            if (features.ActiveDeskLimit_)
+            {
+                _deskLimit = features.AddDeskLimit();
+                if (_deskLimit == null) return;
+                EditorGUILayout.BeginVertical();
+                _deskLimit.limitObj = EditorGUILayout.ObjectField("    *被限制的物体", _deskLimit.limitObj, typeof(GameObject), true) as GameObject;
+                if (_deskLimit.limitObj == null)
+                    EditorGUILayout.HelpBox("请赋值被抓取物体本身", MessageType.None, false);
+                _deskLimit.openAdsorption = EditorGUILayout.Toggle("    开启桌面吸附", _deskLimit.openAdsorption);
+                _deskLimit.limitSink = EditorGUILayout.Toggle("    限制下陷到桌面下", _deskLimit.limitSink);
+                _deskLimit.deskHeight = EditorGUILayout.FloatField("    桌面高度", _deskLimit.deskHeight);
+                _deskLimit.deskDistance = EditorGUILayout.FloatField("    距离桌面多高开始吸附", _deskLimit.deskDistance);
+                _deskLimit.boxCollider = EditorGUILayout.ObjectField("    用于空间查询的BoxCollider", _deskLimit.boxCollider, typeof(BoxCollider), true) as BoxCollider;
+                if (_deskLimit.boxCollider == null)
+                    EditorGUILayout.HelpBox("用于空间查询的BoxCollider，可以使用operaObject物体\n需包住物体的中心点。", MessageType.None, false);
+                _deskLimit.autoExtremum = EditorGUILayout.Toggle("    自动计算网格极值，蒙皮网格可能不准确", _deskLimit.autoExtremum);
+                if (!_deskLimit.autoExtremum)
+                {
+                    _deskLimit.minPoint = EditorGUILayout.ObjectField("    网格极小点", _deskLimit.minPoint, typeof(Transform), true) as Transform;
+                    _deskLimit.maxPoint = EditorGUILayout.ObjectField("    网格极大点", _deskLimit.maxPoint, typeof(Transform), true) as Transform;
+                }
+
+                EditorGUILayout.EndVertical();
+            }
+            else
+            {
+                features.RemoveDeskLimit();
+                _deskLimit = null;
+            }
+        }
+
+        /// <summary>
         /// 空间限制面板显示
         /// </summary>
         private void InspectorSpaceLimit()
         {
-            if (features.ActiveSpaceLimit_)
+            if (features.ActiveSpaceLimit)
             {
                 _spaceLimit = features.AddSpaceLimit();
                 if (_spaceLimit == null) return;
@@ -239,22 +308,22 @@ namespace MagiCloud.Features
 
                 _spaceLimit.limitObj = EditorGUILayout.ObjectField("    *被限制的物体",_spaceLimit.limitObj,typeof(GameObject),true) as GameObject;
                 if (_spaceLimit.limitObj == null)
-                    EditorGUILayout.HelpBox("请赋值被抓取物体本身，不赋值则为功能控制端所在物体",MessageType.None,false);
+                    EditorGUILayout.HelpBox("请赋值被抓取物体本身",MessageType.None,false);
                 EditorGUILayout.BeginHorizontal();
-                _spaceLimit.topLimit = EditorGUILayout.Toggle("    *上边限制", _spaceLimit.topLimit);
-                _spaceLimit.topOffset = EditorGUILayout.FloatField("    上偏移量", 0.5f);
+                _spaceLimit.topLimit = EditorGUILayout.Toggle("    *上边限制",_spaceLimit.topLimit);
+                _spaceLimit.topOffset = EditorGUILayout.FloatField("    上偏移量",_spaceLimit.topOffset);
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
-                _spaceLimit.bottomLimit = EditorGUILayout.Toggle("    *下边限制", _spaceLimit.bottomLimit);
-                _spaceLimit.bottomOffset = EditorGUILayout.FloatField("    下偏移量", 0.5f);
+                _spaceLimit.bottomLimit = EditorGUILayout.Toggle("    *下边限制",_spaceLimit.bottomLimit);
+                _spaceLimit.bottomOffset = EditorGUILayout.FloatField("    下偏移量",_spaceLimit.bottomOffset);
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
-                _spaceLimit.leftLimit = EditorGUILayout.Toggle("    *左边限制", _spaceLimit.leftLimit);
-                _spaceLimit.leftOffset = EditorGUILayout.FloatField("    左偏移量", 0.5f);
+                _spaceLimit.leftLimit = EditorGUILayout.Toggle("    *左边限制",_spaceLimit.leftLimit);
+                _spaceLimit.leftOffset = EditorGUILayout.FloatField("    左偏移量",_spaceLimit.leftOffset);
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
-                _spaceLimit.rightLimit = EditorGUILayout.Toggle("    *右边限制", _spaceLimit.rightLimit);
-                _spaceLimit.rightOffset = EditorGUILayout.FloatField("    右偏移量", 0.5f);
+                _spaceLimit.rightLimit = EditorGUILayout.Toggle("    *右边限制",_spaceLimit.rightLimit);
+                _spaceLimit.rightOffset = EditorGUILayout.FloatField("    右偏移量",_spaceLimit.rightOffset);
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.EndVertical();
@@ -350,28 +419,28 @@ namespace MagiCloud.Features
             }
         }
 
-        /// <summary>
-        /// 标签显示面板
-        /// </summary>
-        private void InspectorShadow()
-        {
-            if (features.ActiveShadow)
-            {
-                _shadowController = features.AddShadow();
-                _shadowController.shadowType = (ShadowType)EditorGUILayout.EnumPopup("    ·虚影类型：",_shadowController.shadowType);
-                if (_shadowController.shadowType == ShadowType.Manual)
-                {
-                    _shadowController.traModelNode = EditorGUILayout.ObjectField("    ·虚影模型：",_shadowController.traModelNode,typeof(Transform),true) as Transform;
-                }
-                _shadowController.Intension=EditorGUILayout.Slider("    ·虚影透明度：",_shadowController.Intension,0.1f,0.5f);
-                _shadowController.renderQueue = EditorGUILayout.IntField("    ·Shader渲染层级：",_shadowController.renderQueue);
-            }
-            else
-            {
-                features.RemoveShadow();
-                _shadowController = null;
-            }
-        }
+        ///// <summary>
+        ///// 标签显示面板
+        ///// </summary>
+        //private void InspectorShadow()
+        //{
+        //    ////if (features.ActiveShadow)
+        //    ////{
+        //    ////    _shadowController = features.AddShadow();
+        //    ////    _shadowController.shadowType = (ShadowType)EditorGUILayout.EnumPopup("    ·虚影类型：",_shadowController.shadowType);
+        //    ////    if (_shadowController.shadowType == ShadowType.Manual)
+        //    ////    {
+        //    ////        _shadowController.traModelNode = EditorGUILayout.ObjectField("    ·虚影模型：",_shadowController.traModelNode,typeof(Transform),true) as Transform;
+        //    ////    }
+        //    ////    //// //   _shadowController.Intension=EditorGUILayout.Slider("    ·虚影透明度：",_shadowController.Intension,0.1f,0.3f);
+        //    ////    ////   // _shadowController.renderQueue = EditorGUILayout.IntField("    ·Shader渲染层级：",_shadowController.renderQueue);
+        //    ////}
+        //    ////else
+        //    ////{
+        //    ////    features.RemoveShadow();
+        //    ////    _shadowController = null;
+        //    ////}
+        //}
 
         /// <summary>
         /// 无显示面板

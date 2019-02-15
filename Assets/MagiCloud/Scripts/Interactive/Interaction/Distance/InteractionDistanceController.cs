@@ -49,6 +49,8 @@ namespace MagiCloud.Interactive.Distance
         /// <param name="receive"></param>
         public static void OnEnter(DistanceInteraction send, DistanceInteraction receive)
         {
+            //if (send.distanceData.IsOnly && send.OnlyDistance != receive) return;
+
             //在次之前，还需要判断一次，否则一直执行循环查找，会很费资源，这么处理不恰当
             if (send.OnlyDistance != null || !receive.OnInteractionCheck()) return;
 
@@ -110,7 +112,7 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="send"></param>
         /// <param name="receive"></param>
-        public static void OnRelease(DistanceInteraction send, DistanceInteraction receive)
+        public static void OnRelease(DistanceInteraction send, DistanceInteraction receive,bool isAuto=false )
         {
             InteractionDistanceInfo distanceInfo;
 
@@ -118,7 +120,7 @@ namespace MagiCloud.Interactive.Distance
             {
                 distanceInfo.SetDistanceStatus(DistanceStatus.Complete);
 
-                receive.OnInteractionRelease(send);
+                receive.OnInteractionRelease(send,isAuto);
                 send.OnInteractionRelease(receive);
             }
         }

@@ -64,5 +64,10 @@ namespace MagiCloud.Interactive.Distance
         /// 最大值-1为无限
         /// </summary>
         public int maxCount = -1;
+
+        /// <summary>
+        /// 距离最短内交互
+        /// </summary>
+        public bool IsShort = false;
     }
 }

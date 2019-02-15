@@ -17,7 +17,7 @@ namespace HighlightingSystem
         Success     // preset successfully saved
     }
 
-    public class HighlightingBaseEditor : Editor
+    public class HighlightingBaseEditor :Editor
     {
         private readonly string editorPrefsKey = "HighlightingSystem.Presets";
         private const int currentVersion = 0;
@@ -32,9 +32,9 @@ namespace HighlightingSystem
             public float blurIntensity;
         }
 
-        static protected readonly string[] downsampleOptions = new string[] { "None", "Half", "Quarter" };
-        static protected readonly int[] _downsampleGet = new int[] { -1, 0, 1, -1, 2 };     // maps hb.downsampleFactor to the downsampleOptions index
-        static protected readonly int[] _downsampleSet = new int[] { 1, 2, 4 };     // maps downsampleOptions index to the hb.downsampleFactor
+        static protected readonly string[] downsampleOptions = new string[] { "None","Half","Quarter" };
+        static protected readonly int[] _downsampleGet = new int[] { -1,0,1,-1,2 };     // maps hb.downsampleFactor to the downsampleOptions index
+        static protected readonly int[] _downsampleSet = new int[] { 1,2,4 };     // maps downsampleOptions index to the hb.downsampleFactor
         static protected readonly List<Preset> defaultPresets = new List<Preset>()
         {
             new Preset() { name = "Default",    downsampleFactor = 4,   iterations = 2, blurMinSpread = 0.65f,  blurSpread = 0.25f, blurIntensity = 0.3f },
@@ -42,10 +42,11 @@ namespace HighlightingSystem
             new Preset() { name = "Speed",      downsampleFactor = 4,   iterations = 1, blurMinSpread = 0.75f,  blurSpread = 0f,    blurIntensity = 0.35f },
             new Preset() { name = "Quality",    downsampleFactor = 2,   iterations = 3, blurMinSpread = 0.5f,   blurSpread = 0.5f,  blurIntensity = 0.28f },
             new Preset() { name = "Solid 1px",  downsampleFactor = 1,   iterations = 1, blurMinSpread = 1f,     blurSpread = 0f,    blurIntensity = 1f },
-            new Preset() { name = "Solid 2px",  downsampleFactor = 1,   iterations = 2, blurMinSpread = 1f,     blurSpread = 0f,    blurIntensity = 1f }
+            new Preset() { name = "Solid 2px",  downsampleFactor = 1,   iterations = 2, blurMinSpread = 1f,     blurSpread = 0f,    blurIntensity = 1f },
+            new Preset() { name = "Custom",  downsampleFactor = 1,   iterations = 2, blurMinSpread = 2f,     blurSpread = 0f,    blurIntensity = 5f }
         };
         static protected readonly GUIContent removeButtonContent = new GUIContent("Remove Preset");
-        static protected readonly GUIContent removeButtonContentDisabled = new GUIContent("Remove Preset", "Removing default presets is not allowed.");
+        static protected readonly GUIContent removeButtonContentDisabled = new GUIContent("Remove Preset","Removing default presets is not allowed.");
 
         protected SavePresetWindow window;
 
@@ -78,18 +79,18 @@ namespace HighlightingSystem
 
             if (hb.blitter == null)
             {
-                EditorGUILayout.HelpBox("Use order of this component (relatively to other Image Effects applied to this camera) to control the point at which highlighting will be applied to the framebuffer (click on a little gear icon to the right and choose Move Up / Move Down) or assign HighlightingBlitter component from the other camera.", MessageType.Info);
+                EditorGUILayout.HelpBox("Use order of this component (relatively to other Image Effects applied to this camera) to control the point at which highlighting will be applied to the framebuffer (click on a little gear icon to the right and choose Move Up / Move Down) or assign HighlightingBlitter component from the other camera.",MessageType.Info);
             }
             else if (hb.GetComponent<Camera>() == hb.blitter.GetComponent<Camera>())
             {
-                EditorGUILayout.HelpBox("Assigned HighlightingBlitter component exists on the same camera. This is not really necessary in most situations and affects rendering performance! Please make sure this is intended.", MessageType.Warning);
+                EditorGUILayout.HelpBox("Assigned HighlightingBlitter component exists on the same camera. This is not really necessary in most situations and affects rendering performance! Please make sure this is intended.",MessageType.Warning);
             }
-            hb.blitter = EditorGUILayout.ObjectField("Blitter (Optional)", hb.blitter, typeof(HighlightingBlitter), true) as HighlightingBlitter;
+            hb.blitter = EditorGUILayout.ObjectField("Blitter (Optional)",hb.blitter,typeof(HighlightingBlitter),true) as HighlightingBlitter;
 
-            EditorGUILayout.HelpBox("Depth Offset properties should be used only when Dynamic Batching is enabled in Player Settings. Otherwise set them to 0's to avoid rendering artifacts.", MessageType.Info);
+            EditorGUILayout.HelpBox("Depth Offset properties should be used only when Dynamic Batching is enabled in Player Settings. Otherwise set them to 0's to avoid rendering artifacts.",MessageType.Info);
             EditorGUI.BeginChangeCheck();
-            hb.offsetFactor = EditorGUILayout.Slider("Depth Offset Factor:", hb.offsetFactor, -1f, 0f);
-            hb.offsetUnits = EditorGUILayout.Slider("Depth Offset Units:", hb.offsetUnits, -100f, 0f);
+            hb.offsetFactor = EditorGUILayout.Slider("Depth Offset Factor:",hb.offsetFactor,-1f,0f);
+            hb.offsetUnits = EditorGUILayout.Slider("Depth Offset Units:",hb.offsetUnits,-100f,0f);
             if (EditorGUI.EndChangeCheck())
             {
                 EditorUtility.SetDirty(hb);
@@ -100,7 +101,7 @@ namespace HighlightingSystem
             EditorGUILayout.LabelField("Preset:");
 
             int oldIndex = presetIndex;
-            int newIndex = EditorGUILayout.Popup(presetIndex, presetNames);
+            int newIndex = EditorGUILayout.Popup(presetIndex,presetNames);
             if (oldIndex != newIndex)
             {
                 SetPresetSettings(newIndex);
@@ -113,19 +114,19 @@ namespace HighlightingSystem
             EditorGUI.BeginChangeCheck();
 
             SetBoldDefaultFont(presetIndex < 0 || hb.downsampleFactor != currentPreset.downsampleFactor);
-            hb.downsampleFactor = _downsampleSet[EditorGUILayout.Popup("Downsampling:", _downsampleGet[hb.downsampleFactor], downsampleOptions)];
+            hb.downsampleFactor = _downsampleSet[EditorGUILayout.Popup("Downsampling:",_downsampleGet[hb.downsampleFactor],downsampleOptions)];
 
             SetBoldDefaultFont(presetIndex < 0 || hb.iterations != currentPreset.iterations);
-            hb.iterations = Mathf.Clamp(EditorGUILayout.IntField("Iterations:", hb.iterations), 0, 50);
+            hb.iterations = Mathf.Clamp(EditorGUILayout.IntField("Iterations:",hb.iterations),0,50);
 
             SetBoldDefaultFont(presetIndex < 0 || hb.blurMinSpread != currentPreset.blurMinSpread);
-            hb.blurMinSpread = EditorGUILayout.Slider("Min Spread:", hb.blurMinSpread, 0f, 3f);
+            hb.blurMinSpread = EditorGUILayout.Slider("Min Spread:",hb.blurMinSpread,0f,3f);
 
             SetBoldDefaultFont(presetIndex < 0 || hb.blurSpread != currentPreset.blurSpread);
-            hb.blurSpread = EditorGUILayout.Slider("Spread:", hb.blurSpread, 0f, 3f);
+            hb.blurSpread = EditorGUILayout.Slider("Spread:",hb.blurSpread,0f,3f);
 
             SetBoldDefaultFont(presetIndex < 0 || hb.blurIntensity != currentPreset.blurIntensity);
-            hb.blurIntensity = EditorGUILayout.Slider("Intensity:", hb.blurIntensity, 0f, 1f);
+            hb.blurIntensity = EditorGUILayout.Slider("Intensity:",hb.blurIntensity,0f,5f);
 
             SetBoldDefaultFont(false);
 
@@ -147,13 +148,13 @@ namespace HighlightingSystem
                 string defaultName;
                 if (customPresetIndex < 0) { defaultName = "My Preset"; }
                 else { defaultName = customPresets[customPresetIndex].name; }
-                window = SavePresetWindow.Init(defaultName, SavePresetAs);
+                window = SavePresetWindow.Init(defaultName,SavePresetAs);
             }
 
             if (presetIndex < defaultPresets.Count) { GUI.enabled = false; }
             if (GUILayout.Button(GUI.enabled ? removeButtonContent : removeButtonContentDisabled))
             {
-                bool delete = EditorUtility.DisplayDialog("Removing Preset", "Are you sure - you want to remove Preset '" + customPresets[customPresetIndex].name + "'?", "Yes", "No");
+                bool delete = EditorUtility.DisplayDialog("Removing Preset","Are you sure - you want to remove Preset '" + customPresets[customPresetIndex].name + "'?","Yes","No");
                 if (delete)
                 {
                     customPresets.RemoveAt(customPresetIndex);
@@ -168,7 +169,7 @@ namespace HighlightingSystem
         }
 
         // 
-        protected virtual PresetSaveResult SavePresetAs(string name, bool overwrite)
+        protected virtual PresetSaveResult SavePresetAs(string name,bool overwrite)
         {
             window = null;
 
@@ -285,7 +286,7 @@ namespace HighlightingSystem
 
                 byte[] bytes = ms.ToArray();
                 string result = Convert.ToBase64String(bytes);
-                EditorPrefs.SetString(editorPrefsKey, result);
+                EditorPrefs.SetString(editorPrefsKey,result);
 
                 Debug.Log(bytes.Length);
                 Debug.Log(result);
@@ -367,24 +368,24 @@ namespace HighlightingSystem
         {
             if (boldFontMethodInfo == null)
             {
-                boldFontMethodInfo = typeof(EditorGUIUtility).GetMethod("SetBoldDefaultFont", BindingFlags.Static | BindingFlags.NonPublic);
+                boldFontMethodInfo = typeof(EditorGUIUtility).GetMethod("SetBoldDefaultFont",BindingFlags.Static | BindingFlags.NonPublic);
             }
-            boldFontMethodInfo.Invoke(null, new[] { value as object });
+            boldFontMethodInfo.Invoke(null,new[] { value as object });
         }
     }
 
-    public class SavePresetWindow : EditorWindow
+    public class SavePresetWindow :EditorWindow
     {
         static private readonly string presetTextFieldName = "PresetTextFieldName";
-        public delegate PresetSaveResult InputResult(string input, bool overwrite);
+        public delegate PresetSaveResult InputResult(string input,bool overwrite);
         private event InputResult callback;
         private string presetName;
 
         // 
-        public static SavePresetWindow Init(string name, InputResult callback)
+        public static SavePresetWindow Init(string name,InputResult callback)
         {
-            Rect rect = new Rect(Screen.width * 0.5f, Screen.height * 0.5f, 300f, 60f);
-            SavePresetWindow window = GetWindowWithRect<SavePresetWindow>(rect, true, "Specify Preset Name", true);
+            Rect rect = new Rect(Screen.width * 0.5f,Screen.height * 0.5f,300f,60f);
+            SavePresetWindow window = GetWindowWithRect<SavePresetWindow>(rect,true,"Specify Preset Name",true);
             window.callback = callback;
             window.presetName = name;
             return window;
@@ -394,11 +395,11 @@ namespace HighlightingSystem
         void OnGUI()
         {
             GUI.SetNextControlName(presetTextFieldName);
-            presetName = EditorGUILayout.TextField("Preset Name", presetName);
+            presetName = EditorGUILayout.TextField("Preset Name",presetName);
 
             EditorGUI.FocusTextInControl(presetTextFieldName);
 
-            bool pressed = GUILayout.Button("Save Preset", GUILayout.ExpandHeight(true));
+            bool pressed = GUILayout.Button("Save Preset",GUILayout.ExpandHeight(true));
             Event e = Event.current;
             bool submitted = e.type == EventType.KeyUp && GUI.GetNameOfFocusedControl() == presetTextFieldName && (e.keyCode == KeyCode.Return || e.keyCode == KeyCode.KeypadEnter);
 
@@ -421,11 +422,11 @@ namespace HighlightingSystem
 
             if (string.IsNullOrEmpty(presetName))
             {
-                EditorUtility.DisplayDialog("Unable to save Preset", "Please specify valid Preset name.", "Close");
+                EditorUtility.DisplayDialog("Unable to save Preset","Please specify valid Preset name.","Close");
             }
             else
             {
-                PresetSaveResult result = callback(presetName, false);
+                PresetSaveResult result = callback(presetName,false);
 
                 if (result == PresetSaveResult.Success)
                 {
@@ -437,10 +438,10 @@ namespace HighlightingSystem
                 }
                 else if (result == PresetSaveResult.Exists)
                 {
-                    bool overwrite = EditorUtility.DisplayDialog("Overwriting Preset", "Preset '" + presetName + "' already exists. Overwrite?", "Yes", "No");
+                    bool overwrite = EditorUtility.DisplayDialog("Overwriting Preset","Preset '" + presetName + "' already exists. Overwrite?","Yes","No");
                     if (overwrite)
                     {
-                        result = callback(presetName, true);
+                        result = callback(presetName,true);
 
                         if (result == PresetSaveResult.Success)
                         {
@@ -458,13 +459,13 @@ namespace HighlightingSystem
         // 
         private void NotifyOverwritingDefault()
         {
-            EditorUtility.DisplayDialog("Unable to save Preset", "Overwriting default Presets is not allowed! Please specify another name for your Preset.", "Close");
+            EditorUtility.DisplayDialog("Unable to save Preset","Overwriting default Presets is not allowed! Please specify another name for your Preset.","Close");
         }
 
         // 
         private void Quit()
         {
-            callback(string.Empty, false);
+            callback(string.Empty,false);
             Close();
         }
     }

@@ -83,13 +83,12 @@ namespace MagiCloud.Interactive
 
         void OnGrabObject(GameObject target,int handIndex)
         {
-            Search.OnStartInteraction(target,true);
+            Search.OnStartInteraction(target, true, handIndex);
         }
 
         void OnIdleObject(GameObject target,int handIndex)
         {
             Search.OnStopInteraction(target);
-
         }
 
         // /// <summary>

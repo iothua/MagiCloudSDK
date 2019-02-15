@@ -85,6 +85,7 @@ namespace MagiCloud.Features
 
         private void Release(GameObject arg1,int arg2)
         {
+            
             if (grabObject==arg1&&type==ProcessType.Release)
             {
                 OnUpdate();

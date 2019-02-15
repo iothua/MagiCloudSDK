@@ -17,7 +17,7 @@ namespace MagiCloud.Core
     /// 框架初始化
     /// </summary>
     [DefaultExecutionOrder(-1000)]
-    public class MInitialize : MonoBehaviour
+    public class MInitialize :MonoBehaviour
     {
         public OperatePlatform CurrentPlatform;
 
@@ -35,7 +35,7 @@ namespace MagiCloud.Core
                     Instantiate(Resources.Load("Controller/KinectController"),transform);
                     break;
                 case OperatePlatform.Mouse:
-                    Instantiate(Resources.Load("Controller/MouseController"), transform);
+                    Instantiate(Resources.Load("Controller/MouseController"),transform);
                     break;
                 default:
                     break;
@@ -47,17 +47,17 @@ namespace MagiCloud.Core
 
         }
 
-        void AddHighlighting()
+        private void AddHighlighting()
         {
             highlighting = MUtility.MainCamera.gameObject.GetComponent<HighlightingRenderer>() ?? MUtility.MainCamera.gameObject.AddComponent<HighlightingRenderer>();
 
             if (highlighting != null)
             {
-                highlighting.blurIntensity = 1;
-                highlighting.blurSpread = 0;
-                highlighting.blurMinSpread = 1;
-                highlighting.iterations = 2;
-                highlighting.downsampleFactor = 1;
+                highlighting.blurIntensity = 0.3f;
+                highlighting.blurSpread = 0.25f;
+                highlighting.blurMinSpread = 0.65f;
+                highlighting.iterations = 5;
+                highlighting.downsampleFactor =1;
             }
         }
 

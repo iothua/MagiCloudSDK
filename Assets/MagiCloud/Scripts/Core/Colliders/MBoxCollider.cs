@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using MagiCloud.Operate;
+using UnityEngine;
 
 namespace MagiCloud
 {
@@ -8,9 +9,17 @@ namespace MagiCloud
     {
         public bool IsEnable {
             get {
+
+                if (BoxCollider == null)
+                    BoxCollider = GetComponent<BoxCollider>() ?? gameObject.AddComponent<BoxCollider>();
+
                 return BoxCollider.enabled;
             }
             set {
+
+                if (BoxCollider == null)
+                    BoxCollider = GetComponent<BoxCollider>() ?? gameObject.AddComponent<BoxCollider>();
+
                 BoxCollider.enabled = value;
             }
         }
@@ -32,10 +41,12 @@ namespace MagiCloud
                 if (isShake)
                 {
                     BoxCollider.size += offsetValue;
+                    ActionConstraint.AddBind(ActionConstraint.Grab_Action);
                 }
                 else
                 {
                     BoxCollider.size -= offsetValue;
+                    ActionConstraint.RemoveBind(ActionConstraint.Grab_Action);
                 }
             }
         }

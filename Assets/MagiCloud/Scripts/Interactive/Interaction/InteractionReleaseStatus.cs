@@ -13,6 +13,10 @@
         /// <summary>
         /// 内部释放
         /// </summary>
-        Inside
+        Inside,
+        /// <summary>
+        /// 是自动交互
+        /// </summary>
+        IsAuto
     }
 }

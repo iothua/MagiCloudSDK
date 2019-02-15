@@ -44,7 +44,7 @@ namespace MagiCloud.KGUI
     /// </summary>
     [DefaultExecutionOrder(-100)]
     [RequireComponent(typeof(KGUI_BoxCollider))]
-    public class KGUI_ButtonBase : KGUI_Base,IButton
+    public class KGUI_ButtonBase :KGUI_Base, IButton
     {
         public ButtonType buttonType;
 
@@ -56,7 +56,7 @@ namespace MagiCloud.KGUI
 
         protected bool IsEnter;
 
-        private bool _IsEnable = true;
+        protected bool _IsEnable = true;
         protected KGUI_BoxCollider boxCollider;
 
         //protected MBehaviour behaviour;
@@ -67,14 +67,29 @@ namespace MagiCloud.KGUI
         public AudioSource audioSource;
         public bool IsStartAudio = true;
 
+        public override bool Active
+        {
+            get
+            {
+                return IsEnable;
+            }
+
+            set
+            {
+                IsEnable=value;
+            }
+        }
         /// <summary>
         /// 是否激活
         /// </summary>
-        public virtual bool IsEnable {
-            get {
+        public virtual bool IsEnable
+        {
+            get
+            {
                 return _IsEnable;
             }
-            set {
+            set
+            {
 
                 ////如果相等，则不进行任何处理
                 //if (_IsEnable == value) return;
@@ -97,8 +112,10 @@ namespace MagiCloud.KGUI
             }
         }
 
-        public KGUI_BoxCollider Collider {
-            get {
+        public KGUI_BoxCollider Collider
+        {
+            get
+            {
 
                 try
                 {
@@ -240,10 +257,10 @@ namespace MagiCloud.KGUI
         /// </summary>
         /// <param name="handIndex"></param>
         /// <param name="isRange"></param>
-        public virtual void OnUpRange(int handIndex, bool isRange)
+        public virtual void OnUpRange(int handIndex,bool isRange)
         {
             if (onUpRange != null)
-                onUpRange.Invoke(handIndex, isRange);
+                onUpRange.Invoke(handIndex,isRange);
         }
 
         /// <summary>
@@ -254,6 +271,29 @@ namespace MagiCloud.KGUI
         {
             if (onDownStay != null)
                 onDownStay.Invoke(handIndex);
+        }
+
+
+        public void RefreshSprite(Sprite sprite,string eventName)
+        {
+            switch (eventName)
+            {
+                case "click":
+                    pressedSprite=sprite;
+                    break;
+                case "normal":
+                    normalSprite=sprite;
+                    break;
+                case "enter":
+                    enterSprite=sprite;
+                    break;
+                case "disable":
+                    disableSprite=sprite;
+                    break;
+                default:
+                    break;
+            }
+            OnHandle(eventName);
         }
 
         protected virtual void OnHandle(string cmd)
@@ -274,7 +314,7 @@ namespace MagiCloud.KGUI
                             image.sprite = pressedSprite;
                             if (image.transform.localScale == Vector3.one)
                             {
-                                image.transform.DOPunchScale(new Vector3(-0.2f, -0.2f, 0), 0.4f, 12, 0.5f);
+                                image.transform.DOPunchScale(new Vector3(-0.2f,-0.2f,0),0.4f,12,0.5f);
                             }
                         }
                     }
@@ -395,17 +435,17 @@ namespace MagiCloud.KGUI
 
         protected virtual void OnEnable()
         {
-            
+
         }
 
         protected virtual void OnDisable()
         {
-            
+
         }
 
         protected virtual void OnDestroy()
         {
-            
+
         }
 
         public void AddAudio()
