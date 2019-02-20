@@ -41,12 +41,14 @@ namespace MagiCloud
                 if (isShake)
                 {
                     BoxCollider.size += offsetValue;
-                    ActionConstraint.AddBind(ActionConstraint.Grab_Action);
+
+                    //ActionConstraint.AddBind(ActionConstraint.Grab_Action);
                 }
                 else
                 {
                     BoxCollider.size -= offsetValue;
-                    ActionConstraint.RemoveBind(ActionConstraint.Grab_Action);
+
+                    //ActionConstraint.RemoveBind(ActionConstraint.Grab_Action);
                 }
             }
         }

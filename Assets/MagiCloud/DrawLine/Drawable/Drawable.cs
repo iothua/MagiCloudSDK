@@ -22,6 +22,35 @@ namespace DrawLine
         Color[] cleanColorArray;                                    //用于清空的填充颜色数组
         Color32[] curColor;                                         //画板精灵体的当前颜色数组(绘制是动态改变)
 
+        void Awake()
+        {
+            drawable = this;                        //全局静态画笔对象
+            currentBrush = PenBrush;                //默认笔刷
+            drawableSprite = this.GetComponent<SpriteRenderer>().sprite;
+            drawableTexture = drawableSprite.texture;
+
+            cleanColorArray = new Color[(int)drawableSprite.rect.width * (int)drawableSprite.rect.height];  //重置时Texture2D的颜色
+            for (int x = 0; x < cleanColorArray.Length; x++)
+                cleanColorArray[x] = resetColour;
+        }
+
+        void Update()
+        {
+            bool mouse_held_down = Input.GetMouseButton(0);
+            if (mouse_held_down)
+            {
+                Vector3 temp = Input.mousePosition;
+                temp.x = Mathf.Clamp(temp.x, 0, Screen.width);
+                temp.y = Mathf.Clamp(temp.y, 0, Screen.height);
+                Vector2 mouse_world_position = MagiCloud.MUtility.UICamera.ScreenToWorldPoint(temp);
+                currentBrush(mouse_world_position);
+            }
+            else if (!mouse_held_down)
+            {
+                preDragPosition = Vector2.zero;
+            }
+        }
+
         /// <summary>
         /// 基本工作流程模板
         /// </summary>
@@ -77,25 +106,6 @@ namespace DrawLine
         {
             currentBrush = PenBrush;
         }
-
-        void Update()
-        {
-            bool mouse_held_down = Input.GetMouseButton(0);
-            if (mouse_held_down)
-            {
-                Vector3 temp = Input.mousePosition;
-                temp.x = Mathf.Clamp(temp.x, 0, Screen.width);
-                temp.y = Mathf.Clamp(temp.y, 0, Screen.height);
-                Vector2 mouse_world_position = MagiCloud.MUtility.UICamera.ScreenToWorldPoint(temp);
-                currentBrush(mouse_world_position);
-            }
-            else if (!mouse_held_down)
-            {
-                preDragPosition = Vector2.zero;
-            }
-        }
-
-
 
         /// <summary>
         /// 两点之间插值画线
@@ -233,18 +243,6 @@ namespace DrawLine
         private void OnDestroy()
         {
             ResetCanvas();
-        }
-
-        void Awake()
-        {
-            drawable = this;                        //全局静态画笔对象
-            currentBrush = PenBrush;                //默认笔刷
-            drawableSprite = this.GetComponent<SpriteRenderer>().sprite;
-            drawableTexture = drawableSprite.texture;
-
-            cleanColorArray = new Color[(int)drawableSprite.rect.width * (int)drawableSprite.rect.height];  //重置时Texture2D的颜色
-            for (int x = 0; x < cleanColorArray.Length; x++)
-                cleanColorArray[x] = resetColour;
         }
     }
 }

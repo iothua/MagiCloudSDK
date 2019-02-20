@@ -55,6 +55,9 @@ namespace DrawLine
         public void SetClear()
         {
             Drawable.drawable.ResetCanvas();
+            Drawable.penColour = preColor;
+            Drawable.drawable.SetPenBrush();
+            isEraser = false;
         }
     }
 }

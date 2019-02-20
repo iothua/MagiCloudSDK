@@ -10,7 +10,6 @@ namespace DrawLine
     {
         public GameObject mask;                                             //遮罩
         public RawImage screenShotImage;                                    //存放场景截图的RawImage
-                                                                            // Use this for initialization
         void Start()
         {
             StartCoroutine("Test");

@@ -5,13 +5,14 @@ using UnityEngine.UI;
 
 namespace DrawLine
 {
+    [DefaultExecutionOrder(1000)]
     public class ScreenShotTool : MonoBehaviour
     {
         private static ScreenShotTool _ScreenShotTool;
 
         public Camera kinectImageCamera;                                    //Kinect AR背景相机
         public RawImage kinectImage;                                        //存放AR背景图片的RawImage
-        public Camera screenShotCamera;                                     //截屏相机
+        public Camera screenShotCamera;                                     //主相机
 
         private Rect _Rect;
         private LayerMask _LayerMask;
@@ -20,6 +21,13 @@ namespace DrawLine
         public static Texture2D GetScreenShot { get { return _ScreenShotTool._Texture2D; } }
         private void Awake()
         {
+            GetComponent<Canvas>().worldCamera = MagiCloud.MUtility.UICamera;       //设置渲染相机
+
+            kinectImageCamera = MagiCloud.MUtility.UICamera;                        //变量初始化
+            if (FindObjectOfType<MagiCloud.Core.MInitialize>().CurrentPlatform == MagiCloud.Core.OperatePlatform.Kinect)
+                kinectImage = FindObjectOfType<MagiCloud.Kinect.KinectAR>().kinectImg;
+            screenShotCamera = MagiCloud.MUtility.MainCamera;
+
             if (_ScreenShotTool == null)
                 _ScreenShotTool = this;
         }
@@ -31,6 +39,10 @@ namespace DrawLine
         /// <param name="path">所截图片保存路劲，无需保存时给null</param>
         public static void StartScreenShotAR(Rect rect, LayerMask layerMask, string path = null)
         {
+            if (_ScreenShotTool.kinectImage == null)
+            {
+                throw new System.Exception("kinectImage为空不能显示AR背景");
+            }
             _ScreenShotTool._Rect = rect;
             _ScreenShotTool._LayerMask = layerMask;
             _ScreenShotTool._Path = path;
@@ -136,5 +148,5 @@ namespace DrawLine
             byte[] byts = texture2D.EncodeToPNG();                          //Texture2D转PNG
             System.IO.File.WriteAllBytes(_PisPath, byts);                   //写入磁盘
         }
-    } 
+    }
 }

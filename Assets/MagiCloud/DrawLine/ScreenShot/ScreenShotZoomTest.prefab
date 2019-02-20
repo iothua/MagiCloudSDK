@@ -60,6 +60,7 @@ GameObject:
   - component: {fileID: 223291127504377026}
   - component: {fileID: 114274602491164478}
   - component: {fileID: 114413715063540908}
+  - component: {fileID: 114097637501740270}
   - component: {fileID: 114428774002245736}
   - component: {fileID: 114468055068261450}
   - component: {fileID: 114826333013999302}
@@ -108,6 +109,20 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &114097637501740270
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1755705156437848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1be5a19715cab0d47b42b16d64956ae0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kinectImageCamera: {fileID: 0}
+  kinectImage: {fileID: 0}
+  screenShotCamera: {fileID: 0}
 --- !u!114 &114169303347148576
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -196,7 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04e83d5c85efd22408dbc858019eff86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionType: 1
+  actionType: 0
   progress: 0
 --- !u!114 &114552969474130122
 MonoBehaviour:
@@ -209,6 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7033c43866740524da595102fc4f0608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  order: 0
   panelType: 0
   extentValue: 10
   OtherRects: []

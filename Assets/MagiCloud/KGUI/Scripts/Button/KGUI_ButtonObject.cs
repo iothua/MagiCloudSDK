@@ -43,7 +43,7 @@ namespace MagiCloud.KGUI
         {
             base.OnDown(handIndex);
 
-            if (tempCount == 0) return;
+            if (maxCount == 0) return;
 
             var targetObject = Instantiate(bindObject) as GameObject;
             var frontUI = targetObject.GetComponent<KGUI_ObjectFrontUI>() ?? targetObject.AddComponent<KGUI_ObjectFrontUI>();
@@ -54,10 +54,10 @@ namespace MagiCloud.KGUI
 
             targetObjects.Add(targetObject);
 
-            if (tempCount != -1)
-                tempCount--;
+            if (maxCount != -1)
+                maxCount--;
 
-            if (tempCount == 0)
+            if (maxCount == 0)
             {
                 IsEnable = false;
             }
@@ -164,9 +164,9 @@ namespace MagiCloud.KGUI
 
                 Destroy(target);
 
-                if (tempCount != -1 && tempCount <= maxCount)
+                if (maxCount != -1 && maxCount < tempCount)
                 {
-                    tempCount++;
+                    maxCount++;
                     IsEnable = true;
                 }
             }
