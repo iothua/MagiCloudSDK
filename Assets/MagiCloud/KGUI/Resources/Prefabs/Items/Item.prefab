@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33626667289524652}
   - component: {fileID: 23488795750971652}
   - component: {fileID: 65174810992319950}
-  - component: {fileID: 114462707296227990}
+  - component: {fileID: 114687262347608118}
   m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
@@ -30,6 +30,37 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1887233451132038
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4002555929318286}
+  - component: {fileID: 65440414534723008}
+  - component: {fileID: 114667451640419638}
+  - component: {fileID: 114671996758677058}
+  m_Layer: 0
+  m_Name: operaObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4002555929318286
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1887233451132038}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4094556194015134}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4094556194015134
 Transform:
   m_ObjectHideFlags: 1
@@ -39,7 +70,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.2, y: 2.0300007, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4002555929318286}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -97,7 +129,44 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114462707296227990
+--- !u!65 &65440414534723008
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1887233451132038}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114667451640419638
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1887233451132038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ff29226f6188743bbe521835a5c387, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FeaturesObject: {fileID: 114687262347608118}
+--- !u!114 &114671996758677058
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1887233451132038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bae58a73879ab2e4bb084d7222539ee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabObject: {fileID: 1614148937232412}
+  IsRayLayer: 1
+--- !u!114 &114687262347608118
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,8 +174,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 1614148937232412}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1422945833, guid: 1a71ca4284eb06e40acccfc2056f13a9, type: 3}
+  m_Script: {fileID: 11500000, guid: d60dedc6f85427643955a4beb1ae0e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grabObject: {fileID: 1614148937232412}
-  IsRayLayer: 1
+  ActiveSpaceLimit: 0
+  ActiveHighlight: 0
+  ActiveShadow: 0
+  ActiveLabel: 0
+  ActiveLimitMove: 0
+  shadowModel: {fileID: 0}
+  highligheModel: {fileID: 0}
+  highlightGameobject: {fileID: 0}
+  LimitMove: {fileID: 0}
+  ObjectRatation: {fileID: 0}
+  cameraRotateAround: {fileID: 0}
+  objectButton: {fileID: 0}
+  LabelController: {fileID: 0}
+  CanGrab: {fileID: 114671996758677058}
+  spaceLimit: {fileID: 0}
+  highlightObject: {fileID: 0}
+  ShadowController: {fileID: 0}
+  None: {fileID: 0}
+  Customize: {fileID: 0}
+  operaType: 1
+  beforeChange: 1
+  Opera: {fileID: 114667451640419638}

@@ -8,7 +8,7 @@ namespace MagiCloud.Features
     /// 物品高亮控制
     /// </summary>
     [RequireComponent(typeof(BoxCollider))]
-    public class HighlightObject : MonoBehaviour
+    public class HighlightObject :MonoBehaviour
     {
         public HighLightType highlightType = HighLightType.Shader;                 //高亮类型
 
@@ -16,17 +16,17 @@ namespace MagiCloud.Features
         public GameObject highlightModel;                   //model 高亮模型
 
         private bool seeThrough = true;                     //shader 是否穿透
-        public Color highlightColor = Color.cyan;           //shader 颜色
-        public Color grabColor = Color.cyan;
+        public Color highlightColor = Color.yellow;           //shader 颜色
+        public Color grabColor = Color.yellow;
 
         protected Highlighter h;                            //高亮实现
         private bool _isHighlight = true;
-
-        
+        private bool immediate = true;
+        private Highlighter[] CurrentHighlighters;
         [Header("指定该物体下的所有物体高亮，默认为父物体")]
         public Transform highLightTransform;                //高亮位置
 
-        void Start()
+        void Awake()
         {
             OnAddHighLight();
         }
@@ -34,9 +34,11 @@ namespace MagiCloud.Features
         void OnAddHighLight()
         {
             if (highLightTransform == null)
-                highLightTransform = transform.parent;
-
-            h = highLightTransform.GetComponent<Highlighter>() ?? highLightTransform.gameObject.AddComponent<Highlighter>();
+                highLightTransform = transform.parent.Find("Model");
+            if (highLightTransform==null)
+                highLightTransform=transform.parent;
+            if (h == null)
+                h = highLightTransform.GetComponent<Highlighter>() ?? highLightTransform.gameObject.AddComponent<Highlighter>();
         }
 
         public void OnRemoveHighLight()
@@ -63,6 +65,7 @@ namespace MagiCloud.Features
             }
         }
 
+
         /// <summary>
         /// 显示高亮
         /// </summary>
@@ -70,12 +73,12 @@ namespace MagiCloud.Features
         {
             //获取到子物体下的所有高亮脚本
 
-            var highlights = highLightTransform.GetComponentsInChildren<HighlightObject>().Where(obj => obj != this);
+          
 
             switch (highlightType)
             {
                 case HighLightType.Model:
-
+                    var highlights = highLightTransform.GetComponentsInChildren<HighlightObject>().Where(obj => obj != this);
                     if (highlightModel != null && highlightModel.activeSelf == false && _isHighlight)
                         highlightModel.SetActive(true);
 
@@ -89,23 +92,29 @@ namespace MagiCloud.Features
                     break;
                 case HighLightType.Shader:
 
-                    
-                    //移除子物体下的所有高亮
-                    foreach (var item in highlights)
+                    var highlighters = transform.parent.GetComponentsInChildren<Highlighter>();
+                    if (CurrentHighlighters!=highlighters)
                     {
-                        //移除子物体
-                        item.OnRemoveHighLight();
+                        //关闭上一次子物体下的所有高亮
+                        if (CurrentHighlighters!=null)
+                            foreach (var item in CurrentHighlighters)
+                            {
+                                if (immediate)
+                                    item.ConstantOffImmediate();
+                                else
+                                    item.ConstantOff();
+                            }
+                        highlightColor=highlightColor*10;
+                        //子物体下的所有高亮
+                        foreach (var item in highlighters)
+                        {
+                            if (immediate)
+                                item.ConstantOnImmediate(highlightColor);
+                            else
+                                item.ConstantOn(highlightColor,2);
+                        }
+                        CurrentHighlighters=highlighters;
                     }
-
-                    if (h == null)
-                        OnAddHighLight();
-
-                    //脚本重置下
-                    h.enabled = false;
-                    h.enabled = true;
-
-                    //h.ConstantOnImmediate(isGrab ? grabColor : highlightColor);
-                    h.ConstantOnImmediate(highlightColor);
 
                     break;
                 default:
@@ -117,11 +126,12 @@ namespace MagiCloud.Features
         /// </summary>
         public void HideHighLight()
         {
-            var highlights = highLightTransform.GetComponentsInChildren<HighlightObject>().Where(obj => obj != this);
+         
 
             switch (highlightType)
             {
                 case HighLightType.Model:
+                    var highlights = highLightTransform.GetComponentsInChildren<HighlightObject>().Where(obj => obj != this);
                     if (highlightModel != null && highlightModel.activeSelf == true)
                         highlightModel.SetActive(false);
 
@@ -134,7 +144,16 @@ namespace MagiCloud.Features
 
                     break;
                 case HighLightType.Shader:
-                    h.ConstantOffImmediate();
+                    var highlighters = transform.parent.GetComponentsInChildren<Highlighter>();
+                    //关闭含有的所有高亮
+                    foreach (var item in highlighters)
+                    {
+                        if (immediate)
+                            item.ConstantOffImmediate();
+                        else
+                            item.ConstantOff();
+                    }
+
                     break;
                 default:
                     break;

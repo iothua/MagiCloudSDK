@@ -17,7 +17,7 @@ namespace MagiCloud.KGUI
         public int defalutFontSize;
         public Sprite defaultSprite;
         [HideInInspector]
-        public List<KGUI_Label> labels;
+        public Dictionary<KGUI_Label,GameObject> labels;
 
         private static KGUI_LabelController instance;
         /// <summary>
@@ -65,10 +65,11 @@ namespace MagiCloud.KGUI
         }
 
         public static GameObject currentSelectedObj;
-        private void Start()
+        private void Awake()
         {
             Initialize();
         }
+     
         /// <summary>
         /// 初始化
         /// </summary>
@@ -81,11 +82,11 @@ namespace MagiCloud.KGUI
             gameObject.SetActive(true);
             // transform.localPosition=Vector3.zero;
             //transform.localScale=Vector3.one;
-            defaultTextColor =FrameConfig.Config.labelColor;
+            //    defaultTextColor =FrameConfig.Config.initLabelColor;
             defaultFont=FrameConfig.Config.labelFont?? Font.CreateDynamicFontFromOSFont("msyh",24);
-            defalutFontSize=FrameConfig.Config.labelFontSize;
-            defaultTextColor=FrameConfig.Config.labelColor;
-            labels =new List<KGUI_Label>();
+            defalutFontSize=FrameConfig.Config.initLabelFontSize;
+            defaultTextColor=FrameConfig.Config.initLabelColor;
+            labels =new Dictionary<KGUI_Label,GameObject>();
 
         }
 
@@ -93,27 +94,27 @@ namespace MagiCloud.KGUI
         {
 
             if (labels==null) return;
-            for (int i = 0; i < labels.Count; i++)
+            foreach (var item in labels)
             {
-                labels[i].SetFontSize(size);
+                item.Key.SetFontSize(size);
             }
         }
 
         public void SetAllFontColor(Color color = default(Color))
         {
             if (labels==null) return;
-            for (int i = 0; i < labels.Count; i++)
+            foreach (var item in labels)
             {
-                labels[i].SetFontColor(color);
+                item.Key.SetFontColor(color);
             }
         }
 
         public void SetAllLabelBG(Sprite sprite = null)
         {
             if (labels==null) return;
-            for (int i = 0; i < labels.Count; i++)
+            foreach (var item in labels)
             {
-                labels[i].SetLabelBG(sprite);
+                item.Key.SetLabelBG(sprite);
             }
         }
 
@@ -126,11 +127,11 @@ namespace MagiCloud.KGUI
         {
             KGUI_Label label = data.label;
             if (label==null) label=CreatLabel(data);
-
+            if (labels.ContainsKey(data.label)&&labels[label]!=data.appertaining)
+                label=CreatLabel(data);
             label.SetLabel(data);
-
-            if (!labels.Contains(label))
-                labels.Add(label);
+            if (!labels.ContainsKey(label))
+                labels.Add(label,data.appertaining);
             return label;
         }
 
@@ -141,11 +142,11 @@ namespace MagiCloud.KGUI
         /// <returns></returns>
         public bool CheckInCache(LabelData data)
         {
-            for (int i = 0; i < labels.Count; i++)
+            foreach (var item in labels)
             {
-                if (labels[i].id==data.id)
+                if (item.Key.id==data.id)
                 {
-                    data.label=labels[i];
+                    data.label=item.Key;
                     return true;
                 }
             }
@@ -177,7 +178,7 @@ namespace MagiCloud.KGUI
 
         public void DefaultLabelData(LabelData data)
         {
-            data.labelSize=Vector2.one*100;
+            data.labelSize=new Vector2(170,50);// Vector2.one*100;
             data.clearAreaZ=Vector2.one;
             data.peakZreaZ=new Vector2(0,float.MaxValue);
             data.fontSize=defalutFontSize;
@@ -193,7 +194,7 @@ namespace MagiCloud.KGUI
         {
             if (labels == null) return;
 
-            if (labels.Contains(data.label))
+            if (labels.ContainsKey(data.label))
             {
                 KGUI_Label temp = data.label;
                 labels.Remove(temp);
@@ -215,7 +216,7 @@ namespace MagiCloud.KGUI
         /// <param name="label"></param>
         public void DestroyByLabel(KGUI_Label label)
         {
-            if (labels.Contains(label))
+            if (labels.ContainsKey(label))
             {
                 labels.Remove(label);
             }

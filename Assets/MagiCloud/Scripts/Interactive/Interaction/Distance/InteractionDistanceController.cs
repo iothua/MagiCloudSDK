@@ -10,13 +10,13 @@ namespace MagiCloud.Interactive.Distance
     /// </summary>
     public class InteractionDistanceInfo
     {
-        public DistanceData sendKey;
-        public DistanceData receiveValue;
+        public DistanceInteraction sendKey;
+        public DistanceInteraction receiveValue;
 
         //距离状态
         public DistanceStatus distanceStatus = DistanceStatus.Exit;
 
-        public InteractionDistanceInfo(DistanceData key, DistanceData value, DistanceStatus distanceStatus)
+        public InteractionDistanceInfo(DistanceInteraction key, DistanceInteraction value, DistanceStatus distanceStatus)
         {
             this.sendKey = key;
             this.receiveValue = value;
@@ -47,10 +47,12 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="send"></param>
         /// <param name="receive"></param>
-        public static void OnEnter(DistanceData send,DistanceData receive)
+        public static void OnEnter(DistanceInteraction send, DistanceInteraction receive)
         {
+            //if (send.distanceData.IsOnly && send.OnlyDistance != receive) return;
+
             //在次之前，还需要判断一次，否则一直执行循环查找，会很费资源，这么处理不恰当
-            if (send.OnlyDistance != null || !receive.OnCheck()) return;
+            if (send.OnlyDistance != null || !receive.OnInteractionCheck()) return;
 
             //Debug.Log("进来-发送端：" + send.Interaction.FeaturesObjectController + " 接收端：" + receive.Interaction.FeaturesObjectController);
 
@@ -66,8 +68,8 @@ namespace MagiCloud.Interactive.Distance
                 DistanceInfos.Add(distanceInfo);
             }
 
-            receive.OnEnter(send);
-            send.OnEnter(receive);
+            receive.OnInteractionEnter(send);
+            send.OnInteractionEnter(receive);
         }
 
         /// <summary>
@@ -75,7 +77,7 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="send"></param>
         /// <param name="receive"></param>
-        public static void OnExit(DistanceData send, DistanceData receive)
+        public static void OnExit(DistanceInteraction send, DistanceInteraction receive)
         {
             //在次之前，还需要判断一次，否则一直执行循环查找，会很费资源，这么处理不恰当
 
@@ -87,8 +89,8 @@ namespace MagiCloud.Interactive.Distance
             {
                 DistanceInfos.Remove(distanceInfo);
 
-                receive.OnExit(send);
-                send.OnExit(receive);
+                receive.OnInteractionExit(send);
+                send.OnInteractionExit(receive);
 
                 //Debug.Log("离开了");
             }
@@ -99,10 +101,10 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="send"></param>
         /// <param name="receive"></param>
-        public static void OnStay(DistanceData send, DistanceData receive)
+        public static void OnStay(DistanceInteraction send, DistanceInteraction receive)
         {
-            receive.OnStay(send);
-            send.OnStay(receive);
+            receive.OnInteractionStay(send);
+            send.OnInteractionStay(receive);
         }
 
         /// <summary>
@@ -110,7 +112,7 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="send"></param>
         /// <param name="receive"></param>
-        public static void OnRelease(DistanceData send, DistanceData receive)
+        public static void OnRelease(DistanceInteraction send, DistanceInteraction receive,bool isAuto=false )
         {
             InteractionDistanceInfo distanceInfo;
 
@@ -118,8 +120,8 @@ namespace MagiCloud.Interactive.Distance
             {
                 distanceInfo.SetDistanceStatus(DistanceStatus.Complete);
 
-                receive.OnRelesae(send);
-                send.OnRelesae(receive);
+                receive.OnInteractionRelease(send,isAuto);
+                send.OnInteractionRelease(receive);
             }
         }
 
@@ -129,7 +131,7 @@ namespace MagiCloud.Interactive.Distance
         /// <param name="send"></param>
         /// <param name="receive"></param>
         /// <returns></returns>
-        static bool IsContains(DistanceData send, DistanceData receive,out InteractionDistanceInfo distanceInfo)
+        static bool IsContains(DistanceInteraction send, DistanceInteraction receive,out InteractionDistanceInfo distanceInfo)
         {
             var distance = DistanceInfos.Find(obj => obj.sendKey.Equals(send) && obj.receiveValue.Equals(receive));
 
@@ -144,7 +146,7 @@ namespace MagiCloud.Interactive.Distance
         /// <param name="send"></param>
         /// <param name="receive"></param>
         /// <returns></returns>
-        public static bool IsEnter(DistanceData send, DistanceData receive)
+        public static bool IsEnter(DistanceInteraction send, DistanceInteraction receive)
         {
             InteractionDistanceInfo distanceInfo;
 

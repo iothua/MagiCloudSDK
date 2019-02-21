@@ -91,9 +91,20 @@ namespace MagiCloud.KGUI
             }
         }
 
-        protected override void OnStart()
+        public bool IsActive
         {
-            base.OnStart();
+            set
+            {
+                if (Collider != null)
+                {
+                    Collider.IsEnable = value;
+                }
+            }
+        }
+
+        protected override void Start()
+        {
+            base.Start();
 
             EventHandIdle.AddListener(OnButtonRelease, Core.ExecutionPriority.High);
 

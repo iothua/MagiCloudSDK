@@ -10,6 +10,7 @@ namespace MagiCloud.KGUI
     /// KGUI_Canvas
     /// </summary>
     [ExecuteInEditMode]
+    [DefaultExecutionOrder(-800)]
     public class KGUI_Canvas : MonoBehaviour
     {
         private Canvas canvas;
@@ -18,23 +19,36 @@ namespace MagiCloud.KGUI
 
         private void Awake()
         {
-            behaviour = new MBehaviour(ExecutionPriority.High, -800);
-            behaviour.OnAwake(() =>
-            {
-                canvas = GetComponent<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                canvas.worldCamera = MUtility.UICamera;
+            //behaviour = new MBehaviour(ExecutionPriority.High, -800, enabled);
+            //behaviour.OnAwake_MBehaviour(() =>
+            //{
+            //    canvas = GetComponent<Canvas>();
+            //    canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            //    canvas.worldCamera = MUtility.UICamera;
+            //});
 
-            });
-
-            MBehaviourController.AddBehaviour(behaviour);
+            canvas = GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = MUtility.UICamera;
         }
 
-        private void OnDestroy()
-        {
-            if (behaviour != null)
-                behaviour.OnExcuteDestroy();
-        }
+        //private void OnEnable()
+        //{
+        //    if (behaviour != null)
+        //        behaviour.IsEnable = true;
+        //}
+
+        //private void OnDisable()
+        //{
+        //    if (behaviour != null)
+        //        behaviour.IsEnable = false;
+        //}
+
+        //private void OnDestroy()
+        //{
+        //    if (behaviour != null)
+        //        behaviour.OnExcuteDestroy();
+        //}
     }
 }
 

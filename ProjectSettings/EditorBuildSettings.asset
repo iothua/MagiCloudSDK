@@ -6,6 +6,33 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/SafeMode/SafeScene.unity
+    guid: a01590d61374b664e80624c55275ccca
+  - enabled: 0
+    path: "Assets/MCScience/Scenes/\u56DB\u5B63\u53D8\u5316.unity"
+    guid: 28bd627ee3ed4fb41997b606a2575e6c
+  - enabled: 1
+    path: Assets/UI/UIMain.unity
+    guid: f467917e16d325f42803c2bc8dbb19d4
+  - enabled: 1
+    path: Assets/UI/Transfer.unity
+    guid: 5fb82e519c6ba004cb5a453f6872906a
+  - enabled: 1
+    path: Assets/UI/Experiment.unity
+    guid: 40125247a7b86b84d800829bca6d6825
+  - enabled: 1
+    path: Assets/UI/WeatherScene.unity
+    guid: 1abeac9f496759f4883d1d795d2bcbfe
+  - enabled: 0
+    path: "Assets/MCScience/Scenes/\u6865\u7684\u5F62\u72B6\u4E0E\u7ED3\u6784.unity"
+    guid: edd93d3857e808747b8ac8ce9d22cf3f
+  - enabled: 0
+    path: "Assets/MCScience/Scenes/\u5EFA\u7ACB\u592A\u9633\u7CFB.unity"
+    guid: 60f74b2ab0201a646803fa5e379d82d5
+  - enabled: 0
+    path: "Assets/MCScience/Scenes/\u6708\u76F8\u53D8\u5316.unity"
+    guid: 557a52275227a8344ad0096244b949d6
+  - enabled: 0
+    path: "Assets/MCScience/Scenes/\u6781\u663C\u4E0E\u6781\u591C.unity"
+    guid: 9023984079e91454e922f0b148ad5d47
   m_configObjects: {}

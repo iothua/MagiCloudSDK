@@ -124,10 +124,15 @@ namespace MagiCloud.Core.Events.Handlers
                 return;
             }
 
-            foreach (var item in Values[key])
+            for (int i = 0; i < Values[key].Count; i++)
             {
-                item.Action();
+                Values[key][i].Action();
             }
+
+            //foreach (var item in Values[key])
+            //{
+            //    item.Action();
+            //}
 
         }
     }

@@ -10,12 +10,13 @@ namespace MagiCloud.Features
     [ExecuteInEditMode]
     public class FeaturesObjectController :MonoBehaviour
     {
+        public bool ActiveDeskLimit_;                        //激活桌面吸附及限制下陷
         public bool ActiveSpaceLimit;                       //激活空间限制
         public bool ActiveHighlight;                        //激活高亮
-        public bool ActiveShadow;                           //激活虚影
+                                                            // public bool ActiveShadow;                           //激活虚影
         public bool ActiveLabel;                            //激活标签
         public bool ActiveLimitMove;                        //激活移动限制
-        public GameObject shadowModel;                      //显示虚影的模型
+                                                            //public GameObject shadowModel;                      //显示虚影的模型
         public GameObject highligheModel;                   //边框高亮模型
         public GameObject highlightGameobject;              //高亮物体
 
@@ -27,7 +28,13 @@ namespace MagiCloud.Features
         /// <summary>
         /// 物体旋转对象
         /// </summary>
-        public MCObjectRatation ObjectRatation;
+        public MCObjectRotation ObjectRatation;
+        /// <summary>
+        /// 相机绕物体旋转
+        /// </summary>
+        public MCCameraRotateAround cameraRotateAround;
+
+        public MCObjectButton objectButton;
 
         private GameObject operaObject; //操作物体
 
@@ -36,12 +43,14 @@ namespace MagiCloud.Features
         /// </summary>
         public LabelData LabelController;
 
-        private Collider _collider;
+        private BoxCollider _collider;
         private bool isEnable = true;
 
         private GameObject interactionObject;
-        public GameObject InteractionObject {
-            get {
+        public GameObject InteractionObject
+        {
+            get
+            {
 
                 if (interactionObject == null)
                 {
@@ -71,6 +80,11 @@ namespace MagiCloud.Features
 
         private void Awake()
         {
+            if (ActiveDeskLimit_)
+                AddDeskLimit();
+            else
+                RemoveDeskLimit();
+
             if (ActiveSpaceLimit)
                 AddSpaceLimit();
             else
@@ -81,10 +95,10 @@ namespace MagiCloud.Features
             else
                 RemoveHighlight();
 
-            if (ActiveShadow)
-                AddShadow();
-            else
-                RemoveShadow();
+            //if (ActiveShadow)
+            //    AddShadow();
+            //else
+            //    RemoveShadow();
 
             if (ActiveLabel)
                 AddLabel();
@@ -105,6 +119,11 @@ namespace MagiCloud.Features
         public MCCanGrab CanGrab;
 
         /// <summary>
+        /// 桌面吸附及限制下陷
+        /// </summary>
+        public MCDeskLimit deskLimit;
+
+        /// <summary>
         /// 空间限制
         /// </summary>
         public SpaceLimit spaceLimit;
@@ -114,10 +133,10 @@ namespace MagiCloud.Features
         /// </summary>
         public HighlightObject highlightObject;
 
-        /// <summary>
-        ///虚影控制端
-        /// </summary>
-        public ShadowController ShadowController;
+        ///// <summary>
+        /////虚影控制端
+        ///// </summary>
+        //public ShadowController ShadowController;
 
         public MCNone None;
 
@@ -134,12 +153,12 @@ namespace MagiCloud.Features
         /// <summary>
         /// 碰撞体
         /// </summary>
-        public Collider Collider
+        public BoxCollider Collider
         {
             get
             {
                 if (_collider == null)
-                    _collider = OperaObject.GetComponent<Collider>();
+                    _collider = OperaObject.GetComponent<BoxCollider>();
 
                 return _collider;
             }
@@ -204,6 +223,35 @@ namespace MagiCloud.Features
         }
 
         /// <summary>
+        /// 添加“桌面吸附及限制下陷”
+        /// </summary>
+        /// <returns></returns>
+        public MCDeskLimit AddDeskLimit()
+        {
+            if(deskLimit == null )
+                deskLimit = OperaObject.GetComponent<MCDeskLimit>() ?? OperaObject.AddComponent<MCDeskLimit>();
+            deskLimit.hideFlags = HideFlags.HideInInspector;
+            return deskLimit;
+        }
+
+        /// <summary>
+        /// 移除“桌面吸附及限制下陷”
+        /// </summary>
+        public void RemoveDeskLimit()
+        {
+            if (deskLimit == null) return;
+
+            if (!Application.isPlaying)
+            {
+                DestroyImmediate(deskLimit);
+            }
+            else
+                Destroy(deskLimit);
+
+            Debug.Log(this.gameObject.name);
+        }
+
+        /// <summary>
         /// 添加“空间限制”
         /// </summary>
         public SpaceLimit AddSpaceLimit()
@@ -220,8 +268,13 @@ namespace MagiCloud.Features
         public void RemoveSpaceLimit()
         {
             if (spaceLimit == null) return;
-
-            DestroyImmediate(spaceLimit);
+            spaceLimit.OnDestroy();
+            if (!Application.isPlaying)
+            {
+                DestroyImmediate(spaceLimit);
+            }
+            else
+                Destroy(spaceLimit);
         }
 
         /// <summary>
@@ -241,31 +294,34 @@ namespace MagiCloud.Features
         {
             if (highlightObject == null) return;
 
-            DestroyImmediate(highlightObject);
+            if (!Application.isPlaying)
+                DestroyImmediate(highlightObject);
+            else
+                Destroy(highlightObject);
         }
 
-        /// <summary>
-        /// 添加“虚影”
-        /// </summary>
-        public ShadowController AddShadow()
-        {
-            if (ShadowController == null)
-                ShadowController = OperaObject.GetComponent<ShadowController>() ?? OperaObject.AddComponent<ShadowController>();
+        ///// <summary>
+        ///// 添加“虚影”
+        ///// </summary>
+        //public ShadowController AddShadow()
+        //{
+        //    if (ShadowController == null)
+        //        ShadowController = OperaObject.GetComponent<ShadowController>() ?? OperaObject.AddComponent<ShadowController>();
 
-            ShadowController.hideFlags = HideFlags.HideInInspector;
-            return ShadowController;
-        }
+        //    ShadowController.hideFlags = HideFlags.HideInInspector;
+        //    return ShadowController;
+        //}
 
-        /// <summary>
-        /// 移除“虚影”
-        /// </summary>
-        public void RemoveShadow()
-        {
-            if (ShadowController == null)
-                return;
+        ///// <summary>
+        ///// 移除“虚影”
+        ///// </summary>
+        //public void RemoveShadow()
+        //{
+        //    if (ShadowController == null)
+        //        return;
 
-            DestroyImmediate(ShadowController);
-        }
+        //    DestroyImmediate(ShadowController);
+        //}
 
         /// <summary>
         /// 添加“标签”
@@ -287,8 +343,10 @@ namespace MagiCloud.Features
         {
             if (LabelController == null) return;
             KGUI.KGUI_LabelController.Instance.DestroyByLabelController(LabelController);
-
-            DestroyImmediate(LabelController);
+            if (!Application.isPlaying)
+                DestroyImmediate(LabelController);
+            else
+                Destroy(LabelController);
         }
 
         /// <summary>
@@ -308,7 +366,10 @@ namespace MagiCloud.Features
         public void RemoveCanGrab()
         {
             if (CanGrab == null) return;
-            DestroyImmediate(CanGrab);
+            if (!Application.isPlaying)
+                DestroyImmediate(CanGrab);
+            else
+                Destroy(CanGrab);
         }
 
         public MCNone AddNone()
@@ -322,7 +383,10 @@ namespace MagiCloud.Features
         {
             if (None == null)
                 return;
-            DestroyImmediate(None);
+            if (!Application.isPlaying)
+                DestroyImmediate(None);
+            else
+                Destroy(None);
         }
 
         /// <summary>
@@ -341,17 +405,19 @@ namespace MagiCloud.Features
         {
             if (Customize == null)
                 return;
-
-            DestroyImmediate(Customize);
+            if (!Application.isPlaying)
+                DestroyImmediate(Customize);
+            else
+                Destroy(Customize);
         }
 
         /// <summary>
         /// 添加“物体自身旋转”
         /// </summary>
-        public MCObjectRatation AddSelfRotation()
+        public MCObjectRotation AddSelfRotation()
         {
-            ObjectRatation = OperaObject.GetComponent<MCObjectRatation>() ?? OperaObject.AddComponent<MCObjectRatation>();
-            ObjectRatation.SetOperaType(ObjectOperaType.物体自身旋转);
+            ObjectRatation = OperaObject.GetComponent<MCObjectRotation>() ?? OperaObject.AddComponent<MCObjectRotation>();
+            //  ObjectRatation.SetOperaType(ObjectOperaType.物体自身旋转);
             ObjectRatation.hideFlags = HideFlags.HideInInspector;
             return ObjectRatation;
         }
@@ -362,27 +428,57 @@ namespace MagiCloud.Features
         public void RemoveRotation()
         {
             if (ObjectRatation == null) return;
-            DestroyImmediate(ObjectRatation);
+            if (!Application.isPlaying)
+                DestroyImmediate(ObjectRatation);
+            else
+                Destroy(ObjectRatation);
         }
 
         /// <summary>
         /// 添加“摄像机围绕物体旋转”
         /// </summary>
-        public MCObjectRatation AddCameraCenterObjectRotation()
+        public MCCameraRotateAround AddCameraCenterObjectRotation()
         {
-            ObjectRatation = OperaObject.GetComponent<MCObjectRatation>() ?? OperaObject.AddComponent<MCObjectRatation>();
-            ObjectRatation.SetOperaType(ObjectOperaType.摄像机围绕物体旋转);
-            ObjectRatation.hideFlags = HideFlags.HideInInspector;
-            return ObjectRatation;
+            cameraRotateAround = OperaObject.GetComponent<MCCameraRotateAround>() ?? OperaObject.AddComponent<MCCameraRotateAround>();
+            // ObjectRatation.SetOperaType(ObjectOperaType.摄像机围绕物体旋转);
+            cameraRotateAround.hideFlags = HideFlags.HideInInspector;
+            return cameraRotateAround;
         }
+
 
         /// <summary>
         /// 移除“摄像机围绕物体旋转”
         /// </summary>
         public void RemoveCameraCenterObjectRotation()
         {
-            if (ObjectRatation == null) return;
-            DestroyImmediate(ObjectRatation);
+            if (cameraRotateAround == null) return;
+            if (!Application.isPlaying)
+                DestroyImmediate(cameraRotateAround);
+            else
+                Destroy(cameraRotateAround);
+        }
+
+        /// <summary>
+        /// 添加物体式按钮
+        /// </summary>
+        /// <returns></returns>
+        public MCObjectButton AddObjectButton()
+        {
+            objectButton = OperaObject.GetComponent<MCObjectButton>() ?? OperaObject.AddComponent<MCObjectButton>();
+            objectButton.hideFlags = HideFlags.HideInInspector;
+            return objectButton;
+        }
+
+        /// <summary>
+        /// 移除物体式按钮
+        /// </summary>
+        public void RemoveObjectButton()
+        {
+            if (objectButton == null) return;
+            if (!Application.isPlaying)
+                DestroyImmediate(objectButton);
+            else
+                Destroy(objectButton);
         }
 
         /// <summary>
@@ -401,7 +497,10 @@ namespace MagiCloud.Features
         public void RemoveLimitMove()
         {
             if (LimitMove == null) return;
-            DestroyImmediate(LimitMove);
+            if (!Application.isPlaying)
+                DestroyImmediate(LimitMove);
+            else
+                Destroy(LimitMove);
         }
 
         /// <summary>
@@ -422,11 +521,16 @@ namespace MagiCloud.Features
                     RemoveCanGrab();
                     break;
                 case ObjectOperaType.物体自身旋转:
-                case ObjectOperaType.摄像机围绕物体旋转:
                     RemoveRotation();
+                    break;
+                case ObjectOperaType.摄像机围绕物体旋转:
+                    RemoveCameraCenterObjectRotation();
                     break;
                 case ObjectOperaType.自定义:
                     RemoveCustomize();
+                    break;
+                case ObjectOperaType.物体式按钮:
+                    RemoveObjectButton();
                     break;
                 default:
                     break;
@@ -448,6 +552,9 @@ namespace MagiCloud.Features
                     break;
                 case ObjectOperaType.自定义:
                     AddCustomize();
+                    break;
+                case ObjectOperaType.物体式按钮:
+                    AddObjectButton();
                     break;
                 default:
                     break;
@@ -476,6 +583,17 @@ namespace MagiCloud.Features
             transform.SetParent(parent);
             transform.localPosition = localPosition;
             transform.localRotation = Quaternion.Euler(localRotation);
+        }
+
+        /// <summary>
+        /// 设置碰撞体大小
+        /// </summary>
+        /// <param name="center">Center.</param>
+        /// <param name="size">Size.</param>
+        public void SetCollider(Vector3 center,Vector3 size)
+        {
+            Collider.center = center;
+            Collider.size = size;
         }
     }
 }

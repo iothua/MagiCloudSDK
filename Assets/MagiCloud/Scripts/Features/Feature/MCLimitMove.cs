@@ -12,8 +12,6 @@ namespace MagiCloud.Features
     {
         [SerializeField, Header("当射线照射该物体时，赋予谁被抓取，不赋值默认为本身")]
         public GameObject grabObject;
-        [SerializeField]
-        private bool IsRayLayer = true;
 
         private bool YActiving = false;     //Y轴限制是否已经启用
         private bool ZActiving = false;     //Z轴限制是否已经启用
@@ -87,6 +85,7 @@ namespace MagiCloud.Features
 
         private void Release(GameObject arg1,int arg2)
         {
+            
             if (grabObject==arg1&&type==ProcessType.Release)
             {
                 OnUpdate();
@@ -236,8 +235,11 @@ namespace MagiCloud.Features
                     OnUpdate();
                     break;
                 case ProcessType.Grab:
-                    GameObject temp = MOperateManager.GetObjectGrab(0);
-                    if (temp!=null&&temp==grabObject)
+                    GameObject right = MOperateManager.GetObjectGrab(0);
+                    if (right!=null&&right==grabObject)
+                        OnUpdate();
+                    GameObject left = MOperateManager.GetObjectGrab(1);
+                    if (left!=null&&left==grabObject)
                         OnUpdate();
                     break;
                 default:

@@ -13,7 +13,7 @@ namespace MagiCloud.KGUI
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_Canvas(画布)", validate = false, priority = 10)] //在GameObject菜单栏显示，又在Hierarchy菜单栏显示
         private static void CreateKGUI_Canvas()
         {
-            Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
             Transform parent = GetSeleteTransform();
 
@@ -22,11 +22,37 @@ namespace MagiCloud.KGUI
             CreateObject(parent, null, canvas);
         }
 
+        [MenuItem("MagiCloud/KGUI/Control/KGUI_SpriteRenderer(精灵画布)")] //在菜单栏显示
+        [MenuItem("GameObject/MagiCloud/KGUI/KGUI_SpriteRenderer(精灵画布)", validate = false, priority = 10)] //在GameObject菜单栏显示，又在Hierarchy菜单栏显示
+        private static void CreateKGUI_SpriteRenderer()
+        {
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+
+            Transform parent = GetSeleteTransform();
+
+            var spriteRenderer = Resources.Load<GameObject>("UI/KGUI_SpriteRenderer");
+
+            CreateObject(parent, null, spriteRenderer);
+        }
+
+        [MenuItem("MagiCloud/KGUI/Control/KGUI_Clock(时钟)")] //在菜单栏显示
+        [MenuItem("GameObject/MagiCloud/KGUI/KGUI_Clock(时钟)", validate = false, priority = 10)] //在GameObject菜单栏显示，又在Hierarchy菜单栏显示
+        private static void CreateKGUI_Clock()
+        {
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+
+            Transform parent = GetSeleteTransform();
+
+            var ui = Resources.Load<GameObject>("UI/Clock");
+
+            CreateController(parent, ui);
+        }
+
         [MenuItem("MagiCloud/KGUI/Control/KGUI_Panel(容器)")] //在菜单栏显示
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_Panel(容器)", validate = false, priority = 10)]
         private static void CreateKGUI_Panel()
         {
-            Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
             Transform parent = GetSeleteTransform();
 
@@ -39,7 +65,7 @@ namespace MagiCloud.KGUI
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_Button(按钮)", validate = false, priority = 10)]
         private static void CreateKGUI_Button()
         {
-            Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
             Transform parent = GetSeleteTransform();
 
@@ -52,7 +78,7 @@ namespace MagiCloud.KGUI
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_Toggle(开关)", validate = false, priority = 10)]
         private static void CreateKGUI_Toggle()
         {
-            Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
             Transform parent = GetSeleteTransform();
 
@@ -65,7 +91,7 @@ namespace MagiCloud.KGUI
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_ScrollbarVer(垂直滚动)", validate = false, priority = 10)]
         private static void CreateKGUI_ScrollbarVer()
         {
-            Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
             Transform parent = GetSeleteTransform();
 
@@ -78,7 +104,7 @@ namespace MagiCloud.KGUI
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_ScrollbarHor(水平滚动)", validate = false, priority = 10)]
         private static void CreateKGUI_ScrollbarHor()
         {
-            Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
             Transform parent = GetSeleteTransform();
 
@@ -91,7 +117,7 @@ namespace MagiCloud.KGUI
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_ScrollView(滚动视图)", validate = false, priority = 10)]
         private static void CreateKGUI_ScrollView()
         {
-            Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
             Transform parent = GetSeleteTransform();
 
@@ -104,7 +130,7 @@ namespace MagiCloud.KGUI
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_Dropdown(下拉框)", validate = false, priority = 10)]
         private static void CreateKGUI_Dropdown()
         {
-            Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
             Transform parent = GetSeleteTransform();
 
@@ -117,7 +143,7 @@ namespace MagiCloud.KGUI
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_TableManager(表格管理器)", validate = false, priority = 10)]
         private static void CreateKGUI_TableManager()
         {
-            Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
             Transform parent = GetSeleteTransform();
 
@@ -130,7 +156,7 @@ namespace MagiCloud.KGUI
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_Table(表格)", validate = false, priority = 10)]
         private static void CreateKGUI_Table()
         {
-            Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
             Transform parent = GetSeleteTransform();
 
@@ -143,7 +169,7 @@ namespace MagiCloud.KGUI
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_Backpack(背包)", validate = false, priority = 10)]
         private static void CreateKGUI_Backpack()
         {
-            Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
             Transform parent = GetSeleteTransform();
 

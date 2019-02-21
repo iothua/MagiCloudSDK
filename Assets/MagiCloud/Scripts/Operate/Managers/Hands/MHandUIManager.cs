@@ -23,10 +23,10 @@ namespace MagiCloud.Operate
         /// <summary>
         /// 创建HandUI
         /// </summary>
-        /// <param name="sprite">默认值</param>
+        /// <param name="handSprite">默认值</param>
         /// <param name="size">大小</param>
         /// <returns></returns>
-        public static MHandUI CreateHandUI(Transform parent,Sprite sprite, Vector2? size= null)
+        public static MHandUI CreateHandUI(Transform parent,HandIcon handSprite, Vector2? size= null)
         {
             if (HandParent == null)
             {
@@ -41,7 +41,7 @@ namespace MagiCloud.Operate
             var handObject = GameObject.Instantiate<GameObject>(Resources.Load<GameObject>("Hands/HandIcon"), HandParent);
             var handUI = handObject.AddComponent<MHandUI>();
 
-            handUI.OnInitialized(sprite, size);
+            handUI.OnInitialized(handSprite, size);
 
             HandUIs.Add(handUI);
 

@@ -15,32 +15,32 @@ public class TestController : MonoBehaviour
     {
         behaviour = new MBehaviour(executionPriority, executionOrder, enabled);
 
-        behaviour.OnAwake(() =>
-        {
-            Debug.Log("Awake:" + gameObject);
-        });
+        //behaviour.OnAwake_MBehaviour(() =>
+        //{
+        //    Debug.Log("Awake:" + gameObject);
+        //});
 
-        behaviour.OnEnable(() =>
-        {
-            Debug.Log("Enable   " + gameObject);
-        });
+        //behaviour.OnEnable_MBehaviour(() =>
+        //{
+        //    Debug.Log("Enable   " + gameObject);
+        //});
 
-        behaviour.OnDisable(() =>
-        {
-            Debug.Log("OnDisable    " + gameObject);
-        });
+        //behaviour.OnDisable_MBehaviour(() =>
+        //{
+        //    Debug.Log("OnDisable    " + gameObject);
+        //});
 
-        behaviour.OnUpdate(() =>
-        {
-            Debug.Log("OnUpdate " + gameObject);
-        });
+        //behaviour.OnUpdate_MBehaviour(() =>
+        //{
+        //    Debug.Log("OnUpdate " + gameObject);
+        //});
 
-        behaviour.OnDestroy(() =>
-        {
-            Debug.Log("OnDestroy");
-        });
+        //behaviour.OnDestroy_MBehaviour(() =>
+        //{
+        //    Debug.Log("OnDestroy");
+        //});
 
-        MBehaviourController.AddBehaviour(behaviour);
+        //MBehaviourController.AddBehaviour(behaviour);
     }
 
     void onGrab(int handindex)

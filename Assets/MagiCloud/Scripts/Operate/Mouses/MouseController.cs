@@ -21,7 +21,7 @@ namespace MagiCloud.Operate
         private bool IsRotateDown = false; //旋转是否开启
 
         [Header("手图标")]
-        public Sprite handSprite;//手图标
+        public HandIcon handSprite;//手图标
 
         [Header("图标大小")]
         public Vector2 handSize;//图标大小
@@ -31,6 +31,8 @@ namespace MagiCloud.Operate
         private IOperateObject operateObject;
 
         private Vector3 offset;
+        private bool isEnable;
+        private MOperate operate;
 
         /// <summary>
         /// 输入端
@@ -45,6 +47,26 @@ namespace MagiCloud.Operate
         public bool IsPlaying {
             get {
                 return isPlaying;
+            }
+        }
+
+        public bool IsEnable {
+            get {
+                return isEnable;
+            }
+            set {
+
+                if (isEnable == value) return;
+                isEnable = value;
+
+                if (isEnable)
+                {
+                    operate.OnEnable();
+                }
+                else
+                {
+                    operate.OnDisable();
+                }
             }
         }
 
@@ -68,29 +90,25 @@ namespace MagiCloud.Operate
         {
             behaviour = new MBehaviour(ExecutionPriority.Highest, -900, enabled);
 
-            behaviour.OnAwake(() =>
-            {
-                InputHands = new Dictionary<int, MInputHand>();
+            InputHands = new Dictionary<int, MInputHand>();
 
-                //初始化手的种类
-                var handUI = MHandUIManager.CreateHandUI(transform, handSprite, handSize);
-                var inputHand = new MInputHand(0, handUI, OperatePlatform.Mouse);
+            //初始化手的种类
+            var handUI = MHandUIManager.CreateHandUI(transform, handSprite, handSize);
+            var inputHand = new MInputHand(0, handUI, OperatePlatform.Mouse);
 
-                InputHands.Add(0, inputHand);
+            InputHands.Add(0, inputHand);
 
-                isPlaying = true;
+            isPlaying = true;
+            isEnable = true;
 
-                //注册操作者相关事件
-                var operate = MOperateManager.AddOperateHand(inputHand);
-                //注册方法
-                operate.OnGrab = OnGrabObject;
-                operate.OnSetGrab = SetGrabObject;
-                operate.OnEnable();
-            });
+            //注册操作者相关事件
+            operate = MOperateManager.AddOperateHand(inputHand, this);
+            //注册方法
+            operate.OnGrab = OnGrabObject;
+            operate.OnSetGrab = SetGrabObject;
+            operate.OnEnable();
 
-            behaviour.OnUpdate(OnMouseUpdate);
-
-            MBehaviourController.AddBehaviour(behaviour);
+            behaviour.OnUpdate_MBehaviour(OnMouseUpdate);
         }
 
         /// <summary>
@@ -98,6 +116,8 @@ namespace MagiCloud.Operate
         /// </summary>
         void OnMouseUpdate()
         {
+            if (!IsEnable) return;
+
             //将他的屏幕坐标传递出去
             InputHands[0].OnUpdate(Input.mousePosition);
 
@@ -187,14 +207,14 @@ namespace MagiCloud.Operate
                 {
                     case MInputHandStatus.Grabing:
 
+                        //需要处理偏移量
                         var screenDevice = MUtility.MainWorldToScreenPoint(operateObject.GrabObject.transform.position);
-
                         Vector3 screenMouse = InputHands[0].ScreenPoint;
                         Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x, screenMouse.y, screenDevice.z));
 
-                        operateObject.GrabObject.transform.position = vPos - offset;
+                        Vector3 position = vPos - offset;
 
-                        //需要处理偏移量
+                        EventUpdateObject.SendListener(operateObject.GrabObject, position, operateObject.GrabObject.transform.rotation, InputHands[0].HandIndex);
 
                         break;
                     case MInputHandStatus.Idle:
@@ -248,7 +268,7 @@ namespace MagiCloud.Operate
         {
             if (handIndex != InputHands[0].HandIndex) return;
 
-            Vector3 screenDevice = MUtility.MainWorldToScreenPoint(operate.GrabObject.transform.position);
+            //Vector3 screenDevice = MUtility.MainWorldToScreenPoint(operate.GrabObject.transform.position);
             Vector3 screenpoint = InputHands[0].ScreenPoint;
             operateObject = operate;
 
@@ -257,12 +277,24 @@ namespace MagiCloud.Operate
 
             Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenpoint.x, screenpoint.y, screenMainCamera.z));
 
+            offset = Vector3.zero;
+
             operateObject.GrabObject.transform.position = position;
         }
 
         private void OnDestroy()
         {
             behaviour.OnExcuteDestroy();
+        }
+
+        public void StartOnlyHand()
+        {
+            //不做任何处理
+        }
+
+        public void StartMultipleHand()
+        {
+            //不用做任何处理
         }
     }
 }

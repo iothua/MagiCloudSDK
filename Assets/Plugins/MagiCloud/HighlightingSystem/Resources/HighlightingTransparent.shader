@@ -9,6 +9,7 @@ Shader "Hidden/Highlighted/Transparent"
 		[HideInInspector] _ZTest ("", Int) = 8		// UnityEngine.Rendering.CompareFunction. 4 = LessEqual, 8 = Always
 		[HideInInspector] _StencilRef ("", Int) = 1
 		[HideInInspector] _Cull ("", Int) = 2		// UnityEngine.Rendering.CullMode.Back
+		[HDR]_Color ("Color",Color)=(0.5,0.5,0.5,1)
 	}
 	
 	SubShader

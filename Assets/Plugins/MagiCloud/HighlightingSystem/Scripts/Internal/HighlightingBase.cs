@@ -28,8 +28,15 @@ namespace HighlightingSystem
 		{
 			get
 			{
-				return
-					device == GraphicsDeviceType.Direct3D9			// SHADER_API_D3D9
+                return
+#if UNITY_2017_2_OR_NEWER
+                    device == GraphicsDeviceType.Direct3D11
+                        ||device == GraphicsDeviceType.PlayStationVita
+                 ||device == GraphicsDeviceType.PlayStation4
+                        ||device == GraphicsDeviceType.Metal;
+#else
+
+                device == GraphicsDeviceType.Direct3D9			// SHADER_API_D3D9
 					|| device == GraphicsDeviceType.Xbox360			// SHADER_API_XBOX360
 					|| device == GraphicsDeviceType.PlayStation3		// SHADER_API_PS3
 					|| device == GraphicsDeviceType.Direct3D11		// SHADER_API_D3D11
@@ -39,8 +46,9 @@ namespace HighlightingSystem
 					// device == GraphicsDeviceType.?				// SHADER_API_D3D11_9X - Direct3D 11 “feature level 9.x” target for Windows Store & Windows Phone.
 					// device == GraphicsDeviceType.?				// SHADER_API_WIIU - Nintendo WiiU
 					;
-			}
-		}
+#endif
+            }
+        }
 		#endregion
 		
 		#region Public Fields
@@ -307,17 +315,22 @@ namespace HighlightingSystem
 				isDepthAvailable = depthAvailable;
 				// Update ZWrite value for all highlighting shaders correspondingly (isDepthAvailable ? ZWrite Off : ZWrite On)
 				Highlighter.SetZWrite(isDepthAvailable ? 0 : 1);
-				if (isDepthAvailable)
+#if UNITY_EDITOR
+                if (isDepthAvailable)
 				{
-					Debug.LogWarning("HighlightingSystem : Framebuffer depth data is available back again. Depth occlusion enabled, highlighting occluders disabled. (This message is harmless)");
+
+
+                    Debug.LogWarning("HighlightingSystem : Framebuffer depth data is available back again. Depth occlusion enabled, highlighting occluders disabled. (This message is harmless)");
 				}
 				else
 				{
 					Debug.LogWarning("HighlightingSystem : Framebuffer depth data is not available. Depth occlusion disabled, highlighting occluders enabled. (This message is harmless)");
 				}
-			}
+#endif
 
-			updateHighlightingBuffer |= (highlightingBuffer == null || cam.pixelWidth != cachedWidth || cam.pixelHeight != cachedHeight || aa != cachedAA);
+            }
+
+            updateHighlightingBuffer |= (highlightingBuffer == null || cam.pixelWidth != cachedWidth || cam.pixelHeight != cachedHeight || aa != cachedAA);
 
 			if (updateHighlightingBuffer)
 			{

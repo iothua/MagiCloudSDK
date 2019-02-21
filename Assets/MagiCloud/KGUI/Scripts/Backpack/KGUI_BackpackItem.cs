@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace MagiCloud.KGUI
 {
@@ -17,7 +18,7 @@ namespace MagiCloud.KGUI
 
         private Sprite normalIcon, disableIcon;
 
-        private string _equipmentName;                      //仪器名字
+        //private string _equipmentName;                      //仪器名字
         private int _equipmentNumber;
 
         public KGUI_Backpack Backpack {
@@ -38,22 +39,12 @@ namespace MagiCloud.KGUI
             txtNumber = transform.Find("Number").GetComponent<Text>();
             Icon = transform.Find("Icon").GetComponent<Image>();
 
-            ////设置初始值
-            //buttonType = ButtonType.Image;
-            //image = GetComponent<Image>();
-
-            //normalSprite = Backpack.dataConfig.normalIcon;
-            //enterSprite = Backpack.dataConfig.enterIcon;
-            //disableSprite = Backpack.dataConfig.disableIcon;
-
-            //获取到路径信息
-            //normalIcon = config.NormalSprite;
-            //disableIcon = config.DisableSprite;
-
-            normalIcon = backpack.backpackIcons.GetSprite(config.normalSpritePath);
-            disableIcon = backpack.backpackIcons.GetSprite(config.disableSpritePath);
-
-            //disableIcon = config.DisableSprite;
+            Sprite[] Icons = new Sprite[backpack.backpackIcons.spriteCount];
+            backpack.backpackIcons.GetSprites(Icons);
+            //normalIcon = Icons.ToList().Find(obj => obj.name.Equals(config.normalSpritePath.Trim()));
+            //disableIcon = Icons.ToList().Find(obj => obj.name.Equals(config.disableSpritePath.Trim()));
+            normalIcon = backpack.backpackIcons.GetSprite(config.normalSpritePath.Trim());
+            disableIcon = backpack.backpackIcons.GetSprite(config.disableSpritePath.Trim());
 
             Icon.sprite = normalIcon;
 
@@ -63,12 +54,50 @@ namespace MagiCloud.KGUI
                 txtNumber.text = config.number.ToString();
 
             _equipmentNumber = config.number;
-            _equipmentName = config.Name;
+            //_equipmentName = config.Name;
 
             GenerateItems = new List<GameObject>();
 
+            if(dataConfig.isGenerate)
+            {
+                for (int i = 0; i < dataConfig.generateCount; i++)
+                {
+                    CreateEquipment();
+                }
+            }
+
             //刷新
             RefreshShow();
+        }
+
+        public void CreateEquipment()
+        {
+            GameObject go = null;
+            if (_equipmentNumber >= 1)
+            {
+                _equipmentNumber--;
+                RefreshShow();
+
+                go = Backpack.GenerateEquipment(this, dataConfig.ItemPath);
+
+            }
+            else if (_equipmentNumber == 0)
+            {
+                //0 不触发 
+            }
+            else if (_equipmentNumber == -1)
+            {
+                // -1 数量无限
+                go = Backpack.GenerateEquipment(this, dataConfig.ItemPath);
+            }
+
+            go.transform.position = dataConfig.Position;
+
+            if (go != null)
+            {
+                GenerateItems.Add(go);//将生成的物体添加到子项中
+            }
+
         }
 
         /// <summary>
@@ -76,7 +105,7 @@ namespace MagiCloud.KGUI
         /// </summary>
         /// <param name="handIndex"></param>
         /// <returns></returns>
-        public GameObject CreatEquipment(int handIndex)
+        public GameObject CreateEquipment(int handIndex)
         {
             GameObject go = null;
 
@@ -141,9 +170,13 @@ namespace MagiCloud.KGUI
             else if (_equipmentNumber == 0)
             {
                 if (txtNumber != null)
-                    //图标变换成disableIcon，数值变换
+                //图标变换成disableIcon，数值变换
+                {
                     txtNumber.text = _equipmentNumber.ToString();
-
+                    txtNumber.color = Color.gray;
+                    txtName.color = Color.gray;
+                }
+                
                 IsEnable = false;
 
                 Icon.sprite = disableIcon;
@@ -158,6 +191,8 @@ namespace MagiCloud.KGUI
                     IsEnable = true;
 
                 Icon.sprite = normalIcon;
+                txtNumber.color = Color.red;
+                txtName.color = new Color(0.06f,0.4f,0.95f);
             }
         }
 
@@ -170,7 +205,7 @@ namespace MagiCloud.KGUI
             base.OnDown(handIndex);
             if (dataConfig.number == 0) return;
 
-            CreatEquipment(handIndex);
+            CreateEquipment(handIndex);
         }
 
         /// <summary>

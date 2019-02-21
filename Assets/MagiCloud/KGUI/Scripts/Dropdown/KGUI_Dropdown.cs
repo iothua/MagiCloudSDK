@@ -26,8 +26,10 @@ namespace MagiCloud.KGUI
     /// KGUI下拉框
     /// </summary>
     [ExecuteInEditMode]
-    public class KGUI_Dropdown : KGUI_ButtonBase
+    public class KGUI_Dropdown :KGUI_ButtonBase
     {
+        [Header("是否触碰展开，false为点击展开")]
+        public bool isTouchExpand = false;
         //子项名称
         public List<string> Names;
 
@@ -42,7 +44,6 @@ namespace MagiCloud.KGUI
         //显示的内容
         public Text textName;
 
-        [HideInInspector]
         private KGUI_DropdownItem currentItem;//当前选项
 
         [HideInInspector]
@@ -59,6 +60,7 @@ namespace MagiCloud.KGUI
 
         private int handIndex;
 
+
         protected override void Awake()
         {
             base.Awake();
@@ -67,9 +69,9 @@ namespace MagiCloud.KGUI
                 dropdownItem = Resources.Load<GameObject>("Prefabs\\DropdownItem");
         }
 
-        protected override void OnStart()
+        protected override void Start()
         {
-            base.OnStart();
+            base.Start();
 
             if (buttonGroup == null)
                 buttonGroup = GetComponent<KGUI_ButtonGroup>() ?? gameObject.AddComponent<KGUI_ButtonGroup>();
@@ -79,9 +81,12 @@ namespace MagiCloud.KGUI
 
             Template.SetActive(false);
 
-            EventHandIdle.AddListener(OnButtonRelease, Core.ExecutionPriority.High);
-
+            EventHandIdle.AddListener(OnButtonRelease,Core.ExecutionPriority.High);
             //CreatePanel();
+            if (isTouchExpand)
+                onEnter.AddListener(OnExpand);
+            else
+                onClick.AddListener(OnExpand);
         }
 
         /// <summary>
@@ -99,9 +104,9 @@ namespace MagiCloud.KGUI
 
             var templateRect = Template.GetComponent<RectTransform>();
 
-            rectTransform.sizeDelta = new Vector2(parentRect.sizeDelta.x, parentRect.sizeDelta.y + templateRect.sizeDelta.y);
+            rectTransform.sizeDelta = new Vector2(parentRect.sizeDelta.x,parentRect.sizeDelta.y + templateRect.sizeDelta.y);
 
-            rectTransform.localPosition = new Vector3(0, -(rectTransform.sizeDelta.y / 2 - parentRect.sizeDelta.y / 2), 0);
+            rectTransform.localPosition = new Vector3(0,-(rectTransform.sizeDelta.y / 2 - parentRect.sizeDelta.y / 2),0);
 
         }
 
@@ -124,11 +129,11 @@ namespace MagiCloud.KGUI
 
             var templateRect = Template.GetComponent<RectTransform>();
 
-            rectTransform.sizeDelta = new Vector2(parentRect.sizeDelta.x, parentRect.sizeDelta.y + templateRect.sizeDelta.y);
+            rectTransform.sizeDelta = new Vector2(parentRect.sizeDelta.x,parentRect.sizeDelta.y + templateRect.sizeDelta.y);
 
-            rectTransform.localPosition = new Vector3(0, -(rectTransform.sizeDelta.y / 2 - parentRect.sizeDelta.y / 2), 0);
+            rectTransform.localPosition = new Vector3(0,-(rectTransform.sizeDelta.y / 2 - parentRect.sizeDelta.y / 2),0);
 
-            if (!KGUI_Utility.IsAreaContains(rectTransform, handIndex))
+            if (!MUtility.IsAreaContains(rectTransform,handIndex))
             {
                 Template.SetActive(false);
             }
@@ -156,12 +161,12 @@ namespace MagiCloud.KGUI
             //生成子项
             foreach (var name in Names)
             {
-                var go = Instantiate(dropdownItem, gridLayout.transform);
+                var go = Instantiate(dropdownItem,gridLayout.transform);
                 go.SetActive(true);
 
                 var item = go.GetComponent<KGUI_DropdownItem>();
 
-                item.OnInitialized(this, name);
+                item.OnInitialized(this,name);
 
                 Items.Add(item);
             }
@@ -172,19 +177,19 @@ namespace MagiCloud.KGUI
             Vector2 delta = content.sizeDelta;
 
             //设置背景框的高度
-            content.sizeDelta = new Vector2(delta.x, gridLayout.cellSize.y * Names.Count);
+            content.sizeDelta = new Vector2(delta.x,gridLayout.cellSize.y * Names.Count);
 
             //因为设置了瞄点，所以需要根据父对象的高度，重新进行Y轴坐标的计算。
 
             float y = content.parent.GetComponent<RectTransform>().sizeDelta.y / 2 - content.sizeDelta.y / 2;
 
-            content.localPosition = new Vector3(content.localPosition.x, y, content.localPosition.z);
+            content.localPosition = new Vector3(content.localPosition.x,y,content.localPosition.z);
 
             //设置滚动数值，自动填充
             scrollView.SetRectData();
 
             //没有激活的话，则显示全部
-            gridLayout.cellSize = new Vector2(gridLayout.GetComponent<RectTransform>().sizeDelta.x, gridLayout.cellSize.y);
+            gridLayout.cellSize = new Vector2(gridLayout.GetComponent<RectTransform>().sizeDelta.x,gridLayout.cellSize.y);
 
             //设置所有子项的大小
 
@@ -240,13 +245,13 @@ namespace MagiCloud.KGUI
         }
 
         /// <summary>
-        /// 按下
+        /// 展开
         /// </summary>
         /// <param name="handIndex"></param>
-        public override void OnClick(int handIndex)
+        public void OnExpand(int handIndex)
         {
             if (!enabled) return;
-            base.OnClick(handIndex);
+            //    base.OnClick(handIndex);
 
             if (this.handIndex != -1 && this.handIndex != handIndex) return;
 
@@ -267,7 +272,14 @@ namespace MagiCloud.KGUI
             Template.SetActive(false);
         }
 
-
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            if (isTouchExpand)
+                onEnter.RemoveListener(OnExpand);
+            else
+                onClick.RemoveListener(OnExpand);
+        }
     }
 }
 

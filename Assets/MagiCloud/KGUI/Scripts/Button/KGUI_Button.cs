@@ -9,7 +9,6 @@ namespace MagiCloud.KGUI
     /// <summary>
     /// KGUI_Button
     /// </summary>
-    [RequireComponent(typeof(BoxCollider))]
     public class KGUI_Button : KGUI_ButtonBase
     {
 
@@ -20,7 +19,7 @@ namespace MagiCloud.KGUI
         
         public ButtonGroupReset onGroupReset;
 
-        protected override void OnStart()
+        protected override void Start()
         {
             if (IsButtonGroup && IsShowButton)
                 OnClick(0);
@@ -50,6 +49,14 @@ namespace MagiCloud.KGUI
             }
 
             base.OnClick(handIndex);
+        }
+
+        public override void OnDown(int handIndex)
+        {
+            if (IsButtonGroup && buttonGroup != null && buttonGroup.CurrentButton == this)
+                return;
+
+            base.OnDown(handIndex);
         }
 
         /// <summary>

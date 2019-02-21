@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace HighlightingSystem
 {
     [DisallowMultipleComponent]
-    public class HighlighterRenderer : MonoBehaviour
+    public class HighlighterRenderer :MonoBehaviour
     {
         private struct Data
         {
@@ -35,12 +35,13 @@ namespace HighlightingSystem
         private List<Data> data;
         private Camera lastCamera = null;
         private bool isAlive;
-
+        Coroutine coroutine = null;
         #region MonoBehaviour
         // 
         void Awake()
         {
-            StartCoroutine(EndOfFrame());
+            if (coroutine==null)
+                coroutine= StartCoroutine(EndOfFrame());
         }
 
         // Called once (before OnPreRender) for each camera if the object is visible
@@ -53,6 +54,14 @@ namespace HighlightingSystem
             {
                 // VR Camera renders twice per frame (once for each eye), but OnWillRenderObject is called once so we have to cache reference to the camera
                 lastCamera = cam;
+            }
+        }
+        private void OnDestroy()
+        {
+            if (coroutine!=null)
+            {
+                StopCoroutine(coroutine);
+                coroutine=null;
             }
         }
         #endregion
@@ -77,7 +86,7 @@ namespace HighlightingSystem
 
         #region Public Methods
         // 
-        public void Initialize(Material sharedOpaqueMaterial, Shader transparentShader) // int zTest, int stencilRef
+        public void Initialize(Material sharedOpaqueMaterial,Shader transparentShader) // int zTest, int stencilRef
         {
             r = GetComponent<Renderer>();
             this.hideFlags = flags;
@@ -96,25 +105,24 @@ namespace HighlightingSystem
 
                     Data d = new Data();
 
-                    string tag = sourceMat.GetTag(sRenderType, true, sOpaque);
+                    string tag = sourceMat.GetTag(sRenderType,true,sOpaque);
                     if (tag == sTransparent || tag == sTransparentCutout)
                     {
                         Material replacementMat = new Material(transparentShader);
                         //replacementMat.SetInt(ShaderPropertyID._ZTest, zTest);
                         //replacementMat.SetInt(ShaderPropertyID._StencilRef, stencilRef);
-
                         // To render both sides of the Sprite
-                        if (r is SpriteRenderer) { replacementMat.SetInt(ShaderPropertyID._Cull, cullOff); }
+                        if (r is SpriteRenderer) { replacementMat.SetInt(ShaderPropertyID._Cull,cullOff); }
 
                         if (sourceMat.HasProperty(ShaderPropertyID._MainTex))
                         {
-                            replacementMat.SetTexture(ShaderPropertyID._MainTex, sourceMat.mainTexture);
-                            replacementMat.SetTextureOffset(sMainTex, sourceMat.mainTextureOffset);
-                            replacementMat.SetTextureScale(sMainTex, sourceMat.mainTextureScale);
+                            replacementMat.SetTexture(ShaderPropertyID._MainTex,sourceMat.mainTexture);
+                            replacementMat.SetTextureOffset(sMainTex,sourceMat.mainTextureOffset);
+                            replacementMat.SetTextureScale(sMainTex,sourceMat.mainTextureScale);
                         }
 
                         int cutoff = ShaderPropertyID._Cutoff;
-                        replacementMat.SetFloat(cutoff, sourceMat.HasProperty(cutoff) ? sourceMat.GetFloat(cutoff) : transparentCutoff);
+                        replacementMat.SetFloat(cutoff,sourceMat.HasProperty(cutoff) ? sourceMat.GetFloat(cutoff) : transparentCutoff);
 
                         d.material = replacementMat;
                         d.transparent = true;
@@ -141,7 +149,7 @@ namespace HighlightingSystem
                 for (int i = 0, imax = data.Count; i < imax; i++)
                 {
                     Data d = data[i];
-                    buffer.DrawRenderer(r, d.material, d.submeshIndex);
+                    buffer.DrawRenderer(r,d.material,d.submeshIndex);
                 }
             }
             return true;
@@ -155,7 +163,7 @@ namespace HighlightingSystem
                 Data d = data[i];
                 if (d.transparent)
                 {
-                    d.material.SetColor(ShaderPropertyID._Color, clr);
+                    d.material.SetColor(ShaderPropertyID._Color,clr);
                 }
             }
         }
@@ -168,7 +176,7 @@ namespace HighlightingSystem
                 Data d = data[i];
                 if (d.transparent)
                 {
-                    d.material.SetInt(ShaderPropertyID._ZTest, zTest);
+                    d.material.SetInt(ShaderPropertyID._ZTest,zTest);
                 }
             }
         }
@@ -181,7 +189,7 @@ namespace HighlightingSystem
                 Data d = data[i];
                 if (d.transparent)
                 {
-                    d.material.SetInt(ShaderPropertyID._StencilRef, stencilRef);
+                    d.material.SetInt(ShaderPropertyID._StencilRef,stencilRef);
                 }
             }
         }

@@ -57,7 +57,6 @@ namespace MagiCloud.KGUI
                 rowObject = Resources.Load<GameObject>("Prefabs\\Row");
         }
 
-
         /// <summary>
         /// 生成表
         /// </summary>
@@ -78,12 +77,24 @@ namespace MagiCloud.KGUI
             {
                 CreatRow(i);
             }
+            UpdateContentRect();
         }
 
         private void UpdateContentRect()
         {
             //根据行列宽与行列数，计算出高度，以及间隔
-            rowParent.sizeDelta = new Vector2(rowParent.sizeDelta.x,cellSize.y * Ranks.x + spacing * (Ranks.x - 1));
+            Vector2 size = new Vector2(rowParent.sizeDelta.x,cellSize.y * Ranks.x + spacing * (Ranks.x - 1));
+
+            rowParent.sizeDelta=size;
+            GetComponent<RectTransform>().sizeDelta=size;
+        }
+
+
+        public void AddRow(int i)
+        {
+            CreatRow(i);
+            Ranks.x++;
+            UpdateContentRect();
         }
 
         public void CreatRow(int i)
@@ -99,11 +110,11 @@ namespace MagiCloud.KGUI
             rowRect.pivot = new Vector2(0,1);
 
             //设置行高,列宽
-            rowRect.sizeDelta = new Vector2(cellSize.x * Ranks.y,cellSize.y);
-
+            rowRect.sizeDelta = (Rows.Count<1) ? new Vector2(cellSize.x * Ranks.y,cellSize.y) : Rows[0].Rect.sizeDelta;
+            parentY =-(i)*(cellSize.y + spacing);
             //设置坐标
             rowRect.localPosition = new Vector3(-rowParent.sizeDelta.x / 2,parentY,rowRect.localPosition.z);
-            parentY -= cellSize.y + spacing;//
+            // parentY -= cellSize.y + spacing;//
 
             var kguiRow = row.GetComponent<KGUI_TableRow>();
             //算出单元格
@@ -117,8 +128,8 @@ namespace MagiCloud.KGUI
             }
             //添加行
             Rows.Add(kguiRow);
-            //Ranks.x++;
-            UpdateContentRect();
+            // Ranks.x++;
+
         }
 
         private void CreatCell(int i,KGUI_TableRow row,ref float rowX,int j)
@@ -133,19 +144,25 @@ namespace MagiCloud.KGUI
             kguiCell.rectTransform.anchorMin = new Vector2(0,1);
             kguiCell.rectTransform.anchorMax = new Vector2(0,1);
             kguiCell.rectTransform.pivot = new Vector2(0,1);
-            kguiCell.SetCell("小样");
+            kguiCell.SetCell(" ");
             kguiCell.UpdateCell(textColor,cellBackground,FontSize);
-
+            Vector2 size = cellSize;
+            Vector2 pos = new Vector3(rowX,0,0);//ID坐标
+            if (Rows.Count>0)
+            {
+                size=Rows[0].Cells[j].rectTransform.sizeDelta;
+                //     pos=Rows[0].Cells[j].rectTransform.localPosition;
+            }
             //计算坐标
-            cell.transform.localPosition = new Vector3(rowX,0,0);
+            cell.transform.localPosition = pos;
 
             //计算下一个单元格的坐标
-            rowX += cellSize.x + spacing;
+            rowX += size.x + spacing;
 
             //设置单元格大小
-            kguiCell.SetSize(cellSize);
+            kguiCell.SetSize(size);
 
-            kguiCell.Position = new Vector2Int(i,j);//ID坐标
+            kguiCell.Position =new Vector2Int(i,j);
 
             row.Add(kguiCell);
         }

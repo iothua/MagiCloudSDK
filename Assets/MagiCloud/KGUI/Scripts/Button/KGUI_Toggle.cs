@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -40,16 +41,21 @@ namespace MagiCloud.KGUI
         //移出时精灵
         public Sprite onNormalSprite, offNormalSprite;
 
+        public Sprite onDisableSprite, offDisableSprite;
+
         //默认物体
         public GameObject onNormalObject, offNormalObject;
         //移入时物体
         public GameObject onEnterObject, offEnterObject;
 
+        public GameObject onDisableObject, offDisableObject;
+
+
         public ToggleEvent OnValueChanged;
 
-        protected override void OnStart()
+        protected override void Start()
         {
-            base.OnStart();
+            base.Start();
 
             OnHandle("click");
         }
@@ -60,18 +66,6 @@ namespace MagiCloud.KGUI
                 onClick.Invoke(handIndex);
 
             IsValue = !IsValue;
-        }
-
-        public override void OnEnter(int handIndex)
-        {
-
-            if (IsStartAudio && audioSource != null)
-            {
-                audioSource.Play();
-            }
-
-            base.OnEnter(handIndex);
-
         }
 
         protected override void OnHandle(string cmd)
@@ -92,16 +86,24 @@ namespace MagiCloud.KGUI
                     }
                     else
                     {
-                        //什么都不处理
+                        if (onDisableSprite != null && offDisableSprite != null)
+                            //什么都不处理
+                            image.sprite = IsValue ? onDisableSprite : offDisableSprite;
                     }
-
-                    break;
+             
+                     break;
                 case ButtonType.Object:
 
                     if (cmd.Equals("click") || cmd.Equals("normal"))
                     {
                         onEnterObject.SetActive(false);
                         offEnterObject.SetActive(false);
+
+                        if (onDisableObject != null)
+                            onDisableObject.SetActive(false);
+
+                        if (offDisableObject != null)
+                            offDisableObject.SetActive(false);
 
                         onNormalObject.SetActive(IsValue);
                         offNormalObject.SetActive(!IsValue);
@@ -111,12 +113,28 @@ namespace MagiCloud.KGUI
                         onNormalObject.SetActive(false);
                         offNormalObject.SetActive(false);
 
+                        if (onDisableObject != null)
+                            onDisableObject.SetActive(false);
+
+                        if (offDisableObject != null)
+                            offDisableObject.SetActive(false);
+
                         onEnterObject.SetActive(isValue);
                         offEnterObject.SetActive(!isValue);
                     }
                     else
                     {
+                        onEnterObject.SetActive(false);
+                        offEnterObject.SetActive(false);
 
+                        onNormalObject.SetActive(false);
+                        offNormalObject.SetActive(false);
+
+                        if (onDisableObject != null)
+                            onDisableObject.SetActive(isValue);
+
+                        if (offDisableObject != null)
+                            offDisableObject.SetActive(!isValue);
                     }
                     break;
                 case ButtonType.SpriteRenderer:
@@ -133,6 +151,9 @@ namespace MagiCloud.KGUI
                     }
                     else
                     {
+                        if (onDisableSprite != null && offDisableSprite != null)
+                            //什么都不处理
+                            spriteRenderer.sprite = IsValue ? onDisableSprite : offDisableSprite;
                     }
 
                     break;

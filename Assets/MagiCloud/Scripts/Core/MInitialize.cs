@@ -16,7 +16,8 @@ namespace MagiCloud.Core
     /// <summary>
     /// 框架初始化
     /// </summary>
-    public class MInitialize : MonoBehaviour
+    [DefaultExecutionOrder(-1000)]
+    public class MInitialize :MonoBehaviour
     {
         public OperatePlatform CurrentPlatform;
 
@@ -26,36 +27,37 @@ namespace MagiCloud.Core
 
         private void Awake()
         {
-            behaviour = new MBehaviour(ExecutionPriority.Highest, -1000, enabled);
+            MUtility.CurrentPlatform = CurrentPlatform;
 
-            behaviour.OnAwake(() =>
+            switch (CurrentPlatform)
             {
-                MUtility.CurrentPlatform = CurrentPlatform;
+                case OperatePlatform.Kinect:
+                    Instantiate(Resources.Load("Controller/KinectController"),transform);
+                    break;
+                case OperatePlatform.Mouse:
+                    Instantiate(Resources.Load("Controller/MouseController"),transform);
+                    break;
+                default:
+                    break;
+            }
 
-                SwitchPlatform(Application.platform);
-            });
-
-            behaviour.OnDestroy(() =>
-            {
-                DestoryPlatform(Application.platform);
-            });
+            SwitchPlatform(Application.platform);
 
             DontDestroyOnLoad(gameObject);
 
-            MBehaviourController.AddBehaviour(behaviour);
         }
 
-        void AddHighlighting()
+        private void AddHighlighting()
         {
             highlighting = MUtility.MainCamera.gameObject.GetComponent<HighlightingRenderer>() ?? MUtility.MainCamera.gameObject.AddComponent<HighlightingRenderer>();
 
             if (highlighting != null)
             {
-                highlighting.blurIntensity = 1;
-                highlighting.blurSpread = 0;
-                highlighting.blurMinSpread = 1;
-                highlighting.iterations = 2;
-                highlighting.downsampleFactor = 1;
+                highlighting.blurIntensity = 0.3f;
+                highlighting.blurSpread = 0.25f;
+                highlighting.blurMinSpread = 0.65f;
+                highlighting.iterations = 5;
+                highlighting.downsampleFactor =1;
             }
         }
 
@@ -104,8 +106,7 @@ namespace MagiCloud.Core
 
         private void OnDestroy()
         {
-            if (behaviour != null)
-                behaviour.OnExcuteDestroy();
+            DestoryPlatform(Application.platform);
         }
     }
 }

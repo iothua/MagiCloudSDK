@@ -58,6 +58,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textInfo: {fileID: 114415652998584614}
+  Position: {x: 0, y: 0}
+  Cells: []
+  IsHide: 0
 --- !u!114 &114415652998584614
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -78,7 +81,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 6c0ec30789430184ead2eee29b144c60, type: 3}
     m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0

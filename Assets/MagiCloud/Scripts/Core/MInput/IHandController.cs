@@ -6,6 +6,11 @@ namespace MagiCloud.Core.MInput
     public interface IHandController
     {
         /// <summary>
+        /// 功能控制端是否激活
+        /// </summary>
+        bool IsEnable { get; set; }
+
+        /// <summary>
         /// 输入端集合
         /// </summary>
         Dictionary<int, MInputHand> InputHands { get; set; }
@@ -18,5 +23,10 @@ namespace MagiCloud.Core.MInput
         MInputHand GetInputHand(int handIndex);
 
         bool IsPlaying { get; }
+
+        void StartOnlyHand();
+        void StartMultipleHand();
+
+
     }
 }

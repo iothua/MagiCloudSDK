@@ -5,17 +5,18 @@ using System;
 
 namespace MagiCloud.Equipments
 {
+
+
     /// <summary>
     /// 仪器基类
     /// </summary>
     [RequireComponent(typeof(FeaturesObjectController))]
+    [DefaultExecutionOrder(0)]
     public class EquipmentBase : MonoBehaviour
     {
         private FeaturesObjectController _featuresObjectController;
 
-        private Transform _modelNode;
-        private Transform _effectNode;
-
+        
         public Action EventDestory;
 
         /// <summary>
@@ -35,43 +36,6 @@ namespace MagiCloud.Equipments
             }
         }
 
-        /// <summary>
-        /// 模型仪器节点
-        /// </summary>
-        public Transform ModelNode {
-
-            get {
-                if (_modelNode == null)
-                {
-                    _modelNode = transform.Find("Model");
-                }
-
-                return _modelNode;
-            }
-
-        }
-
-        /// <summary>
-        /// 特效仪器节点
-        /// </summary>
-        public Transform EffectNode {
-            get {
-                if (_effectNode == null)
-                {
-                    _effectNode = transform.Find("Effect");
-                }
-
-                return _effectNode;
-            }
-        }
-
-        /// <summary>
-        /// 自身物体
-        /// </summary>
-        public GameObject SelfGameObject {
-            get { return gameObject; }
-        }
-        
         /// <summary>
         /// 功能控制端
         /// </summary>
@@ -131,18 +95,11 @@ namespace MagiCloud.Equipments
         /// <summary>
         /// 初始化仪器（编辑器下调用）
         /// </summary>
-        /// <param name="name"></param>
-        public virtual void OnInitializeEquipment_Editor(string name)
+        /// <param name="equipmentName"></param>
+        public virtual void OnInitializeEquipment_Editor(string equipmentName)
         {
-            gameObject.name = name;
+            gameObject.name = equipmentName;
         }
-
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        public virtual void OnInitialize()
-        { }
 
         public virtual void OnDistanceNotRelease()
         {
@@ -151,8 +108,9 @@ namespace MagiCloud.Equipments
 
         public virtual bool IsCanInteraction(InteractionEquipment interaction)
         {
-            return true;
+            return IsEnable;
         }
+
 
         public virtual void OnDistanceEnter(InteractionEquipment interaction)
         {
@@ -178,5 +136,63 @@ namespace MagiCloud.Equipments
         {
 
         }
+
+        #region 节点
+        private Transform _modelNode;
+        private Transform _effectNode;
+
+
+        /// <summary>
+        /// 模型仪器节点
+        /// </summary>
+        public Transform ModelNode {
+
+            get {
+                if (_modelNode == null)
+                {
+                    _modelNode = transform.Find("Model");
+                    if (_modelNode == null)
+                    {
+                        _modelNode = new GameObject("Model").transform;
+                        _modelNode.SetParent(transform);
+                        _modelNode.localPosition = Vector3.zero;
+                        _modelNode.localRotation = Quaternion.identity;
+                        _modelNode.localScale = Vector3.one;
+                    }
+                }
+
+                return _modelNode;
+            }
+
+        }
+
+        /// <summary>
+        /// 特效仪器节点
+        /// </summary>
+        public Transform EffectNode {
+            get {
+                if (_effectNode == null)
+                {
+                    _effectNode = transform.Find("Effect");
+                    if (_effectNode == null)
+                    {
+                        _effectNode = new GameObject("Effect").transform;
+                        _effectNode.SetParent(transform);
+                    }
+                }
+
+                return _effectNode;
+            }
+        }
+
+        /// <summary>
+        /// 自身物体
+        /// </summary>
+        public GameObject SelfGameObject {
+            get { return gameObject; }
+        }
+
+        #endregion
+
     }
 }

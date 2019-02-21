@@ -25,7 +25,12 @@ namespace MagiCloud.Core.MInput
         /// </summary>
         public MInputHandStatus HandStatus {
             get { return handStatus; }
-            set { handStatus = value; }
+            set { 
+                handStatus = value;
+
+                if (HandUI != null)
+                    HandUI.SetHandIcon(handStatus);
+            }
         }
 
         /// <summary>
@@ -56,10 +61,12 @@ namespace MagiCloud.Core.MInput
             }
             set {
 
+                if (!value)
+                    SetIdle();
+
                 isEnable = value;
 
                 isPressed = false;
-                handStatus = MInputHandStatus.Idle;
                 currentPoint = Vector3.zero;
                 lastPoint = null;
                 lerpPoint = Vector3.zero;
@@ -140,9 +147,9 @@ namespace MagiCloud.Core.MInput
 
             isPressed = true;
 
-            EventHandGrip.SendListener(HandIndex);
+            HandStatus = MInputHandStatus.Grip;
 
-            handStatus = MInputHandStatus.Grip;
+            EventHandGrip.SendListener(HandIndex);
         }
 
         /// <summary>
@@ -155,42 +162,10 @@ namespace MagiCloud.Core.MInput
             if (!isPressed) return;
             isPressed = false;
 
+            HandStatus = MInputHandStatus.Idle;
+
             EventHandIdle.SendListener(HandIndex);
-
-            handStatus = MInputHandStatus.Idle;
         }
-
-        ///// <summary>
-        ///// 设置被抓取
-        ///// </summary>
-        ///// <param name="func"></param>
-        //public void SetGrab(System.Func<IOperateObject> func)
-        //{
-        //    //如果里面存在限制
-        //    if (ActionConstraint.BindCount != 0 && ActionConstraint.IsBindOther(ActionConstraint.Grab_Action)) return;
-
-        //    if (func == null) return;
-
-        //    OperateObject = func();
-
-        //    EventHandGrabObjectKey.SendListener(OperateObject.GrabObject, HandIndex);
-
-        //    EventHandGrabObject.SendListener(OperateObject.GrabObject,HandIndex);
-
-        //    handStatus = MInputHandStatus.Grab;
-        //}
-
-        ///// <summary>
-        ///// 设置释放
-        ///// </summary>
-        ///// <param name="target"></param>
-        //public void SetRelease(GameObject target)
-        //{
-        //    EventHandReleaseObjectKey.SendListener(target, HandIndex);
-        //    EventHandReleaseObject.SendListener(target, HandIndex);
-
-        //    handStatus = MInputHandStatus.Release;
-        //}
 
         /// <summary>
         /// 设置手势大小
@@ -202,6 +177,16 @@ namespace MagiCloud.Core.MInput
             if (HandUI == null) return;
 
             HandUI.SetHandIcon(icon, size);
+        }
+
+        /// <summary>
+        /// 设置默认图标
+        /// </summary>
+        public void SetNormalIcon()
+        {
+            if (HandUI == null) return;
+
+            HandUI.SetNormalIcon();
         }
     }
 }

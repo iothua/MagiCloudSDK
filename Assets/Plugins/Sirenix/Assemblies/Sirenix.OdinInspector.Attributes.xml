@@ -537,6 +537,11 @@
             Disables a property if it is drawn from a prefab asset or a prefab instance.
             </summary>
         </member>
+        <member name="T:Sirenix.OdinInspector.DoNotDrawAsReferenceAttribute">
+            <summary>
+            Indicates that the member should not be drawn as a value reference, if it becomes a reference to another value in the tree. Beware, and use with care! This may lead to infinite draw loops!
+            </summary>
+        </member>
         <member name="T:Sirenix.OdinInspector.EnableGUIAttribute">
             <summary>
             <para>An attribute that enables GUI.</para>
@@ -1622,6 +1627,16 @@
         <member name="F:Sirenix.OdinInspector.TableMatrixAttribute.HideRowIndices">
             <summary>
             If true, no row indices drawn.
+            </summary>
+        </member>
+        <member name="F:Sirenix.OdinInspector.TableMatrixAttribute.RespectIndentLevel">
+            <summary>
+            Whether the drawn table should respect the current GUI indent level.
+            </summary>
+        </member>
+        <member name="F:Sirenix.OdinInspector.TableMatrixAttribute.Transpose">
+            <summary>
+            If true, tables are drawn with rows/columns reversed (C# initialization order).
             </summary>
         </member>
         <member name="F:Sirenix.OdinInspector.TypeFilterAttribute.MemberName">

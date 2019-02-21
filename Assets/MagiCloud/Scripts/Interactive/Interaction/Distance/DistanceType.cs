@@ -8,7 +8,8 @@ namespace MagiCloud.Interactive.Distance
     public enum DistanceType
     {
         D3D = 0,
-        DScreen = 1
+        D2D = 1,
+        DScreen = 2
     }
 
     /// <summary>

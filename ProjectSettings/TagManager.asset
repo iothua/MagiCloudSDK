@@ -4,9 +4,21 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - MarkCamera
+  - Joint
+  - Bracket
+  - SpaceScene_Camera
+  - Fx
+  - Weather
   - button
+  - Focus
+  - ObjectFrontUI
+  - Moon
+  - ColumnControl
+  - LabelController
+  - T
+  - MarkCamera
   - UICamera
+  - Water Volume
   layers:
   - Default
   - TransparentFX
@@ -16,30 +28,30 @@ TagManager:
   - UI
   - 
   - 
-  - Object
-  - Ray
+  - Particle
+  - CanGrab
+  - UI2
   - 
   - 
   - 
   - 
   - 
   - 
+  - LightSpreadDefault
+  - Reflex
+  - Refract
+  - FireCollision
+  - Alpha
   - 
   - 
   - 
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Hide
+  - scienceUI
+  - Joint
+  - Bracket
   m_SortingLayers:
   - name: Default
     uniqueID: 0

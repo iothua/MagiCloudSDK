@@ -42,11 +42,17 @@ namespace MagiCloud.Core.Events.Handlers
         public void SendListener(Ray ray,Ray uiRay, int handIndex)
         {
             if (Values == null) return;
-            foreach (var item in Values)
-            {
-                item.Action(ray, uiRay, handIndex);
 
+            for (int i = 0; i < Values.Count; i++)
+            {
+                Values[i].Action(ray, uiRay, handIndex);
             }
+
+            //foreach (var item in Values)
+            //{
+            //    item.Action(ray, uiRay, handIndex);
+
+            //}
         }
     }
 }

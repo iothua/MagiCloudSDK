@@ -34,3 +34,60 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+Assets/Chemistry/
+Assets/MagnetPlugins/
+Assets/MathUtilities/
+Assets/Optics/
+Assets/Physicals/
+Assets/Plugins/InkPainter/
+Assets/Plugins/MagiCloud/LiquidVolume/
+Assets/StreamingAssets/Equipments/
+Assets/Universe/Resources.meta
+Assets/Universe/
+Assets/Weather/
+Assets/StreamingAssets/
+Assets/Plugins/
+Assets/Chemistry.meta
+Assets/Physicals.meta
+Assets/Optics.meta
+Assets/MathUtilities.meta
+Assets/MagnetPlugins.meta
+Assets/Weather.meta
+Assets/Universe.meta
+Assets/TimerTest.cs.meta
+Assets/TimerTest.cs
+Assets/RyhTest.cs.meta
+Assets/RyhTest.cs
+.svn/
+Assets/CameraTransitions/
+Assets/ArtResources/
+Assets/DynamicTerrainObjects/
+Assets/EarthSimplePlanets/
+Assets/Effect/
+Assets/Enviro - Dynamic Enviroment/
+Assets/MCScience/
+Assets/Model/
+Assets/SafeMode/
+Assets/TextMesh Pro/
+Assets/UI/
+Assets/PureScene.unity
+Assets/Model.meta
+Assets/Enviro - Dynamic Enviroment.meta
+Assets/DynamicTerrainObjects.meta
+Assets/CameraTransitions.meta
+Assets/ArtResources.meta
+Assets/Effect.meta
+Assets/TextMesh Pro.meta
+Assets/MCScience.meta
+Assets/SafeMode.meta
+Assets/PureScene.unity.meta
+Assets/UI.meta
+Assets/EarthSimplePlanets.meta
+Assets/MagiCloud/Scripts/Operate/Kinects/
+ProjectSettings/ProjectVersion.txt
+Assets/MagiCloud/UWA/UWA_GOTv1.2.4_Windows.unitypackage.meta
+Assets/MagiCloud/Scripts/Interactive/Interaction/Trigger.meta
+Assets/MagiCloud/KGUI/Resources/JsonData/Backpack.meta
+Assets/MagiCloud/CameraManager/Assets.meta
+Assets/MagiCloud/Scripts/Operate/Kinects.meta
+Assets/MagiCloud/KGUI/Resources/JsonData.meta

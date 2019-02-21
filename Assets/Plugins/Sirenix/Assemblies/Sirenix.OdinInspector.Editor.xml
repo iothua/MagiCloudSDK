@@ -2663,7 +2663,7 @@
         </member>
         <member name="T:Sirenix.OdinInspector.Editor.Drawers.TwoDimensionalArrayDrawer`2">
             <summary>
-            Base class for two-dimentional array drawers.
+            Base class for two-dimensional array drawers.
             </summary>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.Drawers.TwoDimensionalArrayDrawer`2.CanDrawTypeFilter(System.Type)">
@@ -3708,6 +3708,26 @@
         <member name="M:Sirenix.OdinInspector.Editor.InspectorPropertyValueGetter`1.GetValues">
             <summary>
             Gets all values from all targets.
+            </summary>
+        </member>
+        <member name="F:Sirenix.OdinInspector.Editor.MenuTreeBrowser.ContentPadding">
+            <summary>
+            The content padding
+            </summary>
+        </member>
+        <member name="M:Sirenix.OdinInspector.Editor.MenuTreeBrowser.DrawMenuTree">
+            <summary>
+            Draws the menu tree.
+            </summary>
+        </member>
+        <member name="P:Sirenix.OdinInspector.Editor.MenuTreeBrowser.Value">
+            <summary>
+            Gets the value selected value.
+            </summary>
+        </member>
+        <member name="M:Sirenix.OdinInspector.Editor.MenuTreeBrowser.ForceRebuildMenuTree">
+            <summary>
+            Invokes BuildMenuTree.
             </summary>
         </member>
         <member name="T:Sirenix.OdinInspector.Editor.OdinDontRegisterAttribute">
@@ -5995,7 +6015,7 @@
             Not yet documented.
             </summary>
         </member>
-        <member name="M:Sirenix.OdinInspector.Editor.EditableKeyValuePair`2.#ctor(`0,`1,System.Boolean)">
+        <member name="M:Sirenix.OdinInspector.Editor.EditableKeyValuePair`2.#ctor(`0,`1,System.Boolean,System.Boolean)">
             <summary>
             Not yet documented.
             </summary>
@@ -9587,7 +9607,7 @@
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.InspectorProperty.Draw(UnityEngine.GUIContent)">
             <summary>
-            Draws this property in the inspector with a given label.
+            Draws this property in the inspector with a given default label. This default label may be overridden by attributes on the drawn property.
             </summary>
         </member>
         <member name="M:Sirenix.OdinInspector.Editor.InspectorProperty.PushDraw">

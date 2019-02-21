@@ -53,11 +53,11 @@ namespace MagiCloud.KGUI
         public void OnInspectorButtonType(KGUI_ButtonBase button)
         {
             EditorGUILayout.BeginVertical(GUILayout.Width(500));
-
+          
             GUILayout.Space(10);
-            EditorGUILayout.LabelField("常用属性", MUtilityStyle.LabelStyle);
-
-            button.buttonType = (ButtonType)EditorGUILayout.EnumPopup("Button类型：", button.buttonType);
+            EditorGUILayout.LabelField("常用属性",MUtilityStyle.LabelStyle);
+            button.Order=EditorGUILayout.IntField("排序",button.Order);
+            button.buttonType = (ButtonType)EditorGUILayout.EnumPopup("Button类型：",button.buttonType);
 
             switch (button.buttonType)
             {
@@ -65,67 +65,67 @@ namespace MagiCloud.KGUI
 
                     EditorGUI.BeginChangeCheck();
 
-                    EditorGUILayout.PropertyField(image, true, null);
-                    EditorGUILayout.PropertyField(normalSprite, true, null);
-                    EditorGUILayout.PropertyField(enterSprite, true, null);
+                    EditorGUILayout.PropertyField(image,true,null);
+                    EditorGUILayout.PropertyField(normalSprite,true,null);
+                    EditorGUILayout.PropertyField(enterSprite,true,null);
 
                     if (button.pressedSprite == null)
                     {
                         button.pressedSprite = button.enterSprite;
                     }
 
-                    EditorGUILayout.PropertyField(pressedSprite, true, null);
+                    EditorGUILayout.PropertyField(pressedSprite,true,null);
 
                     if (button.disableSprite == null)
                     {
                         button.disableSprite = button.normalSprite;
                     }
 
-                    EditorGUILayout.PropertyField(disableSprite, true, null);
+                    EditorGUILayout.PropertyField(disableSprite,true,null);
 
                     break;
                 case ButtonType.Object:
                     EditorGUI.BeginChangeCheck();
 
-                    EditorGUILayout.PropertyField(normalObject, true, null);
-                    EditorGUILayout.PropertyField(enterObject, true, null);
+                    EditorGUILayout.PropertyField(normalObject,true,null);
+                    EditorGUILayout.PropertyField(enterObject,true,null);
 
                     if (button.pressedObject == null)
                     {
                         button.pressedObject = button.enterObject;
                     }
 
-                    EditorGUILayout.PropertyField(pressedObject, true, null);
+                    EditorGUILayout.PropertyField(pressedObject,true,null);
 
                     if (button.disableObject == null)
                     {
                         button.disableObject = button.normalObject;
                     }
 
-                    EditorGUILayout.PropertyField(disableObject, true, null);
+                    EditorGUILayout.PropertyField(disableObject,true,null);
 
                     break;
                 case ButtonType.SpriteRenderer:
                     EditorGUI.BeginChangeCheck();
 
-                    EditorGUILayout.PropertyField(spriteRenderer, true, null);
+                    EditorGUILayout.PropertyField(spriteRenderer,true,null);
 
-                    EditorGUILayout.PropertyField(normalSprite, true, null);
-                    EditorGUILayout.PropertyField(enterSprite, true, null);
+                    EditorGUILayout.PropertyField(normalSprite,true,null);
+                    EditorGUILayout.PropertyField(enterSprite,true,null);
 
                     if (button.pressedSprite == null)
                     {
                         button.pressedSprite = button.enterSprite;
                     }
 
-                    EditorGUILayout.PropertyField(pressedSprite, true, null);
+                    EditorGUILayout.PropertyField(pressedSprite,true,null);
 
                     if (button.disableSprite == null)
                     {
                         button.disableSprite = button.normalSprite;
                     }
 
-                    EditorGUILayout.PropertyField(disableSprite, true, null);
+                    EditorGUILayout.PropertyField(disableSprite,true,null);
                     break;
                 default:
                     EditorGUI.BeginChangeCheck();

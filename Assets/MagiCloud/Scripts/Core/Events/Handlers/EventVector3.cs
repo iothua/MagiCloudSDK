@@ -63,10 +63,16 @@ namespace MagiCloud.Core.Events.Handlers
         public void SendListener(Vector3 lerp)
         {
             if (Values == null) return;
-            foreach (var item in Values)
+
+            for (int i = 0; i < Values.Count; i++)
             {
-                item.Action(lerp);
+                Values[i].Action(lerp);
             }
+
+            //foreach (var item in Values)
+            //{
+            //    item.Action(lerp);
+            //}
         }
     }
 }
