@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using MagiCloud.Core;
 using MagiCloud.Core.Events;
 
@@ -28,38 +27,35 @@ namespace MagiCloud.KGUI
         private bool IsDown = false;
         private int handIndex = -1;
 
-        [Title("容器的类型")]
-        [EnumToggleButtons, EnumPaging]
+        // [Title("容器的类型")]
+        // [EnumToggleButtons, EnumPaging]
         public PanelType panelType = PanelType.UI;
-
-        [Header("幅度值")]
         public float extentValue = 10;//幅度值
 
-        [Space(10)]
-        [InfoBox("其他的RectTransform，用于拼接不规则的Panel区域")]
-        [ShowIf("panelType",PanelType.UI)]
-        [ListDrawerSettings(ShowIndexLabels = true,ShowPaging = true)]
+        // [ShowIf("panelType",PanelType.UI)]
+        //[ListDrawerSettings(ShowIndexLabels = true,ShowPaging = true)]
+
         public List<RectTransform> OtherRects;
 
         [Space(10)]
-        [ShowIf("panelType",PanelType.Object)]
-        [InfoBox("手动输入容器大小")]
+        //[ShowIf("panelType",PanelType.Object)]
+        //  [InfoBox("手动输入容器大小")]
         public Vector2Int panelSize;//容器大小
 
-        [ShowIf("panelType",PanelType.Object)]
-        [InfoBox("手动输入其他容器的相关参数")]
-        [ListDrawerSettings(ShowIndexLabels = true,ListElementLabelName = "transform")]
+        // [ShowIf("panelType",PanelType.Object)]
+
+        // [ListDrawerSettings(ShowIndexLabels = true,ListElementLabelName = "transform")]
         public List<TransformSize> OtherSizes;
 
-        [Title("按下移动方向")]
+        [Header("按下移动方向")]
         public ButtonEvent onDirectionX;//X轴方向
         public ButtonEvent onDirectionY;//Y轴方向
 
-        [Title("移入与移出")]
+        [Header("移入与移出")]
         public ButtonEvent onEnter;
         public ButtonEvent onExit;
 
-        [Title("按下与抬起")]
+        [Header("按下与抬起")]
         public PanelEvent onDown;
         public PanelEvent onUp;
 

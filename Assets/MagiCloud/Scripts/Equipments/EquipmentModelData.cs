@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
-using Sirenix.OdinInspector;
 
 namespace MagiCloud.Equipments
 {
     [System.Serializable]
     public class EquipmentModelData
     {
-        [Title("仪器关联信息")]
+        [Header("仪器关联信息")]
         public EquipmentModelDataItem geneterItem;//已经生成后的
-        [Title("资源信息")]
+        [Header("资源信息")]
         public EquipmentModelDataItem resourcesItem; //资源内的
 
         /// <summary>
@@ -40,7 +39,7 @@ namespace MagiCloud.Equipments
     [System.Serializable]
     public class EquipmentModelDataItem
     {
-        [InlineEditor(InlineEditorModes.LargePreview)]
+      //  [InlineEditor(InlineEditorModes.LargePreview)]
         public GameObject modelObject;
 
         public TransformData transformData;

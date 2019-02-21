@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.ads": "2.0.8",
     "com.unity.analytics": "2.0.16",
     "com.unity.burst": "0.2.4-preview.34",
     "com.unity.mathematics": "0.0.12-preview.19",
