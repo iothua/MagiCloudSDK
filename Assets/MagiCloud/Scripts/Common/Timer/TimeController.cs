@@ -1,15 +1,15 @@
 ﻿using MagiCloud.KGUI;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System;
 
 namespace MagiCloud.Common
 {
     /// <summary>
     /// 时间控制
     /// </summary>
-    public class TimeController :SerializedMonoBehaviour
+    public class TimeController :MonoBehaviour
     {
         [Header("虚拟目标时间，秒为单位")]
         public float virtualTime = 10;      //虚拟时间，单位秒
@@ -33,7 +33,10 @@ namespace MagiCloud.Common
         public UnityEvent playEvent;
         public UnityEvent pauseEvent;
         public UnityEvent stopEvent;
-        public UnityEvent<float> playingEvent;
+
+        public TimeEvent playingEvent;
+        [Serializable]
+        public class TimeEvent :UnityEvent<float> { }
 
         public float TempS
         {
@@ -185,6 +188,7 @@ namespace MagiCloud.Common
             playingEvent?.Invoke(t);
         }
 
+      
         private void OnCompleted()
         {
             if (timeToggle!=null)

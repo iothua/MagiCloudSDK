@@ -2,7 +2,6 @@
 using UnityEngine;
 using MagiCloud.Core.Events;
 using System.Collections;
-using Sirenix.OdinInspector;
 
 namespace MagiCloud.Interactive
 {

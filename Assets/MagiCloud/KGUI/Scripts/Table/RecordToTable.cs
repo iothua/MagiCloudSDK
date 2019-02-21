@@ -1,6 +1,5 @@
-﻿using System;
-using DG.Tweening;
-using Sirenix.OdinInspector;
+﻿using DG.Tweening;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 namespace MagiCloud.KGUI
@@ -8,7 +7,8 @@ namespace MagiCloud.KGUI
     /// <summary>
     /// 记录数据到表格
     /// </summary>
-    public class RecordToTable :SerializedMonoBehaviour
+    [Serializable]
+    public class RecordToTable :MonoBehaviour
     {
         [Header("数据记录者")]
         public IRecord record;
@@ -24,15 +24,20 @@ namespace MagiCloud.KGUI
 
         [Header("开启时默认屏蔽order>0的层")]
         public bool IsUIShield = false;
+        [HideInInspector]
+        public GameObject recordObj;
 
         void Start()
         {
+            if (recordObj!=null)
+                record=recordObj.GetComponent<IRecord>();
+
             if (recordButton!=null)
                 recordButton.onClick.AddListener(OnClick);
             if (backButton==null)
                 backButton=transform.GetChild(0).Find("返回").GetComponent<KGUI_Button>();
             if (backButton!=null) backButton.onClick.AddListener(Close);
-          
+
         }
 
 

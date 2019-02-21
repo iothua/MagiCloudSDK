@@ -1,20 +1,18 @@
 ﻿using System;
 using UnityEngine;
-using Sirenix.OdinInspector;
 
 namespace MagiCloud
 {
     [Serializable]
-    [LabelText("Transform数据")]
     public class TransformData
     {
-        [LabelText("局部坐标(LocalPosition)")]
+        [Header("局部坐标(LocalPosition)")]
         public MVector3 localPosition;
 
-        [LabelText("局部旋转(LocalRotation)")]
+        [Header("局部旋转(LocalRotation)")]
         public MVector3 localRotation;
 
-        [LabelText("局部大小(LocalScale)")]
+        [Header("局部大小(LocalScale)")]
         public MVector3 localScale = new MVector3(Vector3.one);
 
         public TransformData()
