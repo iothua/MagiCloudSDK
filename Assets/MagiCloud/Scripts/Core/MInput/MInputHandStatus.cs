@@ -15,6 +15,10 @@
         /// </summary>
         Grip,
         /// <summary>
+        /// 按下UI
+        /// </summary>
+        Pressed,
+        /// <summary>
         /// 抓取
         /// </summary>
         Grab,
@@ -23,9 +27,13 @@
         /// </summary>
         Grabing,
         /// <summary>
-        /// 抓取物体释放
+        /// 旋转
         /// </summary>
-        Release,
+        Rotate,
+        /// <summary>
+        /// 缩放
+        /// </summary>
+        Zoom,
         /// <summary>
         /// 超出范围
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+
 namespace MagiCloud
 {
     /// <summary>
@@ -249,6 +250,25 @@ namespace MagiCloud
             {
                 return false;
             }
+        }
+
+
+        /// <summary>
+        /// 计算适口偏移值
+        /// </summary>
+        /// <returns>The offset position.</returns>
+        /// <param name="handPosition">Hand position.</param>
+        /// <param name="grabObject">Grab object.</param>
+        public static Vector3 GetOffsetPosition(Vector3 handPosition, GameObject grabObject)
+        {
+
+            var offset = Vector3.zero;
+            Vector3 screenDevice = MUtility.MainWorldToScreenPoint(grabObject.transform.position);
+            Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(handPosition.x, handPosition.y, screenDevice.z));
+
+            offset = vPos - grabObject.transform.position;
+
+            return offset;
         }
     }
 }

@@ -21,6 +21,8 @@ namespace MagiCloud.Interactive
 
         public static InteractiveController Instance;
 
+        private WaitForSeconds waitForSeconds = new WaitForSeconds(0.1f);
+
         private void Awake()
         {
             Instance = this;
@@ -90,22 +92,11 @@ namespace MagiCloud.Interactive
             Search.OnStopInteraction(target);
         }
 
-        // /// <summary>
-        // /// Update is called every frame, if the MonoBehaviour is enabled.
-        // /// </summary>
-        // void Update()
-        // {
-        //     if(!IsEnable)return;
-            
-        //     if(Time.frameCount % 5 == 0)
-        //         Search.OnUpdate(); //先执行一次
-
-        // }
         IEnumerator OnUpdate()
         {
             while (true)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return waitForSeconds;
                 Search.OnUpdate(); //先执行一次
             }
         }

@@ -61,10 +61,12 @@ namespace MagiCloud.Operate
 
                 if (isEnable)
                 {
+                    enabled = true;
                     operate.OnEnable();
                 }
                 else
                 {
+                    enabled = false;
                     operate.OnDisable();
                 }
             }
@@ -86,6 +88,7 @@ namespace MagiCloud.Operate
 
             return hand;
         }
+
         private void Awake()
         {
             behaviour = new MBehaviour(ExecutionPriority.Highest, -900, enabled);
@@ -121,11 +124,13 @@ namespace MagiCloud.Operate
             //将他的屏幕坐标传递出去
             InputHands[0].OnUpdate(Input.mousePosition);
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0)&&InputHands[0].IsIdleStatus)
                 InputHands[0].SetGrip();
 
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(0) && !(InputHands[0].IsRotateZoomStatus || InputHands[0].IsErrorStatus))
                 InputHands[0].SetIdle();
+
+            #region 旋转
 
             //如果按下右键
             if (Input.GetMouseButtonDown(1))
@@ -139,50 +144,52 @@ namespace MagiCloud.Operate
                 IsRotateDown = false;
 
                 //已经存在旋转，并且在集合中记录
-                if (IsRotate && ActionConstraint.IsBind(ActionConstraint.Camera_Rotate_Action))
+                if (IsRotate)
                 {
                     EventCameraRotate.SendListener(Vector3.zero);
                 }
 
                 IsRotate = false;
-
-                ActionConstraint.RemoveBind(ActionConstraint.Camera_Rotate_Action);
+                InputHands[0].HandStatus = MInputHandStatus.Idle;
             }
 
             //按住右键旋转
             if (IsRotateDown)
             {
                 //向量的模大于2.0时
-                if (!IsRotate && ActionConstraint.BindCount == 0 && InputHands[0].ScreenVector.magnitude > 2.0f)
+                if (!IsRotate && InputHands[0].IsIdleStatus && InputHands[0].ScreenVector.magnitude > 2.0f)
                 {
                     //将动作记录到集合中
-                    ActionConstraint.AddBind(ActionConstraint.Camera_Rotate_Action);
+                    InputHands[0].HandStatus = MInputHandStatus.Rotate;
 
                     IsRotate = true;
                 }
 
                 //已经存在旋转，并且在集合中记录
-                if (IsRotate && ActionConstraint.IsBind(ActionConstraint.Camera_Rotate_Action))
+                if (IsRotate)
                 {
                     EventCameraRotate.SendListener(InputHands[0].ScreenVector);
                 }
 
             }
+            #endregion
+
+            #region 缩放
 
             //缩放
             if (Input.GetAxis("Mouse ScrollWheel") != 0)
             {
                 float result = Input.GetAxis("Mouse ScrollWheel");
 
-                if (!IsZoom && ActionConstraint.BindCount == 0)
+                if (!IsZoom && InputHands[0].IsIdleStatus)
                 {
-                    ActionConstraint.AddBind(ActionConstraint.Camera_Zoom_Action);
 
+                    InputHands[0].HandStatus = MInputHandStatus.Zoom;
                     IsZoom = true;
                 }
 
                 //进行缩放
-                if (IsZoom && ActionConstraint.IsBind(ActionConstraint.Camera_Zoom_Action))
+                if (IsZoom)
                 {
                     EventCameraZoom.SendListener(result);
                 }
@@ -190,16 +197,17 @@ namespace MagiCloud.Operate
             else
             {
                 //进行缩放
-                if (IsZoom && ActionConstraint.IsBind(ActionConstraint.Camera_Zoom_Action))
+                if (IsZoom)
                 {
                     EventCameraZoom.SendListener(0);
+                    IsZoom = false;
+                    InputHands[0].HandStatus = MInputHandStatus.Idle;
                 }
 
-                IsZoom = false;
 
-                if (ActionConstraint.BindCount > 0)
-                    ActionConstraint.RemoveBind(ActionConstraint.Camera_Zoom_Action);
+
             }
+            #endregion
 
             if (operateObject != null)
             {
@@ -236,26 +244,9 @@ namespace MagiCloud.Operate
         {
             if (handIndex != InputHands[0].HandIndex) return;
 
-            offset = GetOffsetPosition(InputHands[0].ScreenPoint, operate.GrabObject);
+            offset = MUtility.GetOffsetPosition(InputHands[0].ScreenPoint, operate.GrabObject);
 
             this.operateObject = operate;
-        }
-
-        /// <summary>
-        /// 计算适口偏移值
-        /// </summary>
-        /// <param name="mousePosition"></param>
-        /// <param name="grabObject"></param>
-        /// <returns></returns>
-        private Vector3 GetOffsetPosition(Vector3 mousePosition, GameObject grabObject)
-        {
-            var offset = Vector3.zero;
-            Vector3 screenDevice = MUtility.MainWorldToScreenPoint(grabObject.transform.position);
-            Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, screenDevice.z));
-
-            offset = vPos - grabObject.transform.position;
-
-            return offset;
         }
 
         /// <summary>
