@@ -7,6 +7,7 @@ using UnityEngine.U2D;
 namespace MagiCloud.KGUI
 {
     [CustomEditor(typeof(KGUI_Text),true)]
+    [CanEditMultipleObjects]
     public class KGUITextEditor :Editor
     {
         private void OnEnable()
@@ -26,7 +27,7 @@ namespace MagiCloud.KGUI
                 kguiText.FontSize=EditorGUILayout.FloatField("      字体大小",kguiText.FontSize);
 
             kguiText.MainColor=EditorGUILayout.ColorField("颜色",kguiText.MainColor);
-
+            kguiText.Alignment=(TextAlignmentOptions)EditorGUILayout.EnumPopup("锚点",kguiText.Alignment);
             //outline
             kguiText.UseOutline=EditorGUILayout.Toggle("描边",kguiText.UseOutline);
             if (kguiText.UseOutline)

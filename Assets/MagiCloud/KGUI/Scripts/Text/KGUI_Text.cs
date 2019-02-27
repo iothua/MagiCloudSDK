@@ -28,6 +28,13 @@ namespace MagiCloud.KGUI
 
             }
         }
+        public TextAlignmentOptions Alignment
+        {
+            get { return TextMeshPro.alignment; }
+            set { TextMeshPro.alignment=value; }
+        }
+
+
         public TMP_FontAsset FontAsset
         {
             get { return TextMeshPro.font; }
@@ -42,7 +49,10 @@ namespace MagiCloud.KGUI
         public string Text
         {
             get { return TextMeshPro.text; }
-            set { TextMeshPro.text=value; }
+            set
+            {
+                TextMeshPro.text=value;
+            }
         }
 
         public Color MainColor
@@ -155,7 +165,7 @@ namespace MagiCloud.KGUI
         {
             if (TextMeshPro!=null)
             {
-                
+
                 TextMeshPro.enabled=true;
                 TextMeshPro.hideFlags=HideFlags.HideInInspector;
             }
