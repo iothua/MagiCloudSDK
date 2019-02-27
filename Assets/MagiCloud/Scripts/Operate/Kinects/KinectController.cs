@@ -1,236 +1,250 @@
-﻿using MagiCloud.Core;
+﻿using UnityEngine;
+using MagiCloud.Core;
 using MagiCloud.Core.Events;
+using MagiCloud.Kinect;
 using MagiCloud.Core.MInput;
 using MagiCloud.Features;
-using MagiCloud.Kinect;
-using MCKinect.Events;
-using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 namespace MagiCloud.Operate
 {
-    [DefaultExecutionOrder(-900)]
-    public class KinectController :MonoBehaviour, IHandController
+    /// <summary>
+    /// Kinect控制端
+    /// 1、支持单双手操作
+    /// 2、同时兼容鼠标操作
+    ///     1）当识别到人物手时，鼠标禁止
+    ///     2）当未识别到人的手时，鼠标开启
+    /// 
+    /// 思路：
+    /// 1、当手势未识别到手时（双手没有一只手激活时，鼠标控制端启动）
+    /// 2、当手势识别时，开启手势端。
+    /// 3、当手势端有一个未开启的时候，需要禁用相应的操作，但是事件是否需要考虑待定。
+    /// 4、比如握拳时，消失。在显示时，这时候需要做什么处理。
+    /// 5、单双手的缩放，也需要优化。
+    /// 
+    /// </summary>
+    public class KinectController : MonoBehaviour, IHandController
     {
-        private MBehaviour behaviour;
-
-        private bool IsZoom = true; //开启缩放
-        private bool IsRotate = true; //开启旋转
-        private bool isTempLeftRotate = false;
-        private bool isTempRightRotate = false;
-        private bool isTempZoom = false;
-
-        private bool IsRotateDown = false; //旋转是否开启
-
-        private bool handStart;
-        private bool handEnd;
-
-        [Header("右手松手图标")]
-        public HandIcon rightHandSprite;//手图标
-
-        [Header("左手图标")]
-        public HandIcon leftHandSprite;//手图标
-
-        [Header("图标大小")]
-        public Vector2 handSize = new Vector2(50,50);//图标大小
-
-        private bool isPlaying = false;
-
-        private KinectHandFunction rightHandObject, leftHandObject;
-
-        // 初始默认双手
-        [SerializeField]
-        private KinectActiveHandStadus kinectActiveHandStatus = KinectActiveHandStadus.Two;
-        private KinectHandStatus activeStatus = KinectHandStatus.Identify;
-
-        private IOperateObject rightOperateObject;
-        private IOperateObject leftOperateObject;
-
-        private Vector3 leftOffset;
-        private Vector3 rightOffset;
-        private Vector3 lastHandPos;
-        private GameObject userManager;     // 用户识别管理
-
-        // 单手操作记录手编号
-        private int handIndex;
-        private bool isLeft, isRight;
-        private bool isLeftGrip, isRightGrip;
-        private bool? isLeftUIEnable, isRightUIEnable;
-        private bool isLeftRotate, isRightRotate;
-        private bool isHandsZoom;
-
-        private TwoHandDistance twoHandDistance;
-
-        private bool isEnable;
-
-        private MOperate operate;
-        private MOperate leftOperate;
-        private MOperate rightOperate;
-
-        private ZoomState zoomState;
-
-        private enum ZoomState
-        {
-            rightRotate,
-            leftRotate,
-            zoom,
-            none
-        }
-
-        public Dictionary<int,MInputHand> InputHands
-        {
-            get;
-            set;
-        }
-
-        public bool IsPlaying
-        {
-            get
-            {
-                return isPlaying;
-            }
-        }
+        private bool isEnable = false;
 
         public bool IsEnable
         {
-            get
-            {
+            get {
                 return isEnable;
             }
+            set {
 
-            set
-            {
                 if (isEnable == value) return;
                 isEnable = value;
 
-                if (kinectActiveHandStatus == KinectActiveHandStadus.Two)
+                if(isEnable)
                 {
-                    if (IsEnable)
-                    {
-                        leftOperate.OnEnable();
-                        rightOperate.OnEnable();
-                    }
-                    else
-                    {
-                        leftOperate.OnDisable();
-                        rightOperate.OnDisable();
-                    }
+                    behaviour = new MBehaviour(ExecutionPriority.Highest, -900);
+                    behaviour.OnUpdate_MBehaviour(OnKinectUpdate);
+
+                    //注册手势启动/停止事件
+                    EventHandStart.AddListener(HandStart);
+                    EventHandStop.AddListener(HandStop);
                 }
-                else if (kinectActiveHandStatus == KinectActiveHandStadus.One)
+                else
                 {
+                    behaviour.OnExcuteDestroy();
 
-                    if (MInputKinect.IsHandActive(0) && !MInputKinect.IsHandActive(1))
-                    {
-                        if (IsEnable)
-                        {
-                            rightOperate.OnEnable();
-                        }
-                        else
-                        {
-                            rightOperate.OnDisable();
-                        }
-                    }
-                    else if (MInputKinect.IsHandActive(1) && !MInputKinect.IsHandActive(0))
-                    {
-                        if (IsEnable)
-                        {
-                            leftOperate.OnEnable();
-                        }
-                        else
-                        {
-                            leftOperate.OnDisable();
-                        }
-                    }
-
+                    //移除手势启动/停止事件
+                    EventHandStart.RemoveListener(HandStart);
+                    EventHandStop.RemoveListener(HandStop);
                 }
 
             }
         }
 
-        void KinectInitialize()
-        {
-            userManager = new GameObject("UserManager");
-            userManager.AddComponent<KinectUserManager>();
-            userManager.AddComponent<KinectHandIdentifyManager>();
-            userManager.transform.SetParent(transform);
-
-            gameObject.AddComponent<KinectCapture>();
-            gameObject.AddComponent<KinectOperate>();
-
-            //实例化Kinect监测
-            rightHandObject = new KinectHandFunction();
-            leftHandObject = new KinectHandFunction();
-
-            KinectTransfer.InstantiationHand(leftHandObject,rightHandObject);
-
-            KinectConfig.SetHandStartStatus(kinectActiveHandStatus); // 设置单双手操作
-            KinectConfig.SetKinectHandActiveStatus(activeStatus);   // 激活手势
-        }
-
-        void KinectMInputInitialize(KinectActiveHandStadus kinectActiveHandStadus)
-        {
-            InputHands = new Dictionary<int,MInputHand>();
-            isEnable = true;
-            switch (kinectActiveHandStadus)
-            {
-                case KinectActiveHandStadus.None:
-                    throw new Exception("单双手状态未选择");
-                case KinectActiveHandStadus.One:
-                    //初始化手的种类
-                    var handUI = MHandUIManager.CreateHandUI(transform,rightHandSprite,handSize);
-                    var inputHand = new MInputHand(0,handUI,OperatePlatform.Kinect);
-                    InputHands.Add(0,inputHand);
-
-                    isPlaying = true;
-
-                    //注册操作者相关事件
-                    operate = MOperateManager.AddOperateHand(inputHand,this);
-                    //注册方法
-                    operate.OnGrab = OnRightGrabObject;
-                    operate.OnSetGrab = SetRightGrabObject;
-                    operate.OnEnable();
-                    break;
-                case KinectActiveHandStadus.Two:
-                    //初始化手的种类
-                    var rightHandUI = MHandUIManager.CreateHandUI(transform,rightHandSprite,handSize);
-                    var rightInputHand = new MInputHand(0,rightHandUI,OperatePlatform.Kinect);
-                    InputHands.Add(0,rightInputHand);
-
-                    var leftHandUI = MHandUIManager.CreateHandUI(transform,leftHandSprite,handSize);
-                    var leftInputHand = new MInputHand(1,leftHandUI,OperatePlatform.Kinect);
-                    InputHands.Add(1,leftInputHand);
-
-                    isPlaying = true;
-
-                    //注册操作者相关事件
-                    rightOperate = MOperateManager.AddOperateHand(rightInputHand,this);
-                    //注册方法
-                    rightOperate.OnGrab = OnRightGrabObject;
-                    rightOperate.OnSetGrab = SetRightGrabObject;
-                    rightOperate.OnEnable();
-
-                    //注册操作者相关事件
-                    leftOperate = MOperateManager.AddOperateHand(leftInputHand,this);
-                    //注册方法
-                    leftOperate.OnGrab = OnLeftGrabObject;
-                    leftOperate.OnSetGrab = SetLeftGrabObject;
-                    leftOperate.OnEnable();
-                    break;
-                default:
-                    break;
-            }
-        }
         /// <summary>
-        /// 获取到指定输入端对象
+        /// 手操作相关数据
         /// </summary>
-        /// <param name="handIndex"></param>
-        /// <returns></returns>
+        [Serializable]
+        public class HandOperate
+        {
+            /// <summary>
+            /// 手图标
+            /// </summary>
+            public HandIcon handIcon;
+            /// <summary>
+            /// 手势操作端
+            /// </summary>
+            /// <value>The operate.</value>
+            public MOperate Operate { get; set; }
+            /// <summary>
+            /// 针对手对物体的操作
+            /// </summary>
+            /// <value>The operate object.</value>
+            public IOperateObject OperateObject { get; set; }
+            /// <summary>
+            /// 针对手与物体抓取时的偏移量
+            /// </summary>
+            /// <value>The offset.</value>
+            public Vector3 Offset { get; set; }
+            /// <summary>
+            /// 计算最后一帧时的手坐标
+            /// </summary>
+            /// <value>The last hand position.</value>
+            public Vector3 LastHandPos { get; set; }
+
+            /// <summary>
+            /// 手编号
+            /// </summary>
+            /// <value>The index of the hand.</value>
+            public int HandIndex;
+
+            /// <summary>
+            /// 绑定相关抓取事件
+            /// </summary>
+            public void BindGrab()
+            {
+                Operate.OnGrab = OnGrabObject;
+                Operate.OnSetGrab = SetGrabObject;
+                Operate.OnEnable();
+            }
+
+            /// <summary>
+            /// 抓取设置
+            /// </summary>
+            /// <param name="operate">Operate.</param>
+            /// <param name="handIndex">Hand index.</param>
+            public void OnGrabObject(IOperateObject operate,int handIndex)
+            {
+                if (HandIndex != handIndex) return;
+
+                Offset = MUtility.GetOffsetPosition(Operate.InputHand.ScreenPoint, operate.GrabObject);
+                OperateObject = operate;
+            }
+
+
+            /// <summary>
+            /// 设置物体被抓取
+            /// </summary>
+            /// <param name="operate">Operate.</param>
+            /// <param name="handIndex">Hand index.</param>
+            public void SetGrabObject(IOperateObject operate,int handIndex,float cameraRelativeDistance)
+            {
+                if (HandIndex != handIndex) return;
+
+                Vector3 screenPoint = Operate.InputHand.ScreenPoint;
+                OperateObject = operate;
+
+                Vector3 screenMainCamera = MUtility.MainWorldToScreenPoint(MUtility.MainCamera.transform.position
+                + MUtility.MainCamera.transform.forward * cameraRelativeDistance);
+
+                Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenPoint.x, screenPoint.y, screenMainCamera.z));
+                Offset = Vector3.zero;
+
+                OperateObject.GrabObject.transform.position = position;
+            }
+
+            /// <summary>
+            /// 针对OperateObject的处理
+            /// </summary>
+            public void OnOperateObjectHandle()
+            { 
+                switch(Operate.InputHand.HandStatus)
+                {
+                    case MInputHandStatus.Grabing:
+
+                        var screenDevice = MUtility.MainWorldToScreenPoint(OperateObject.GrabObject.transform.position);
+
+                        var screenMouse = Operate.InputHand.ScreenPoint;
+                        Vector3 vpos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x, screenMouse.y, screenDevice.z));
+
+                        Vector3 position = vpos - Offset;
+
+                        EventUpdateObject.SendListener(OperateObject.GrabObject, position, OperateObject.GrabObject.transform.rotation, HandIndex);
+
+                        break;
+                    case MInputHandStatus.Idle:
+
+                        OperateObject = null;
+
+                        break;
+                }
+            }
+
+            /// <summary>
+            /// 是否支持旋转
+            /// </summary>
+            /// <returns><c>true</c>, if rotate was ised, <c>false</c> otherwise.</returns>
+            /// <param name="handOperate">Hand operate.</param>
+            public bool IsRotate(HandOperate handOperate)
+            {
+                return Operate.InputHand.HandStatus == MInputHandStatus.Grip &&
+                    handOperate.Operate.InputHand.HandStatus == MInputHandStatus.Idle;
+            }
+
+            public bool IsZoom(HandOperate handOperate)
+            {
+                return Operate.InputHand.HandStatus == MInputHandStatus.Grip &&
+                        handOperate.Operate.InputHand.HandStatus == MInputHandStatus.Grip;
+            }
+        }
+
+        /// <summary>
+        /// 缩放操作数据
+        /// </summary>
+        public class ZoomOperate
+        {
+            private float distance;
+            private float lastDistance;
+            private Vector3 startPos;
+
+            public ZoomOperate()
+            {
+                OnHandIdle();
+            }
+
+            public void OnHandGrip()
+            {
+                distance = Vector3.Distance(MInputKinect.ScreenHandPostion(0), MInputKinect.ScreenHandPostion(1));
+                lastDistance = distance;
+            }
+
+            public void OnHandIdle()
+            {
+                distance = 0;
+                lastDistance = 0;
+            }
+
+            public float ZoomCameraToMoveFloat()
+            {
+                float moveDistance = 0;
+                lastDistance = Vector3.Distance(MInputKinect.ScreenHandPostion(0), MInputKinect.ScreenHandPostion(1));
+
+                moveDistance = lastDistance - distance;
+                distance = lastDistance;
+
+                return moveDistance;
+            }
+        }
+
+        public Vector2 handSize = new Vector2(50, 50);
+
+        public HandOperate rightHandOperate = new HandOperate() { HandIndex = 0 };
+        public HandOperate leftHandOperate = new HandOperate() { HandIndex = 1 };
+
+        public Dictionary<int, MInputHand> InputHands { get; set; }
+        public bool IsPlaying { get; private set; }
+
+        private MBehaviour behaviour;
+        private ZoomOperate zoomOperate = new ZoomOperate();//缩放数据操作
+
+        [SerializeField]
+        private KinectHandModel handModel = KinectHandModel.Two;
+
+        private MouseController mouseController; //鼠标控制端
+
         public MInputHand GetInputHand(int handIndex)
         {
             MInputHand hand;
 
-            InputHands.TryGetValue(handIndex,out hand);
+            InputHands.TryGetValue(handIndex, out hand);
 
             if (hand == null)
                 throw new Exception("手势编号错误：" + handIndex);
@@ -238,811 +252,244 @@ namespace MagiCloud.Operate
             return hand;
         }
 
-        private void Awake()
+        /// <summary>
+        /// Kinect控制端数据初始化
+        /// </summary>
+        /// <param name="handModel">Hand model.</param>
+        private void KinectInitialize(KinectHandModel handModel)
         {
-            KinectInitialize();
-            behaviour = new MBehaviour(ExecutionPriority.Highest,-900,enabled);
+            InputHands = new Dictionary<int, MInputHand>();
+            isEnable = true;
 
-            KinectMInputInitialize(kinectActiveHandStatus);
+            MInputKinect inputKinect = gameObject.GetComponent<MInputKinect>() ?? gameObject.AddComponent<MInputKinect>();
 
-            behaviour.OnUpdate_MBehaviour(OnKinectUpdate);
+            MInputKinect.HandModel = handModel;
+            IsPlaying = true;
 
-            KinectEventHandStart.AddListener(EventLevel.A, 0, RightHandStart);
-            KinectEventHandStop.AddListener(EventLevel.A, 0, RightHandStop);
-            KinectEventHandStart.AddListener(EventLevel.A, 1, LeftHandStart);
-            KinectEventHandStop.AddListener(EventLevel.A, 1, LeftHandStop);
+            //实例化右手
+            var rightHandUI = MHandUIManager.CreateHandUI(transform, rightHandOperate.handIcon);
+            var rightInputHand = new MInputHand(rightHandOperate.HandIndex, rightHandUI, OperatePlatform.Kinect);
+            InputHands.Add(rightHandOperate.HandIndex, rightInputHand);
 
+            //实例化左手
+            var leftHandUI = MHandUIManager.CreateHandUI(transform, leftHandOperate.handIcon);
+            var leftInputHand = new MInputHand(leftHandOperate.HandIndex, leftHandUI, OperatePlatform.Kinect);
+            InputHands.Add(leftHandOperate.HandIndex, leftInputHand);
+
+            //右手操作端相关初始化与事件绑定
+            rightHandOperate.Operate = MOperateManager.AddOperateHand(rightInputHand, this);
+            rightHandOperate.BindGrab();
+
+            //左手操作端相关初始化与事件的绑定
+            leftHandOperate.Operate = MOperateManager.AddOperateHand(leftInputHand, this);
+            leftHandOperate.BindGrab();
+
+            mouseController = gameObject.GetComponent<MouseController>() ?? gameObject.AddComponent<MouseController>();
+            mouseController.IsEnable = false;
         }
 
-        void OnDestroy()
+        /// <summary>
+        /// 手停止
+        /// </summary>
+        /// <param name="handIndex">Hand index.</param>
+        private void HandStop(int handIndex)
         {
-            KinectEventHandStart.RemoveListener( RightHandStart);
-            KinectEventHandStop.RemoveListener( RightHandStop);
-            KinectEventHandStart.RemoveListener( LeftHandStart);
-            KinectEventHandStop.RemoveListener( LeftHandStop);
+            if (handIndex == 0)
+            {
+                rightHandOperate.Operate.OnDisable();
+            }
+            else
+            {
+                leftHandOperate.Operate.OnDisable();
+            }
+
+            ChangePlatform();
         }
 
-        private void LeftHandStop()
+        /// <summary>
+        /// 变更平台
+        /// </summary>
+        void ChangePlatform()
         {
-            //Debug.Log("LeftHandStop");
-            MOperateManager.GetOperateHand(1, OperatePlatform.Kinect).OnDisable();
-            isLeft = false;
+            if(!MInputKinect.IsHandActive(2))
+            {
+                mouseController.IsEnable = true;
+                MUtility.CurrentPlatform = OperatePlatform.Mouse;
+            }
+            else
+            {
+                mouseController.IsEnable = false;
+                MUtility.CurrentPlatform = OperatePlatform.Kinect;
+            }
         }
 
-        private void LeftHandStart()
+        /// <summary>
+        /// 手启动
+        /// </summary>
+        /// <param name="handIndex">Hand index.</param>
+        private void HandStart(int handIndex)
         {
-            //Debug.Log("LeftHandStart");
-            InputHands[1].SetIdle();
-            MOperateManager.GetOperateHand(1, OperatePlatform.Kinect).OnEnable();
-            isLeft = true;
+            if (handIndex == 0)
+            {
+                rightHandOperate.Operate.OnEnable();
+            }
+            else
+            {
+                leftHandOperate.Operate.OnEnable();
+            }
+
+            //根据手势的启用情况，设置他的状态
+            ChangePlatform();
         }
 
-        private void RightHandStart()
+        void Awake()
         {
-            //Debug.Log("RightHandStart");
-            MOperateManager.GetOperateHand(0, OperatePlatform.Kinect).OnEnable();
-            InputHands[0].SetIdle();
-            isRight = true;
-        }
-
-        private void RightHandStop()
-        {
-            //Debug.Log("RightHandStop");
-            MOperateManager.GetOperateHand(0, OperatePlatform.Kinect).OnDisable();
-            isRight = false;
+            KinectInitialize(handModel);
+            IsEnable = true;
         }
 
         void OnKinectUpdate()
         {
             if (!isEnable) return;
 
-            switch (kinectActiveHandStatus)
-            {
-                case KinectActiveHandStadus.None:
-                    KinectHandNone();
-                    break;
-                case KinectActiveHandStadus.One:
-                    //KinectHandTwo();
-                    KinectHandOne();
-                    break;
-                case KinectActiveHandStadus.Two:
-                    KinectHandTwo();
-                    break;
-                default:
-                    break;
-            }
-        }
+            SetHandStatus(0); //右手
+            SetHandStatus(1); //左手
 
-        // 双手操作处理
-        void KinectHandTwo()
-        {
-            if (isRightUIEnable == null)
-            {
-                MOperateManager.GetOperateHand(0,OperatePlatform.Kinect).OnDisable();
-                //Debug.Log(false);
-                isRightUIEnable = false;
-            }
-            if (isLeftUIEnable == null)
-            {
-                MOperateManager.GetOperateHand(1,OperatePlatform.Kinect).OnDisable();
-                isLeftUIEnable = false;
-            }
+            rightHandOperate.OnOperateObjectHandle();
+            leftHandOperate.OnOperateObjectHandle();
 
-            //将他的屏幕坐标传递出去
-            //if (MInputKinect.ScreenHandPostion(0).y> 0)
-            {
-                InputHands[0].OnUpdate(MInputKinect.ScreenHandPostion(0));
-
-                if (MInputKinect.HandGrip(0))
-                {
-                    InputHands[0].SetGrip();
-                    //Debug.Log("RightGrip");
-                }
-
-                if (MInputKinect.HandRelease(0))
-                {
-                    InputHands[0].SetIdle();
-                    //Debug.Log("RightIdle");
-                }
-
-                if (isRightUIEnable != null && !isRightUIEnable.Value)
-                {
-                    MOperateManager.GetOperateHand(0,OperatePlatform.Kinect).OnEnable();
-                    isRightUIEnable = true;
-                }
-            }
-            //else
-            //{
-            //    if (isRightUIEnable != null && isRightUIEnable.Value)
-            //    {
-            //        MOperateManager.GetOperateHand(0,OperatePlatform.Kinect).OnDisable();
-            //        InputHands[0].SetIdle();
-
-            //        isRightUIEnable = false;
-            //    }
-            //}
-
-
-            //将他的屏幕坐标传递出去
-            //if (MInputKinect.ScreenHandPostion(1).y > 0)
-            {
-
-                InputHands[1].OnUpdate(MInputKinect.ScreenHandPostion(1));
-
-                if (MInputKinect.HandGrip(1))
-                {
-                    InputHands[1].SetGrip();
-                    //Debug.Log("LeftGrip");
-                }
-
-                if (MInputKinect.HandRelease(1))
-                {
-                    InputHands[1].SetIdle();
-                    //Debug.Log("LeftIdle");
-                }
-
-                if (isLeftUIEnable != null && !isLeftUIEnable.Value)
-                {
-                    MOperateManager.GetOperateHand(1,OperatePlatform.Kinect).OnEnable();
-                    InputHands[1].SetIdle();
-                    isLeftUIEnable = true;
-                }
-            }
-            //else
-            //{
-            //    if (isLeftUIEnable != null && isLeftUIEnable.Value)
-            //    {
-            //        MOperateManager.GetOperateHand(1,OperatePlatform.Kinect).OnDisable();
-            //        InputHands[1].SetIdle();
-            //        isLeftUIEnable = false;
-            //    }
-            //}
-
-            if (rightOperateObject != null)
-            {
-                switch (InputHands[0].HandStatus)
-                {
-                    case MInputHandStatus.Grabing:
-                        if (ActionConstraint.BindCount == 0)// && InputHands[0].ScreenVector.magnitude > 2.0f)
-                        {
-                            //将动作记录到集合中
-                            ActionConstraint.AddBind(ActionConstraint.Grab_Action);
-                        }
-                        var screenDevice = MUtility.MainWorldToScreenPoint(rightOperateObject.GrabObject.transform.position);
-
-                        Vector3 screenMouse = InputHands[0].ScreenPoint;
-                        Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x,screenMouse.y,screenDevice.z));
-
-                        //rightOperateObject.GrabObject.transform.position = vPos - rightOffset;
-
-                        Vector3 position = vPos - rightOffset;
-
-                        EventUpdateObject.SendListener(rightOperateObject.GrabObject,position,rightOperateObject.GrabObject.transform.rotation,InputHands[0].HandIndex);
-
-                        //需要处理偏移量
-
-                        break;
-                    case MInputHandStatus.Idle:
-                        if (ActionConstraint.IsBind(ActionConstraint.Grab_Action))
-                        {
-                            //    EventHandReleaseObject.SendListener(rightOperateObject.GrabObject,InputHands[0].HandIndex);
-                            ActionConstraint.RemoveBind(ActionConstraint.Grab_Action);
-                        }
-                        this.rightOperateObject = null;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            if (leftOperateObject != null)
-            {
-                switch (InputHands[1].HandStatus)
-                {
-                    case MInputHandStatus.Grabing:
-                        if (ActionConstraint.BindCount == 0)//&& InputHands[1].ScreenVector.magnitude > 2.0f)
-                        {
-                            //将动作记录到集合中
-                            ActionConstraint.AddBind(ActionConstraint.Grab_Action);
-                        }
-
-                        var screenDevice = MUtility.MainWorldToScreenPoint(leftOperateObject.GrabObject.transform.position);
-
-                        Vector3 screenMouse = InputHands[1].ScreenPoint;
-                        Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x,screenMouse.y,screenDevice.z));
-
-                        //leftOperateObject.GrabObject.transform.position = vPos - leftOffset;
-
-                        Vector3 position = vPos - leftOffset;
-
-                        EventUpdateObject.SendListener(leftOperateObject.GrabObject,position,leftOperateObject.GrabObject.transform.rotation,InputHands[1].HandIndex);
-
-                        //需要处理偏移量
-
-                        break;
-                    case MInputHandStatus.Idle:
-                        if (ActionConstraint.IsBind(ActionConstraint.Grab_Action))
-                        {
-                            //  EventHandReleaseObject.SendListener(leftOperateObject.GrabObject,InputHands[1].HandIndex);
-                            ActionConstraint.RemoveBind(ActionConstraint.Grab_Action);
-                        }
-                        this.leftOperateObject = null;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            KinectRotateZoomTwo(zoomState);
-            KinectRotateZoom();
+            OnRotate();
+            OnZoom();
 
         }
 
-        void KinectRotateZoomOne()
+        /// <summary>
+        /// 设置手的状态
+        /// </summary>
+        /// <param name="handIndex">Hand index.</param>
+        private void SetHandStatus(int handIndex)
         {
 
+            if (MInputKinect.IsHandActive(handIndex))
+            {
+                //发送抓取事件等相关事件
+                InputHands[handIndex].OnUpdate(MInputKinect.ScreenHandPostion(handIndex));
 
+                if (MInputKinect.HandGrip(handIndex))
+                {
+                    InputHands[handIndex].SetGrip();
+                }
+
+                if (MInputKinect.HandRelease(handIndex))
+                {
+                    InputHands[handIndex].SetIdle();
+                }
+
+                if (MInputKinect.HandLasso(handIndex))
+                {
+                    InputHands[handIndex].SetLasso();
+                }
+            }
         }
 
-        void KinectRotateZoomTwo(ZoomState zoomState)
+        /// <summary>
+        /// 旋转
+        /// </summary>
+        public void OnRotate()
         {
-
-            //if (MInputKinect.HandGrip(1) && MInputKinect.HandGrip(0))
-            //{
-            //    Debug.Log("Grip");
-            //}
-
-            switch (zoomState)
+            //当两只手都处于空闲状态时，才支持旋转
+            if (rightHandOperate.IsRotate(leftHandOperate) && InputHands[0].ScreenVector.magnitude > 2)
             {
-                case ZoomState.rightRotate:
-
-                    break;
-                case ZoomState.leftRotate:
-
-                    break;
-                case ZoomState.zoom:
-
-                    break;
-                case ZoomState.none:
-
-                    break;
-                default:
-                    break;
+                InputHands[0].HandStatus = MInputHandStatus.Rotate;
             }
 
+            if(InputHands[0].IsRotateStatus)
+            {
+                EventCameraRotate.SendListener(InputHands[0].ScreenVector);
+            }
+
+            if (leftHandOperate.IsRotate(rightHandOperate) && InputHands[1].ScreenVector.magnitude > 2)
+            {
+                InputHands[1].HandStatus = MInputHandStatus.Rotate;
+            }
+
+            if (InputHands[1].IsRotateStatus)
+            {
+                EventCameraRotate.SendListener(InputHands[1].ScreenVector);
+            }
         }
 
-        void KinectRotateZoom()
+        #region 缩放
+
+        /// <summary>
+        /// 是否支持缩放
+        /// </summary>
+        /// <returns><c>true</c>, if zoom was ised, <c>false</c> otherwise.</returns>
+        private bool IsZoom()
         {
-
-            if (MOperateManager.GetHandStatus(0) == MInputHandStatus.Grip)
-            {
-                handIndex = 0;
-                isRightGrip = true;
-            }
-            else if (MOperateManager.GetHandStatus(0) == MInputHandStatus.Idle)
-            {
-                isRightGrip = false;
-            }
-
-            if (MOperateManager.GetHandStatus(1) == MInputHandStatus.Grip)
-            {
-                handIndex = 1;
-                isLeftGrip = true;
-            }
-            else if (MOperateManager.GetHandStatus(1) == MInputHandStatus.Idle)
-            {
-                handIndex = 0;
-                isLeftGrip = false;
-            }
-
-            if (IsRotate)                                                            // 旋转
-            {
-
-                if (isLeftUIEnable != null && isRightUIEnable != null && isLeftUIEnable.Value && !isRightUIEnable.Value)
-                {
-                    if (isLeftGrip && InputHands[1].ScreenVector.magnitude > 2)
-                    {
-                        isLeftRotate = true;
-                    }
-                    else
-                    {
-                        isLeftRotate = false;
-                    }
-                }
-
-                if (isLeftUIEnable != null && isRightUIEnable != null && isLeftUIEnable.Value && isRightUIEnable.Value)
-                {
-                    if (!isRightGrip)
-                    {
-                        if (isLeftGrip&& InputHands[1].ScreenVector.magnitude > 2)
-                        {
-                            isLeftRotate = true;
-                        }
-                        else
-                        {
-                            isLeftRotate = false;
-                        }
-                    }
-                }
-
-                if (isLeftUIEnable != null && !isLeftUIEnable.Value)
-                {
-                    isLeftRotate = false;
-                }
-
-                if (isLeftRotate)
-                {
-                    //Debug.Log("isLeftRotate");
-                    if (!isTempLeftRotate && ActionConstraint.BindCount == 0&& InputHands[1].ScreenVector.magnitude > 2.0f)
-                    {
-                        //将动作记录到集合中
-                        ActionConstraint.AddBind(ActionConstraint.Left_Camera_Rotate_Action);
-
-                        isTempLeftRotate = true;
-                    }
-
-                    //已经存在旋转，并且在集合中记录
-                    if (isTempLeftRotate && ActionConstraint.IsBind(ActionConstraint.Left_Camera_Rotate_Action))
-                    {
-                        EventCameraRotate.SendListener(InputHands[1].ScreenVector);
-                    }
-
-                }
-                else
-                {
-                    if (isTempLeftRotate)
-                    {
-                        //Debug.Log("!!!!!!!!isLeftRotate");
-                        if (ActionConstraint.IsBind(ActionConstraint.Left_Camera_Rotate_Action))
-                        {
-                            EventCameraRotate.SendListener(Vector3.zero);
-                            ActionConstraint.RemoveBind(ActionConstraint.Left_Camera_Rotate_Action);
-                        }
-                        isTempLeftRotate = false;
-                    }
-                }
-
-
-                if (isLeftUIEnable != null && isRightUIEnable != null && !isLeftUIEnable.Value && isRightUIEnable.Value)
-                {
-                    if (isRightGrip&& InputHands[0].ScreenVector.magnitude > 2.0f)
-                    {
-                        isRightRotate = true;
-                    }
-                    else
-                    {
-                        isRightRotate = false;
-                    }
-                }
-
-                if (isLeftUIEnable != null && isRightUIEnable != null && isLeftUIEnable.Value && isRightUIEnable.Value)
-                {
-                    if (!isLeftGrip)
-                    {
-
-                        if (isRightGrip&& InputHands[0].ScreenVector.magnitude > 2.0f)
-                        {
-                            isRightRotate = true;
-                        }
-                        else
-                        {
-                            isRightRotate = false;
-                        }
-                    }
-                }
-
-                if (isRightUIEnable != null && !isRightUIEnable.Value)
-                {
-                    isRightRotate = false;
-                }
-
-                if (isRightRotate)
-                {
-                    //Debug.Log("isRightRotate");
-                    if (!isTempRightRotate && ActionConstraint.BindCount == 0 && InputHands[0].ScreenVector.magnitude > 2.0f)
-                    {
-                        //将动作记录到集合中
-                        ActionConstraint.AddBind(ActionConstraint.Right_Camera_Rotate_Action);
-
-                        isTempRightRotate = true;
-                    }
-
-                    //已经存在旋转，并且在集合中记录
-                    if (isTempRightRotate && ActionConstraint.IsBind(ActionConstraint.Right_Camera_Rotate_Action))
-                    {
-                        EventCameraRotate.SendListener(InputHands[0].ScreenVector);
-                    }
-
-                }
-                else
-                {
-                    if (isTempRightRotate)
-                    {
-                        //Debug.Log("!!!!!!!!isRightRotate");
-                        if (ActionConstraint.IsBind(ActionConstraint.Right_Camera_Rotate_Action))
-                        {
-                            EventCameraRotate.SendListener(Vector3.zero);
-                            ActionConstraint.RemoveBind(ActionConstraint.Right_Camera_Rotate_Action);
-                        }
-                        isTempRightRotate = false;
-                    }
-                }
-
-            }
-
-
-            if (IsZoom)                                                                 // 缩放
-            {
-                if (isLeftUIEnable != null && isRightUIEnable != null && isLeftUIEnable.Value && isRightUIEnable.Value)
-                {
-                    if (isRightGrip && isLeftGrip)
-                    {
-                        IsRotate = false;
-                        isHandsZoom = true;
-                    }
-                    else { isHandsZoom = false; IsRotate = true; }
-                }
-                else { isHandsZoom = false; IsRotate = true; }
-
-                if (isHandsZoom)
-                {
-                    //Debug.Log("isHandsZoom");
-                    if (!isTempZoom && !ActionConstraint.IsBind(ActionConstraint.Camera_Zoom_Action))
-                    {
-                        ActionConstraint.AddBind(ActionConstraint.Camera_Zoom_Action);
-                        if (twoHandDistance != null)
-                        {
-                            twoHandDistance.TwoHandGrip();
-                        }
-                        isTempZoom = true;
-                    }
-
-                    if (twoHandDistance == null)
-                    {
-                        twoHandDistance = new TwoHandDistance();
-                        twoHandDistance.TwoHandGrip();
-                    }
-                    else
-                    {
-                        float result = twoHandDistance.ZoomCameraToMoveFloat() / 10000;
-                        if (result != 0 && isTempZoom && ActionConstraint.IsBind(ActionConstraint.Camera_Zoom_Action))
-                        {
-                            EventCameraZoom.SendListener(result);
-                        }
-                    }
-                }
-                else
-                {
-                    if (isTempZoom && !isRightGrip && !isLeftGrip && twoHandDistance != null)
-                    {
-                        twoHandDistance.TwoHandIdle();
-                        if (IsZoom && ActionConstraint.IsBind(ActionConstraint.Camera_Zoom_Action))
-                        {
-                            EventCameraZoom.SendListener(0);
-                        }
-                        isTempZoom = false;
-                        if (ActionConstraint.IsBind(ActionConstraint.Camera_Zoom_Action))
-                            ActionConstraint.RemoveBind(ActionConstraint.Camera_Zoom_Action);
-                    }
-                }
-
-            }
-
+            return InputHands[0].HandStatus == MInputHandStatus.Grip &&
+                InputHands[1].HandStatus == MInputHandStatus.Grip || 
+                InputHands[0].IsZoomStatus && InputHands[1].IsZoomStatus;
         }
 
-        // 单手操作处理
-        //void KinectHandOne()
-        //{
-        //    if (MInputKinect.IsHandActive(0))
-        //    {
-        //        handIndex = 0;
-        //    }
-        //    else if (MInputKinect.IsHandActive(1))
-        //    {
-        //        handIndex = 1;
-        //    }
-
-        //    //将他的屏幕坐标传递出去
-        //    InputHands[0].OnUpdate(MInputKinect.ScreenHandPostion(handIndex));
-
-        //    if (MInputKinect.HandGrip(handIndex))
-        //        InputHands[0].SetGrip();
-
-        //    if (MInputKinect.HandRelease(handIndex))
-        //        InputHands[0].SetIdle();
-
-        //    if (rightOperateObject != null)
-        //    {
-        //        switch (InputHands[0].HandStatus)
-        //        {
-        //            case MInputHandStatus.Grabing:
-
-        //                var screenDevice = MUtility.MainWorldToScreenPoint(rightOperateObject.GrabObject.transform.position);
-
-        //                Vector3 screenMouse = InputHands[0].ScreenPoint;
-        //                Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x, screenMouse.y, screenDevice.z));
-
-        //                rightOperateObject.GrabObject.transform.position = vPos - rightOffset;
-
-        //                //需要处理偏移量
-
-        //                break;
-        //            case MInputHandStatus.Idle:
-
-        //                this.rightOperateObject = null;
-        //                break;
-        //            default:
-        //                break;
-        //        }
-        //    }
-        //}
-
-        void KinectHandOne()
+        private bool IsZooming()
         {
-            //Debug.Log(" 左手激活状态： " + MInputKinect.IsHandActive(1));
-            //Debug.Log(isLeft);
-            //if (MInputKinect.IsHandActive(0) /*&& !MInputKinect.IsHandActive(1)*/ && isRight == false)
-            //{
-            //    MOperateManager.GetOperateHand(0,OperatePlatform.Kinect).OnEnable();
-            //    MOperateManager.GetOperateHand(1,OperatePlatform.Kinect).OnDisable(); 
-            //    isRight = true;
-            //    Debug.Log("右手");
-            //}
-            //else
-            //{
-            //    isRight = false;
-            //}
+            return
+                InputHands[0].IsZoomStatus && InputHands[1].IsZoomStatus;
+        }
 
-            //if (MInputKinect.IsHandActive(1) /*&& !MInputKinect.IsHandActive(0)*/ && isLeft == false)
-            //{
-            //    Debug.Log("左手");
-            //    MOperateManager.GetOperateHand(1,OperatePlatform.Kinect).OnEnable();
-            //    MOperateManager.GetOperateHand(0,OperatePlatform.Kinect).OnDisable(); 
-            //    isLeft = true;
-            //}
-            //else
-            //{
-            //    isLeft = false;
-            //}
-
-            if (isRight)
-            {
-                InputHands[0].OnUpdate(MInputKinect.ScreenHandPostion(0));
-
-                if (MInputKinect.HandGrip(0))
+        /// <summary>
+        /// 缩放
+        /// </summary>
+        private void OnZoom()
+        { 
+            if(IsZoom())
+            { 
+                if(!IsZooming())
                 {
-                    InputHands[0].SetGrip();
+                    InputHands[0].HandStatus = MInputHandStatus.Zoom;
+                    InputHands[1].HandStatus = MInputHandStatus.Zoom;
+
+                    zoomOperate.OnHandGrip();
                 }
 
-                if (MInputKinect.HandRelease(0))
+                float zoomValue = zoomOperate.ZoomCameraToMoveFloat() / 10000;
+                if(IsZooming())
                 {
-                    InputHands[0].SetIdle();
-                }
-
-                if (isRightUIEnable != null && !isRightUIEnable.Value)
-                {
-                    MOperateManager.GetOperateHand(0,OperatePlatform.Kinect).OnEnable();
-                    isRightUIEnable = true;
+                    EventCameraZoom.SendListener(zoomValue);
                 }
             }
             else
-            if (isLeft)
             {
-                InputHands[1].OnUpdate(MInputKinect.ScreenHandPostion(1));
-
-                if (MInputKinect.HandGrip(1))
-                    InputHands[1].SetGrip();
-
-                if (MInputKinect.HandRelease(1))
-                    InputHands[1].SetIdle();
-
-                if (isLeftUIEnable!= null && !isLeftUIEnable.Value)
+                if(IsZooming())
                 {
-                    MOperateManager.GetOperateHand(1,OperatePlatform.Kinect).OnEnable();
-                    InputHands[1].SetIdle();
-                    isLeftUIEnable = true;
+                    zoomOperate.OnHandIdle();
+                    EventCameraZoom.SendListener(0);
+
+                    InputHands[0].HandStatus = MInputHandStatus.Idle;
+                    InputHands[1].HandStatus = MInputHandStatus.Idle;
+
                 }
             }
-
-            if (isRightUIEnable == null)
-            {
-                MOperateManager.GetOperateHand(0,OperatePlatform.Kinect).OnDisable();
-                isRightUIEnable = false;
-            }
-            if (isLeftUIEnable == null)
-            {
-                MOperateManager.GetOperateHand(1,OperatePlatform.Kinect).OnDisable();
-                isLeftUIEnable = false;
-            }
-
-            if (rightOperateObject != null)
-            {
-                switch (InputHands[0].HandStatus)
-                {
-                    case MInputHandStatus.Grabing:
-                        //if (ActionConstraint.BindCount==0)
-                        //{
-                        //    ActionConstraint.AddBind(ActionConstraint.Grab_Action);
-                        //}
-                        var screenDevice = MUtility.MainWorldToScreenPoint(rightOperateObject.GrabObject.transform.position);
-
-                        Vector3 screenMouse = InputHands[0].ScreenPoint;
-                        Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x,screenMouse.y,screenDevice.z));
-
-                        //rightOperateObject.GrabObject.transform.position = vPos - rightOffset;
-
-                        Vector3 position = vPos - rightOffset;
-
-                        EventUpdateObject.SendListener(rightOperateObject.GrabObject,position,rightOperateObject.GrabObject.transform.rotation,InputHands[0].HandIndex);
-
-                        //需要处理偏移量
-
-                        break;
-                    case MInputHandStatus.Idle:
-                        //if (ActionConstraint.BindCount>0)
-                        //{
-                        //    ActionConstraint.RemoveBind(ActionConstraint.Grab_Action);
-                        //}
-                        this.rightOperateObject = null;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            if (leftOperateObject != null)
-            {
-                switch (InputHands[1].HandStatus)
-                {
-                    case MInputHandStatus.Grabing:
-                        //if (ActionConstraint.BindCount==0)
-                        //{
-                        //    ActionConstraint.AddBind(ActionConstraint.Grab_Action);
-                        //}
-                        var screenDevice = MUtility.MainWorldToScreenPoint(leftOperateObject.GrabObject.transform.position);
-
-                        Vector3 screenMouse = InputHands[1].ScreenPoint;
-                        Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x,screenMouse.y,screenDevice.z));
-
-                        //leftOperateObject.GrabObject.transform.position = vPos - leftOffset;
-
-                        Vector3 position = vPos - leftOffset;
-
-                        EventUpdateObject.SendListener(leftOperateObject.GrabObject,position,leftOperateObject.GrabObject.transform.rotation,InputHands[0].HandIndex);
-
-                        //需要处理偏移量
-
-                        break;
-                    case MInputHandStatus.Idle:
-                        //if (ActionConstraint.BindCount>0)
-                        //{
-                        //    ActionConstraint.RemoveBind(ActionConstraint.Grab_Action);
-                        //}
-                        this.leftOperateObject = null;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
         }
 
-        void KinectHandNone() { }
+        #endregion
 
         /// <summary>
-        /// 移动设置
+        /// 切换多手
         /// </summary>
-        /// <param name="operate"></param>
-        /// <param name="handIndex"></param>
-        void OnRightGrabObject(IOperateObject operate,int handIndex)
-        {
-            if (handIndex != InputHands[0].HandIndex) return;
-
-            rightOffset = GetOffsetPosition(InputHands[0].ScreenPoint,operate.GrabObject);
-
-            this.rightOperateObject = operate;
-        }
-
-        /// <summary>
-        /// 移动设置
-        /// </summary>
-        /// <param name="operate"></param>
-        /// <param name="handIndex"></param>
-        void OnLeftGrabObject(IOperateObject operate,int handIndex)
-        {
-            if (handIndex != InputHands[1].HandIndex) return;
-
-            leftOffset = GetOffsetPosition(InputHands[1].ScreenPoint,operate.GrabObject);
-            this.leftOperateObject = operate;
-        }
-
-        /// <summary>
-        /// 计算适口偏移值
-        /// </summary>
-        /// <param name="mousePosition"></param>
-        /// <param name="grabObject"></param>
-        /// <returns></returns>
-        private Vector3 GetOffsetPosition(Vector3 mousePosition,GameObject grabObject)
-        {
-            var offset = Vector3.zero;
-            Vector3 screenDevice = MUtility.MainWorldToScreenPoint(grabObject.transform.position);
-            Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(mousePosition.x,mousePosition.y,screenDevice.z));
-
-            offset = vPos - grabObject.transform.position;
-
-            return offset;
-        }
-
-        /// <summary>
-        /// 设置物体被抓取
-        /// </summary>
-        /// <param name="operate"></param>
-        /// <param name="handIndex"></param>
-        /// <param name="cameraRelativeDistance"></param>
-        void SetRightGrabObject(IOperateObject operate,int handIndex,float cameraRelativeDistance)
-        {
-            if (handIndex != InputHands[0].HandIndex) return;
-
-            //Vector3 screenDevice = MUtility.MainWorldToScreenPoint(operate.GrabObject.transform.position);
-            Vector3 screenpoint = InputHands[0].ScreenPoint;
-            rightOperateObject = operate;
-
-            Vector3 screenMainCamera = MUtility.MainWorldToScreenPoint(MUtility.MainCamera.transform.position
-                + MUtility.MainCamera.transform.forward * cameraRelativeDistance);
-
-            Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenpoint.x,screenpoint.y,screenMainCamera.z));
-
-            rightOffset = Vector3.zero;
-
-            rightOperateObject.GrabObject.transform.position = position;
-        }
-
-        void SetLeftGrabObject(IOperateObject operate,int handIndex,float cameraRelativeDistance)
-        {
-            if (handIndex != InputHands[1].HandIndex) return;
-
-            //Vector3 screenDevice = MUtility.MainWorldToScreenPoint(operate.GrabObject.transform.position);
-            Vector3 screenpoint = InputHands[1].ScreenPoint;
-            rightOperateObject = operate;
-
-            Vector3 screenMainCamera = MUtility.MainWorldToScreenPoint(MUtility.MainCamera.transform.position
-                + MUtility.MainCamera.transform.forward * cameraRelativeDistance);
-
-            Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenpoint.x,screenpoint.y,screenMainCamera.z));
-
-            leftOffset = Vector3.zero;
-
-            rightOperateObject.GrabObject.transform.position = position;
-        }
-
-        public void StartOnlyHand()
-        {
-            kinectActiveHandStatus = KinectActiveHandStadus.One;
-            KinectConfig.SetHandStartStatus(kinectActiveHandStatus); // 设置单手操作
-
-            //Debug.Log("右手： " + InputHands[0].ScreenPoint+ MInputKinect.IsHandActive(0) +  "                 左手： " + InputHands[1].ScreenPoint + MInputKinect.IsHandActive(1));
-
-            //if (MInputKinect.IsHandActive(0) && !MInputKinect.IsHandActive(1))
-            //{
-            //    MOperateManager.GetOperateHand(0,OperatePlatform.Kinect).OnEnable();
-            //    MOperateManager.GetOperateHand(1,OperatePlatform.Kinect).OnDisable();
-
-            //}
-            //else if (MInputKinect.IsHandActive(1) && !MInputKinect.IsHandActive(0))
-            //{
-            //    MOperateManager.GetOperateHand(1,OperatePlatform.Kinect).OnEnable();
-            //    MOperateManager.GetOperateHand(0,OperatePlatform.Kinect).OnDisable();
-            //}
-        }
-
         public void StartMultipleHand()
         {
-            kinectActiveHandStatus = KinectActiveHandStadus.Two;
-            KinectConfig.SetHandStartStatus(kinectActiveHandStatus); // 设置双手操作
-
-            //MOperateManager.GetOperateHand(1,OperatePlatform.Kinect).OnEnable();
-            //MOperateManager.GetOperateHand(0,OperatePlatform.Kinect).OnEnable();
+            MInputKinect.HandModel = KinectHandModel.Two;
         }
 
+        /// <summary>
+        /// 切换单手
+        /// </summary>
+        public void StartOnlyHand()
+        {
+            MInputKinect.HandModel = KinectHandModel.One;
+        }
     }
 }
+

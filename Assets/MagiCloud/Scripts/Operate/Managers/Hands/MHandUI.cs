@@ -113,12 +113,13 @@ namespace MagiCloud.Operate
             switch(status)
             {
                 case MInputHandStatus.Idle:
-                case MInputHandStatus.Release:
                     SetHandIcon(handSprite.IdelIcon);
                     break;
                 case MInputHandStatus.Grip:
                 case MInputHandStatus.Grab:
+                case MInputHandStatus.Pressed:
                 case MInputHandStatus.Grabing:
+
                     SetHandIcon(handSprite.GripIcon);
                     break;
                 case MInputHandStatus.Invalid:
