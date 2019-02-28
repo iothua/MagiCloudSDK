@@ -117,9 +117,6 @@ namespace MagiCloud.Operate
 
                 Offset = MUtility.GetOffsetPosition(Operate.InputHand.ScreenPoint, operate.GrabObject);
                 OperateObject = operate;
-
-                Debug.Log("设置Grab");
-
             }
 
 
@@ -307,13 +304,21 @@ namespace MagiCloud.Operate
             {
                 case 0:
                     rightHandOperate.Operate.OnDisable();
+                    InputHands[0].SetIdle();
+
                     break;
                 case 1:
                     leftHandOperate.Operate.OnDisable();
+                    InputHands[1].SetIdle();
+
                     break;
                 case 2:
                     leftHandOperate.Operate.OnDisable();
                     rightHandOperate.Operate.OnDisable();
+
+                    InputHands[0].SetIdle();
+                    InputHands[1].SetIdle();
+
                     break;
                 default:
                     break;
@@ -332,11 +337,15 @@ namespace MagiCloud.Operate
                 mouseController.IsEnable = true;
                 MUtility.CurrentPlatform = OperatePlatform.Mouse;
 
+                Debug.Log("鼠标版本");
+
             }
             else
             {
                 mouseController.IsEnable = false;
                 MUtility.CurrentPlatform = OperatePlatform.Kinect;
+
+                Debug.Log("Kinect版本");
             }
         }
 
@@ -381,11 +390,14 @@ namespace MagiCloud.Operate
 
             rightHandOperate.OnOperateObjectHandle();
             leftHandOperate.OnOperateObjectHandle();
-
-            OnRotate();
-            OnZoom();
-
         }
+
+        //void LateUpdate()
+        //{
+        //    //执行在后面一点
+        //    OnRotate();
+        //    OnZoom();
+        //}
 
         /// <summary>
         /// 设置手的状态
@@ -426,6 +438,10 @@ namespace MagiCloud.Operate
             {
                 InputHands[0].HandStatus = MInputHandStatus.Rotate;
             }
+            else
+            {
+                EventCameraRotate.SendListener(Vector3.zero);
+            }
 
             if(InputHands[0].IsRotateStatus)
             {
@@ -435,6 +451,10 @@ namespace MagiCloud.Operate
             if (leftHandOperate.IsRotate(rightHandOperate) && InputHands[1].ScreenVector.magnitude > 5)
             {
                 InputHands[1].HandStatus = MInputHandStatus.Rotate;
+            }
+            else
+            {
+                EventCameraRotate.SendListener(Vector3.zero);
             }
 
             if (InputHands[1].IsRotateStatus)

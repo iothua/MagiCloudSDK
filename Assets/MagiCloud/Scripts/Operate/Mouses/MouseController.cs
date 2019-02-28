@@ -61,13 +61,25 @@ namespace MagiCloud.Operate
 
                 if (isEnable)
                 {
+                    behaviour = new MBehaviour(ExecutionPriority.Highest, -900);
+                    behaviour.OnUpdate_MBehaviour(OnMouseUpdate);
+
                     enabled = true;
                     operate.OnEnable();
+
+                    //开启事件发送
+                    //EventHandStart.SendListener(0);
                 }
                 else
                 {
+                    
                     enabled = false;
                     operate.OnDisable();
+
+                    //停止事件发送
+                    //EventHandStop.SendListener(0);
+
+                    //InputHands[0].SetIdle(); //停止后，设置为Idle状态
                 }
             }
         }
@@ -111,8 +123,6 @@ namespace MagiCloud.Operate
             operate.OnSetGrab = SetGrabObject;
 
             IsEnable = true;
-
-            behaviour.OnUpdate_MBehaviour(OnMouseUpdate);
         }
 
         /// <summary>

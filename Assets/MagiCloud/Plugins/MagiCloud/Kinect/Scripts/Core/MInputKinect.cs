@@ -417,7 +417,7 @@ namespace MagiCloud.Kinect
 
                 if (HandModel == KinectHandModel.Two)
                 {
-                    DetectHand(userID);
+                    //DetectHand(userID);
                 }
 
                 return isNear;
