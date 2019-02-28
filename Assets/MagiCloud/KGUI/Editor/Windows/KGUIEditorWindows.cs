@@ -47,7 +47,18 @@ namespace MagiCloud.KGUI
 
             CreateController(parent, ui);
         }
+        [MenuItem("MagiCloud/KGUI/Control/KGUI_Text(文本)")] //在菜单栏显示
+        [MenuItem("GameObject/MagiCloud/KGUI/KGUI_Text(文本)",validate = false,priority = 10)] //在GameObject菜单栏显示，又在Hierarchy菜单栏显示
+        private static void CreateKGUI_Text()
+        {
+            //Transform[] selectedObject = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.ExcludePrefab);
 
+            Transform parent = GetSeleteTransform();
+
+            var ui = Resources.Load<GameObject>("UI/Text");
+
+            CreateController(parent,ui);
+        }
         [MenuItem("MagiCloud/KGUI/Control/KGUI_Panel(容器)")] //在菜单栏显示
         [MenuItem("GameObject/MagiCloud/KGUI/KGUI_Panel(容器)", validate = false, priority = 10)]
         private static void CreateKGUI_Panel()

@@ -56,22 +56,4 @@ namespace MagiCloud.KGUI
 
     }
 
-    /// <summary>
-    /// MCSpriteAsset生成工具
-    /// </summary>
-    public class MCSpriteAssetSpawnTool :EditorWindow
-    {
-
-
-
-        [MenuItem("MagiCloud/MCSpriteAsset")] //在菜单栏显示
-        private static void CreaterWindow()
-        {
-            EditorWindow.GetWindow(typeof(MCSpriteAssetSpawnTool));
-        }
-        private void OnGUI()
-        {
-        }
-
-    }
 }
