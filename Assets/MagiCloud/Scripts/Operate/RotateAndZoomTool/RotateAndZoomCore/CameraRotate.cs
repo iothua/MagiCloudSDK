@@ -296,7 +296,11 @@ namespace MagiCloud.RotateAndZoomTool
         {
             if (!isRotateCameraWithCenter) return;
             inputPointPos = vector3;
-            InUpdateCameraRotate(mainCamera.transform, cameraLookToCenter, -vector3);
+
+            if (vector3 != Vector3.zero)
+            {
+                InUpdateCameraRotate(mainCamera.transform, cameraLookToCenter, -vector3);
+            }
         }
 
         /// <summary>
