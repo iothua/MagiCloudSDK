@@ -117,6 +117,9 @@ namespace MagiCloud.Operate
 
                 Offset = MUtility.GetOffsetPosition(Operate.InputHand.ScreenPoint, operate.GrabObject);
                 OperateObject = operate;
+
+                Debug.Log("设置Grab");
+
             }
 
 
@@ -259,7 +262,6 @@ namespace MagiCloud.Operate
         private void KinectInitialize(KinectHandModel handModel)
         {
             InputHands = new Dictionary<int, MInputHand>();
-            isEnable = true;
 
             MInputKinect inputKinect = gameObject.GetComponent<MInputKinect>() ?? gameObject.AddComponent<MInputKinect>();
 
@@ -269,11 +271,13 @@ namespace MagiCloud.Operate
             //实例化右手
             var rightHandUI = MHandUIManager.CreateHandUI(transform, rightHandOperate.handIcon);
             var rightInputHand = new MInputHand(rightHandOperate.HandIndex, rightHandUI, OperatePlatform.Kinect);
+            rightHandUI.name = "kinect-Hand-0";
             InputHands.Add(rightHandOperate.HandIndex, rightInputHand);
 
             //实例化左手
             var leftHandUI = MHandUIManager.CreateHandUI(transform, leftHandOperate.handIcon);
             var leftInputHand = new MInputHand(leftHandOperate.HandIndex, leftHandUI, OperatePlatform.Kinect);
+            leftHandUI.name = "Kinect-Hand-1";
             InputHands.Add(leftHandOperate.HandIndex, leftInputHand);
 
             //右手操作端相关初始化与事件绑定
@@ -284,8 +288,13 @@ namespace MagiCloud.Operate
             leftHandOperate.Operate = MOperateManager.AddOperateHand(leftInputHand, this);
             leftHandOperate.BindGrab();
 
+            IsEnable = true;
+
             mouseController = gameObject.GetComponent<MouseController>() ?? gameObject.AddComponent<MouseController>();
             mouseController.IsEnable = false;
+
+            //检查一次是否激活手
+            HandStop(2);//默认也禁止
         }
 
         /// <summary>
@@ -294,13 +303,20 @@ namespace MagiCloud.Operate
         /// <param name="handIndex">Hand index.</param>
         private void HandStop(int handIndex)
         {
-            if (handIndex == 0)
+            switch (handIndex)
             {
-                rightHandOperate.Operate.OnDisable();
-            }
-            else
-            {
-                leftHandOperate.Operate.OnDisable();
+                case 0:
+                    rightHandOperate.Operate.OnDisable();
+                    break;
+                case 1:
+                    leftHandOperate.Operate.OnDisable();
+                    break;
+                case 2:
+                    leftHandOperate.Operate.OnDisable();
+                    rightHandOperate.Operate.OnDisable();
+                    break;
+                default:
+                    break;
             }
 
             ChangePlatform();
@@ -315,6 +331,7 @@ namespace MagiCloud.Operate
             {
                 mouseController.IsEnable = true;
                 MUtility.CurrentPlatform = OperatePlatform.Mouse;
+
             }
             else
             {
@@ -329,13 +346,20 @@ namespace MagiCloud.Operate
         /// <param name="handIndex">Hand index.</param>
         private void HandStart(int handIndex)
         {
-            if (handIndex == 0)
+            switch (handIndex)
             {
-                rightHandOperate.Operate.OnEnable();
-            }
-            else
-            {
-                leftHandOperate.Operate.OnEnable();
+                case 0:
+                    rightHandOperate.Operate.OnEnable();
+                    break;
+                case 1:
+                    leftHandOperate.Operate.OnEnable();
+                    break;
+                case 2:
+                    leftHandOperate.Operate.OnEnable();
+                    rightHandOperate.Operate.OnEnable();
+                    break;
+                default:
+                    break;
             }
 
             //根据手势的启用情况，设置他的状态
@@ -398,7 +422,7 @@ namespace MagiCloud.Operate
         public void OnRotate()
         {
             //当两只手都处于空闲状态时，才支持旋转
-            if (rightHandOperate.IsRotate(leftHandOperate) && InputHands[0].ScreenVector.magnitude > 2)
+            if (rightHandOperate.IsRotate(leftHandOperate) && InputHands[0].ScreenVector.magnitude > 5)
             {
                 InputHands[0].HandStatus = MInputHandStatus.Rotate;
             }
@@ -408,7 +432,7 @@ namespace MagiCloud.Operate
                 EventCameraRotate.SendListener(InputHands[0].ScreenVector);
             }
 
-            if (leftHandOperate.IsRotate(rightHandOperate) && InputHands[1].ScreenVector.magnitude > 2)
+            if (leftHandOperate.IsRotate(rightHandOperate) && InputHands[1].ScreenVector.magnitude > 5)
             {
                 InputHands[1].HandStatus = MInputHandStatus.Rotate;
             }

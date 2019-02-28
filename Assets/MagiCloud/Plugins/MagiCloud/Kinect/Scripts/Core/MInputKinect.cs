@@ -306,6 +306,7 @@ namespace MagiCloud.Kinect
                             case KinectHandModel.Two:
                                 twoHandControl.OnUpdate(this);
                                 twoHandControl.StartJointRay(usersControl[i].userID, this);
+
                                 break;
                             default:
                                 break;
@@ -414,6 +415,11 @@ namespace MagiCloud.Kinect
 
                 bool isNear = userPos.x > -0.500 && userPos.x < 0.500 && userPos.z > 1.000 && userPos.z < 1.800 && userPos.y > 0;
 
+                if (HandModel == KinectHandModel.Two)
+                {
+                    DetectHand(userID);
+                }
+
                 return isNear;
             }
 
@@ -505,6 +511,37 @@ namespace MagiCloud.Kinect
                 case KinectHandModel.Two:
                     kinectGestureListener.TwoModelGestures();
                     break;
+            }
+        }
+
+        /// <summary>
+        /// 检测手状态
+        /// </summary>
+        /// <param name="userID"></param>
+        private static void DetectHand(long userID)
+        {
+            Vector3 hipRight = KinectManager.Instance.GetJointKinectPosition(userID, (int)KinectInterop.JointType.HipRight);
+            Vector3 handRight = KinectManager.Instance.GetJointKinectPosition(userID, (int)KinectInterop.JointType.HandRight);
+
+            if (handRight.y < hipRight.y + KinectConfig.HandHipDistance)
+            {
+                StopHand(0);
+            }
+            else
+            {
+                StartHand(0);
+            }
+
+            Vector3 hipLeft = KinectManager.Instance.GetJointKinectPosition(userID, (int)KinectInterop.JointType.HipLeft);
+            Vector3 handLeft = KinectManager.Instance.GetJointKinectPosition(userID, (int)KinectInterop.JointType.HandLeft);
+
+            if (handLeft.y < hipLeft.y + KinectConfig.HandHipDistance)
+            {
+                StopHand(1);
+            }
+            else
+            {
+                StartHand(1);
             }
         }
 

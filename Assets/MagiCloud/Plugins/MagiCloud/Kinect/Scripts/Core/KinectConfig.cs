@@ -25,18 +25,27 @@ namespace MagiCloud.Kinect
         public static float MRImageMoveDistanceX = 0;
         public static float MRImageMoveDistanceY = 0.1f;
 
+        private static Camera markCamera;
+
         /// <summary>
         /// 场景主摄像机
         /// </summary>
         public static Camera mainCamera
         {
             get {
-                if (GameObject.FindGameObjectWithTag("MarkCamera"))
+
+                if (markCamera == null)
                 {
-                    return GameObject.FindGameObjectWithTag("MarkCamera").GetComponent<Camera>();
+                    if (GameObject.FindGameObjectWithTag("MarkCamera"))
+                    {
+                        markCamera = GameObject.FindGameObjectWithTag("MarkCamera").GetComponent<Camera>();
+                    }
+
+                    if (markCamera == null)
+                        markCamera = Camera.main;
                 }
 
-                return Camera.main;
+                return markCamera;
             }
         }
 

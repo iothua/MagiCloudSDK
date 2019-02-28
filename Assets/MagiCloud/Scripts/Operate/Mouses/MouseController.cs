@@ -98,18 +98,19 @@ namespace MagiCloud.Operate
             //初始化手的种类
             var handUI = MHandUIManager.CreateHandUI(transform, handSprite, handSize);
             var inputHand = new MInputHand(0, handUI, OperatePlatform.Mouse);
+            handUI.name = "Mouse-Hand";
 
             InputHands.Add(0, inputHand);
 
             isPlaying = true;
-            isEnable = true;
 
             //注册操作者相关事件
             operate = MOperateManager.AddOperateHand(inputHand, this);
             //注册方法
             operate.OnGrab = OnGrabObject;
             operate.OnSetGrab = SetGrabObject;
-            operate.OnEnable();
+
+            IsEnable = true;
 
             behaviour.OnUpdate_MBehaviour(OnMouseUpdate);
         }
