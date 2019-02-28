@@ -42,6 +42,7 @@ namespace MagiCloud.Operate
                 return isEnable;
             }
             set {
+
                 isEnable = value;
 
                 gameObject.SetActive(isEnable);
@@ -69,6 +70,8 @@ namespace MagiCloud.Operate
                 handIcon.sprite = NormalIcon;
 
             handIcon.rectTransform.sizeDelta = Size;
+            //默认设置为false
+            IsEnable = false;
         }
 
         /// <summary>

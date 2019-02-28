@@ -202,12 +202,14 @@ namespace MagiCloud.Kinect
 
             public bool CheckRelease()
             {
-                if (IsHandMoveing) return false;
+                if (IsLockHand) return false;
 
                 if (IsRelease)
                 {
                     if (!isStartRelease)
                         KinectGesture.StartCoroutine(DelayBoolRelease());
+
+                    return true;
                 }
 
                 return false;
