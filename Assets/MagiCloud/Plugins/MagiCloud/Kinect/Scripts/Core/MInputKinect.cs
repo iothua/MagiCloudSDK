@@ -247,13 +247,19 @@ namespace MagiCloud.Kinect
                     SetUserID(userID);
                     HandStatus = KinectHandStatus.Enable;
 
+                    MLog.WriteLog(userID + "被检测到，开启双手操作——StartJointRay()");
+
                     StartHand(2);
                 }
 
                 if (!userManager.IsUserNear(userID) && userID == UserID)
                 {
                     SetUserIDNull();
+
+                    MLog.WriteLog(userID + "被检测到，停止双手操作——StartJointRay()");
+
                     StopHand(2);
+
                     HandStatus = KinectHandStatus.Identify;
                     userManager.StartNearUsers();
                 }
@@ -319,7 +325,10 @@ namespace MagiCloud.Kinect
             {
                 if ((!usersID.Contains(UserID)) && UserID != 0)
                 {
+                    MLog.WriteLog("执行双手停止操作，方法名：DeleteMissedUser");
+
                     StopHand(2);
+
                     SetUserIDNull();
                     HandStatus = KinectHandStatus.Identify;
                 }
@@ -417,7 +426,7 @@ namespace MagiCloud.Kinect
 
                 if (HandModel == KinectHandModel.Two)
                 {
-                    //DetectHand(userID);
+                    DetectHand(userID);
                 }
 
                 return isNear;
@@ -525,11 +534,21 @@ namespace MagiCloud.Kinect
 
             if (handRight.y < hipRight.y + KinectConfig.HandHipDistance)
             {
-                StopHand(0);
+                if(IsHandActive(0))
+                {
+                    MLog.WriteLog(userID + "用户右手检测到放下，停止右手操作——DetectHand()");
+                    StopHand(0);
+                }
+
             }
             else
             {
-                StartHand(0);
+                if(!IsHandActive(0))
+                {
+                    MLog.WriteLog(userID + "用户检测到右手，开启右手操作——DetectHand()");
+                    StartHand(0);
+                }
+
             }
 
             Vector3 hipLeft = KinectManager.Instance.GetJointKinectPosition(userID, (int)KinectInterop.JointType.HipLeft);
@@ -537,11 +556,20 @@ namespace MagiCloud.Kinect
 
             if (handLeft.y < hipLeft.y + KinectConfig.HandHipDistance)
             {
-                StopHand(1);
+                if(IsHandActive(1))
+                {
+                    MLog.WriteLog(userID + "用户左手检测到放下，停止左手操作——DetectHand()");
+                    StopHand(1);
+                }
+
             }
             else
             {
-                StartHand(1);
+                if (IsHandActive(1))
+                {
+                    MLog.WriteLog(userID + "用户左手检测到开启，开启左手操作——DetectHand()");
+                    StartHand(1);
+                }
             }
         }
 
@@ -619,6 +647,7 @@ namespace MagiCloud.Kinect
         /// <param name="handIndex"></param>
         internal static void StartHand(int handIndex)
         {
+            RefreshKinectPosition();
             InputKinect.kinectGestureListener.SetHandActive(handIndex, true);
         }
 
