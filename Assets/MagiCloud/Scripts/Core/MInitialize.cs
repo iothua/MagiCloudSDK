@@ -44,7 +44,6 @@ namespace MagiCloud.Core
             SwitchPlatform(Application.platform);
 
             DontDestroyOnLoad(gameObject);
-
         }
 
         private void AddHighlighting()
@@ -106,6 +105,7 @@ namespace MagiCloud.Core
 
         private void OnDestroy()
         {
+            MLog.WriteLogs();
             DestoryPlatform(Application.platform);
         }
     }
