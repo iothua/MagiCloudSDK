@@ -46,6 +46,12 @@ public class TestController : MonoBehaviour
         //MBehaviourController.AddBehaviour(behaviour);
     }
 
+    private void Start()
+    {
+        //RotateAndZoomManager.StartCameraZoom(center, 2, 10);
+        //RotateAndZoomManager.StartCameraAroundCenter(center);
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))

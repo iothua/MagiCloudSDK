@@ -212,6 +212,7 @@ namespace MagiCloud.Operate
                     if (IsRotate(handOperate) && Operate.InputHand.ScreenVector.magnitude > 5)
                     {
                         Operate.InputHand.HandStatus = MInputHandStatus.Rotate;
+
                         IsRotating = true;
                     }
 
@@ -380,20 +381,28 @@ namespace MagiCloud.Operate
         /// </summary>
         void ChangePlatform()
         {
-            if(!MInputKinect.IsHandActive(2))
+            if (!MInputKinect.IsHandActive(2))
             {
-                mouseController.IsEnable = true;
-                MUtility.CurrentPlatform = OperatePlatform.Mouse;
+                if (MUtility.CurrentPlatform != OperatePlatform.Mouse)
+                {
+                    mouseController.IsEnable = true;
+                    MUtility.CurrentPlatform = OperatePlatform.Mouse;
 
-                MLog.WriteLog("切换:鼠标平台");
-
+                    MLog.WriteLog("切换：鼠标平台");
+                    //Debug.Log("切换：鼠标平台");
+                }
             }
             else
             {
-                mouseController.IsEnable = false;
-                MUtility.CurrentPlatform = OperatePlatform.Kinect;
+                if (MUtility.CurrentPlatform != OperatePlatform.Kinect)
+                {
+                    mouseController.IsEnable = false;
+                    MUtility.CurrentPlatform = OperatePlatform.Kinect;
 
-                Debug.Log("切换：Kinect平台");
+                    MLog.WriteLog("切换：Kinect平台");
+
+                    //Debug.Log("切换：Kinect平台");
+                }
             }
         }
 
@@ -440,12 +449,12 @@ namespace MagiCloud.Operate
             leftHandOperate.OnOperateObjectHandle();
         }
 
-        void LateUpdate()
-        {
-            //执行在后面一点
-            OnRotate();
-            OnZoom();
-        }
+        //void LateUpdate()
+        //{
+        //    //执行在后面一点
+        //    OnRotate();
+        //    OnZoom();
+        //}
 
         /// <summary>
         /// 设置手的状态

@@ -76,6 +76,8 @@ namespace MagiCloud.Operate
                     enabled = false;
                     operate.OnDisable();
 
+                    behaviour.OnDestroy_MBehaviour(OnMouseUpdate);
+
                     //停止事件发送
                     //EventHandStop.SendListener(0);
 

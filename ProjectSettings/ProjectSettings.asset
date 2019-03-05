@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: "\u4E91\u5E7B\u6559\u80B2\u79D1\u6280\u80A1\u4EFD\u6709\u9650\u516C\u53F8"
-  productName: "\u8DA3\u5473\u79D1\u5B66\u63A2\u7D22\u8425\u5730"
+  productName: MagiCloud
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
