@@ -23,7 +23,7 @@ namespace MagiCloud.KGUI
         private LabelData _Data;
         public LabelData Data { get { return _Data; } set { _Data=value; } }
 
-        private RectTransform rectTransform;
+        private readonly RectTransform rectTransform = null;
         public RectTransform Rect
         {
             get
@@ -100,6 +100,9 @@ namespace MagiCloud.KGUI
             Text.font=font;
             Text.horizontalOverflow=HorizontalWrapMode.Overflow;
             Text.alignment=TextAnchor.MiddleCenter;
+            Text.resizeTextForBestFit=true;
+            Text.resizeTextMinSize=10;
+            Text.resizeTextMaxSize=40;
             OnUpdate();
         }
         /// <summary>
@@ -121,7 +124,7 @@ namespace MagiCloud.KGUI
             Data=data;
 #if UNITY_EDITOR
             if (Application.isPlaying) return;
-            LateUpdate();
+            //  LateUpdate();
 #endif
         }
         #endregion
@@ -184,12 +187,15 @@ namespace MagiCloud.KGUI
             if (useOutline)
             {
                 if (outline==null)
-                    Text.gameObject.AddComponent<Outline>();
+                {
+                    outline= Text.gameObject.AddComponent<Outline>();
+                    outline.effectColor=Color.white;
+                }
             }
             else
             {
                 if (outline!=null)
-                    Destroy(outline);
+                    DestroyImmediate(outline);
             }
         }
 
@@ -214,7 +220,10 @@ namespace MagiCloud.KGUI
             if (useShadow)
             {
                 if (shadow==null)
-                    Text.gameObject.AddComponent<Shadow>();
+                {
+                    shadow= Text.gameObject.AddComponent<Shadow>();
+                    shadow.effectColor=Color.white;
+                }
             }
             else
             {

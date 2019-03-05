@@ -15,7 +15,7 @@ namespace MagiCloud.Features
         public float minAngle = -360;
         public float maxAngle = 360;
         [Range(0f,1000f)]
-        public float speed = 1;
+        public float rotateSpeed = 90;
 
         protected Vector3 recordPos;
         protected Vector3 recordEuler;
@@ -25,28 +25,29 @@ namespace MagiCloud.Features
         private MBehaviour behaviour;
         private void Awake()
         {
-            behaviour=new MBehaviour();
-            behaviour.OnUpdate_MBehaviour(OnUpdate);
+
         }
 
         private void OnDestroy()
         {
-        //    behaviour.OnExcuteDestroy();
+            //    behaviour.OnExcuteDestroy();
         }
 
         public virtual void OnUpdate()
         {
             if (!isActive) return;
+
             Vector3 screenHand = MOperateManager.GetHandScreenPoint(handIndex);
             Vector3 screenPosition = MUtility.MainWorldToScreenPoint(recordPos);
             Vector3 handPos = MUtility.MainScreenToWorldPoint(new Vector3(screenHand.x,screenHand.y,screenPosition.z));//手的坐标
             float dis = handPos.x-recordPos.x;  //手移动的距离
 
-            float ratio = dis*speed;
+            float ratio = dis*rotateSpeed;
             float angle = 0;
             Vector3 euler = recordEuler;
             angle=GetAngle(ratio,angle);
             euler=GetEuler(angle,euler);
+
             RotateSelf(euler);
 
         }
@@ -59,7 +60,7 @@ namespace MagiCloud.Features
                     GrabObject.transform.rotation=Quaternion.Euler(euler);
                     break;
                 case Space.Self:
-                    GrabObject.transform.localRotation=Quaternion.Euler(euler);
+                    GrabObject.transform.localRotation= Quaternion.Euler(euler);
                     break;
                 default:
                     break;
@@ -95,12 +96,19 @@ namespace MagiCloud.Features
                 case AxisLimits.None:
                     break;
                 case AxisLimits.X:
+                    if (recordEuler.x>180)
+                        recordEuler.x=recordEuler.x-360;
                     angle=recordEuler.x-ratio;
                     break;
                 case AxisLimits.Y:
+                    if (recordEuler.y>180)
+                        recordEuler.y=recordEuler.y-360;
                     angle=recordEuler.y-ratio;
+
                     break;
                 case AxisLimits.Z:
+                    if (recordEuler.z >180)
+                        recordEuler.z=recordEuler.z-360;
                     angle=recordEuler.z -ratio;
 
                     break;
@@ -125,9 +133,10 @@ namespace MagiCloud.Features
             Vector3 screenPosition = MUtility.MainWorldToScreenPoint(GrabObject.transform.position);
             recordPos = MUtility.MainScreenToWorldPoint(new Vector3(screenHand.x,screenHand.y,screenPosition.z));//手的坐标
 
-
             recordEuler=space== Space.World ? GrabObject.transform.eulerAngles : GrabObject.transform.localEulerAngles;
             isActive =true;
+            behaviour=new MBehaviour();
+            behaviour.OnUpdate_MBehaviour(OnUpdate);
         }
 
         /// <summary>
@@ -135,6 +144,8 @@ namespace MagiCloud.Features
         /// </summary>
         public virtual void OnClose()
         {
+            if (behaviour!=null)
+                behaviour.OnExcuteDestroy();
             isActive=false;
         }
 

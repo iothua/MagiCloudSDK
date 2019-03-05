@@ -147,6 +147,18 @@ namespace MagiCloud
         }
 
         /// <summary>
+        /// 激活功能状态
+        /// </summary>
+        /// <param name="result"></param>
+        public static void ActiveHandController(bool result)
+        {
+            foreach (var item in Operates)
+            {
+                item.Value.HandController.IsEnable = result;
+            }
+        }
+
+        /// <summary>
         /// 激活手
         /// </summary>
         /// <param name="handIndex"></param>

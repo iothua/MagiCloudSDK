@@ -57,11 +57,9 @@ namespace MagiCloud.UIFrame
         IEnumerator Loading(Action start = default(Action),Action end = default(Action))
         {
 
-            //KinectHandStartStatus status = KinectConfig.GetHandStartStatus();
+            MOperateManager.ActiveHandController(false);
 
-            //KinectConfig.SetHandStartStatus(KinectHandStartStatus.None);
-
-            int[] nums = Utility.Utilitys.GetRandomSequence(LoadData.SpriteDatas.Count, LoadData.loadCount);
+            int[] nums = Utilitys.GetRandomSequence(LoadData.SpriteDatas.Count, LoadData.loadCount);
 
             for (int i = 0; i < nums.Length; i++)
             {
@@ -76,21 +74,20 @@ namespace MagiCloud.UIFrame
                 }
             }
 
-            //KinectConfig.SetHandStartStatus(status);
-
-
+            MOperateManager.ActiveHandController(true);
             if (end != null)
+            {
                 end();
 
-            yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(1.0f);
+            }
         }
 
-        IEnumerator RandomLoading(float time, float startTime, Action start = default(Action), float endTime = 0.5f, Action end = default(Action))
+        IEnumerator RandomLoading(float time, float startTime, Action start = default(Action), float endTime = 0.5f, Action end = default(Action),Action endDelay = default(Action))
         {
-            //KinectHandStartStatus status = KinectConfig.GetHandStartStatus();
-            //KinectConfig.SetHandStartStatus(KinectHandStartStatus.None);
+            MOperateManager.ActiveHandController(false);
 
-            var value = Utility.Utilitys.GetRandomSequence(LoadData.SpriteDatas.Count, 1)[0];
+            var value = Utilitys.GetRandomSequence(LoadData.SpriteDatas.Count, 1)[0];
 
             SetBackground(LoadData.SpriteDatas[value].Value);
 
@@ -101,20 +98,25 @@ namespace MagiCloud.UIFrame
 
             yield return new WaitForSeconds(time);
 
-            //KinectConfig.SetHandStartStatus(status);
-
-
             if (end != null)
+            {
                 end();
+                yield return new WaitForSeconds(endTime);
 
-            yield return new WaitForSeconds(endTime);
+                if (endDelay != null)
+                {
+                    endDelay();
+                }
+                UIManager.Instance.HideUI("Loading");
+            }
+            MOperateManager.ActiveHandController(true);
+
+            //UIManager.Instance.HideUI();
         }
 
         IEnumerator LoadingKey(string key, Action start = default(Action), Action end = default(Action))
         {
-            //KinectHandStartStatus status = KinectConfig.GetHandStartStatus();
-            //KinectConfig.SetHandStartStatus(KinectHandStartStatus.None);
-
+            MOperateManager.ActiveHandController(false);
             SetBackground(LoadData.SpriteDatas.Find(obj => obj.key.Equals(key)).Value);
 
             if (start != null)
@@ -122,13 +124,13 @@ namespace MagiCloud.UIFrame
 
             yield return new WaitForSeconds(LoadData.loadTime);
 
-            //KinectConfig.SetHandStartStatus(status);
-
-
             if (end != null)
+            {
                 end();
 
-            yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(1.0f);
+            }
+            MOperateManager.ActiveHandController(true);
         }
 
         void SetBackground(Sprite sprite)
@@ -170,10 +172,10 @@ namespace MagiCloud.UIFrame
         /// <summary>
         /// 随机显示
         /// </summary>
-        public void OnRandomShow(float startTime = 0.1f,Action start = default(Action), float endTime = 0.5f,Action end = default(Action))
+        public void OnRandomShow(float startTime = 0.1f,Action start = default(Action), float endTime = 1f,Action end = default(Action),Action endDelay = default(Action))
         {
             OnOpen();
-            UIManager.Instance.StartCoroutine(RandomLoading(LoadData.loadTime, startTime, start, endTime, end));
+            UIManager.Instance.StartCoroutine(RandomLoading(LoadData.loadTime, startTime, start, endTime, end, endDelay));
         }
     }
 }

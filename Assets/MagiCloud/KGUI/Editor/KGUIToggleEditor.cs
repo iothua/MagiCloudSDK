@@ -6,16 +6,18 @@ namespace MagiCloud.KGUI
 {
     [CustomEditor(typeof(KGUI_Toggle))]
     [CanEditMultipleObjects]
-    public class KGUIToggleEditor : Editor
+    public class KGUIToggleEditor :Editor
     {
         public SerializedProperty spriteRenderer;
         public SerializedProperty image;
 
         public SerializedProperty onNormalSprite, offNormalSprite;
         public SerializedProperty onEnterSprite, offEnterSprite;
+        public SerializedProperty onDisableSprite, offDisableSprite;
 
         public SerializedProperty onNormalObject, offNormalObject;
         public SerializedProperty onEnterObject, offEnterObject;
+        public SerializedProperty onDisableObject, offDisableObject;
 
         public SerializedProperty OnValueChanged;  //鼠标点击
 
@@ -43,11 +45,17 @@ namespace MagiCloud.KGUI
             onEnterSprite = serializedObject.FindProperty("onEnterSprite");
             offEnterSprite = serializedObject.FindProperty("offEnterSprite");
 
+            onDisableSprite = serializedObject.FindProperty("onDisableSprite");
+            offDisableSprite = serializedObject.FindProperty("offDisableSprite");
+
             onNormalObject = serializedObject.FindProperty("onNormalObject");
             offNormalObject = serializedObject.FindProperty("offNormalObject");
 
             onEnterObject = serializedObject.FindProperty("onEnterObject");
             offEnterObject = serializedObject.FindProperty("offEnterObject");
+
+            onDisableObject = serializedObject.FindProperty("onDisableObject");
+            offDisableObject = serializedObject.FindProperty("offDisableObject");
 
         }
 
@@ -56,8 +64,10 @@ namespace MagiCloud.KGUI
             GUILayout.Space(10);
 
             EditorGUILayout.BeginVertical(GUILayout.Width(500));
+            toggle.Order=EditorGUILayout.IntField("排序：",toggle.Order);
+            toggle.buttonType = (ButtonType)EditorGUILayout.EnumPopup("交互类型：",toggle.buttonType);
 
-            toggle.buttonType = (ButtonType)EditorGUILayout.EnumPopup("交互类型：", toggle.buttonType);
+            toggle.IsEnable = EditorGUILayout.Toggle("是否启用(IsEnable)", toggle.IsEnable);
 
             switch (toggle.buttonType)
             {
@@ -65,36 +75,46 @@ namespace MagiCloud.KGUI
 
                     EditorGUI.BeginChangeCheck();
 
-                    EditorGUILayout.PropertyField(image, new GUIContent("Image对象(Image)："), true, null);
-                    EditorGUILayout.PropertyField(onNormalSprite, new GUIContent("默认开纹理(onNormalSprite)：", "Toggle默认开时的状态"), true, null);
-                    EditorGUILayout.PropertyField(offNormalSprite, new GUIContent("默认关纹理(offNormalSprite)：", "Toggle默认关的状态"), true, null);
+                    EditorGUILayout.PropertyField(image,new GUIContent("Image对象(Image)："),true,null);
+                    EditorGUILayout.PropertyField(onNormalSprite,new GUIContent("默认开纹理(onNormalSprite)：","Toggle默认开时的状态"),true,null);
+                    EditorGUILayout.PropertyField(offNormalSprite,new GUIContent("默认关纹理(offNormalSprite)：","Toggle默认关的状态"),true,null);
 
-                    EditorGUILayout.PropertyField(onEnterSprite, new GUIContent("开时，移入纹理(onEnterSprite)：", "如果此时状态为开，当移入时，开的一种交互状态"), true, null);
-                    EditorGUILayout.PropertyField(offEnterSprite, new GUIContent("关时，移入纹理(offEnterSprite)：", "如果此时状态为关，当移入时，关的一种交互状态"), true, null);
+                    EditorGUILayout.PropertyField(onEnterSprite,new GUIContent("开时，移入纹理(onEnterSprite)：","如果此时状态为开，当移入时，开的一种交互状态"),true,null);
+                    EditorGUILayout.PropertyField(offEnterSprite,new GUIContent("关时，移入纹理(offEnterSprite)：","如果此时状态为关，当移入时，关的一种交互状态"),true,null);
+
+                    EditorGUILayout.PropertyField(onDisableSprite, new GUIContent("开时，禁用纹理(onDisableSprite)：", "如果此时状态为开，当禁用时，禁用的一种交互状态"), true, null);
+                    EditorGUILayout.PropertyField(offDisableSprite, new GUIContent("关时，禁用纹理(offDisableSprite)：", "如果此时状态为关，当禁用时，禁用的一种交互状态"), true, null);
+
 
                     break;
                 case ButtonType.Object:
 
                     EditorGUI.BeginChangeCheck();
 
-                    EditorGUILayout.PropertyField(onNormalObject, new GUIContent("默认开物体对象(onNormalObject)：", "Toggle默认开时的状态"), true, null);
-                    EditorGUILayout.PropertyField(offNormalObject, new GUIContent("默认关物体对象(offNormalObject)：", "Toggle默认关时的状态"), true, null);
+                    EditorGUILayout.PropertyField(onNormalObject,new GUIContent("默认开物体对象(onNormalObject)：","Toggle默认开时的状态"),true,null);
+                    EditorGUILayout.PropertyField(offNormalObject,new GUIContent("默认关物体对象(offNormalObject)：","Toggle默认关时的状态"),true,null);
 
-                    EditorGUILayout.PropertyField(onEnterObject, new GUIContent("开时，移入物体对象(onEnterObject)：", "如果此时状态为开，当移入时，开的一种交互状态"), true, null);
-                    EditorGUILayout.PropertyField(offEnterObject, new GUIContent("关时，移入物体对象(offEnterObject)：", "如果此时状态为关，当移入时，关的一种交互状态"), true, null);
+                    EditorGUILayout.PropertyField(onEnterObject,new GUIContent("开时，移入物体对象(onEnterObject)：","如果此时状态为开，当移入时，开的一种交互状态"),true,null);
+                    EditorGUILayout.PropertyField(offEnterObject,new GUIContent("关时，移入物体对象(offEnterObject)：","如果此时状态为关，当移入时，关的一种交互状态"),true,null);
+
+                    EditorGUILayout.PropertyField(onDisableObject, new GUIContent("开时，禁用纹理(onDisableObject)：", "如果此时状态为开，当禁用时，禁用的一种交互状态"), true, null);
+                    EditorGUILayout.PropertyField(offDisableObject, new GUIContent("关时，禁用纹理(offDisableObject)：", "如果此时状态为关，当禁用时，禁用的一种交互状态"), true, null);
 
                     break;
                 case ButtonType.SpriteRenderer:
 
                     EditorGUI.BeginChangeCheck();
 
-                    EditorGUILayout.PropertyField(spriteRenderer, new GUIContent("SpriteRenderer对象(SpriteRenderer)："), true, null);
+                    EditorGUILayout.PropertyField(spriteRenderer,new GUIContent("SpriteRenderer对象(SpriteRenderer)："),true,null);
 
-                    EditorGUILayout.PropertyField(onNormalSprite, new GUIContent("默认开纹理(onNormalSprite)：", "Toggle默认开的状态"), true, null);
-                    EditorGUILayout.PropertyField(offNormalSprite, new GUIContent("默认关纹理(offNormalSprite)：", "Toggle默认关的状态"), true, null);
+                    EditorGUILayout.PropertyField(onNormalSprite,new GUIContent("默认开纹理(onNormalSprite)：","Toggle默认开的状态"),true,null);
+                    EditorGUILayout.PropertyField(offNormalSprite,new GUIContent("默认关纹理(offNormalSprite)：","Toggle默认关的状态"),true,null);
 
-                    EditorGUILayout.PropertyField(onEnterSprite, new GUIContent("开时，移入纹理(onEnterSprite)：", "如果此时状态为开，当移入时，开的一种交互状态"), true, null);
-                    EditorGUILayout.PropertyField(offEnterSprite, new GUIContent("关时，移入纹理(offEnterSprite)：", "如果此时状态为关，当移入时，关的一种交互状态"), true, null);
+                    EditorGUILayout.PropertyField(onEnterSprite,new GUIContent("开时，移入纹理(onEnterSprite)：","如果此时状态为开，当移入时，开的一种交互状态"),true,null);
+                    EditorGUILayout.PropertyField(offEnterSprite,new GUIContent("关时，移入纹理(offEnterSprite)：","如果此时状态为关，当移入时，关的一种交互状态"),true,null);
+
+                    EditorGUILayout.PropertyField(onDisableSprite, new GUIContent("开时，禁用纹理(onDisableSprite)：", "如果此时状态为开，当禁用时，禁用的一种交互状态"), true, null);
+                    EditorGUILayout.PropertyField(offDisableSprite, new GUIContent("关时，禁用纹理(offDisableSprite)：", "如果此时状态为关，当禁用时，禁用的一种交互状态"), true, null);
 
                     break;
                 default:
@@ -105,9 +125,9 @@ namespace MagiCloud.KGUI
             buttonAudio.OnInspectorButtonAudio(toggle);
 
             GUILayout.Space(10);
-            toggle.IsValue = EditorGUILayout.Toggle("IsValue：", toggle.IsValue);
+            toggle.IsValue = EditorGUILayout.Toggle("IsValue：",toggle.IsValue);
 
-            EditorGUILayout.PropertyField(OnValueChanged, true, null);
+            EditorGUILayout.PropertyField(OnValueChanged,true,null);
 
             GUILayout.EndVertical();
 

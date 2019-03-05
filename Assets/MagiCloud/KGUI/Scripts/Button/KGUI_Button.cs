@@ -9,7 +9,6 @@ namespace MagiCloud.KGUI
     /// <summary>
     /// KGUI_Button
     /// </summary>
-    [RequireComponent(typeof(BoxCollider))]
     public class KGUI_Button : KGUI_ButtonBase
     {
 

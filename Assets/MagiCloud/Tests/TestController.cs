@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MagiCloud.Core;
 using UnityEngine;
 using MagiCloud.Core.Events;
+using MagiCloud.RotateAndZoomTool;
 
 public class TestController : MonoBehaviour
 {
@@ -11,9 +12,11 @@ public class TestController : MonoBehaviour
     public ExecutionPriority executionPriority;
     public float executionOrder;
 
+    public Transform center;
+
     private void Awake()
     {
-        behaviour = new MBehaviour(executionPriority, executionOrder, enabled);
+        //behaviour = new MBehaviour(executionPriority, executionOrder, enabled);
 
         //behaviour.OnAwake_MBehaviour(() =>
         //{
@@ -41,6 +44,26 @@ public class TestController : MonoBehaviour
         //});
 
         //MBehaviourController.AddBehaviour(behaviour);
+    }
+
+    private void Start()
+    {
+        //RotateAndZoomManager.StartCameraZoom(center, 2, 10);
+        //RotateAndZoomManager.StartCameraAroundCenter(center);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            RotateAndZoomManager.StartCameraZoom(center, 2, 10);
+            RotateAndZoomManager.StartCameraAroundCenter(center);
+        }
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            RotateAndZoomManager.StopCameraAroundCenter();
+            RotateAndZoomManager.StopCameraZoom();
+        }
     }
 
     void onGrab(int handindex)
@@ -171,17 +194,17 @@ public class TestController : MonoBehaviour
 
     private void OnEnable()
     {
-        behaviour.IsEnable = true;
+        //behaviour.IsEnable = true;
     }
 
     private void OnDisable()
     {
-        behaviour.IsEnable = false;
+        //behaviour.IsEnable = false;
     }
 
     private void OnDestroy()
     {
-        behaviour.OnExcuteDestroy();
+        //behaviour.OnExcuteDestroy();
     }
 
 }

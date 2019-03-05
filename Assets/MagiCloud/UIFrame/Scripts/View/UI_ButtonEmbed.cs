@@ -27,7 +27,6 @@ namespace MagiCloud.UIFrame
             {
                 OnOpen();
             }
-
             if (button != null)
             {
                 button.onClick.AddListener(unityAction);

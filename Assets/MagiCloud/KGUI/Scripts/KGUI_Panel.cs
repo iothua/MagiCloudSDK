@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using MagiCloud.Core;
 using MagiCloud.Core.Events;
 
@@ -23,43 +22,40 @@ namespace MagiCloud.KGUI
     /// <summary>
     /// 接收射线面板，不做任何处理
     /// </summary>
-    public class KGUI_Panel : KGUI_Base
+    public class KGUI_Panel :KGUI_Base
     {
         private bool IsDown = false;
         private int handIndex = -1;
 
-        [Title("容器的类型")]
-        [EnumToggleButtons,EnumPaging]
+        // [Title("容器的类型")]
+        // [EnumToggleButtons, EnumPaging]
         public PanelType panelType = PanelType.UI;
-
-        [Header("幅度值")]
         public float extentValue = 10;//幅度值
 
-        [Space(10)]
-        [InfoBox("其他的RectTransform，用于拼接不规则的Panel区域")]
-        [ShowIf("panelType",PanelType.UI)]
-        [ListDrawerSettings(ShowIndexLabels = true,ShowPaging =true)]
+        // [ShowIf("panelType",PanelType.UI)]
+        //[ListDrawerSettings(ShowIndexLabels = true,ShowPaging = true)]
+
         public List<RectTransform> OtherRects;
 
         [Space(10)]
-        [ShowIf("panelType", PanelType.Object)]
-        [InfoBox("手动输入容器大小")]
+        //[ShowIf("panelType",PanelType.Object)]
+        //  [InfoBox("手动输入容器大小")]
         public Vector2Int panelSize;//容器大小
 
-        [ShowIf("panelType", PanelType.Object)]
-        [InfoBox("手动输入其他容器的相关参数")]
-        [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "transform")]
+        // [ShowIf("panelType",PanelType.Object)]
+
+        // [ListDrawerSettings(ShowIndexLabels = true,ListElementLabelName = "transform")]
         public List<TransformSize> OtherSizes;
 
-        [Title("按下移动方向")]
+        [Header("按下移动方向")]
         public ButtonEvent onDirectionX;//X轴方向
         public ButtonEvent onDirectionY;//Y轴方向
 
-        [Title("移入与移出")]
+        [Header("移入与移出")]
         public ButtonEvent onEnter;
         public ButtonEvent onExit;
 
-        [Title("按下与抬起")]
+        [Header("按下与抬起")]
         public PanelEvent onDown;
         public PanelEvent onUp;
 
@@ -98,11 +94,14 @@ namespace MagiCloud.KGUI
             //Debug.Log("设置为false ：" + name);
         }
 
-        public bool IsEnable {
-            get {
+        public bool IsEnable
+        {
+            get
+            {
                 return isEnable;
             }
-            set {
+            set
+            {
 
                 isEnable = value;
                 IsButtonPressed = false;
@@ -110,12 +109,12 @@ namespace MagiCloud.KGUI
                 handIndex = -1;
                 screenX = null;
                 screenY = null;
-
+                IsEnter = false;
                 if (isEnable)
                 {
 
-                    EventHandGrip.AddListener(OnButtonPressed, ExecutionPriority.High);
-                    EventHandIdle.AddListener(OnButtonRelease, ExecutionPriority.High);
+                    EventHandGrip.AddListener(OnButtonPressed,ExecutionPriority.High);
+                    EventHandIdle.AddListener(OnButtonRelease,ExecutionPriority.High);
                     //KinectEventHandGrip.AddListener(EventLevel.A, OnButtonPressed);
                     //KinectEventHandIdle.AddListener(EventLevel.A, OnButtonRelease);
 
@@ -134,18 +133,16 @@ namespace MagiCloud.KGUI
         private void Update()
         {
             if (!enabled) return;
-
+            if (!Active) return;
             OnEnterHandle(0);//右手
             OnEnterHandle(1);//左手
 
-            if (IsDown && handIndex != -1)
-            {
-                //屏幕坐标
-                Vector3 screenPoint = MOperateManager.GetHandScreenPoint(handIndex);
+            if (!IsDown || handIndex == -1) return;
+            //屏幕坐标
+            var screenPoint = MOperateManager.GetHandScreenPoint(handIndex);
 
-                //将屏幕坐标传递出去
-                OnExecute(screenPoint);
-            }
+            //将屏幕坐标传递出去
+            OnExecute(screenPoint);
         }
 
         /// <summary>
@@ -153,14 +150,12 @@ namespace MagiCloud.KGUI
         /// </summary>
         public void OnEnterHandle(int handIndex)
         {
-
             if (IsAreaContains(handIndex))
             {
                 //如果以及有手移入了，在移入则什么都不处理
                 if (IsEnter) return;
 
-                if (onEnter != null)
-                    onEnter.Invoke(handIndex);
+                onEnter?.Invoke(handIndex);
 
                 IsEnter = true;
                 enterHandIndex = handIndex;
@@ -172,8 +167,7 @@ namespace MagiCloud.KGUI
                 if (enterHandIndex != handIndex)
                     return;
 
-                if (onExit != null)
-                    onExit.Invoke(handIndex);
+                onExit?.Invoke(handIndex);
 
                 IsEnter = false;
                 enterHandIndex = -1;
@@ -184,7 +178,7 @@ namespace MagiCloud.KGUI
         /// 判断其他集合区域是否在范围内
         /// </summary>
         /// <returns></returns>
-        bool OtherRectAreaContains(int hand)
+        private bool OtherRectAreaContains(int hand)
         {
             if (panelType == PanelType.UI)
             {
@@ -192,7 +186,7 @@ namespace MagiCloud.KGUI
 
                 foreach (var item in OtherRects)
                 {
-                    if (KGUI_Utility.IsAreaContains(item, hand))
+                    if (MUtility.IsAreaContains(item,hand))
                     {
                         return true;//如果存在，就可以直接返回了
                     }
@@ -204,9 +198,9 @@ namespace MagiCloud.KGUI
 
                 foreach (var item in OtherSizes)
                 {
-                    Vector3 screenPoint = MUtility.UIWorldToScreenPoint(item.transform.position);
+                    var screenPoint = MUtility.UIWorldToScreenPoint(item.transform.position);
 
-                    if (KGUI_Utility.IsAreaContains(screenPoint, item.panelSize, hand))
+                    if (MUtility.IsAreaContains(screenPoint,item.panelSize,hand))
                     {
                         return true;
                     }
@@ -221,21 +215,22 @@ namespace MagiCloud.KGUI
         /// </summary>
         /// <param name="handIndex"></param>
         /// <returns></returns>
-        bool IsAreaContains(int handIndex)
+        private bool IsAreaContains(int handIndex)
         {
             if (panelType == PanelType.UI)
             {
-                return KGUI_Utility.IsAreaContains(transform, handIndex) || OtherRectAreaContains(handIndex);
+
+                return MUtility.IsAreaContains(transform,handIndex) || OtherRectAreaContains(handIndex);
             }
             else
             {
                 Vector3 screenPoint = MUtility.UIWorldToScreenPoint(transform.position);
 
-                return KGUI_Utility.IsAreaContains(screenPoint, panelSize, handIndex) || OtherRectAreaContains(handIndex);
+                return MUtility.IsAreaContains(screenPoint,panelSize,handIndex) || OtherRectAreaContains(handIndex);
             }
         }
 
-        void OnButtonRelease(int handIndex)
+        private void OnButtonRelease(int handIndex)
         {
 
             //如果当前手的值不等于-1，并且释放时，跟当前手不符，则直接跳过
@@ -247,17 +242,7 @@ namespace MagiCloud.KGUI
 
             IsButtonPressed = false;
 
-            if (IsAreaContains(handIndex))
-            {
-                if (onUp != null)
-                    onUp.Invoke(handIndex, true);
-            }
-            else
-            {
-
-                if (onUp != null)
-                    onUp.Invoke(handIndex, false);
-            }
+            onUp?.Invoke(handIndex,IsAreaContains(handIndex));
 
             //OnUp(handIndex);
 
@@ -266,7 +251,7 @@ namespace MagiCloud.KGUI
 
             screenY = null;
             screenX = null;
-            
+
         }
 
         /// <summary>
@@ -329,20 +314,18 @@ namespace MagiCloud.KGUI
                 screenX = handPosition.x;
             }
 
-            if (handPosition.x - screenX < -extentValue)
+            if (!(handPosition.x - screenX < -extentValue)) return;
+            if (onDirectionX != null)
             {
-                if (onDirectionX != null)
+                onDirectionX.Invoke(-1);
+
+                if (onDirectionY.GetPersistentEventCount() > 0 || eventCount > 0)
                 {
-                    onDirectionX.Invoke(-1);
-
-                    if (onDirectionY.GetPersistentEventCount() > 0 || eventCount > 0)
-                    {
-                        MOperateManager.GetUIOperate(handIndex).SetScroll();
-                    }
+                    MOperateManager.GetUIOperate(handIndex).SetScroll();
                 }
-
-                screenX = handPosition.x;
             }
+
+            screenX = handPosition.x;
 
         }
 
@@ -366,15 +349,13 @@ namespace MagiCloud.KGUI
 
                 IsDown = true;
 
-                if (onDown != null)
-                    onDown.Invoke(handIndex, true);
+                onDown?.Invoke(handIndex,true);
 
                 //OnDown(handIndex);
             }
             else
             {
-                if (onDown != null)
-                    onDown.Invoke(handIndex, false);
+                onDown?.Invoke(handIndex,false);
             }
 
         }

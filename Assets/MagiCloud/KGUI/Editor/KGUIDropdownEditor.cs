@@ -7,13 +7,13 @@ namespace MagiCloud.KGUI
 {
     [CustomEditor(typeof(KGUI_Dropdown))]
     [CanEditMultipleObjects]
-    public class KGUIDropdownEditor : Editor
+    public class KGUIDropdownEditor :Editor
     {
         private KGUIButtonTypeEditor buttonType;
         private KGUIButtonAudioEditor buttonAudio;
 
         private KGUI_Dropdown dropdown;
-
+        public SerializedProperty isTouchExpand;
         public SerializedProperty Names;
 
         public SerializedProperty ScrollView;
@@ -36,7 +36,7 @@ namespace MagiCloud.KGUI
 
             buttonType.OnInstantiation(serializedObject);
             buttonAudio.OnInstantiation(serializedObject);
-
+            isTouchExpand=serializedObject.FindProperty("isTouchExpand");
             Names = serializedObject.FindProperty("Names");
 
             ScrollView = serializedObject.FindProperty("scrollView");
@@ -55,20 +55,20 @@ namespace MagiCloud.KGUI
             buttonType.OnInspectorButtonType(dropdown);
             buttonAudio.OnInspectorButtonAudio(dropdown);
 
-            GUILayout.BeginVertical("box", GUILayout.Width(500));
+            GUILayout.BeginVertical("box",GUILayout.Width(500));
 
             GUILayout.Space(10);
 
-            EditorGUILayout.LabelField("下拉框属性", MUtilityStyle.LabelStyle);
+            EditorGUILayout.LabelField("下拉框属性",MUtilityStyle.LabelStyle);
+          
+            EditorGUILayout.PropertyField(Names,true,null);
+            EditorGUILayout.PropertyField(ScrollView,true,null);
+            EditorGUILayout.PropertyField(Template,true,null);
+            EditorGUILayout.PropertyField(textName,true,null);
 
-            EditorGUILayout.PropertyField(Names, true, null);
-            EditorGUILayout.PropertyField(ScrollView, true, null);
-            EditorGUILayout.PropertyField(Template, true, null);
-            EditorGUILayout.PropertyField(textName, true, null);
-
-            EditorGUILayout.PropertyField(gridLayout, true, null);
-            EditorGUILayout.PropertyField(dropdownItem, true, null);
-
+            EditorGUILayout.PropertyField(gridLayout,true,null);
+            EditorGUILayout.PropertyField(dropdownItem,true,null);
+            EditorGUILayout.PropertyField(isTouchExpand,true,null);
             EditorGUILayout.EndVertical();
 
             if (EditorGUI.EndChangeCheck())

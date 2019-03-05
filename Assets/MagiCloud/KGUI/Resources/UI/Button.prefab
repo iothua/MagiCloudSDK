@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 65465055041696346}
   - component: {fileID: 114617654533314624}
   - component: {fileID: 82959805161980300}
+  - component: {fileID: 114301248112698672}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -138,6 +139,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &114301248112698672
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1036962512939568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2895b1b8af9701a4fbe2e7ff14f56ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoxCollider: {fileID: 65465055041696346}
 --- !u!114 &114425727674658196
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -187,42 +200,53 @@ MonoBehaviour:
   enterObject: {fileID: 0}
   pressedObject: {fileID: 0}
   disableObject: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: 29d930b535510174a887d268c209256a, type: 3}
+  audioStatus: 0
+  audioSource: {fileID: 82959805161980300}
+  IsStartAudio: 1
   onClick:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onUp:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onDownStay:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  onUpRange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.KGUI.PanelEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   IsButtonGroup: 0
   buttonGroup: {fileID: 0}
   IsShowButton: 0
-  audioClip: {fileID: 8300000, guid: 29d930b535510174a887d268c209256a, type: 3}
-  audioSource: {fileID: 82959805161980300}
-  IsStartAudio: 1
+  onGroupReset:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.KGUI.ButtonGroupReset, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!222 &222842119431682532
 CanvasRenderer:
   m_ObjectHideFlags: 1

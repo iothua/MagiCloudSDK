@@ -61,10 +61,12 @@ namespace MagiCloud.Core.MInput
             }
             set {
 
+                if (!value)
+                    SetIdle();
+
                 isEnable = value;
 
                 isPressed = false;
-                HandStatus = MInputHandStatus.Idle;
                 currentPoint = Vector3.zero;
                 lastPoint = null;
                 lerpPoint = Vector3.zero;
@@ -165,6 +167,12 @@ namespace MagiCloud.Core.MInput
             EventHandIdle.SendListener(HandIndex);
         }
 
+        public void SetLasso()
+        {
+            if (!isEnable) return;
+            handStatus = MInputHandStatus.Error;
+        }
+
         /// <summary>
         /// 设置手势大小
         /// </summary>
@@ -185,6 +193,74 @@ namespace MagiCloud.Core.MInput
             if (HandUI == null) return;
 
             HandUI.SetNormalIcon();
+        }
+
+        /// <summary>
+        /// 是否处于默认状态
+        /// </summary>
+        /// <value><c>true</c> if is idle status; otherwise, <c>false</c>.</value>
+        public bool IsIdleStatus
+        {
+            get {
+                return HandStatus == MInputHandStatus.Idle;
+            }
+        }
+
+        /// <summary>
+        /// 是否处于握拳的状态（Grip/Grab/Grabing/Pressed）
+        /// </summary>
+        /// <value><c>true</c> if is grip status; otherwise, <c>false</c>.</value>
+        public bool IsGripStatus
+        {
+            get
+            {
+                return HandStatus == MInputHandStatus.Grip || HandStatus == MInputHandStatus.Grab 
+                || HandStatus == MInputHandStatus.Grabing || HandStatus == MInputHandStatus.Pressed;
+            }
+        }
+
+        /// <summary>
+        /// 是否处于错误状态（Error/Invalid）
+        /// </summary>
+        /// <value><c>true</c> if is error status; otherwise, <c>false</c>.</value>
+        public bool IsErrorStatus
+        {
+            get {
+                return HandStatus == MInputHandStatus.Error || HandStatus == MInputHandStatus.Invalid;
+            }
+        }
+
+        /// <summary>
+        /// 是否处于旋转状态
+        /// </summary>
+        /// <value><c>true</c> if is rotate; otherwise, <c>false</c>.</value>
+        public bool IsRotateStatus
+        {
+            get {
+                return HandStatus == MInputHandStatus.Rotate; 
+            }
+        }
+
+        /// <summary>
+        /// 是否处于缩放状态
+        /// </summary>
+        /// <value><c>true</c> if is zoom status; otherwise, <c>false</c>.</value>
+        public bool IsZoomStatus
+        {
+            get {
+                return HandStatus == MInputHandStatus.Zoom;
+            }
+        }
+
+        /// <summary>
+        /// 是否处于旋转/缩放状态
+        /// </summary>
+        /// <value><c>true</c> if is rotate zoom status; otherwise, <c>false</c>.</value>
+        public bool IsRotateZoomStatus
+        {
+            get {
+                return HandStatus == MInputHandStatus.Rotate || HandStatus == MInputHandStatus.Zoom;
+            }
         }
     }
 }

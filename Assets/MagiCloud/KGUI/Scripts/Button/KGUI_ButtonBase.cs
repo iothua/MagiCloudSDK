@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using MagiCloud.Core.UI;
 //using MagiCloud.Core;
+using DG.Tweening;
 
 namespace MagiCloud.KGUI
 {
@@ -42,7 +43,8 @@ namespace MagiCloud.KGUI
     /// KGUI基类
     /// </summary>
     [DefaultExecutionOrder(-100)]
-    public class KGUI_ButtonBase : KGUI_Base,IButton
+    [RequireComponent(typeof(KGUI_BoxCollider))]
+    public class KGUI_ButtonBase :KGUI_Base, IButton
     {
         public ButtonType buttonType;
 
@@ -54,8 +56,8 @@ namespace MagiCloud.KGUI
 
         protected bool IsEnter;
 
-        private bool _IsEnable = true;
-        protected BoxCollider boxCollider;
+        protected bool _IsEnable = true;
+        protected KGUI_BoxCollider boxCollider;
 
         //protected MBehaviour behaviour;
 
@@ -65,14 +67,29 @@ namespace MagiCloud.KGUI
         public AudioSource audioSource;
         public bool IsStartAudio = true;
 
+        public override bool Active
+        {
+            get
+            {
+                return IsEnable;
+            }
+
+            set
+            {
+                IsEnable=value;
+            }
+        }
         /// <summary>
         /// 是否激活
         /// </summary>
-        public virtual bool IsEnable {
-            get {
+        public virtual bool IsEnable
+        {
+            get
+            {
                 return _IsEnable;
             }
-            set {
+            set
+            {
 
                 ////如果相等，则不进行任何处理
                 //if (_IsEnable == value) return;
@@ -80,7 +97,7 @@ namespace MagiCloud.KGUI
                 _IsEnable = value;
 
                 if (Collider != null)
-                    Collider.enabled = value;
+                    Collider.IsEnable = value;
 
                 IsEnter = false;
 
@@ -95,13 +112,15 @@ namespace MagiCloud.KGUI
             }
         }
 
-        public BoxCollider Collider {
-            get {
+        public KGUI_BoxCollider Collider
+        {
+            get
+            {
 
                 try
                 {
                     if (boxCollider == null)
-                        boxCollider = GetComponent<BoxCollider>();
+                        boxCollider = GetComponent<KGUI_BoxCollider>() ?? gameObject.AddComponent<KGUI_BoxCollider>();
 
                     return boxCollider;
                 }
@@ -151,7 +170,6 @@ namespace MagiCloud.KGUI
                 onUpRange = new PanelEvent();
 
             gameObject.tag = "button";
-
         }
 
         protected virtual void Start()
@@ -239,10 +257,10 @@ namespace MagiCloud.KGUI
         /// </summary>
         /// <param name="handIndex"></param>
         /// <param name="isRange"></param>
-        public virtual void OnUpRange(int handIndex, bool isRange)
+        public virtual void OnUpRange(int handIndex,bool isRange)
         {
             if (onUpRange != null)
-                onUpRange.Invoke(handIndex, isRange);
+                onUpRange.Invoke(handIndex,isRange);
         }
 
         /// <summary>
@@ -253,6 +271,29 @@ namespace MagiCloud.KGUI
         {
             if (onDownStay != null)
                 onDownStay.Invoke(handIndex);
+        }
+
+
+        public void RefreshSprite(Sprite sprite,string eventName)
+        {
+            switch (eventName)
+            {
+                case "click":
+                    pressedSprite=sprite;
+                    break;
+                case "normal":
+                    normalSprite=sprite;
+                    break;
+                case "enter":
+                    enterSprite=sprite;
+                    break;
+                case "disable":
+                    disableSprite=sprite;
+                    break;
+                default:
+                    break;
+            }
+            OnHandle(eventName);
         }
 
         protected virtual void OnHandle(string cmd)
@@ -269,7 +310,13 @@ namespace MagiCloud.KGUI
                     if (cmd.Equals("click"))
                     {
                         if (pressedSprite != null)
+                        {
                             image.sprite = pressedSprite;
+                            if (image.transform.localScale == Vector3.one)
+                            {
+                                image.transform.DOPunchScale(new Vector3(-0.2f,-0.2f,0),0.4f,12,0.5f);
+                            }
+                        }
                     }
                     else if (cmd.Equals("enter"))
                     {
@@ -388,17 +435,17 @@ namespace MagiCloud.KGUI
 
         protected virtual void OnEnable()
         {
-            
+
         }
 
         protected virtual void OnDisable()
         {
-            
+
         }
 
         protected virtual void OnDestroy()
         {
-            
+
         }
 
         public void AddAudio()

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace MagiCloud.KGUI
 {
@@ -38,9 +39,12 @@ namespace MagiCloud.KGUI
             txtNumber = transform.Find("Number").GetComponent<Text>();
             Icon = transform.Find("Icon").GetComponent<Image>();
 
-
-            normalIcon = backpack.backpackIcons.GetSprite(config.normalSpritePath);
-            disableIcon = backpack.backpackIcons.GetSprite(config.disableSpritePath);
+            Sprite[] Icons = new Sprite[backpack.backpackIcons.spriteCount];
+            backpack.backpackIcons.GetSprites(Icons);
+            //normalIcon = Icons.ToList().Find(obj => obj.name.Equals(config.normalSpritePath.Trim()));
+            //disableIcon = Icons.ToList().Find(obj => obj.name.Equals(config.disableSpritePath.Trim()));
+            normalIcon = backpack.backpackIcons.GetSprite(config.normalSpritePath.Trim());
+            disableIcon = backpack.backpackIcons.GetSprite(config.disableSpritePath.Trim());
 
             Icon.sprite = normalIcon;
 
@@ -166,9 +170,13 @@ namespace MagiCloud.KGUI
             else if (_equipmentNumber == 0)
             {
                 if (txtNumber != null)
-                    //图标变换成disableIcon，数值变换
+                //图标变换成disableIcon，数值变换
+                {
                     txtNumber.text = _equipmentNumber.ToString();
-
+                    txtNumber.color = Color.gray;
+                    txtName.color = Color.gray;
+                }
+                
                 IsEnable = false;
 
                 Icon.sprite = disableIcon;
@@ -183,6 +191,8 @@ namespace MagiCloud.KGUI
                     IsEnable = true;
 
                 Icon.sprite = normalIcon;
+                txtNumber.color = Color.red;
+                txtName.color = new Color(0.06f,0.4f,0.95f);
             }
         }
 

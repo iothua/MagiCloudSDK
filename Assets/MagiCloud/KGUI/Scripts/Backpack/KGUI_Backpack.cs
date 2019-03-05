@@ -6,10 +6,10 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.U2D;
 using MagiCloud.Core.Events;
+using UnityEngine.Events;
 
 namespace MagiCloud.KGUI
 {
-    
     /// <summary>
     /// KGUI背包
     /// </summary>
@@ -25,6 +25,11 @@ namespace MagiCloud.KGUI
 
         private bool _isHandOnBag;                          //标记手是否在背包上
         private int _handIndex;                             //标记哪只手在背包
+
+        public UnityEvent action;
+
+        public UnityEvent actionOpen;
+        public UnityEvent actionClose;
 
         /// <summary>
         /// 背包图集
@@ -93,18 +98,18 @@ namespace MagiCloud.KGUI
 
             CreateItems();
 
-            //根据数量设置高度
-            RectTransform rectTransform = content.GetComponent<RectTransform>();
-            int count = dataConfig.ItemDatas.Count / 2 + dataConfig.ItemDatas.Count % 2;
-            GridLayoutGroup gridLayout = rectTransform.GetComponent<GridLayoutGroup>();
+            ////根据数量设置高度
+            //RectTransform rectTransform = content.GetComponent<RectTransform>();
+            //int count = dataConfig.ItemDatas.Count / 2 + dataConfig.ItemDatas.Count % 2;
+            //GridLayoutGroup gridLayout = rectTransform.GetComponent<GridLayoutGroup>();
 
-            //计算高度
-            float height = gridLayout.cellSize.y * count + gridLayout.padding.top + gridLayout.spacing.y * (count - 1);
-            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, height);
-            float positionY = -(rectTransform.sizeDelta.y - rectTransform.parent.GetComponent<RectTransform>().sizeDelta.y) / 2;
+            ////计算高度
+            //float height = gridLayout.cellSize.y * count + gridLayout.padding.top + gridLayout.spacing.y * (count - 1);
+            //rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, height);
+            //float positionY = -(rectTransform.sizeDelta.y - rectTransform.parent.GetComponent<RectTransform>().sizeDelta.y) / 2;
 
-            //赋予初始位置
-            rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, positionY, rectTransform.localPosition.z);
+            ////赋予初始位置
+            //rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, positionY, rectTransform.localPosition.z);
 
             
 
@@ -209,12 +214,12 @@ namespace MagiCloud.KGUI
             var go = GenerateEquipment(item, itemData.ItemPath);
 
             go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y, -16.3f);
-            KGUI_BackPackMark mark = go.GetComponent<KGUI_BackPackMark>() ?? go.AddComponent<KGUI_BackPackMark>();
-            if (mark != null)
-            {
-                //仪器背包创建调用
-                mark.OnCreateForBag(item, itemData.Name, handIndex);
-            }
+            //KGUI_BackPackMark mark = go.GetComponent<KGUI_BackPackMark>() ?? go.AddComponent<KGUI_BackPackMark>();
+            //if (mark != null)
+            //{
+            //    //仪器背包创建调用
+            //    mark.OnCreateForBag(item, itemData.Name, handIndex);
+            //}
 
             //KinectTransfer.SetObjectGrab(go, handIndex);
             MOperateManager.SetObjectGrab(go,  handIndex, itemData.zValue);
@@ -233,10 +238,16 @@ namespace MagiCloud.KGUI
         /// <param name="ItemPath">Item path.</param>
         public GameObject GenerateEquipment(KGUI_BackpackItem item,string ItemPath)
         {
-
             var itemObject = Resources.Load<GameObject>(universalPath + ItemPath);
 
             var go = Instantiate(itemObject) as GameObject;
+
+            KGUI_BackPackMark mark = go.GetComponent<KGUI_BackPackMark>() ?? go.AddComponent<KGUI_BackPackMark>();
+            if (mark != null)
+            {
+                //仪器背包创建调用
+                mark.OnCreateForBag(item, item.dataConfig.Name, 0);
+            }
 
             return go;
         }
@@ -272,7 +283,14 @@ namespace MagiCloud.KGUI
 
             //areaPanel.enabled = false;
             areaPanel.transform.DOLocalMove(closePosition, 1.0f);
-
+            if (action != null)
+            {
+                action.Invoke();
+            }
+            if (actionClose != null)
+            {
+                actionClose.Invoke();
+            }
         }
 
         public void OpenBag(int handIndex)
@@ -287,12 +305,16 @@ namespace MagiCloud.KGUI
             
             areaPanel.transform.DOLocalMove(openPosition, 1.0f);
 
+            if (actionOpen != null)
+            {
+                actionOpen.Invoke();
+            }
         }
 
         private void OnExit(int arg0)
         {
             CloseBag();
-
+            
             ////获取到正在抓取的物体
             //SetObjectFrontUI(true);
         }

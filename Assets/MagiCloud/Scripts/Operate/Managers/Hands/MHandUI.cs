@@ -42,6 +42,7 @@ namespace MagiCloud.Operate
                 return isEnable;
             }
             set {
+
                 isEnable = value;
 
                 gameObject.SetActive(isEnable);
@@ -69,6 +70,8 @@ namespace MagiCloud.Operate
                 handIcon.sprite = NormalIcon;
 
             handIcon.rectTransform.sizeDelta = Size;
+            //默认设置为false
+            IsEnable = false;
         }
 
         /// <summary>
@@ -113,12 +116,13 @@ namespace MagiCloud.Operate
             switch(status)
             {
                 case MInputHandStatus.Idle:
-                case MInputHandStatus.Release:
                     SetHandIcon(handSprite.IdelIcon);
                     break;
                 case MInputHandStatus.Grip:
                 case MInputHandStatus.Grab:
+                case MInputHandStatus.Pressed:
                 case MInputHandStatus.Grabing:
+
                     SetHandIcon(handSprite.GripIcon);
                     break;
                 case MInputHandStatus.Invalid:

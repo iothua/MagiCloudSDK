@@ -73,7 +73,7 @@ namespace MagiCloud.RotateAndZoomTool
         /// <summary>
         /// 相机从其他状态恢复到绕点转过渡的速度
         /// </summary>
-        float cameraResetspeed = 0.5f;
+        private float cameraResetspeed = 0.5f;
 
         /// <summary>
         /// 相机绕自身轴旋转处理对象
@@ -102,12 +102,12 @@ namespace MagiCloud.RotateAndZoomTool
         /// <summary>
         /// 相机绕点转的速率
         /// </summary>
-        float rotateCameraWithGoSpeed = 0.5f;
+        private float rotateCameraWithGoSpeed = 0.5f;
 
         /// <summary>
         /// 抖动处理
         /// </summary>
-        float cameraShake = 0.01f;
+        private float cameraShake = 0.01f;
         /// <summary>
         /// 相机在绕点旋转的角度限制 //弃用
         /// </summary>
@@ -165,8 +165,8 @@ namespace MagiCloud.RotateAndZoomTool
         /// <summary>
         /// 开启主相机绕指定点旋转 注意:不要设置在有自转的Transform下
         /// </summary>
-        /// <param name="cameraRotateCenter">相机对准物体</param>
-        /// <param name="speed"></param>
+        /// <param name="cameraCenter">相机对准物体</param>
+        /// <param name="duration"></param>
         public void StartCameraRotateWithCenter(Transform cameraCenter, float duration = 0.5f)
         {
             StopCameraRotateWithCenter();
@@ -291,19 +291,21 @@ namespace MagiCloud.RotateAndZoomTool
         /// <summary>
         /// 绕点旋转相机
         /// </summary>
-        /// <param name="handindex">手编号</param>
         /// <param name="vector3">手帧差向量</param>
         void RotateCameraToCenter(Vector3 vector3)
         {
             if (!isRotateCameraWithCenter) return;
             inputPointPos = vector3;
-            InUpdateCameraRotate(mainCamera.transform, cameraLookToCenter, -vector3);
+
+            if (vector3 != Vector3.zero)
+            {
+                InUpdateCameraRotate(mainCamera.transform, cameraLookToCenter, -vector3);
+            }
         }
 
         /// <summary>
         /// 相机绕点旋转处理
         /// </summary>
-        /// <param name="camera"></param>
         /// <param name="target"></param>
         /// <param name="pos"></param>
         void InUpdateCameraRotate(Transform maincamera, GameObject target, Vector3 pos)
@@ -381,7 +383,6 @@ namespace MagiCloud.RotateAndZoomTool
         /// <summary>
         /// 绕自己轴旋转
         /// </summary>
-        /// <param name="handindex">手编号</param>
         /// <param name="vector3">手帧差向量</param>
         void RotateCameraSelf(Vector3 vector3)
         {

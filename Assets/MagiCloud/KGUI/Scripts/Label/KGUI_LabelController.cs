@@ -65,10 +65,11 @@ namespace MagiCloud.KGUI
         }
 
         public static GameObject currentSelectedObj;
-        private void Start()
+        private void Awake()
         {
             Initialize();
         }
+     
         /// <summary>
         /// 初始化
         /// </summary>
@@ -81,10 +82,10 @@ namespace MagiCloud.KGUI
             gameObject.SetActive(true);
             // transform.localPosition=Vector3.zero;
             //transform.localScale=Vector3.one;
-            defaultTextColor =FrameConfig.Config.labelColor;
+            //    defaultTextColor =FrameConfig.Config.initLabelColor;
             defaultFont=FrameConfig.Config.labelFont?? Font.CreateDynamicFontFromOSFont("msyh",24);
-            defalutFontSize=FrameConfig.Config.labelFontSize;
-            defaultTextColor=FrameConfig.Config.labelColor;
+            defalutFontSize=FrameConfig.Config.initLabelFontSize;
+            defaultTextColor=FrameConfig.Config.initLabelColor;
             labels =new Dictionary<KGUI_Label,GameObject>();
 
         }
@@ -177,7 +178,7 @@ namespace MagiCloud.KGUI
 
         public void DefaultLabelData(LabelData data)
         {
-            data.labelSize=Vector2.one*100;
+            data.labelSize=new Vector2(170,50);// Vector2.one*100;
             data.clearAreaZ=Vector2.one;
             data.peakZreaZ=new Vector2(0,float.MaxValue);
             data.fontSize=defalutFontSize;

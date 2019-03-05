@@ -6,12 +6,12 @@ using System.Linq;
 namespace MagiCloud.Interactive.Distance
 {
     /// <summary>
-    /// 距离存储,从本地从读取初始数据，以及在编辑器中添加初始数据
+    /// 距离存储,及在编辑器中添加初始数据
     /// </summary>
     public static class DistanceStorage
     {
 
-        public static List<DistanceData> AllDistances = new List<DistanceData>();//全部的距离检测点
+        public static List<DistanceInteraction> AllDistances = new List<DistanceInteraction>();//全部的距离检测点
         public static List<DistanceDataManager> dataManagers = new List<DistanceDataManager>();
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace MagiCloud.Interactive.Distance
 
             foreach (var item in Enum.GetValues(typeof(InteractionType)))
             {
-                AddManagerDistances(managers, AllDistances.FindAll(obj => obj.interactionType.Equals((InteractionType)item)));
+                AddManagerDistances(managers, AllDistances.FindAll(obj => obj.distanceData.interactionType.Equals((InteractionType)item)));
             }
 
             dataManagers = managers;
@@ -40,7 +40,7 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="managers"></param>
         /// <param name="distances"></param>
-        private static void AddManagerDistances(List<DistanceDataManager> managers,List<DistanceData> distances)
+        private static void AddManagerDistances(List<DistanceDataManager> managers,List<DistanceInteraction> distances)
         {
             foreach (var distance in distances)
             {
@@ -52,7 +52,7 @@ namespace MagiCloud.Interactive.Distance
         /// 添加距离数据
         /// </summary>
         /// <param name="data"></param>
-        public static void AddDistanceData(DistanceData data)
+        public static void AddDistanceData(DistanceInteraction data)
         {
 
             if (data == null) return;
@@ -71,9 +71,9 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="managers"></param>
         /// <param name="data"></param>
-        public static void AddDistanceData(List<DistanceDataManager> managers,DistanceData data)
+        public static void AddDistanceData(List<DistanceDataManager> managers, DistanceInteraction data)
         {
-            switch (data.interactionType)
+            switch (data.distanceData.interactionType)
             {
                 //如果是主动点
                 case InteractionType.Send:
@@ -89,7 +89,7 @@ namespace MagiCloud.Interactive.Distance
 
                     //遍历下相同的Receive对象，从而来取得相应的对象
 
-                    var receives = GetReceiveDistanceData(data.TagID);
+                    var receives = GetReceiveDistanceData(data.distanceData.TagID);
 
                     foreach (var item in receives)
                     {
@@ -118,7 +118,7 @@ namespace MagiCloud.Interactive.Distance
 
                     //AddReceiveDistance(data);
 
-                    var distanceDatas = managers.FindAll(obj => obj.sendData.TagID.Equals(data.TagID));
+                    var distanceDatas = managers.FindAll(obj => obj.sendData.distanceData.TagID.Equals(data.distanceData.TagID));
                     foreach (var item in distanceDatas)
                     {
                         item.AddDistance(data);
@@ -137,9 +137,9 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static List<DistanceData> GetReceiveDistanceDatas(DistanceData data)
+        public static List<DistanceInteraction> GetReceiveDistanceDatas(DistanceInteraction data)
         {
-            List<DistanceData> distances = new List<DistanceData>();
+            List<DistanceInteraction> distances = new List<DistanceInteraction>();
             var manager = GetSendDistanceManager(data);
 
             if (manager != null)
@@ -152,9 +152,9 @@ namespace MagiCloud.Interactive.Distance
         /// 删除距离数据信息
         /// </summary>
         /// <param name="data"></param>
-        public static void DeleteDistanceData(DistanceData data)
+        public static void DeleteDistanceData(DistanceInteraction data)
         {
-            switch (data.interactionType)
+            switch (data.distanceData.interactionType)
             {
                 case InteractionType.Pour:
                 case InteractionType.All:
@@ -194,14 +194,14 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static List<DistanceDataManager> GetSendDistaceDataAll(DistanceData data,InteractionType interactionType)
+        public static List<DistanceDataManager> GetSendDistaceDataAll(DistanceInteraction data, InteractionType interactionType)
         {
             if (dataManagers == null) return null;
 
-            return dataManagers.FindAll(obj => obj.sendData.TagID.Equals(data.TagID)
-            && obj.sendData.interactionType.Equals(interactionType)
-            && !obj.sendData.EqualsObject(data)
-                                        && !obj.sendData.Interaction.FeaturesObjectController.Equals(data.Interaction.FeaturesObjectController));
+            return dataManagers.FindAll(obj => obj.sendData != null && obj.sendData.distanceData.TagID.Equals(data.distanceData.TagID)
+            && obj.sendData.distanceData.interactionType.Equals(interactionType)
+            && !obj.sendData.Equals(data)
+                                        && !obj.sendData.FeaturesObjectController.Equals(data.FeaturesObjectController));
         }
 
         /// <summary>
@@ -209,11 +209,11 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static List<DistanceDataManager> GetSendDistaceDataKey(DistanceData data)
+        public static List<DistanceDataManager> GetSendDistaceDataKey(DistanceInteraction data)
         {
             if (dataManagers == null) return null;
 
-            return dataManagers.FindAll(obj => obj.sendData.TagID.Equals(data.TagID) && obj.sendData.Interaction.Equals(data.Interaction));
+            return dataManagers.FindAll(obj => obj.sendData.distanceData.TagID.Equals(data.distanceData.TagID) && obj.sendData.Equals(data));
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace MagiCloud.Interactive.Distance
         public static List<DistanceDataManager> GetSendDistanceData(InteractionType type)
         {
             if (dataManagers == null) return null;
-            return dataManagers.FindAll(obj => obj.sendData.interactionType.Equals(type));
+            return dataManagers.FindAll(obj => obj.sendData.distanceData.interactionType.Equals(type));
         }
 
         /// <summary>
@@ -232,19 +232,19 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="TagID"></param>
         /// <returns></returns>
-        public static List<DistanceData> GetReceiveDistanceData(string TagID)
+        public static List<DistanceInteraction> GetReceiveDistanceData(string TagID)
         {
-            List<DistanceData> distances = new List<DistanceData>();
+            List<DistanceInteraction> distances = new List<DistanceInteraction>();
 
-            var managers = dataManagers.FindAll(obj => obj.Distances.Any(d => d.TagID.Equals(TagID)));
+            var managers = dataManagers.FindAll(obj => obj.Distances.Any(d => d.distanceData.TagID.Equals(TagID)));
 
             foreach (var manager in managers)
             {
-                var items = manager.Distances.FindAll(obj => obj.TagID.Equals(TagID));
+                var items = manager.Distances.FindAll(obj => obj.distanceData.TagID.Equals(TagID));
 
                 foreach (var item in items)
                 {
-                    if (!distances.Any(obj => obj.EqualsObject(item)))
+                    if (!distances.Any(obj => obj.Equals(item)))
                         distances.Add(item);
                 }
             }
@@ -258,11 +258,11 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static DistanceDataManager GetSendDistanceManager(DistanceData data)
+        public static DistanceDataManager GetSendDistanceManager(DistanceInteraction data)
         {
             if (dataManagers == null) return null;
 
-            return dataManagers.Find(obj => obj.sendData.EqualsObject(data));//寻找到一个GUID与TadID一致的对象
+            return dataManagers.Find(obj => obj.sendData != null && obj.sendData.Equals(data));//寻找到一个GUID与TadID一致的对象
         }
 
         /// <summary>
@@ -270,13 +270,13 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static bool IsExistDistanceData(List<DistanceDataManager> dataManagers, DistanceData data)
+        public static bool IsExistDistanceData(List<DistanceDataManager> dataManagers, DistanceInteraction data)
         {
             
             if (dataManagers == null) return false;
 
             //在集合中是否存在此主动交互点
-            return dataManagers.Any(obj => obj.sendData.EqualsObject(data));
+            return dataManagers.Any(obj => obj.sendData.Equals(data));
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace MagiCloud.Interactive.Distance
 
             foreach (var distance in distances)
             {
-                var manager = dataManagers.Find(obj => obj.sendData.EqualsObject(distance.sendData));
+                var manager = dataManagers.Find(obj => obj.sendData.Equals(distance.sendData));
 
                 //如果不存在
                 if (manager == null)
