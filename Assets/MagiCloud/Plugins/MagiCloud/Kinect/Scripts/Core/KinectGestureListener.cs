@@ -102,10 +102,12 @@ namespace MagiCloud.Kinect
                     //发送事件
                     if(isHandActive)
                     {
+                        MLog.WriteLog("执行手势开启事件" + HandIndex);
                         Core.Events.EventHandStart.SendListener(HandIndex);
                     }
                     else
                     {
+                        MLog.WriteLog("执行手势关闭事件：" + HandIndex);
                         Core.Events.EventHandStop.SendListener(HandIndex);
                     }
                 }

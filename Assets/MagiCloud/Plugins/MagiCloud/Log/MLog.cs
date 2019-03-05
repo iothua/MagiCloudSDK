@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace MagiCloud
 {
@@ -9,7 +9,7 @@ namespace MagiCloud
     {
         private static string currentLogPath = string.Empty;
 
-        private static StringBuilder logs = new StringBuilder();
+        private static List<string> logs = new List<string>();
 
         /// <summary>
         /// 写入日志
@@ -26,11 +26,13 @@ namespace MagiCloud
 
             string info = System.DateTime.Now.ToString("HH:mm:ss:ffff") + "-" + content + "\n";
 
-            logs.Append(info);
+            logs.Add(info);
         }
 
         public static void WriteLogs()
         {
+            if (string.IsNullOrEmpty(currentLogPath)) return;
+
             Json.JsonHelper.SaveJson(logs.ToString(), currentLogPath);
         }
 

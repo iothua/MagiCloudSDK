@@ -75,75 +75,39 @@ namespace MagiCloud.Kinect
         /// </summary>
         public class OneHandControl
         {
-            /// <summary>
-            /// 手信息
-            /// </summary>
-            public class HandInfo
-            {
-                public Vector3 handPos = Vector3.zero;
-                public Vector3 screenPos = Vector3.zero;
-                public Vector3 IboxLeftBotBack = Vector3.zero;
-                public Vector3 IboxRightTopFront = Vector3.zero;
-                public bool IsIboxValid = false;
-                public bool IsHandInteracting = false;
-
-                public bool IsEnable = false;
-            }
-
-            public HandInfo leftHand, rightHand;
-
-            public OneHandControl()
-            {
-                leftHand = new HandInfo();
-                rightHand = new HandInfo();
-            }
-
-            public void StartDetectHand(long userID, UserManager userManager)
+            
+            public void StartDetectHand(long userID, UserManager userManager,KinectHandInteract rightHand,KinectHandInteract leftHand)
             {
                 KinectManager kinectManager = KinectManager.Instance;
 
                 //这里的代码是从Kinect SDK的 InteractionManager.cs 复制过来的，用于判断用户是否举起一只手。最终用到的是isLeftHandInteracting和isRightHandInteracting两个bool值。
-                //左手处理
-                leftHand.IsIboxValid = kinectManager.GetLeftHandInteractionBox(userID, ref leftHand.IboxLeftBotBack, ref leftHand.IboxRightTopFront, leftHand.IsIboxValid);
 
-                leftHand.handPos = kinectManager.GetJointPosition(userID, (int)KinectInterop.JointType.HandLeft);
-
-                leftHand.IsHandInteracting = (leftHand.handPos.x >= (leftHand.IboxLeftBotBack.x - 1.0f)) && (leftHand.handPos.x <= (leftHand.IboxRightTopFront.x + 0.5f)) &&
-                    (leftHand.handPos.y >= (leftHand.IboxLeftBotBack.y - 0.1f)) && (leftHand.handPos.y <= (leftHand.IboxRightTopFront.y + 0.7f)) &&
-                    (leftHand.IboxLeftBotBack.z >= leftHand.handPos.z) && (leftHand.IboxRightTopFront.z * 0.8f <= leftHand.handPos.z);
-
-                //右手处理
-                rightHand.IsIboxValid = kinectManager.GetRightHandInteractionBox(userID, ref rightHand.IboxLeftBotBack, ref rightHand.IboxRightTopFront, rightHand.IsIboxValid);
-
-                rightHand.handPos = kinectManager.GetJointPosition(userID, (int)KinectInterop.JointType.HandRight);
-
-                rightHand.IsHandInteracting = (rightHand.handPos.x >= (rightHand.IboxLeftBotBack.x - 0.5f)) && (rightHand.handPos.x <= (rightHand.IboxRightTopFront.x + 1.0f)) &&
-                    (rightHand.handPos.y >= (rightHand.IboxLeftBotBack.y - 0.1f)) && (rightHand.handPos.y <= (rightHand.IboxRightTopFront.y + 0.7f)) &&
-                    (rightHand.IboxLeftBotBack.z >= rightHand.handPos.z) && (rightHand.IboxRightTopFront.z * 0.8f <= rightHand.handPos.z);
+                leftHand.OnHandInteracting(userID);
+                rightHand.OnHandInteracting(userID);
 
                 //判断条件：1.当前没有操作用户。2.当前用户不是操作用户。3.后来加的，只有检测区域的用户才识别。
                 if ((UserID == 0 || UserID != userID) && userManager.IsUserNear(userID))
                 {
-                    OnDetechHand(userID, userManager);
+                    OnDetechHand(userID, userManager, rightHand, leftHand);
                     return;
                 }
 
                 if (UserID == userID)
                 {
-                    OnChangeHand(userID, userManager);
+                    OnChangeHand(userID, userManager, rightHand, leftHand);
                     return;
                 }
 
             }
 
-            private void OnDetechHand(long userID, UserManager userManager)
+            private void OnDetechHand(long userID, UserManager userManager, KinectHandInteract rightHand, KinectHandInteract leftHand)
             {
                 if (rightHand.IsHandInteracting)
                 {
                     HandStatus = KinectHandStatus.Enable;
                     userManager.StopOtherUsers(userID);
                     SetUserID(userID);
-                    StartHand(1);
+                    StartHand(0);
 
                     KinectManager.Instance.SetPrimaryUserID(userID);
 
@@ -155,7 +119,7 @@ namespace MagiCloud.Kinect
                     HandStatus = KinectHandStatus.Enable;
                     userManager.StopOtherUsers(userID);
                     SetUserID(userID);
-                    StartHand(0);
+                    StartHand(1);
 
                     KinectManager.Instance.SetPrimaryUserID(userID);
 
@@ -163,7 +127,7 @@ namespace MagiCloud.Kinect
                 }
             }
 
-            private void OnChangeHand(long userID, UserManager userManager)
+            private void OnChangeHand(long userID, UserManager userManager, KinectHandInteract rightHand, KinectHandInteract leftHand)
             {
                 if (!rightHand.IsEnable)
                 {
@@ -193,14 +157,14 @@ namespace MagiCloud.Kinect
                     }
                 }
 
-                if ((!rightHand.IsHandInteracting && !leftHand.IsHandInteracting) 
+                if ((!rightHand.IsHandInteracting && !leftHand.IsHandInteracting)
                     || !userManager.IsUserNear(userID))
                 {
                     //操作用户ID设置为0
                     SetUserIDNull();
 
                     //将手停止
-                    StopHand(2);
+                    //StopHand(2);
                     HandStatus = KinectHandStatus.Identify;
 
                     userManager.StartUsers();
@@ -249,7 +213,7 @@ namespace MagiCloud.Kinect
 
                     MLog.WriteLog(userID + "被检测到，开启双手操作——StartJointRay()");
 
-                    StartHand(2);
+                    //StartHand(2);
                 }
 
                 if (!userManager.IsUserNear(userID) && userID == UserID)
@@ -275,8 +239,19 @@ namespace MagiCloud.Kinect
             private List<long> usersID = new List<long>();
             private List<RayHandControl> usersControl = new List<RayHandControl>();
 
-            private OneHandControl oneHandControl = new OneHandControl();
-            private TwoHandControl twoHandControl = new TwoHandControl();
+            private OneHandControl oneHandControl;
+            private TwoHandControl twoHandControl;
+
+            public KinectHandInteract leftHandInteract, rightHandInteract;
+
+            public UserManager()
+            {
+                oneHandControl = new OneHandControl();
+                twoHandControl = new TwoHandControl();
+
+                rightHandInteract = new KinectHandInteract(0);
+                leftHandInteract = new KinectHandInteract(1);
+            }
 
             public int UserCount {
                 get {
@@ -299,10 +274,10 @@ namespace MagiCloud.Kinect
                                 switch (HandStatus)
                                 {
                                     case KinectHandStatus.Identify:
-                                        oneHandControl.StartDetectHand(usersControl[i].userID, this);
+                                        oneHandControl.StartDetectHand(usersControl[i].userID, this, rightHandInteract, leftHandInteract);
                                         break;
                                     case KinectHandStatus.Enable:
-                                        oneHandControl.StartDetectHand(usersControl[i].userID, this);
+                                        oneHandControl.StartDetectHand(usersControl[i].userID, this, rightHandInteract, leftHandInteract);
                                         break;
                                     default:
                                         break;
@@ -310,6 +285,7 @@ namespace MagiCloud.Kinect
 
                                 break;
                             case KinectHandModel.Two:
+
                                 twoHandControl.OnUpdate(this);
                                 twoHandControl.StartJointRay(usersControl[i].userID, this);
 
@@ -366,6 +342,7 @@ namespace MagiCloud.Kinect
                     {
                         if (UserID == ID)
                         {
+                            MLog.WriteLog("执行移除用户操作：LostUser");
                             StopHand(2);
                             SetUserIDNull();
 
@@ -417,21 +394,48 @@ namespace MagiCloud.Kinect
                 }
             }
 
-
+            /// <summary>
+            /// 检测用户是否在区域内
+            /// </summary>
+            /// <param name="userID"></param>
+            /// <returns></returns>
             public bool IsUserNear(long userID)
             {
                 Vector3 userPos = KinectManager.Instance.GetUserPosition(userID);
 
                 bool isNear = userPos.x > -0.500 && userPos.x < 0.500 && userPos.z > 1.000 && userPos.z < 1.800 && userPos.y > 0;
 
-                if (HandModel == KinectHandModel.Two)
+                if (HandModel == KinectHandModel.Two && isNear)
                 {
-                    DetectHand(userID);
+                    OnDetectHand(rightHandInteract,userID);
+                    OnDetectHand(leftHandInteract, userID);
                 }
 
                 return isNear;
             }
 
+            private void OnDetectHand(KinectHandInteract handInteract,long userID)
+            {
+                handInteract.OnHandInteracting(userID);
+
+                if (handInteract.IsHandInteracting)
+                {
+                    if (!IsHandActive(handInteract.handIndex))
+                    {
+                        MLog.WriteLog(userID + "用户检测到手启动——OnDetectHand()，手编号：" + handInteract.handIndex);
+                        StartHand(handInteract.handIndex);
+                    }
+                }
+                else
+                {
+                    if (IsHandActive(handInteract.handIndex))
+                    {
+                        MLog.WriteLog(userID + "用户检测到手停止——OnDetectHand()，手编号：" + handInteract.handIndex);
+                        StopHand(handInteract.handIndex);
+                    }
+                }
+
+            }
         }
 
         #region 用户ID管理
@@ -470,6 +474,8 @@ namespace MagiCloud.Kinect
         private KinectCapture kinectCapture; //手势关节信息
         private KinectGestureListener kinectGestureListener; //手势监听
 
+        private KinectHandInteract leftHandInteract, rightHandInteract;
+
         private void Awake()
         {
             InputKinect = this;
@@ -481,6 +487,9 @@ namespace MagiCloud.Kinect
 
             kinectGestureListener = KinectConfig.mainCamera.gameObject.AddComponent<KinectGestureListener>();
             kinectManager.gestureListeners.Add(kinectGestureListener);
+
+            leftHandInteract = new KinectHandInteract(1);
+            rightHandInteract = new KinectHandInteract(0);
 
             kinectCapture = new KinectCapture();
 
@@ -529,6 +538,8 @@ namespace MagiCloud.Kinect
         /// <param name="userID"></param>
         private static void DetectHand(long userID)
         {
+            if (userID == 0) return;
+
             Vector3 hipRight = KinectManager.Instance.GetJointKinectPosition(userID, (int)KinectInterop.JointType.HipRight);
             Vector3 handRight = KinectManager.Instance.GetJointKinectPosition(userID, (int)KinectInterop.JointType.HandRight);
 
@@ -565,13 +576,14 @@ namespace MagiCloud.Kinect
             }
             else
             {
-                if (IsHandActive(1))
+                if (!IsHandActive(1))
                 {
                     MLog.WriteLog(userID + "用户左手检测到开启，开启左手操作——DetectHand()");
                     StartHand(1);
                 }
             }
         }
+
 
         /// <summary>
         /// 手势是否激活

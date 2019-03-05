@@ -25,6 +25,9 @@ namespace MagiCloud.Core
 
         private HighlightingRenderer highlighting;
 
+        [Header("开启日志记录")]
+        public bool IsRecordLog; //记录日志
+
         private void Awake()
         {
             MUtility.CurrentPlatform = CurrentPlatform;
@@ -105,7 +108,10 @@ namespace MagiCloud.Core
 
         private void OnDestroy()
         {
-            MLog.WriteLogs();
+
+            if (IsRecordLog)
+                MLog.WriteLogs();
+
             DestoryPlatform(Application.platform);
         }
     }
