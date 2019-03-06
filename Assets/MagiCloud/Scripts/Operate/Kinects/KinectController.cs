@@ -109,7 +109,7 @@ namespace MagiCloud.Operate
             /// <summary>
             /// 旋转
             /// </summary>
-            public bool IsRotating = false;
+            public bool IsActioning = false;
 
             /// <summary>
             /// 绑定相关抓取事件
@@ -188,85 +188,62 @@ namespace MagiCloud.Operate
             /// </summary>
             /// <returns><c>true</c>, if rotate was ised, <c>false</c> otherwise.</returns>
             /// <param name="handOperate">Hand operate.</param>
-            public bool IsRotate(HandOperate handOperate)
+            public bool IsAction(HandOperate handOperate)
             {
                 return Operate.InputHand.HandStatus == MInputHandStatus.Grip &&
                     handOperate.Operate.InputHand.HandStatus == MInputHandStatus.Idle;
             }
 
-            public bool IsZoom(HandOperate handOperate)
-            {
-                return Operate.InputHand.HandStatus == MInputHandStatus.Grip &&
-                        handOperate.Operate.InputHand.HandStatus == MInputHandStatus.Grip;
-            }
-
             /// <summary>
-            /// 旋转动作
+            /// 手势动作的判定，用户来实现旋转和缩放
             /// </summary>
             /// <param name="handOperate">Hand operate.</param>
-            public void OnRotate(HandOperate handOperate)
+            public void OnGestureAction(HandOperate handOperate,bool isRotate)
             {
                 //如果左手以及处于旋转状态，则没必要进行下一步了
-                if (!handOperate.IsRotating)
+                if (!handOperate.IsActioning)
                 {
-                    if (IsRotate(handOperate) && Operate.InputHand.ScreenVector.magnitude > 5)
+                    if (IsAction(handOperate) && Operate.InputHand.ScreenVector.magnitude > 5)
                     {
-                        Operate.InputHand.HandStatus = MInputHandStatus.Rotate;
+                        if (isRotate)
+                            Operate.InputHand.HandStatus = MInputHandStatus.Rotate;
+                        else
+                            Operate.InputHand.HandStatus = MInputHandStatus.Zoom;
 
-                        IsRotating = true;
+                        IsActioning = true;
                     }
 
-                    if (Operate.InputHand.IsRotateStatus)
+                    if (isRotate)
                     {
-                        EventCameraRotate.SendListener(Operate.InputHand.ScreenVector);
+                        if (Operate.InputHand.IsRotateStatus)
+                        {
+                            EventCameraRotate.SendListener(Operate.InputHand.ScreenVector);
+                        }
+                        else
+                        {
+                            if (IsActioning)
+                            {
+                                EventCameraRotate.SendListener(Vector3.zero);
+                                IsActioning = false;
+                            }
+                        }
                     }
                     else
                     {
-                        if (IsRotating)
+                        if (Operate.InputHand.IsZoomStatus)
                         {
-                            EventCameraRotate.SendListener(Vector3.zero);
-                            IsRotating = false;
+                            EventCameraZoom.SendListener(Operate.InputHand.ScreenVector.x);
+                        }
+                        else
+                        {
+                            if (IsActioning)
+                            {
+                                EventCameraZoom.SendListener(0);
+                                IsActioning = false;
+                            }
                         }
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// 缩放操作数据
-        /// </summary>
-        public class ZoomOperate
-        {
-            private float distance;
-            private float lastDistance;
-            private Vector3 startPos;
-
-            public ZoomOperate()
-            {
-                OnHandIdle();
-            }
-
-            public void OnHandGrip()
-            {
-                distance = Vector3.Distance(MInputKinect.ScreenHandPostion(0), MInputKinect.ScreenHandPostion(1));
-                lastDistance = distance;
-            }
-
-            public void OnHandIdle()
-            {
-                distance = 0;
-                lastDistance = 0;
-            }
-
-            public float ZoomCameraToMoveFloat()
-            {
-                float moveDistance = 0;
-                lastDistance = Vector3.Distance(MInputKinect.ScreenHandPostion(0), MInputKinect.ScreenHandPostion(1));
-
-                moveDistance = lastDistance - distance;
-                distance = lastDistance;
-
-                return moveDistance;
             }
         }
 
@@ -279,7 +256,6 @@ namespace MagiCloud.Operate
         public bool IsPlaying { get; private set; }
 
         private MBehaviour behaviour;
-        private ZoomOperate zoomOperate = new ZoomOperate();//缩放数据操作
 
         [SerializeField]
         private KinectHandModel handModel = KinectHandModel.Two;
@@ -447,14 +423,24 @@ namespace MagiCloud.Operate
 
             rightHandOperate.OnOperateObjectHandle();
             leftHandOperate.OnOperateObjectHandle();
-        }
 
-        //void LateUpdate()
-        //{
-        //    //执行在后面一点
-        //    OnRotate();
-        //    OnZoom();
-        //}
+            //不同模式中的不同操作
+            switch (MSwitchManager.CurrentMode)
+            {
+                case OperateModeType.Rotate:
+                    rightHandOperate.OnGestureAction(leftHandOperate, true);
+                    leftHandOperate.OnGestureAction(rightHandOperate, true);
+                    break;
+                case OperateModeType.Zoom:
+                    rightHandOperate.OnGestureAction(leftHandOperate, false);
+                    leftHandOperate.OnGestureAction(rightHandOperate, false);
+                    break;
+                case OperateModeType.Tool:
+                    break;
+                default:
+                    break;
+            }
+        }
 
         /// <summary>
         /// 设置手的状态
@@ -462,7 +448,6 @@ namespace MagiCloud.Operate
         /// <param name="handIndex">Hand index.</param>
         private void SetHandStatus(int handIndex)
         {
-
             if (MInputKinect.IsHandActive(handIndex))
             {
                 //发送抓取事件等相关事件
@@ -484,69 +469,6 @@ namespace MagiCloud.Operate
                 }
             }
         }
-
-        /// <summary>
-        /// 旋转
-        /// </summary>
-        public void OnRotate()
-        {
-            rightHandOperate.OnRotate(leftHandOperate);
-            leftHandOperate.OnRotate(rightHandOperate);
-        }
-
-        #region 缩放
-
-        /// <summary>
-        /// 是否支持缩放
-        /// </summary>
-        /// <returns><c>true</c>, if zoom was ised, <c>false</c> otherwise.</returns>
-        private bool IsZoom()
-        {
-            return InputHands[0].HandStatus == MInputHandStatus.Grip &&
-                InputHands[1].HandStatus == MInputHandStatus.Grip || 
-                InputHands[0].IsZoomStatus && InputHands[1].IsZoomStatus;
-        }
-
-        /// <summary>
-        /// 缩放
-        /// </summary>
-        private void OnZoom()
-        { 
-            if(IsZoom())
-            { 
-                if(!IsZooming)
-                {
-                    InputHands[0].HandStatus = MInputHandStatus.Zoom;
-                    InputHands[1].HandStatus = MInputHandStatus.Zoom;
-
-                    zoomOperate.OnHandGrip();
-
-                    IsZooming = true;
-                }
-
-                float zoomValue = zoomOperate.ZoomCameraToMoveFloat() / 10000;
-                if(IsZooming)
-                {
-                    EventCameraZoom.SendListener(zoomValue);
-                }
-            }
-            else
-            {
-                if(IsZooming)
-                {
-                    zoomOperate.OnHandIdle();
-                    EventCameraZoom.SendListener(0);
-
-                    InputHands[0].HandStatus = MInputHandStatus.Idle;
-                    InputHands[1].HandStatus = MInputHandStatus.Idle;
-
-                    IsZooming = false;
-
-                }
-            }
-        }
-
-        #endregion
 
         /// <summary>
         /// 切换多手

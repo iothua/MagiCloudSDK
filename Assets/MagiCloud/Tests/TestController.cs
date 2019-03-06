@@ -50,7 +50,29 @@ public class TestController : MonoBehaviour
     {
         //RotateAndZoomManager.StartCameraZoom(center, 2, 10);
         //RotateAndZoomManager.StartCameraAroundCenter(center);
+
     }
+
+    public void OnSendOperate()
+    {
+
+    }
+
+    public void SetSwitch(MagiCloud.OperateModeType modeType)
+    {
+        MagiCloud.MSwitchManager.CurrentMode = modeType;
+
+        if (modeType == MagiCloud.OperateModeType.Operate)
+        {
+            //禁止UI
+            MagiCloud.KGUI.UIShieldController.UnAllShileldAssign();
+        }
+        else
+        {
+            MagiCloud.KGUI.UIShieldController.ShieldDownward(1);
+        }
+    }
+
 
     private void Update()
     {

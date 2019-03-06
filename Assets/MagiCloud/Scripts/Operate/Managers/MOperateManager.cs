@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
 using System;
-using MagiCloud.Core.Events;
 using MagiCloud.Core.MInput;
 using System.Collections.Generic;
 using MagiCloud.Core;
-using MagiCloud.Features;
 
 namespace MagiCloud
 {
+  
     /// <summary>
     /// 功能管理
     /// </summary>
@@ -27,6 +26,7 @@ namespace MagiCloud
         public const int layerUI = 5;
 
         private readonly static Dictionary<OperateKey, MOperate> Operates = new Dictionary<OperateKey, MOperate>();
+
 
         /// <summary>
         /// 添加手势端

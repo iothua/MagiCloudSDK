@@ -8,17 +8,79 @@ using MagiCloud.Features;
 
 namespace MagiCloud.Operate
 {
+    
+
     /// <summary>
     /// 鼠标控制端
     /// </summary>
     public class MouseController : MonoBehaviour, IHandController
     {
+        public class ObservedMode
+        {
+            private bool IsObserved;
+            private bool IsDown;
+
+            /// <summary>
+            /// 具体实现，是旋转还是缩放
+            /// </summary>
+            /// <param name="inputHand"></param>
+            /// <param name="IsRotate"></param>
+            public void OnAchieve(MInputHand inputHand, bool IsRotate)
+            {
+                //如果按下右键
+                if (Input.GetMouseButtonDown(0))
+                {
+                    IsDown = true;
+                    IsObserved = false;
+                }
+
+                if (Input.GetMouseButtonUp(0))
+                {
+                    IsDown = false;
+
+                    //已经存在旋转，并且在集合中记录
+                    if (IsObserved)
+                    {
+                        if (IsRotate)
+                            EventCameraRotate.SendListener(Vector3.zero);
+                        else
+                            EventCameraZoom.SendListener(0);
+                    }
+
+                    IsObserved = false;
+                    inputHand.HandStatus = MInputHandStatus.Idle;
+                }
+
+                //按住右键旋转
+                if (IsDown)
+                {
+                    //向量的模大于2.0时
+                    if (!IsObserved && inputHand.IsIdleStatus && inputHand.ScreenVector.magnitude > 2.0f)
+                    {
+                        //将动作记录到集合中
+                        inputHand.HandStatus = IsRotate ? MInputHandStatus.Rotate : MInputHandStatus.Zoom;
+
+                        IsObserved = true;
+                    }
+
+                    //已经存在旋转，并且在集合中记录
+                    if (IsObserved)
+                    {
+                        if (IsRotate)
+                            EventCameraRotate.SendListener(inputHand.ScreenVector);
+                        else
+                            EventCameraZoom.SendListener(inputHand.ScreenVector.x);
+                    }
+                }
+            }
+        }
+
         private MBehaviour behaviour;
 
         private bool IsZoom = false; //开启缩放
         private bool IsRotate = false; //开启旋转
 
-        private bool IsRotateDown = false; //旋转是否开启
+        private bool IsDown = false; //旋转是否开启
 
         [Header("手图标")]
         public HandIcon handSprite;//手图标
@@ -33,6 +95,9 @@ namespace MagiCloud.Operate
         private Vector3 offset;
         private bool isEnable;
         private MOperate operate;
+
+        //观察模式的具体实现
+        private ObservedMode observedMode = new ObservedMode();
 
         /// <summary>
         /// 输入端
@@ -66,9 +131,6 @@ namespace MagiCloud.Operate
 
                     enabled = true;
                     operate.OnEnable();
-
-                    //开启事件发送
-                    //EventHandStart.SendListener(0);
                 }
                 else
                 {
@@ -77,11 +139,6 @@ namespace MagiCloud.Operate
                     operate.OnDisable();
 
                     behaviour.OnDestroy_MBehaviour(OnMouseUpdate);
-
-                    //停止事件发送
-                    //EventHandStop.SendListener(0);
-
-                    //InputHands[0].SetIdle(); //停止后，设置为Idle状态
                 }
             }
         }
@@ -143,84 +200,20 @@ namespace MagiCloud.Operate
             if (Input.GetMouseButtonUp(0) && !(InputHands[0].IsRotateZoomStatus || InputHands[0].IsErrorStatus))
                 InputHands[0].SetIdle();
 
-            #region 旋转
-
-            //如果按下右键
-            if (Input.GetMouseButtonDown(1))
+            //不同模式中的不同操作
+            switch (MSwitchManager.CurrentMode)
             {
-                IsRotateDown = true;
-                IsRotate = false;
+                case OperateModeType.Rotate:
+                    observedMode.OnAchieve(InputHands[0], true);
+                    break;
+                case OperateModeType.Zoom:
+                    observedMode.OnAchieve(InputHands[0], false);
+                    break;
+                case OperateModeType.Tool:
+                    break;
+                default:
+                    break;
             }
-
-            if (Input.GetMouseButtonUp(1))
-            {
-                IsRotateDown = false;
-
-                //已经存在旋转，并且在集合中记录
-                if (IsRotate)
-                {
-                    EventCameraRotate.SendListener(Vector3.zero);
-                }
-
-                IsRotate = false;
-                InputHands[0].HandStatus = MInputHandStatus.Idle;
-            }
-
-            //按住右键旋转
-            if (IsRotateDown)
-            {
-                //向量的模大于2.0时
-                if (!IsRotate && InputHands[0].IsIdleStatus && InputHands[0].ScreenVector.magnitude > 2.0f)
-                {
-                    //将动作记录到集合中
-                    InputHands[0].HandStatus = MInputHandStatus.Rotate;
-
-                    IsRotate = true;
-                }
-
-                //已经存在旋转，并且在集合中记录
-                if (IsRotate)
-                {
-                    EventCameraRotate.SendListener(InputHands[0].ScreenVector);
-                }
-
-            }
-            #endregion
-
-            #region 缩放
-
-            //缩放
-            if (Input.GetAxis("Mouse ScrollWheel") != 0)
-            {
-                float result = Input.GetAxis("Mouse ScrollWheel");
-
-                if (!IsZoom && InputHands[0].IsIdleStatus)
-                {
-
-                    InputHands[0].HandStatus = MInputHandStatus.Zoom;
-                    IsZoom = true;
-                }
-
-                //进行缩放
-                if (IsZoom)
-                {
-                    EventCameraZoom.SendListener(result);
-                }
-            }
-            else
-            {
-                //进行缩放
-                if (IsZoom)
-                {
-                    EventCameraZoom.SendListener(0);
-                    IsZoom = false;
-                    InputHands[0].HandStatus = MInputHandStatus.Idle;
-                }
-
-
-
-            }
-            #endregion
 
             if (operateObject != null)
             {
