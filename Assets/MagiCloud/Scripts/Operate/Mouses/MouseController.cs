@@ -21,35 +21,64 @@ namespace MagiCloud.Operate
             private bool IsDown;
 
             /// <summary>
+            /// 按下时
+            /// </summary>
+            public void OnDown()
+            {
+                IsDown = true;
+                IsObserved = false;
+            }
+
+            /// <summary>
+            /// 抬起时
+            /// </summary>
+            /// <param name="IsRotate"></param>
+            public void OnUp(bool IsRotate)
+            {
+                IsDown = false;
+
+                //已经存在旋转，并且在集合中记录
+                if (IsObserved)
+                {
+                    if (IsRotate)
+                        EventCameraRotate.SendListener(Vector3.zero);
+                    else
+                        EventCameraZoom.SendListener(0);
+                }
+
+                IsObserved = false;
+            }
+
+            /// <summary>
             /// 具体实现，是旋转还是缩放
             /// </summary>
             /// <param name="inputHand"></param>
             /// <param name="IsRotate"></param>
             public void OnAchieve(MInputHand inputHand, bool IsRotate)
             {
-                //如果按下右键
-                if (Input.GetMouseButtonDown(0))
-                {
-                    IsDown = true;
-                    IsObserved = false;
-                }
+                ////如果按下右键
+                //if (Input.GetMouseButtonDown(0))
+                //{
+                //    IsDown = true;
+                //    IsObserved = false;
+                //}
 
-                if (Input.GetMouseButtonUp(0))
-                {
-                    IsDown = false;
+                //if (Input.GetMouseButtonUp(0))
+                //{
+                //    IsDown = false;
 
-                    //已经存在旋转，并且在集合中记录
-                    if (IsObserved)
-                    {
-                        if (IsRotate)
-                            EventCameraRotate.SendListener(Vector3.zero);
-                        else
-                            EventCameraZoom.SendListener(0);
-                    }
+                //    //已经存在旋转，并且在集合中记录
+                //    if (IsObserved)
+                //    {
+                //        if (IsRotate)
+                //            EventCameraRotate.SendListener(Vector3.zero);
+                //        else
+                //            EventCameraZoom.SendListener(0);
+                //    }
 
-                    IsObserved = false;
-                    inputHand.HandStatus = MInputHandStatus.Idle;
-                }
+                //    IsObserved = false;
+                //    inputHand.HandStatus = MInputHandStatus.Idle;
+                //}
 
                 //按住右键旋转
                 if (IsDown)
@@ -97,6 +126,15 @@ namespace MagiCloud.Operate
 
         //观察模式的具体实现
         private ObservedMode observedMode = new ObservedMode();
+
+        /// <summary>
+        /// 是否触摸
+        /// </summary>
+        public bool IsTouching = false; 
+        /// <summary>
+        /// 是否鼠标
+        /// </summary>
+        public bool IsMousing = false;
 
         /// <summary>
         /// 输入端
@@ -193,13 +231,49 @@ namespace MagiCloud.Operate
             //将他的屏幕坐标传递出去
             InputHands[0].OnUpdate(Input.mousePosition);
 
-            if (Input.GetMouseButtonDown(0)&&InputHands[0].IsIdleStatus)
-                InputHands[0].SetGrip();
+            #region 鼠标/触摸检测
 
-            if (Input.GetMouseButtonUp(0) && !(/*InputHands[0].IsRotateZoomStatus || */InputHands[0].IsErrorStatus))
+            if (Input.GetMouseButtonDown(0))
+            {
+                //鼠标
+                if (!IsTouching&& InputHands[0].IsIdleStatus)
+                {
+                    InputHands[0].SetGrip();
+                    IsMousing = true;
+
+                    observedMode.OnDown();
+                }
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (IsMousing && !InputHands[0].IsErrorStatus)
+                {
+                    InputHands[0].SetIdle();
+                    IsMousing = false;
+
+                    ObservedModeUpHandler();
+                }
+            }
+
+            //触摸
+            if (!IsMousing&&Input.touchCount >= 1)
+            {
+                InputHands[0].SetGrip();
+                IsTouching = true;
+
+                observedMode.OnDown();
+            }
+
+            if (IsTouching && Input.touchCount == 0)
             {
                 InputHands[0].SetIdle();
+                IsTouching = false;
+
+                ObservedModeUpHandler();
             }
+
+            #endregion
 
             //不同模式中的不同操作
             switch (MSwitchManager.CurrentMode)
@@ -242,6 +316,26 @@ namespace MagiCloud.Operate
                     default:
                         break;
                 }
+            }
+        }
+
+        /// <summary>
+        /// 观察模式时，释放处理
+        /// </summary>
+        private void ObservedModeUpHandler()
+        {
+            switch (MSwitchManager.CurrentMode)
+            {
+                case OperateModeType.Rotate:
+                    observedMode.OnUp(true);
+
+                    break;
+                case OperateModeType.Zoom:
+                    observedMode.OnUp(false);
+
+                    break;
+                default:
+                    break;
             }
         }
 

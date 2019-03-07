@@ -428,7 +428,7 @@ namespace MagiCloud.Operate
             switch (MSwitchManager.CurrentMode)
             {
                 case OperateModeType.Rotate:
-                    rightHandOperate.OnGestureAction(leftHandOperate, true);
+                    rightHandOperate.OnGestureAction(leftHandOperate, true); ;
                     leftHandOperate.OnGestureAction(rightHandOperate, true);
                     break;
                 case OperateModeType.Zoom:
