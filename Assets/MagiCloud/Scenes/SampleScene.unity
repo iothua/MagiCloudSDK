@@ -2842,7 +2842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95ccc03f4f9764448a18526d6ce221b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentPlatform: 1
+  CurrentPlatform: 0
   IsRecordLog: 0
 --- !u!114 &1722826479
 MonoBehaviour:

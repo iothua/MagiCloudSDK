@@ -196,8 +196,10 @@ namespace MagiCloud.Operate
             if (Input.GetMouseButtonDown(0)&&InputHands[0].IsIdleStatus)
                 InputHands[0].SetGrip();
 
-            if (Input.GetMouseButtonUp(0) && !(InputHands[0].IsRotateZoomStatus || InputHands[0].IsErrorStatus))
+            if (Input.GetMouseButtonUp(0) && !(/*InputHands[0].IsRotateZoomStatus || */InputHands[0].IsErrorStatus))
+            {
                 InputHands[0].SetIdle();
+            }
 
             //不同模式中的不同操作
             switch (MSwitchManager.CurrentMode)

@@ -83,11 +83,12 @@ namespace MagiCloud
 
         public bool OnUIRay(Ray ray)
         {
-            //if (ActionConstraint.IsBind(ActionConstraint.Camera_Rotate_Action)||ActionConstraint.IsBind(ActionConstraint.Camera_Zoom_Action)) return false;
             //如果不是松手或者握拳，返回false
             if (!(InputHand.IsIdleStatus ||
                 InputHand.IsGripStatus))
+            {
                 return false;
+            }
 
             //如果不是长按并且握拳，返回false
             if (!IsButtonPress && (InputHand.IsGripStatus))
