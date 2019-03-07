@@ -79,20 +79,20 @@ namespace MagiCloud
 
             //加载UI了
 
-            if ((activeMode & OperateModeType.Rotate) != 0)
-            {
-                Debug.Log("加载物体：观察模式UI" );
-            }
+            //if ((activeMode & OperateModeType.Rotate) != 0)
+            //{
+            //    Debug.Log("加载物体：观察模式UI" );
+            //}
 
-            if ((activeMode & OperateModeType.Operate) != 0)
-            {
-                Debug.Log("加载物体：操作模式UI");
-            }
+            //if ((activeMode & OperateModeType.Operate) != 0)
+            //{
+            //    Debug.Log("加载物体：操作模式UI");
+            //}
 
-            if ((activeMode & OperateModeType.Tool) != 0)
-            {
-                Debug.Log("加载物体：工具模式UI");
-            }
+            //if ((activeMode & OperateModeType.Tool) != 0)
+            //{
+            //    Debug.Log("加载物体：工具模式UI");
+            //}
         }
 
         public static void AddListener(Action<OperateModeType> action)

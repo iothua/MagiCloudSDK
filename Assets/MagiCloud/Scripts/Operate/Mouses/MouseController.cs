@@ -55,7 +55,7 @@ namespace MagiCloud.Operate
                 if (IsDown)
                 {
                     //向量的模大于2.0时
-                    if (!IsObserved && inputHand.IsIdleStatus && inputHand.ScreenVector.magnitude > 2.0f)
+                    if (!IsObserved  && inputHand.ScreenVector.magnitude > 2.0f)
                     {
                         //将动作记录到集合中
                         inputHand.HandStatus = IsRotate ? MInputHandStatus.Rotate : MInputHandStatus.Zoom;
@@ -67,20 +67,19 @@ namespace MagiCloud.Operate
                     if (IsObserved)
                     {
                         if (IsRotate)
+                        {
                             EventCameraRotate.SendListener(inputHand.ScreenVector);
+                        }
                         else
-                            EventCameraZoom.SendListener(inputHand.ScreenVector.x);
+                        {
+                            EventCameraZoom.SendListener(inputHand.ScreenVector.x / 1200);
+                        }
                     }
                 }
             }
         }
 
         private MBehaviour behaviour;
-
-        private bool IsZoom = false; //开启缩放
-        private bool IsRotate = false; //开启旋转
-
-        private bool IsDown = false; //旋转是否开启
 
         [Header("手图标")]
         public HandIcon handSprite;//手图标
@@ -204,10 +203,13 @@ namespace MagiCloud.Operate
             switch (MSwitchManager.CurrentMode)
             {
                 case OperateModeType.Rotate:
+
                     observedMode.OnAchieve(InputHands[0], true);
                     break;
                 case OperateModeType.Zoom:
+
                     observedMode.OnAchieve(InputHands[0], false);
+
                     break;
                 case OperateModeType.Tool:
                     break;

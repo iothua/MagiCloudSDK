@@ -1,8 +1,8 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using MagiCloud.Core.Events;
 
-namespace DrawLine
+namespace MagiCloud.DrawLine
 {
     /// <summary>
     /// 画笔
@@ -10,44 +10,88 @@ namespace DrawLine
     /// </summary>
     public class Drawable : MonoBehaviour
     {
-        public static Drawable drawable;                            //全局静态画笔对象
-        public static Color penColour = Color.red;                  //画笔颜色
-        public static int penWidth = 1;
+        public Color penColor = Color.red;                  //画笔颜色
+
+        [Range(1, 10)]
+        public int penWidth = 1;
+
         public delegate void BrushFunction(Vector2 world_position);
         public BrushFunction currentBrush;                          //绘制函数
+
+        [HideInInspector]
         public Color resetColour = new Color(0, 0, 0, 0);           //重置为改颜色
-        Sprite drawableSprite;                                      //画板精灵体
-        Texture2D drawableTexture;                                  //画板精灵体的Texture2D
-        Vector2 preDragPosition;                                    //之前鼠标拖拽的位置
-        Color[] cleanColorArray;                                    //用于清空的填充颜色数组
-        Color32[] curColor;                                         //画板精灵体的当前颜色数组(绘制是动态改变)
+        private Sprite drawableSprite;                                      //画板精灵体
+
+        private Texture2D drawableTexture;                                  //画板精灵体的Texture2D
+        private Vector2 preDragPosition;                                    //之前鼠标拖拽的位置
+
+        private Color[] cleanColorArray;                                    //用于清空的填充颜色数组
+        private Color32[] curColor;                                         //画板精灵体的当前颜色数组(绘制是动态改变)
+
+        private int handIndex = -1;
+        private bool IsPressed = false;
 
         void Awake()
         {
-            drawable = this;                        //全局静态画笔对象
             currentBrush = PenBrush;                //默认笔刷
             drawableSprite = this.GetComponent<SpriteRenderer>().sprite;
             drawableTexture = drawableSprite.texture;
 
             cleanColorArray = new Color[(int)drawableSprite.rect.width * (int)drawableSprite.rect.height];  //重置时Texture2D的颜色
+
             for (int x = 0; x < cleanColorArray.Length; x++)
                 cleanColorArray[x] = resetColour;
         }
 
+        private void OnEnable()
+        {
+            EventHandGrip.AddListener(OnGrip);
+            EventHandIdle.AddListener(OnIdle);
+
+            MSwitchManager.AddListener(OnSwitch);
+        }
+
+        private void OnSwitch(OperateModeType operateType)
+        {
+            if (operateType != OperateModeType.Tool)
+                SetClear();
+        }
+
+        private void OnGrip(int handIndex)
+        {
+            if (this.handIndex != -1 && this.handIndex != handIndex) return;
+
+            IsPressed = true;
+            this.handIndex = handIndex;
+        }
+
+        private void OnIdle(int handIndex)
+        {
+            if (this.handIndex != handIndex) return;
+
+            IsPressed = false;
+            preDragPosition = Vector2.zero;
+        }
+
+        private void OnDisable()
+        {
+            EventHandGrip.RemoveListener(OnGrip);
+            EventHandIdle.RemoveListener(OnIdle);
+            MSwitchManager.RemoveListener(OnSwitch);
+        }
+
         void Update()
         {
-            bool mouse_held_down = Input.GetMouseButton(0);
-            if (mouse_held_down)
+            if (IsPressed && MSwitchManager.CurrentMode == OperateModeType.Tool)
             {
-                Vector3 temp = Input.mousePosition;
+                Vector3 temp = MOperateManager.GetHandScreenPoint(handIndex);
+
                 temp.x = Mathf.Clamp(temp.x, 0, Screen.width);
                 temp.y = Mathf.Clamp(temp.y, 0, Screen.height);
-                Vector2 mouse_world_position = MagiCloud.MUtility.UICamera.ScreenToWorldPoint(temp);
+
+                Vector2 mouse_world_position = MUtility.UICamera.ScreenToWorldPoint(temp);
+
                 currentBrush(mouse_world_position);
-            }
-            else if (!mouse_held_down)
-            {
-                preDragPosition = Vector2.zero;
             }
         }
 
@@ -65,15 +109,13 @@ namespace DrawLine
 
             if (preDragPosition == Vector2.zero)
             {
-                
-                MarkPixelsToColour(pixelPos, penWidth, penColour);              //第一次点击
+                MarkPixelsToColour(pixelPos, penWidth, penColor);              //第一次点击
             }
             else
             {
                 
-                ColourBetween(preDragPosition, pixelPos, penWidth, penColour);  //根据之前鼠标位置和当前鼠标位置进行操作
+                ColourBetween(preDragPosition, pixelPos, penWidth, penColor);  //根据之前鼠标位置和当前鼠标位置进行操作
             }
-
             
             ApplyMarkedPixelChanges();                                          //把颜色应用到贴图
 
@@ -92,9 +134,9 @@ namespace DrawLine
             curColor = drawableTexture.GetPixels32();
 
             if (preDragPosition == Vector2.zero)
-                MarkPixelsToColour(pixelPos, penWidth, penColour);                  // 如果是第一次拖动鼠标，只需在鼠标位置为像素着色
+                MarkPixelsToColour(pixelPos, penWidth, penColor);                  // 如果是第一次拖动鼠标，只需在鼠标位置为像素着色
             else
-                ColourBetween(preDragPosition, pixelPos, penWidth, penColour);      // 从上次更新调用的位置开始着色
+                ColourBetween(preDragPosition, pixelPos, penWidth, penColor);      // 从上次更新调用的位置开始着色
             ApplyMarkedPixelChanges();
 
             preDragPosition = pixelPos;
@@ -131,9 +173,6 @@ namespace DrawLine
             }
         }
 
-
-
-
         /// <summary>
         /// 以penThickness（笔半径）为中心把像素中心及周围坐标标记为需要着色
         /// 并检查被标记着色的点是否超出范围
@@ -145,7 +184,6 @@ namespace DrawLine
         {
             int centerX = (int)centerPixel.x;
             int centerY = (int)centerPixel.y;
-            //int extraRadius = Mathf.Min(0, penThickness - 2);
 
             //根据centerPixel及penThickness计算出每一个方向需要着色的像素数
             for (int x = centerX - penThickness; x <= centerX + penThickness; x++)
@@ -174,6 +212,7 @@ namespace DrawLine
             if (arrayPos > curColor.Length || arrayPos < 0)
                 return;
 
+            if (arrayPos >= curColor.Length) return;
             curColor[arrayPos] = color;
         }
 
@@ -243,6 +282,17 @@ namespace DrawLine
         private void OnDestroy()
         {
             ResetCanvas();
+        }
+
+        public void SetPenWidth(int newWidth)
+        {
+            penWidth = Mathf.Clamp(newWidth, 1, 5);
+        }
+
+        public void SetClear()
+        {
+            ResetCanvas();
+            SetPenBrush();
         }
     }
 }

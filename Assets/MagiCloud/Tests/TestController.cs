@@ -4,6 +4,7 @@ using MagiCloud.Core;
 using UnityEngine;
 using MagiCloud.Core.Events;
 using MagiCloud.RotateAndZoomTool;
+using MagiCloud;
 
 public class TestController : MonoBehaviour
 {
@@ -50,29 +51,36 @@ public class TestController : MonoBehaviour
     {
         //RotateAndZoomManager.StartCameraZoom(center, 2, 10);
         //RotateAndZoomManager.StartCameraAroundCenter(center);
-
+        MSwitchManager.OnInitializeMode(OperateModeType.Operate | OperateModeType.Rotate | OperateModeType.Zoom);
+        MSwitchManager.CurrentMode = OperateModeType.Operate;
     }
 
-    public void OnSendOperate()
+    public void OnOperate()
     {
+        MSwitchManager.CurrentMode =  OperateModeType.Operate;
+        //禁止UI
+        MagiCloud.KGUI.UIShieldController.UnAllShileldAssign();
 
     }
 
-    public void SetSwitch(MagiCloud.OperateModeType modeType)
+    public void OnTool()
     {
-        MagiCloud.MSwitchManager.CurrentMode = modeType;
-
-        if (modeType == MagiCloud.OperateModeType.Operate)
-        {
-            //禁止UI
-            MagiCloud.KGUI.UIShieldController.UnAllShileldAssign();
-        }
-        else
-        {
-            MagiCloud.KGUI.UIShieldController.ShieldDownward(1);
-        }
+        MSwitchManager.CurrentMode = OperateModeType.Tool;
+        MagiCloud.KGUI.UIShieldController.ShieldDownward(0);
     }
 
+    public void OnRotate()
+    {
+        MSwitchManager.CurrentMode = OperateModeType.Rotate;
+        MagiCloud.KGUI.UIShieldController.ShieldDownward(0);
+    }
+
+    public void OnZoom()
+    {
+        MSwitchManager.CurrentMode = OperateModeType.Zoom;
+        MagiCloud.KGUI.UIShieldController.ShieldDownward(0);
+
+    }
 
     private void Update()
     {
