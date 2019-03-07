@@ -232,7 +232,7 @@ namespace MagiCloud.Operate
                     {
                         if (Operate.InputHand.IsZoomStatus)
                         {
-                            EventCameraZoom.SendListener(Operate.InputHand.ScreenVector.x);
+                            EventCameraZoom.SendListener(Operate.InputHand.ScreenVector.x / 1200);
                         }
                         else
                         {
