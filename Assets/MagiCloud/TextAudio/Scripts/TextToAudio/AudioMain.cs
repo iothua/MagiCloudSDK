@@ -92,6 +92,19 @@ namespace MagiCloud.TextToAudio
             AudioController.ClearCache();
         }
 
+        public void OnlyCreateAudio(string text)
+        {
+            StartCoroutine(AudioController.GetAudioClip(text, (x) =>
+            {
+                if (x != null)
+                {
+                    audioSource.clip = x;
+                    audioSource.Play();
+                    audioPlayer.Init(text, x.length, OnComplete);
+                }
+            }));
+        }
+        
         public void PlayAudio(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -115,6 +128,7 @@ namespace MagiCloud.TextToAudio
                 }
             }));
         }
+
         public void TogglePause(bool on)
         {
             if (!IsOn) return;
