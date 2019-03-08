@@ -18,7 +18,7 @@ namespace MagiCloud.Features
 
         public BoxCollider boxCollider;     //用于空间查询的BoxCollider
         [Header("桌面的高度")]
-        public float deskHeight = -5.9f;
+        public float deskHeight = -7f;
         [Header("距离桌面多高开始吸附")]
         public float deskDistance = 4;
         public bool autoExtremum = true;           //自动计算网格极值
