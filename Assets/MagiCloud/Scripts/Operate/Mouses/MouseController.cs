@@ -175,7 +175,7 @@ namespace MagiCloud.Operate
                     enabled = false;
                     operate.OnDisable();
 
-                    behaviour.OnDestroy_MBehaviour(OnMouseUpdate);
+                    behaviour.OnExcuteDestroy();
                 }
             }
         }
