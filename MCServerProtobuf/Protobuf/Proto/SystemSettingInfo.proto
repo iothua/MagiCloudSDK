@@ -1,0 +1,22 @@
+syntax = "proto3";
+package MCServer;
+//系统设置信息
+message SystemSettingInfo{
+	int32 volume=1;
+
+	//性能
+enum Performance{
+	NONE=0;
+	HIGHT=1;
+	MIDDLE=2;
+	LOW=3;
+}
+	Performance type=2;
+}
+
+message SettingReq{
+	SystemSettingInfo info=1;
+}
+message SettingRes{
+	int32 back=1;
+}

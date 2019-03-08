@@ -1,0 +1,11 @@
+syntax = "proto3";
+package MCServer;
+enum EnumCmdID{
+NONE=0;
+HEARTBEAT=1;		//心跳包请求协议号
+SETTING_REQ=10001;	//系统设置请求协议号
+SETTING_RES=10002;	//系统设置请求回包协议号
+
+EXPINFO_REQ=10003;	//实验信息请求协议号
+EXPINFO_RES=10004;	//实验信息请求回包协议号
+}

@@ -1,0 +1,6 @@
+syntax = "proto3";
+package MCServer;
+message HeartBeatInfo{
+	int32 curtime=1;
+	string hostip=2;
+}
