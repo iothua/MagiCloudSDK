@@ -2797,8 +2797,8 @@ GameObject:
   - component: {fileID: 1722826480}
   - component: {fileID: 1722826479}
   - component: {fileID: 1722826478}
-  - component: {fileID: 1722826477}
   - component: {fileID: 1722826476}
+  - component: {fileID: 1722826477}
   m_Layer: 0
   m_Name: MagiCloud
   m_TagString: Untagged
@@ -2827,7 +2827,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1722826475}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e116c324b67f377488acceebbb5e9c8f, type: 3}
+  m_Script: {fileID: 1679752655, guid: 866968483afdaa048b0bfa9a2c5b3e88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1722826478
@@ -2842,7 +2842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95ccc03f4f9764448a18526d6ce221b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentPlatform: 1
+  CurrentPlatform: 0
   IsRecordLog: 0
 --- !u!114 &1722826479
 MonoBehaviour:
