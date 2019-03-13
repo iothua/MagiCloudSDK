@@ -1,58 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-using Loxodon.Framework.Bundles;
-using Loxodon.Framework.Asynchronous;
-using Loxodon.Framework.Contexts;
+using MagiCloud;
 
 public class AssetBundleTest : MonoBehaviour
 {
-    private IResources resources;
-    private Dictionary<string, IBundle> bundles = new Dictionary<string, IBundle>();
+    public string[] bundleInfos;
 
-    // Start is called before the first frame update
-    IEnumerator Start()
+    private void Start()
     {
-        ApplicationContext context = Context.GetApplicationContext();
-        this.resources = context.GetService<IResources>();
-
-        yield return Preload(new string[] { "models/red", "models/green" }, 1);
-
-        IBundle bundle = this.bundles["models/red"];
-        GameObject goTemplate = bundle.LoadAsset<GameObject>("Red");
-        GameObject.Instantiate(goTemplate);
-
-        Material material = bundle.LoadAsset<Material>("Red");
-        if (material != null)
+        AssetBundleManager.LoadAsset<GameObject>(bundleInfos, (target) =>
         {
-            Debug.Log("不为空");
-        }
-
-        GameObject goTemplate1 = bundle.LoadAsset<GameObject>("Red.prefab");
-        var go1 = GameObject.Instantiate(goTemplate1);
-        go1.transform.position = Vector3.one;
+            foreach (var item in target)
+            {
+                GameObject.Instantiate(item);
+            }
+        });
 
     }
 
-
-    IEnumerator Preload(string[] bundleNames, int priority)
-    {
-        IProgressResult<float, IBundle[]> result = this.resources.LoadBundle(bundleNames, priority);
-        yield return result.WaitForDone();
-
-        if (result.Exception != null)
-        {
-            Debug.LogWarningFormat("Loads failure.Error :{0}", result.Exception);
-
-            yield break;
-        }
-
-        foreach (var bundle in result.Result)
-        {
-            bundles.Add(bundle.Name, bundle);
-        }
-    }
-
-    
 }
