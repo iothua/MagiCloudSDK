@@ -30,7 +30,7 @@ namespace MCServer {
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MCServer.ExperimentInfo), global::MCServer.ExperimentInfo.Parser, new[]{ "Own", "Name", "Id", "IsBack" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MCServer.ExperimentInfo), global::MCServer.ExperimentInfo.Parser, new[]{ "Own", "Name", "Id", "IsBack", "ExperimentPath" }, null, null, null)
           }));
     }
     #endregion
@@ -38,7 +38,7 @@ namespace MCServer {
   }
   #region Messages
   /// <summary>
-  ///ÊµÑéÐÅÏ¢
+  ///Êµï¿½ï¿½ï¿½ï¿½Ï¢
   /// </summary>
   public sealed partial class ExperimentInfo : pb::IMessage<ExperimentInfo> {
     private static readonly pb::MessageParser<ExperimentInfo> _parser = new pb::MessageParser<ExperimentInfo>(() => new ExperimentInfo());
@@ -69,6 +69,7 @@ namespace MCServer {
       name_ = other.name_;
       id_ = other.id_;
       isBack_ = other.isBack_;
+      experimentPath_ = other.experimentPath_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -81,7 +82,7 @@ namespace MCServer {
     public const int OwnFieldNumber = 1;
     private string own_ = "";
     /// <summary>
-    ///ËùÊôÏîÄ¿
+    ///ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Own {
@@ -95,7 +96,7 @@ namespace MCServer {
     public const int NameFieldNumber = 2;
     private string name_ = "";
     /// <summary>
-    ///ÊµÑéÃû³Æ
+    ///Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Name {
@@ -109,7 +110,7 @@ namespace MCServer {
     public const int IdFieldNumber = 3;
     private int id_;
     /// <summary>
-    ///ÊµÑé±àºÅ
+    ///Êµï¿½ï¿½ï¿½ï¿½
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Id {
@@ -123,13 +124,24 @@ namespace MCServer {
     public const int IsBackFieldNumber = 4;
     private bool isBack_;
     /// <summary>
-    ///ÊÇ·ñÖ´ÐÐ·µ»ØÃüÁî
+    ///ï¿½Ç·ï¿½Ö´ï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public bool IsBack {
       get { return isBack_; }
       set {
         isBack_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "experimentPath" field.</summary>
+    public const int ExperimentPathFieldNumber = 5;
+    private string experimentPath_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ExperimentPath {
+      get { return experimentPath_; }
+      set {
+        experimentPath_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -150,6 +162,7 @@ namespace MCServer {
       if (Name != other.Name) return false;
       if (Id != other.Id) return false;
       if (IsBack != other.IsBack) return false;
+      if (ExperimentPath != other.ExperimentPath) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -160,6 +173,7 @@ namespace MCServer {
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (Id != 0) hash ^= Id.GetHashCode();
       if (IsBack != false) hash ^= IsBack.GetHashCode();
+      if (ExperimentPath.Length != 0) hash ^= ExperimentPath.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -189,6 +203,10 @@ namespace MCServer {
         output.WriteRawTag(32);
         output.WriteBool(IsBack);
       }
+      if (ExperimentPath.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(ExperimentPath);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -208,6 +226,9 @@ namespace MCServer {
       }
       if (IsBack != false) {
         size += 1 + 1;
+      }
+      if (ExperimentPath.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ExperimentPath);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -231,6 +252,9 @@ namespace MCServer {
       }
       if (other.IsBack != false) {
         IsBack = other.IsBack;
+      }
+      if (other.ExperimentPath.Length != 0) {
+        ExperimentPath = other.ExperimentPath;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -257,6 +281,10 @@ namespace MCServer {
           }
           case 32: {
             IsBack = input.ReadBool();
+            break;
+          }
+          case 42: {
+            ExperimentPath = input.ReadString();
             break;
           }
         }

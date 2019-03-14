@@ -7,20 +7,19 @@ namespace MCServer
     {
         static void Main(string[] args)
         {
+            MessageEvent message = new MessageEvent();
             NetWork netWork = new NetWork();
             netWork.Init("127.0.0.1",8888);// 192.168.1.24
-            Thread thread = new Thread(() => netWork.Update());
-            thread.Start();
             //WaitForInput(netWork);
             Console.ReadLine();
 
         }
 
-        private static void WaitForInput(NetWork netWork)
+        private static void WaitForInput(MessageEvent messageEvent)
         {
-            SettingReq setting = netWork.setting;
+            SettingReq setting = messageEvent.settingEvent.setting;
             if (setting==null)
-                netWork.InitSetting();
+                messageEvent.settingEvent.InitSetting();
             while (true)
             {
                 string input = Console.ReadLine();
@@ -47,6 +46,7 @@ namespace MCServer
             }
 
         }
+
 
     }
 

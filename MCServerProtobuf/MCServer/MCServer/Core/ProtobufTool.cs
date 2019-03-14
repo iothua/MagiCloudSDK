@@ -35,7 +35,7 @@ namespace MCServer
         /// <typeparam name="T"></typeparam>
         /// <param name="t"></param>
         /// <param name="data"></param>
-        public void DeSerialize<T>(T t,byte[] data) where T : IMessage
+        public T DeSerialize<T>(T t,byte[] data) where T : IMessage
         {
             try
             {
@@ -43,11 +43,13 @@ namespace MCServer
                 {
                     CodedInputStream inputStream = new CodedInputStream(data);
                     inputStream.ReadMessage(t);
+                    return t;
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                return t; 
             }
         }
 

@@ -4,14 +4,20 @@ using System.Threading;
 
 namespace MCServer
 {
-    public delegate void MessageDelegate(ProtobufTool data);
+    /// <summary>
+    /// 收到消息
+    /// </summary>
+    /// <param name="connectID">连接器,来源</param>
+    /// <param name="data">收到的协议数据</param>
+    public delegate void MessageDelegate(int connectID,ProtobufTool data);
+
     /// <summary>
     /// 消息分发
     /// </summary>
     public static class MessageDistribution
     {
-        private static int num = 15;
-        public static List<ProtobufTool> msgList = new List<ProtobufTool>();        //当前消息列表
+        private static readonly int num = 15;
+        public static List<ReceiveMessageStruct> msgList = new List<ReceiveMessageStruct>();        //当前消息列表
         private static Dictionary<int,MessageDelegate> msgEvents = new Dictionary<int,MessageDelegate>();       //消息事件集合
         private static Dictionary<int,MessageDelegate> onceMsgEvents = new Dictionary<int,MessageDelegate>();  //单次消息事件集合
         #region AddOrRemove
@@ -88,21 +94,25 @@ namespace MCServer
                     }
                 }
             }
-          
         }
-
+        
+        private static void OnMessageEvent(ReceiveMessageStruct sendData)
+        {
+            OnMessageEvent(sendData.connectID,sendData.protobuf);
+        }
+  
         /// <summary>
         /// 执行消息事件
         /// </summary>
         /// <param name="key"></param>
-        private static void OnMessageEvent(ProtobufTool msg)
+        private static void OnMessageEvent(int connectID,ProtobufTool protobuf)
         {
-            int key = msg.type;
+            int key = protobuf.type;
             if (msgEvents.ContainsKey(key))
-                msgEvents[key](msg);
+                msgEvents[key](connectID,protobuf);
             if (onceMsgEvents.ContainsKey(key))
             {
-                onceMsgEvents[key](msg);
+                onceMsgEvents[key](connectID,protobuf);
                 onceMsgEvents[key]=null;
                 onceMsgEvents.Remove(key);
             }

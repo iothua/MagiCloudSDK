@@ -4,12 +4,12 @@ using System.Timers;
 namespace MCServer
 {
 
-    public class HeartBeatController
+    public sealed class HeartBeatController 
     {
         Timer timer = new Timer(1000);
         public long heartBeatTime = 20;
         Server server;
-        public HeartBeatController(Server server,long heartBeatTime = 4)
+        public HeartBeatController(Server server,long heartBeatTime = 10)
         {
             timer = new Timer(1000);
             this.server=server;
@@ -17,7 +17,7 @@ namespace MCServer
             timer.Elapsed+=new ElapsedEventHandler(HandleMainTimer);
             timer.AutoReset=false;
             timer.Enabled=true;
-            Console.WriteLine("开启心跳包检查");
+            //   Console.WriteLine("开启心跳包检查");
         }
 
         private void HandleMainTimer(object sender,ElapsedEventArgs e)
@@ -44,5 +44,7 @@ namespace MCServer
                 }
             }
         }
+
+       
     }
 }

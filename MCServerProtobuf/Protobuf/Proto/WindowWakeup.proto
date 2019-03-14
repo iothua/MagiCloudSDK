@@ -1,0 +1,25 @@
+syntax = "proto3";
+package MCServer;
+//窗口唤醒
+message WindowWakeup{
+  int32 open=1;		//是否唤醒
+
+}
+
+//发起请求
+message WindowReq{
+	string path=1;
+}
+//回执
+message WindowRes{
+	WindowStatus status=1;
+}
+
+//窗口状态	
+enum WindowStatus{
+	NONE=0;
+	RESTORE=1;	//还原
+	MIN=2;		//最小化
+	MAX=3;		//最大化
+	EXIT=4;		//退出
+	}

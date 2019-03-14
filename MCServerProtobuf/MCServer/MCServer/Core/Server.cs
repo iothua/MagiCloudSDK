@@ -54,9 +54,10 @@ namespace MCServer
                 else
                 {
                     Connect connect = connects[i];
-                    connect.Init(toClientSocket);
+                    connect.Init(toClientSocket,i);
                     string ip = connect.GetAddress();
                     Console.WriteLine("{0},已连接",ip);
+                    SendConnectMessage(i);
                     BeginReceiveMessages(connect);
                     //connect.socket.BeginReceive(connect.buffer,connect.bufferCount,connect.BuffRemain(),SocketFlags.None,ReceiveCallback,connect);
                 }
@@ -66,6 +67,21 @@ namespace MCServer
             {
                 Console.WriteLine(e);
             }
+        }
+
+        /// <summary>
+        /// 发送连接消息
+        /// </summary>
+        /// <param name="i"></param>
+        private void SendConnectMessage(int i)
+        {
+            ConnectInfo info = new ConnectInfo()
+            {
+                Id=i
+            };
+            ProtobufTool protobuf = new ProtobufTool();
+            protobuf.CreatData((int)EnumCmdID.Connect,info);
+            Broadcast(protobuf);
         }
 
         #region Send
@@ -155,25 +171,24 @@ namespace MCServer
             //如果小于长度字节
             if (connect.bufferCount<sizeof(Int32)+sizeof(Int32))
                 return;
-            //////消息长度4个字节，消息类型4个字节
+            //消息长度4个字节，消息类型4个字节
             Array.Copy(connect.buffer,connect.lenBytes,sizeof(Int32));
             //真实消息长度
             connect.msgLength=BitConverter.ToInt32(connect.lenBytes,0)-sizeof(Int32);
             if (connect.bufferCount<connect.msgLength+sizeof(Int32))
                 return;
             ProtobufTool protobuf = proto.Read(connect.buffer);
+            //添加到消息集合等待处理
             lock (MessageDistribution.msgList)
             {
-                // Console.WriteLine("处理{0}类型的消息。",(EnumCmdID)protobuf.type);
-                MessageDistribution.msgList.Add(protobuf);
+                MessageDistribution.msgList.Add(new ReceiveMessageStruct(connect.id,protobuf));
             }
+            //清除已处理的数据
             int count = connect.bufferCount-connect.msgLength-sizeof(Int32)-sizeof(Int32);
             Array.Copy(connect.buffer,sizeof(Int32)+connect.msgLength,connect.buffer,0,count);
             connect.bufferCount=count;
             if (connect.bufferCount>0)
-            {
                 ProcessData(connect);
-            }
         }
 
         #endregion
@@ -195,7 +210,6 @@ namespace MCServer
         /// <summary>
         /// 获取连接池索引,返回负数时表示获取失败
         /// </summary>
-        /// <returns></returns>
         public int NewIndex()
         {
             if (connects==null) return -1;
@@ -241,6 +255,8 @@ namespace MCServer
                 BeginSendMessage(connects[i],protobuf);
             }
         }
+
+
         #endregion
     }
 
