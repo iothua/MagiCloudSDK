@@ -1,15 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MagiCloud.NetWorks;
+using MagiCloud.NetWorks.Client;
+using UnityEngine.UI;
 
 public class ClientManager : MonoBehaviour
 {
-    public string Name;
+    private MessageEvent messageEvent;
 
-    // Start is called before the first frame update
-    void Start()
+    public Text txtExperimentPath;
+
+    private void Start()
     {
-        Debug.Log("打印：" + Name);
+        messageEvent = new MessageEvent();
+        messageEvent.experimentEvent.txtExperimentPath = txtExperimentPath;
+        NetManager.connetion.Connect("127.0.0.1", 8888);
+
     }
 
+    public void OnBack()
+    {
+        messageEvent.experimentEvent.SendExpinfoRes();
+
+    }
+
+    private void Update()
+    {
+        NetManager.Update();
+    }
+
+    private void OnDestroy()
+    {
+        NetManager.connetion.Close();
+    }
 }

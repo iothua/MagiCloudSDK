@@ -9,6 +9,7 @@ namespace MCServer
     /// </summary>
     public class Connect
     {
+        public int id;
         public bool isUse = false;
         public Socket socket;                       //复制服务端向客户端发送或接收数据
         public long lastTickTime = long.MinValue;   //计时
@@ -24,18 +25,18 @@ namespace MCServer
             buffer=new byte[BUFFER_SIZE];
         }
 
-        public void Init(Socket socket)
+        public void Init(Socket socket,int id)
         {
+            this.id=id;
             this.socket=socket;
             isUse=true;
             bufferCount=0;
             MessageDistribution.AddListener((int)EnumCmdID.Heartbeat,HeartBeatCallback);
-            lastTickTime=TimeHelper.GetTimeStamp();
+            lastTickTime =TimeHelper.GetTimeStamp();
         }
 
-        private void HeartBeatCallback(ProtobufTool protobuf)
+        private void HeartBeatCallback(int connectID,ProtobufTool protobuf)
         {
-            //Console.WriteLine("收到心跳包");
             lastTickTime=TimeHelper.GetTimeStamp();
         }
 

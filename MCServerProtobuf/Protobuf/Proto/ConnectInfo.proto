@@ -1,0 +1,6 @@
+syntax = "proto3";
+package MCServer;
+//´°¿Ú»½ÐÑ
+message ConnectInfo{
+  int32 id=1;		
+}

@@ -1,12 +1,12 @@
 syntax = "proto3";
 package MCServer;
-//ÊµÑéĞÅÏ¢
+//å®éªŒä¿¡æ¯
 message ExperimentInfo{
-	string own=1;	//ËùÊôÏîÄ¿
-	string name=2;	//ÊµÑéÃû³Æ
-	int32 id=3;	//ÊµÑé±àºÅ
-	bool isBack=4;	//ÊÇ·ñÖ´ĞĞ·µ»ØÃüÁî
+	string own=1;	//æ‰€å±é¡¹ç›®
+	string name=2;	//å®éªŒåç§°
+	int32 id=3;	//å®éªŒID
+	bool isBack=4;	//æ˜¯å¦æ‰§è¡Œè¿”å›å‘½ä»¤
+	string experimentPath = 5;
 }
-
 
 

@@ -3,9 +3,15 @@ package MCServer;
 enum EnumCmdID{
 NONE=0;
 HEARTBEAT=1;		//心跳包请求协议号
+CONNECT=2;		//连接
+PAUSE=3;		//挂起暂停
+RESTORE=4;		//恢复连接
+BREAK=5;		//断开连接
 SETTING_REQ=10001;	//系统设置请求协议号
 SETTING_RES=10002;	//系统设置请求回包协议号
 
 EXPINFO_REQ=10003;	//实验信息请求协议号
 EXPINFO_RES=10004;	//实验信息请求回包协议号
+WINDOWWAKEUP_REQ=10005;	//窗口唤醒请求
+WINDOWWAKEUP_RES=10006;	//窗口唤醒回执
 }

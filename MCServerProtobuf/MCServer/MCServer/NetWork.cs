@@ -1,49 +1,45 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace MCServer
 {
-    public class NetWork
+    public sealed class NetWork 
     {
-        public SettingReq setting;
-
-        public NetWork()
+        private AutoResetEvent exitEvent;
+        private readonly int waitTime = 1;
+        Thread thread;
+        public NetWork(int time = 1)
         {
-            InitSetting();
-            MessageDistribution.AddListener((int)EnumCmdID.SettingReq,SystemSettingCallback);
+            exitEvent=new AutoResetEvent(false);
+            waitTime=time;
         }
 
         public void Init(string ip,int port)
         {
             Server.Instance.Start(ip,port);
+            thread  = new Thread(() => Update());
+            thread.Start();
         }
 
         public void Update()
         {
-            MessageDistribution.Update();
-            Thread.Sleep(1);
-            Update();
-        }
-
-        public void InitSetting()
-        {
-            setting=new SettingReq()
+            while (true)
             {
-                Info=new SystemSettingInfo()
+                MessageDistribution.Update();
+                if (exitEvent.WaitOne(waitTime))
                 {
-                    Type= SystemSettingInfo.Types.Performance.Middle,
-                    Volume=10,
-                },
-            };
+                    break;
+                }
+            }
         }
 
-
-        private void SystemSettingCallback(ProtobufTool data)
+        public void Stop()
         {
-            data.DeSerialize(setting,data.bytes);
-            ProtobufTool tool = new ProtobufTool();
-            tool.CreatData((int)EnumCmdID.SettingReq,setting);
-            Server.Instance.Broadcast(tool);
+            exitEvent.Set();
+            thread.Join();
+            Server.Instance.Close();
         }
+
     }
 
 }
