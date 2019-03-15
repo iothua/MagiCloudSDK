@@ -6,14 +6,15 @@ namespace MagiCloud.NetWorks.Client
     public class SettingEvent
     {
         public SettingReq req;
-        public SettingEvent()
+        public SettingEvent(MessageDistribution messageDistribution)
         {
             SettingInit();
+            messageDistribution.AddListener((int)EnumCmdID.SettingReq,SettingReaCallback);
         }
         public void SettingInit()
         {
             req = new SettingReq();
-            MessageDistribution.AddListener((int)EnumCmdID.SettingReq,SettingReaCallback);
+          
         }
 
         private void SettingReaCallback(ProtobufTool protobuf)

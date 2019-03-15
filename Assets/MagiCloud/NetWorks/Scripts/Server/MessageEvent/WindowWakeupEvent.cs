@@ -14,7 +14,7 @@ namespace MagiCloud.NetWorks.Server
         public WindowReq windowReq;
         public WindowRes windowRes;
 
-        public WindowWakeupEvent()
+        public WindowWakeupEvent(MessageDistribution messageDistribution)
         {
             InitWindowReq();
             InitWindowRes();
@@ -51,11 +51,11 @@ namespace MagiCloud.NetWorks.Server
         {
             ptr=SystemDllHelper.GetForegroundWindow();
             //最小化自身窗口
-            SystemDllHelper.ShowWindow(ptr,2);
+           // SystemDllHelper.ShowWindow(ptr,2);
             windowReq.Path=path;
             NetManager.connetion.BeginSendMessages(GetWakeupProtocol());
         }
-
+       
         public ProtobufTool GetWakeupProtocol()
         {
             ProtobufTool tool = new ProtobufTool();

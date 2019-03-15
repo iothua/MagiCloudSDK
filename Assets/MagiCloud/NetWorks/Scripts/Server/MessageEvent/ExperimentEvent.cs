@@ -10,7 +10,7 @@ namespace MagiCloud.NetWorks.Server
     {
         ExperimentInfo experimentInfo;
         MessageEvent message;
-        public ExperimentEvent(MessageEvent message)
+        public ExperimentEvent(MessageEvent message,MessageDistribution messageDistribution)
         {
             this.message=message;
             experimentInfo =new ExperimentInfo()
@@ -20,7 +20,7 @@ namespace MagiCloud.NetWorks.Server
                 Name="",
                 IsBack=false
             };
-            MessageDistribution.AddListener((int)EnumCmdID.ExpinfoRes,ExpinfoResCallback);
+            messageDistribution.AddListener((int)EnumCmdID.ExpinfoRes,ExpinfoResCallback);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace MagiCloud.NetWorks.Server
             if (action!=null)
                 action.Invoke();
 
-            message.wakeupEvent.SetMin();
+            //message.wakeupEvent.SetMin();
 
             ProtobufTool tool = new ProtobufTool();
             tool.CreatData((int)EnumCmdID.ExpinfoReq,experimentInfo);

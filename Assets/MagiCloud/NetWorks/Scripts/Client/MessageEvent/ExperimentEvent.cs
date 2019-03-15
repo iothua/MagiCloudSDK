@@ -11,7 +11,7 @@ namespace MagiCloud.NetWorks.Client
 
         public Text txtExperimentPath;
 
-        public ExperimentEvent()
+        public ExperimentEvent(MessageDistribution messageDistribution)
         {
             ptr = SystemDllHelper.GetForegroundWindow();
             experimentInfo=new ExperimentInfo()
@@ -21,7 +21,7 @@ namespace MagiCloud.NetWorks.Client
                 Name="",
                 IsBack=false
             };
-            MessageDistribution.AddListener((int)EnumCmdID.ExpinfoReq,ExpinfoReqCallback);
+            messageDistribution.AddListener((int)EnumCmdID.ExpinfoReq,ExpinfoReqCallback);
         }
         /// <summary>
         /// 收到请求

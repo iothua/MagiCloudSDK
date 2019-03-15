@@ -10,14 +10,14 @@ namespace MagiCloud.NetWorks.Server
     {
         ConnectInfo info;
         private Dictionary<int,Action> actions;
-        public ClientConnectEvent()
+        public ClientConnectEvent(MessageDistribution messageDistribution)
         {
             actions=new Dictionary<int,Action>();
             info =new ConnectInfo()
             {
                 Id=0
             };
-            MessageDistribution.AddListener((int)EnumCmdID.Connect,OnConnect);
+            messageDistribution.AddListener((int)EnumCmdID.Connect,OnConnect);
         }
 
         public void Add(int id,Action a)

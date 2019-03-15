@@ -4,15 +4,16 @@ using System.Collections.Generic;
 namespace MagiCloud.NetWorks
 {
     public delegate void MessageDelegate(ProtobufTool data);
+   
     /// <summary>
     /// 消息分发
     /// </summary>
-    public static class MessageDistribution
+    public class MessageDistribution
     {
-        private static int num = 15;
-        public static List<ProtobufTool> msgList = new List<ProtobufTool>();        //当前消息列表
-        private static Dictionary<int,MessageDelegate> msgEvents = new Dictionary<int,MessageDelegate>();       //消息事件集合
-        private static Dictionary<int,MessageDelegate> onceMsgEvents = new Dictionary<int,MessageDelegate>();  //单次消息事件集合
+        private int num = 20;
+        public List<ProtobufTool> msgList = new List<ProtobufTool>();        //当前消息列表
+        private Dictionary<int,MessageDelegate> msgEvents = new Dictionary<int,MessageDelegate>();       //消息事件集合
+        private Dictionary<int,MessageDelegate> onceMsgEvents = new Dictionary<int,MessageDelegate>();  //单次消息事件集合
         #region AddOrRemove
 
         /// <summary>
@@ -20,7 +21,7 @@ namespace MagiCloud.NetWorks
         /// </summary>
         /// <param name="type"></param>
         /// <param name="msg"></param>
-        public static void AddListener(int type,MessageDelegate msg)
+        public void AddListener(int type,MessageDelegate msg)
         {
             if (msgEvents.ContainsKey(type))
                 msgEvents[type]+=msg;
@@ -32,7 +33,7 @@ namespace MagiCloud.NetWorks
         /// </summary>
         /// <param name="type"></param>
         /// <param name="msg"></param>
-        public static void AddOnceListener(int type,MessageDelegate msg)
+        public void AddOnceListener(int type,MessageDelegate msg)
         {
             if (onceMsgEvents.ContainsKey(type))
                 onceMsgEvents[type]+=msg;
@@ -44,7 +45,7 @@ namespace MagiCloud.NetWorks
         /// </summary>
         /// <param name="type"></param>
         /// <param name="msg"></param>
-        public static void RemoveListener(int type,MessageDelegate msg)
+        public void RemoveListener(int type,MessageDelegate msg)
         {
             if (msgEvents.ContainsKey(type))
             {
@@ -58,7 +59,7 @@ namespace MagiCloud.NetWorks
         /// </summary>
         /// <param name="type"></param>
         /// <param name="msg"></param>
-        public static void RemoveOnceListener(int type,MessageDelegate msg)
+        public void RemoveOnceListener(int type,MessageDelegate msg)
         {
             if (msgEvents.ContainsKey(type))
             {
@@ -73,7 +74,7 @@ namespace MagiCloud.NetWorks
         /// <summary>
         /// 每帧处理消息队列
         /// </summary>
-        public static void Update()
+        public void Update()
         {
             //通过当前消息与已注册消息事件的类型匹配来进行分发事件
             for (int i = 0; i < num; i++)        //由于msgList是动态的，这里每帧最多处理固定的消息数量
@@ -93,7 +94,7 @@ namespace MagiCloud.NetWorks
         /// 执行消息事件
         /// </summary>
         /// <param name="key"></param>
-        private static void OnMessageEvent(ProtobufTool msg)
+        private void OnMessageEvent(ProtobufTool msg)
         {
             int key = msg.type;
             if (msgEvents.ContainsKey(key))

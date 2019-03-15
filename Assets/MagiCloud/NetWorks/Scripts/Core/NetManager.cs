@@ -3,6 +3,7 @@ namespace MagiCloud.NetWorks
 {
     public class NetManager
     {
+      
         public static MCConnetion connetion = new MCConnetion();
         public static HeartBeatInfo hearInfo;
         public static void Update()

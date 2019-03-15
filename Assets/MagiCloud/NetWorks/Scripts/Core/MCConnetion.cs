@@ -6,6 +6,7 @@ namespace MagiCloud.NetWorks
 {
     public class MCConnetion
     {
+        public MessageDistribution messageDistribution;
         /// <summary>
         /// 缓冲区最大长度
         /// </summary>
@@ -46,6 +47,10 @@ namespace MagiCloud.NetWorks
         }
         public ConnectStatus status = ConnectStatus.None;
 
+        public MCConnetion()
+        {
+            messageDistribution=new MessageDistribution();
+        }
         /// <summary>
         /// 连接
         /// </summary>
@@ -113,9 +118,9 @@ namespace MagiCloud.NetWorks
             //协议解码
             ProtobufTool proto = protocol.Read(readBuffer);
             Debug.Log("收到消息:"+(EnumCmdID)proto.type);
-            lock (MessageDistribution.msgList)
+            lock (messageDistribution.msgList)
             {
-                MessageDistribution.msgList.Add(proto);
+                messageDistribution.msgList.Add(proto);
             }
             //清除已处理的消息
             int count = bufferCount-msgLength-sizeof(Int32)-sizeof(Int32);
@@ -157,7 +162,7 @@ namespace MagiCloud.NetWorks
         public void Update()
         {
             //消息
-            MessageDistribution.Update();
+            messageDistribution.Update();
             //心跳
             if (status==ConnectStatus.Connected)
             {
