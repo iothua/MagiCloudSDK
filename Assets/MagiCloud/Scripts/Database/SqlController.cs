@@ -28,12 +28,12 @@ namespace MagiCloud.Database
         /// <returns>实体类</returns>
         public static T DataSetToEntity<T>(DataSet p_DataSet, int p_TableIndex = 0)
         {
-            if (p_DataSet == null || p_DataSet.Tables.Count < 0) return default;
+            if (p_DataSet == null || p_DataSet.Tables.Count < 0) return default(T);
 
-            if (p_TableIndex > p_DataSet.Tables.Count - 1) return default;
+            if (p_TableIndex > p_DataSet.Tables.Count - 1) return default(T);
             if (p_TableIndex < 0) p_TableIndex = 0;
 
-            if (p_DataSet.Tables[p_TableIndex].Rows.Count <= 0) return default;
+            if (p_DataSet.Tables[p_TableIndex].Rows.Count <= 0) return default(T);
 
             DataRow p_Data = p_DataSet.Tables[p_TableIndex].Rows[0];
 
@@ -59,16 +59,16 @@ namespace MagiCloud.Database
         public static IList<T> DataSetToEntityList<T>(DataSet p_DataSet, int p_TableIndex)
         {
             if (p_DataSet == null || p_DataSet.Tables.Count < 0)
-                return default;
+                return default(IList<T>);
 
             if (p_TableIndex > p_DataSet.Tables.Count - 1)
-                return default;
+                return default(IList<T>);
 
             if (p_TableIndex < 0)
                 p_TableIndex = 0;
 
             if (p_DataSet.Tables[p_TableIndex].Rows.Count <= 0)
-                return default;
+                return default(IList<T>);
 
             DataTable p_Data = p_DataSet.Tables[p_TableIndex];
             IList<T> result = new List<T>();
