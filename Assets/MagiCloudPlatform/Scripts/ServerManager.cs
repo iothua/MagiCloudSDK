@@ -30,6 +30,7 @@ public class ServerManager :MonoBehaviour
         messageEvent.experimentEvent.SendReq(() =>
         {
             messageEvent.wakeupEvent.OpenExe(clientPath);
+            messageEvent.wakeupEvent.SendWakeup();
         },new ExperimentInfo()
         {
             Id = 0,
@@ -43,6 +44,7 @@ public class ServerManager :MonoBehaviour
         {
             messageEvent.experimentEvent.SendReq(() =>
             {
+                messageEvent.wakeupEvent.SendWakeup();
                 //messageEvent.wakeupEvent.OpenExe(clientPath);
             },new ExperimentInfo()
             {

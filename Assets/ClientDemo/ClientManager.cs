@@ -22,7 +22,7 @@ public class ClientManager :MonoBehaviour
     public void OnBack()
     {
         messageEvent.experimentEvent.SendExpinfoRes();
-
+        messageEvent.wakeupEvent.SetMinWindow();
     }
 
     private void Update()
