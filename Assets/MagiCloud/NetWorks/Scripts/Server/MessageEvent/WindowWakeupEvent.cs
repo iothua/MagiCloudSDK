@@ -4,7 +4,11 @@ using UnityEngine;
 
 namespace MagiCloud.NetWorks.Server
 {
-
+    /// <summary>
+    /// 窗口唤醒
+    ///     当点击开启实验按钮时，唤醒实验窗口，接收到回执后最小化，到接收到实验退出时，恢复窗口
+    /// 
+    /// </summary>
     public class WindowWakeupEvent
     {
         // Process p;
@@ -13,9 +17,10 @@ namespace MagiCloud.NetWorks.Server
 
         public WindowReq windowReq;
         public WindowRes windowRes;
-
+        private MessageDistribution messageDistribution;
         public WindowWakeupEvent(MessageDistribution messageDistribution)
         {
+            this.messageDistribution=messageDistribution;
             InitWindowReq();
             InitWindowRes();
             processHelper = new ProcessHelper();
@@ -40,6 +45,7 @@ namespace MagiCloud.NetWorks.Server
             {
                 Status=WindowStatus.None
             };
+            messageDistribution.AddListener((int)EnumCmdID.WindowwakeupRes,ResCallback);
         }
 
         #region 从服务端唤醒外部程序
@@ -49,13 +55,13 @@ namespace MagiCloud.NetWorks.Server
         /// <param name="path"></param>
         public void SendWakeup(string path = "")
         {
-            ptr=SystemDllHelper.GetForegroundWindow();
+            //   ptr=SystemDllHelper.GetForegroundWindow();
             //最小化自身窗口
-           // SystemDllHelper.ShowWindow(ptr,2);
+            // SystemDllHelper.ShowWindow(ptr,2);
             windowReq.Path=path;
             NetManager.connetion.BeginSendMessages(GetWakeupProtocol());
         }
-       
+
         public ProtobufTool GetWakeupProtocol()
         {
             ProtobufTool tool = new ProtobufTool();
@@ -63,11 +69,14 @@ namespace MagiCloud.NetWorks.Server
             return tool;
         }
 
-
+        /// <summary>
+        /// 收到窗口唤醒回执后，最小化窗口
+        /// </summary>
+        /// <param name="data"></param>
         private void ResCallback(ProtobufTool data)
         {
             data.DeSerialize(windowRes,data.bytes);
-            SystemDllHelper.ShowWindow(ptr,3);
+            SystemDllHelper.ShowWindow(ptr,2);
         }
         #endregion
 

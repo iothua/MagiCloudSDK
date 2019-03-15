@@ -50,57 +50,63 @@ namespace MCServer
         private void WakeupResCallback(int connectID,ProtobufTool data)
         {
             data.DeSerialize(windowRes,data.bytes);
-            switch (windowRes.Status)
-            {
-                case WindowStatus.None:
-                    break;
-                case WindowStatus.Restore:
-                    break;
-                case WindowStatus.Min:
-                    break;
-                case WindowStatus.Max:
-                    break;
-                case WindowStatus.Exit:
-                    if (p!=null&&!p.HasExited)
-                    { p.Kill(); }
+            ProtobufTool protobuf = new ProtobufTool();
+            protobuf.CreatData((int)EnumCmdID.WindowwakeupRes,windowRes);
+            Server.Instance.Broadcast(protobuf);
+            //switch (windowRes.Status)
+            //{
+            //    case WindowStatus.None:
+            //        break;
+            //    case WindowStatus.Restore:
+            //        break;
+            //    case WindowStatus.Min:
+            //        break;
+            //    case WindowStatus.Max:
+            //        break;
+            //    case WindowStatus.Exit:
+            //        if (p!=null&&!p.HasExited)
+            //        { p.Kill(); }
 
-                    break;
-                default:
-                    break;
-            }
+            //        break;
+            //    default:
+            //        break;
+            //}
         }
 
         private void WindowWakeupCallback(int connectID,ProtobufTool data)
         {
             //接收到窗口唤醒请求
             data.DeSerialize(windowReq,data.bytes);
-            //启动外部程序
-            if (p==null)
-            {
-                p =new Process
-                {
-                    StartInfo=new ProcessStartInfo
-                    {
-                        WindowStyle=ProcessWindowStyle.Maximized,
-                        Arguments="2",
-                    }
-                };
-                if (!string.IsNullOrEmpty(windowReq.Path))
-                {
-                    p.StartInfo.FileName=windowReq.Path;
-                }
-                p.Start();
-            }
-            else
-            {
-                if (p.HasExited)
-                {
-                    p.Start();
-                }
-            }
-            p.StartInfo.WindowStyle=ProcessWindowStyle.Maximized;
-            p.EnableRaisingEvents=true;
-            p.Exited+=ExitedEvent;
+            ProtobufTool protobuf = new ProtobufTool();
+            protobuf.CreatData((int)EnumCmdID.WindowwakeupRes,windowReq);
+            Server.Instance.Broadcast(protobuf);
+            ////启动外部程序
+            //if (p==null)
+            //{
+            //    p =new Process
+            //    {
+            //        StartInfo=new ProcessStartInfo
+            //        {
+            //            WindowStyle=ProcessWindowStyle.Maximized,
+            //            Arguments="2",
+            //        }
+            //    };
+            //    if (!string.IsNullOrEmpty(windowReq.Path))
+            //    {
+            //        p.StartInfo.FileName=windowReq.Path;
+            //    }
+            //    p.Start();
+            //}
+            //else
+            //{
+            //    if (p.HasExited)
+            //    {
+            //        p.Start();
+            //    }
+            //}
+            //p.StartInfo.WindowStyle=ProcessWindowStyle.Maximized;
+            //p.EnableRaisingEvents=true;
+            //p.Exited+=ExitedEvent;
         }
 
         private void ExitedEvent(object sender,EventArgs e)
