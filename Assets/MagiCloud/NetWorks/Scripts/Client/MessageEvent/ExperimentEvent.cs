@@ -58,7 +58,7 @@ namespace MagiCloud.NetWorks.Client
             experimentInfo.IsBack=true;
             ProtobufTool tool = new ProtobufTool();
             tool.CreatData((int)EnumCmdID.ExpinfoRes,experimentInfo);
-            NetManager.connetion.BeginSendMessages(tool);
+            ClientNetManager.connetion.BeginSendMessages(tool);
         }
 
     }

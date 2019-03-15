@@ -13,9 +13,9 @@ public class ClientManager :MonoBehaviour
 
     private void Start()
     {
-        messageEvent = new MessageEvent(NetManager.connetion.messageDistribution);
+        messageEvent = new MessageEvent(ClientNetManager.connetion.messageDistribution);
         messageEvent.experimentEvent.txtExperimentPath = txtExperimentPath;
-        NetManager.connetion.Connect("127.0.0.1",8888);
+        ClientNetManager.connetion.Connect("127.0.0.1",8888);
 
     }
 
@@ -27,11 +27,11 @@ public class ClientManager :MonoBehaviour
 
     private void Update()
     {
-        NetManager.Update();
+        ClientNetManager.Update();
     }
 
     private void OnDestroy()
     {
-        NetManager.connetion.Close();
+        ClientNetManager.connetion.Close();
     }
 }
