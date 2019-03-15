@@ -3,13 +3,13 @@ namespace MagiCloud.NetWorks.Client
 {
     public class WindowWakeupEvent
     {
-        public WindowWakeupEvent()
+        public WindowWakeupEvent(MessageDistribution messageDistribution )
         {
-            MessageDistribution.AddListener((int)EnumCmdID.WindowwakeupReq,WindowWakeupCallback);
+            messageDistribution.AddListener((int)EnumCmdID.WindowwakeupReq,WindowWakeupCallback);
         }
         private void WindowWakeupCallback(ProtobufTool data)
         {
-            Debug.Log("收到唤醒信息，正在启动");
+            //Debug.Log("收到唤醒信息，正在启动");
         }
     }
 }

@@ -7,7 +7,7 @@ using MagiCloud.NetWorks;
 /// <summary>
 /// 服务端
 /// </summary>
-public class ServerManager : MonoBehaviour
+public class ServerManager :MonoBehaviour
 {
 
     //客户端目录
@@ -21,8 +21,8 @@ public class ServerManager : MonoBehaviour
     private void Start()
     {
         StartServerProcess();
-        messageEvent = new MessageEvent();
-        NetManager.connetion.Connect("127.0.0.1", 8888);
+        messageEvent = new MessageEvent(NetManager.connetion.messageDistribution);
+        NetManager.connetion.Connect("127.0.0.1",8888);
     }
 
     public void AddEvent()
@@ -30,7 +30,8 @@ public class ServerManager : MonoBehaviour
         messageEvent.experimentEvent.SendReq(() =>
         {
             messageEvent.wakeupEvent.OpenExe(clientPath);
-        }, new ExperimentInfo() {
+        },new ExperimentInfo()
+        {
             Id = 0,
             Name = "高锰酸钾制取氧气",
             ExperimentPath = "ClientDemo/Prefabs/TestDemo.prefab",
@@ -38,11 +39,12 @@ public class ServerManager : MonoBehaviour
             IsBack = false
         });
 
-        messageEvent.clientConnectEvent.Add(1, () => {
+        messageEvent.clientConnectEvent.Add(1,() =>
+        {
             messageEvent.experimentEvent.SendReq(() =>
             {
                 //messageEvent.wakeupEvent.OpenExe(clientPath);
-            }, new ExperimentInfo()
+            },new ExperimentInfo()
             {
                 Id = 0,
                 Name = "高锰酸钾制取氧气",
@@ -62,7 +64,7 @@ public class ServerManager : MonoBehaviour
     private void StartServerProcess()
     {
         helper = new ProcessHelper();
-        helper.OpenExe(serverPath, true);
+        helper.OpenExe(serverPath,true);
         helper.p.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
     }
 

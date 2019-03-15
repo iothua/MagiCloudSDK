@@ -5,11 +5,12 @@
         public WindowWakeupEvent wakeupEvent;
         public ExperimentEvent experimentEvent;
         public SettingEvent settingEvent;
-        public MessageEvent()
+        public MessageEvent(MessageDistribution messageDistribution)
         {
-            settingEvent=new SettingEvent();
-            wakeupEvent = new WindowWakeupEvent();
-            experimentEvent=new ExperimentEvent();
+            messageDistribution=new MessageDistribution();
+            settingEvent =new SettingEvent(messageDistribution);
+            wakeupEvent = new WindowWakeupEvent(messageDistribution);
+            experimentEvent=new ExperimentEvent(messageDistribution);
         }
     }
 }

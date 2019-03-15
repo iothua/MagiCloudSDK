@@ -13,13 +13,14 @@ namespace MagiCloud.NetWorks.Server
         public WindowWakeupEvent wakeupEvent;
         public ExperimentEvent experimentEvent;
         public ClientConnectEvent clientConnectEvent;
-        public MessageEvent()
+        public MessageEvent(MessageDistribution messageDistribution)
         {
-            settingEvent=new SettingEvent();
+            messageDistribution=new MessageDistribution();
+            settingEvent =new SettingEvent(messageDistribution);
 
-            wakeupEvent =new WindowWakeupEvent();
-            experimentEvent=new ExperimentEvent(this);
-            clientConnectEvent=new ClientConnectEvent();
+            wakeupEvent =new WindowWakeupEvent(messageDistribution);
+            experimentEvent=new ExperimentEvent(this,messageDistribution);
+            clientConnectEvent=new ClientConnectEvent(messageDistribution);
 
         }
     }
