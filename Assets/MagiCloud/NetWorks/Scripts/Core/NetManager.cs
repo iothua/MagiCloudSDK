@@ -1,28 +1,25 @@
 ﻿
-namespace MagiCloud.NetWorks
+namespace MagiCloud.NetWorks.Server
 {
-    public class NetManager
+    public class ServerNetManager
     {
-      
         public static MCConnetion connetion = new MCConnetion();
-        public static HeartBeatInfo hearInfo;
+
         public static void Update()
         {
             connetion.Update();
         }
+    }
+}
+namespace MagiCloud.NetWorks.Client
+{
+    public class ClientNetManager
+    {
+        public static MCConnetion connetion = new MCConnetion();
 
-        public static ProtobufTool GetHeatBeatProtocol()
+        public static void Update()
         {
-            ProtobufTool protocol = new ProtobufTool();
-            hearInfo=new HeartBeatInfo()
-            {
-                Curtime=0,
-                Hostip="127.0.0.1",
-            };
-            protocol.CreatData((int)EnumCmdID.Heartbeat,hearInfo);
-            return protocol;
+            connetion.Update();
         }
-
-      
     }
 }

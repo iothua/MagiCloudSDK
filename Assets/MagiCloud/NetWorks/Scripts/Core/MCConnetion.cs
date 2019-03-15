@@ -38,7 +38,7 @@ namespace MagiCloud.NetWorks
         public float lastTickTime = 0;
 
         public float heartBeatTime = 2;
-
+        public HeartBeatInfo hearInfo;
 
         public enum ConnectStatus
         {
@@ -158,7 +158,7 @@ namespace MagiCloud.NetWorks
                 Console.WriteLine(e);
             }
         }
-
+       
         public void Update()
         {
             //消息
@@ -168,14 +168,24 @@ namespace MagiCloud.NetWorks
             {
                 if (Time.time-lastTickTime>heartBeatTime)
                 {
-                    ProtobufTool proto = NetManager.GetHeatBeatProtocol();
+                    ProtobufTool proto = GetHeatBeatProtocol();
                     //Debug.Log("发送心跳包");
                     BeginSendMessages(proto);
                     lastTickTime=Time.time;
                 }
             }
         }
-
+        public ProtobufTool GetHeatBeatProtocol()
+        {
+            ProtobufTool protocol = new ProtobufTool();
+            hearInfo=new HeartBeatInfo()
+            {
+                Curtime=0,
+                Hostip="127.0.0.1",
+            };
+            protocol.CreatData((int)EnumCmdID.Heartbeat,hearInfo);
+            return protocol;
+        }
 
         /// <summary>
         /// 关闭连接

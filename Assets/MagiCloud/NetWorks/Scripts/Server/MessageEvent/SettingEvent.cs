@@ -51,7 +51,7 @@ namespace MagiCloud.NetWorks.Server
         /// </summary>
         public void SendSetting()
         {
-            NetManager.connetion.BeginSendMessages(GetSystemSetting());
+            ServerNetManager.connetion.BeginSendMessages(GetSystemSetting());
         }
 
         /// <summary>

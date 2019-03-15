@@ -21,8 +21,8 @@ public class ServerManager :MonoBehaviour
     private void Start()
     {
         StartServerProcess();
-        messageEvent = new MessageEvent(NetManager.connetion.messageDistribution);
-        NetManager.connetion.Connect("127.0.0.1",8888);
+        messageEvent = new MessageEvent(ServerNetManager.connetion.messageDistribution);
+        ServerNetManager.connetion.Connect("127.0.0.1",8888);
     }
 
     public void AddEvent()
@@ -72,7 +72,7 @@ public class ServerManager :MonoBehaviour
 
     private void Update()
     {
-        NetManager.Update();
+        ServerNetManager.Update();
     }
 
     private void OnApplicationQuit()
@@ -82,7 +82,7 @@ public class ServerManager :MonoBehaviour
 
     private void OnDestroy()
     {
-        NetManager.connetion.Close();
+        ServerNetManager.connetion.Close();
         helper.Exit();
     }
 }

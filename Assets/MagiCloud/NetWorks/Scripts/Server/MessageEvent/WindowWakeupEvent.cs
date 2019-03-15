@@ -59,7 +59,7 @@ namespace MagiCloud.NetWorks.Server
             //最小化自身窗口
             // SystemDllHelper.ShowWindow(ptr,2);
             windowReq.Path=path;
-            NetManager.connetion.BeginSendMessages(GetWakeupProtocol());
+            ServerNetManager.connetion.BeginSendMessages(GetWakeupProtocol());
         }
 
         public ProtobufTool GetWakeupProtocol()
