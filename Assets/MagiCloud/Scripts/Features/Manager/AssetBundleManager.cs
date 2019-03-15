@@ -6,6 +6,7 @@ using System;
 using Loxodon.Framework.Bundles;
 using Loxodon.Framework.Asynchronous;
 using Loxodon.Framework.Examples.Bundle;
+using System.Text;
 
 namespace MagiCloud
 {
@@ -35,6 +36,9 @@ namespace MagiCloud
 
         private Dictionary<string, IBundle> bundles = new Dictionary<string, IBundle>();
 
+        private string iv = "I9Ldk05g2ezWEXE9";
+        private string key = "uz0NlpJaMnG7dHrR";
+
         private void Awake()
         {
             Instance = this;
@@ -44,7 +48,7 @@ namespace MagiCloud
 
             IPathInfoParser pathInfoParser = new AutoMappingPathInfoParser(manifest);
 
-            ILoaderBuilder builder = new CustomBundleLoaderBuilder(new Uri(BundleUtil.GetReadOnlyDirectory()), false);
+            ILoaderBuilder builder = new CustomBundleLoaderBuilder(new Uri(BundleUtil.GetReadOnlyDirectory()), false, new RijndaelCryptograph(128, Encoding.ASCII.GetBytes(key), Encoding.ASCII.GetBytes(iv)));
 
             IBundleManager manager = new BundleManager(manifest, builder);
 
