@@ -36,11 +36,8 @@ namespace MagiCloud.Downloads
             var webRequest = UnityWebRequest.Head(uri);
             
             //webRequest.SetRequestHeader("Range", "bytes = " + currentLength+"-"+);//断点续传设置文件的数据流开始索引
-
             isStartDownload = true;
             webRequest.timeout = 30;
-
-            
 
             yield return webRequest.SendWebRequest();
 
