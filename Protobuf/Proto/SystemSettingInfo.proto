@@ -1,0 +1,22 @@
+syntax = "proto3";
+package MagiCloud.NetWorks;
+//系统设置
+message SystemSettingInfo{
+	int32 volume=1;
+
+	//性能参数
+	enum Performance{
+		NONE=0;
+		HIGHT=1;
+		MIDDLE=2;
+		LOW=3;
+	}
+	Performance type=2;
+}
+
+message SystemSettingRequest{
+	SystemSettingInfo info=1;
+}
+message SystemSettingReceipt{
+	int32 back=1;
+}

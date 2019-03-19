@@ -1,0 +1,17 @@
+syntax = "proto3";
+package MagiCloud.NetWorks;
+enum CommandID{
+None=0;
+Heartbeat_Packet_Request=1;		//心跳包请求协议号
+Connect=2;		//连接
+Pause_Connection=3;		//挂起暂停
+Restore_Connection=4;		//恢复连接
+Break_Connection=5;		//断开连接
+System_Setting_Request=10001;	//系统请求协议号
+System_Setting_Receipt=10002;	//系统设置请求回包协议号
+
+Experiment_Info_Request=10003;	//实验信息请求协议号
+Experiment_Info_Receipt=10004;	//实验信息请求回包协议号
+Window_Wake_Up_Request=10005;	//窗口唤醒请求
+Window_Wake_Up_Receipt=10006;	//窗口唤醒回执
+}
