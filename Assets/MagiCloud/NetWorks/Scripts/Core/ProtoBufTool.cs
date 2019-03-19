@@ -25,7 +25,7 @@ namespace MagiCloud.NetWorks
                 CodedOutputStream outputStream = new CodedOutputStream(stream);
                 outputStream.WriteMessage(msg);
                 outputStream.Flush();
-                result =stream.ToArray();
+                result = stream.ToArray();
                 return result;
             }
         }
@@ -36,7 +36,7 @@ namespace MagiCloud.NetWorks
         /// <typeparam name="T"></typeparam>
         /// <param name="t"></param>
         /// <param name="data"></param>
-        public void DeSerialize<T>(T t,byte[] data) where T : IMessage
+        public void DeSerialize<T>(T t, byte[] data) where T : IMessage
         {
             try
             {
@@ -59,22 +59,22 @@ namespace MagiCloud.NetWorks
         /// <param name="type"></param>
         /// <param name="pbuf"></param>
         /// <returns></returns>
-        public byte[] CreatData<T>(int type,T pbuf) where T : IMessage
+        public byte[] CreatData<T>(int type, T pbuf) where T : IMessage
         {
             byte[] pbdata = Serialize(pbuf);
             using (MemoryStream stream = new MemoryStream())
             {
                 BinaryWriter writer = new BinaryWriter(stream);
                 writer.Write(type);
-                this.type=type;
+                this.type = type;
                 writer.Write(pbdata);
                 writer.Flush();
                 byte[] result = WriteMessage(stream.ToArray());
-                if (bytes==null)
-                    bytes=result;
+                if (bytes == null)
+                    bytes = result;
                 else
-                    bytes=bytes.Concat(result).ToArray();
-                byteLength=bytes.Length;
+                    bytes = bytes.Concat(result).ToArray();
+                byteLength = bytes.Length;
                 return bytes;
             }
         }
@@ -88,7 +88,7 @@ namespace MagiCloud.NetWorks
         {
             using (MemoryStream stream = new MemoryStream())
             {
-                stream.Position=0;
+                stream.Position = 0;
                 BinaryWriter writer = new BinaryWriter(stream);
                 int len = msg.Length;
                 writer.Write(len);
@@ -112,10 +112,10 @@ namespace MagiCloud.NetWorks
                 BinaryReader reader = new BinaryReader(stream);
                 int dataLength = reader.ReadInt32();            //解析数据长度
                 int typeId = reader.ReadInt32();                //解析消息类型
-                byte[] pddata = reader.ReadBytes(dataLength-4); //4为消息类型占数组长度
-                protobuf.type =typeId;
-                protobuf.bytes=pddata;
-                protobuf.byteLength =dataLength;
+                byte[] pddata = reader.ReadBytes(dataLength - 4); //4为消息类型占数组长度
+                protobuf.type = typeId;
+                protobuf.bytes = pddata;
+                protobuf.byteLength = dataLength;
             }
             return protobuf;
         }

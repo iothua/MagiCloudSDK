@@ -9,8 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace MagiCloud.NetWorks
-{
+namespace MagiCloud.NetWorks {
 
   /// <summary>Holder for reflection information generated from ConnectInfo.proto</summary>
   public static partial class ConnectInfoReflection {
@@ -25,8 +24,8 @@ namespace MagiCloud.NetWorks
     static ConnectInfoReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChFDb25uZWN0SW5mby5wcm90bxIITUNTZXJ2ZXIiGQoLQ29ubmVjdEluZm8S",
-            "CgoCaWQYASABKAViBnByb3RvMw=="));
+            "ChFDb25uZWN0SW5mby5wcm90bxISTWFnaUNsb3VkLk5ldFdvcmtzIhkKC0Nv",
+            "bm5lY3RJbmZvEgoKAmlkGAEgASgFYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -38,7 +37,7 @@ namespace MagiCloud.NetWorks
   }
   #region Messages
   /// <summary>
-  ///¥∞ø⁄ªΩ–—
+  ///ËøûÊé•‰ø°ÊÅØ
   /// </summary>
   public sealed partial class ConnectInfo : pb::IMessage<ConnectInfo> {
     private static readonly pb::MessageParser<ConnectInfo> _parser = new pb::MessageParser<ConnectInfo>(() => new ConnectInfo());

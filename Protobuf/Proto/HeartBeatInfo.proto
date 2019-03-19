@@ -1,0 +1,10 @@
+syntax = "proto3";
+package MagiCloud.NetWorks;
+//心跳包信息
+message HeartBeatInfo{
+	
+	//当前时间
+	int32 currentTime=1;
+	//主机IP
+	string hostip=2;
+}
