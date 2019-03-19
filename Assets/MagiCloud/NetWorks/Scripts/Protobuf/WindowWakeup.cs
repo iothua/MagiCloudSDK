@@ -9,8 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace MagiCloud.NetWorks
-{
+namespace MagiCloud.NetWorks {
 
   /// <summary>Holder for reflection information generated from WindowWakeup.proto</summary>
   public static partial class WindowWakeupReflection {
@@ -25,16 +24,17 @@ namespace MagiCloud.NetWorks
     static WindowWakeupReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChJXaW5kb3dXYWtldXAucHJvdG8SCE1DU2VydmVyIhwKDFdpbmRvd1dha2V1",
-            "cBIMCgRvcGVuGAEgASgFIhkKCVdpbmRvd1JlcRIMCgRwYXRoGAEgASgJIjMK",
-            "CVdpbmRvd1JlcxImCgZzdGF0dXMYASABKA4yFi5NQ1NlcnZlci5XaW5kb3dT",
-            "dGF0dXMqQQoMV2luZG93U3RhdHVzEggKBE5PTkUQABILCgdSRVNUT1JFEAES",
-            "BwoDTUlOEAISBwoDTUFYEAMSCAoERVhJVBAEYgZwcm90bzM="));
+            "ChJXaW5kb3dXYWtldXAucHJvdG8SEk1hZ2lDbG91ZC5OZXRXb3JrcyIcCgxX",
+            "aW5kb3dXYWtldXASDAoEb3BlbhgBIAEoBSIdCg1XaW5kb3dSZXF1ZXN0EgwK",
+            "BHBhdGgYASABKAkiPQoJV2luZG93UmVzEjAKBnN0YXR1cxgBIAEoDjIgLk1h",
+            "Z2lDbG91ZC5OZXRXb3Jrcy5XaW5kb3dTdGF0dXMqQQoMV2luZG93U3RhdHVz",
+            "EggKBE5PTkUQABILCgdSRVNUT1JFEAESBwoDTUlOEAISBwoDTUFYEAMSCAoE",
+            "RVhJVBAEYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::MagiCloud.NetWorks.WindowStatus), }, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.WindowWakeup), global::MagiCloud.NetWorks.WindowWakeup.Parser, new[]{ "Open" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.WindowReq), global::MagiCloud.NetWorks.WindowReq.Parser, new[]{ "Path" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.WindowRequest), global::MagiCloud.NetWorks.WindowRequest.Parser, new[]{ "Path" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.WindowRes), global::MagiCloud.NetWorks.WindowRes.Parser, new[]{ "Status" }, null, null, null)
           }));
     }
@@ -43,24 +43,27 @@ namespace MagiCloud.NetWorks
   }
   #region Enums
   /// <summary>
-  ///¥∞ø⁄◊¥Ã¨	
+  ///Á™ó‰ΩìÁä∂ÊÄÅ
   /// </summary>
   public enum WindowStatus {
+    /// <summary>
+    ///Êó†
+    /// </summary>
     [pbr::OriginalName("NONE")] None = 0,
     /// <summary>
-    ///ªπ‘≠
+    ///ÊÅ¢Â§ç
     /// </summary>
     [pbr::OriginalName("RESTORE")] Restore = 1,
     /// <summary>
-    ///◊Ó–°ªØ
+    ///ÊúÄÂ∞èÂåñ
     /// </summary>
     [pbr::OriginalName("MIN")] Min = 2,
     /// <summary>
-    ///◊Ó¥ÛªØ
+    ///ÊúÄÂ§ßÂåñ
     /// </summary>
     [pbr::OriginalName("MAX")] Max = 3,
     /// <summary>
-    ///ÕÀ≥ˆ
+    ///ÈÄÄÂá∫
     /// </summary>
     [pbr::OriginalName("EXIT")] Exit = 4,
   }
@@ -69,7 +72,7 @@ namespace MagiCloud.NetWorks
 
   #region Messages
   /// <summary>
-  ///¥∞ø⁄ªΩ–—
+  ///Á™ó‰ΩìÂî§ÈÜí
   /// </summary>
   public sealed partial class WindowWakeup : pb::IMessage<WindowWakeup> {
     private static readonly pb::MessageParser<WindowWakeup> _parser = new pb::MessageParser<WindowWakeup>(() => new WindowWakeup());
@@ -109,7 +112,7 @@ namespace MagiCloud.NetWorks
     public const int OpenFieldNumber = 1;
     private int open_;
     /// <summary>
-    /// «∑ÒªΩ–—
+    ///ÊâìÂºÄ
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Open {
@@ -204,13 +207,13 @@ namespace MagiCloud.NetWorks
   }
 
   /// <summary>
-  ///∑¢∆«Î«Û
+  ///Á™ó‰ΩìËØ∑Ê±Ç
   /// </summary>
-  public sealed partial class WindowReq : pb::IMessage<WindowReq> {
-    private static readonly pb::MessageParser<WindowReq> _parser = new pb::MessageParser<WindowReq>(() => new WindowReq());
+  public sealed partial class WindowRequest : pb::IMessage<WindowRequest> {
+    private static readonly pb::MessageParser<WindowRequest> _parser = new pb::MessageParser<WindowRequest>(() => new WindowRequest());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<WindowReq> Parser { get { return _parser; } }
+    public static pb::MessageParser<WindowRequest> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -223,21 +226,21 @@ namespace MagiCloud.NetWorks
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public WindowReq() {
+    public WindowRequest() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public WindowReq(WindowReq other) : this() {
+    public WindowRequest(WindowRequest other) : this() {
       path_ = other.path_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public WindowReq Clone() {
-      return new WindowReq(this);
+    public WindowRequest Clone() {
+      return new WindowRequest(this);
     }
 
     /// <summary>Field number for the "path" field.</summary>
@@ -253,11 +256,11 @@ namespace MagiCloud.NetWorks
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as WindowReq);
+      return Equals(other as WindowRequest);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(WindowReq other) {
+    public bool Equals(WindowRequest other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -307,7 +310,7 @@ namespace MagiCloud.NetWorks
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(WindowReq other) {
+    public void MergeFrom(WindowRequest other) {
       if (other == null) {
         return;
       }
@@ -336,7 +339,7 @@ namespace MagiCloud.NetWorks
   }
 
   /// <summary>
-  ///ªÿ÷¥
+  ///Á™óÂè£ÂõûÊâßÁä∂ÊÄÅ
   /// </summary>
   public sealed partial class WindowRes : pb::IMessage<WindowRes> {
     private static readonly pb::MessageParser<WindowRes> _parser = new pb::MessageParser<WindowRes>(() => new WindowRes());
