@@ -9,8 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace MagiCloud.NetWorks
-{
+namespace MagiCloud.NetWorks {
 
   /// <summary>Holder for reflection information generated from SystemSettingInfo.proto</summary>
   public static partial class SystemSettingInfoReflection {
@@ -25,19 +24,20 @@ namespace MagiCloud.NetWorks
     static SystemSettingInfoReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChdTeXN0ZW1TZXR0aW5nSW5mby5wcm90bxIITUNTZXJ2ZXIikwEKEVN5c3Rl",
-            "bVNldHRpbmdJbmZvEg4KBnZvbHVtZRgBIAEoBRI1CgR0eXBlGAIgASgOMicu",
-            "TUNTZXJ2ZXIuU3lzdGVtU2V0dGluZ0luZm8uUGVyZm9ybWFuY2UiNwoLUGVy",
-            "Zm9ybWFuY2USCAoETk9ORRAAEgkKBUhJR0hUEAESCgoGTUlERExFEAISBwoD",
-            "TE9XEAMiNwoKU2V0dGluZ1JlcRIpCgRpbmZvGAEgASgLMhsuTUNTZXJ2ZXIu",
-            "U3lzdGVtU2V0dGluZ0luZm8iGgoKU2V0dGluZ1JlcxIMCgRiYWNrGAEgASgF",
-            "YgZwcm90bzM="));
+            "ChdTeXN0ZW1TZXR0aW5nSW5mby5wcm90bxISTWFnaUNsb3VkLk5ldFdvcmtz",
+            "Ip0BChFTeXN0ZW1TZXR0aW5nSW5mbxIOCgZ2b2x1bWUYASABKAUSPwoEdHlw",
+            "ZRgCIAEoDjIxLk1hZ2lDbG91ZC5OZXRXb3Jrcy5TeXN0ZW1TZXR0aW5nSW5m",
+            "by5QZXJmb3JtYW5jZSI3CgtQZXJmb3JtYW5jZRIICgROT05FEAASCQoFSElH",
+            "SFQQARIKCgZNSURETEUQAhIHCgNMT1cQAyJLChRTeXN0ZW1TZXR0aW5nUmVx",
+            "dWVzdBIzCgRpbmZvGAEgASgLMiUuTWFnaUNsb3VkLk5ldFdvcmtzLlN5c3Rl",
+            "bVNldHRpbmdJbmZvIiQKFFN5c3RlbVNldHRpbmdSZWNlaXB0EgwKBGJhY2sY",
+            "ASABKAViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.SystemSettingInfo), global::MagiCloud.NetWorks.SystemSettingInfo.Parser, new[]{ "Volume", "Type" }, null, new[]{ typeof(global::MagiCloud.NetWorks.SystemSettingInfo.Types.Performance) }, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.SettingReq), global::MagiCloud.NetWorks.SettingReq.Parser, new[]{ "Info" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.SettingRes), global::MagiCloud.NetWorks.SettingRes.Parser, new[]{ "Back" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.SystemSettingRequest), global::MagiCloud.NetWorks.SystemSettingRequest.Parser, new[]{ "Info" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.SystemSettingReceipt), global::MagiCloud.NetWorks.SystemSettingReceipt.Parser, new[]{ "Back" }, null, null, null)
           }));
     }
     #endregion
@@ -45,7 +45,7 @@ namespace MagiCloud.NetWorks
   }
   #region Messages
   /// <summary>
-  ///系统设置信息
+  ///绯荤粺璁剧疆
   /// </summary>
   public sealed partial class SystemSettingInfo : pb::IMessage<SystemSettingInfo> {
     private static readonly pb::MessageParser<SystemSettingInfo> _parser = new pb::MessageParser<SystemSettingInfo>(() => new SystemSettingInfo());
@@ -207,7 +207,7 @@ namespace MagiCloud.NetWorks
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static partial class Types {
       /// <summary>
-      ///性能
+      ///鎬ц兘鍙傛暟
       /// </summary>
       public enum Performance {
         [pbr::OriginalName("NONE")] None = 0,
@@ -221,11 +221,11 @@ namespace MagiCloud.NetWorks
 
   }
 
-  public sealed partial class SettingReq : pb::IMessage<SettingReq> {
-    private static readonly pb::MessageParser<SettingReq> _parser = new pb::MessageParser<SettingReq>(() => new SettingReq());
+  public sealed partial class SystemSettingRequest : pb::IMessage<SystemSettingRequest> {
+    private static readonly pb::MessageParser<SystemSettingRequest> _parser = new pb::MessageParser<SystemSettingRequest>(() => new SystemSettingRequest());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<SettingReq> Parser { get { return _parser; } }
+    public static pb::MessageParser<SystemSettingRequest> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -238,21 +238,21 @@ namespace MagiCloud.NetWorks
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public SettingReq() {
+    public SystemSettingRequest() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public SettingReq(SettingReq other) : this() {
+    public SystemSettingRequest(SystemSettingRequest other) : this() {
       info_ = other.info_ != null ? other.info_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public SettingReq Clone() {
-      return new SettingReq(this);
+    public SystemSettingRequest Clone() {
+      return new SystemSettingRequest(this);
     }
 
     /// <summary>Field number for the "info" field.</summary>
@@ -268,11 +268,11 @@ namespace MagiCloud.NetWorks
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as SettingReq);
+      return Equals(other as SystemSettingRequest);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(SettingReq other) {
+    public bool Equals(SystemSettingRequest other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -322,7 +322,7 @@ namespace MagiCloud.NetWorks
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(SettingReq other) {
+    public void MergeFrom(SystemSettingRequest other) {
       if (other == null) {
         return;
       }
@@ -356,11 +356,11 @@ namespace MagiCloud.NetWorks
 
   }
 
-  public sealed partial class SettingRes : pb::IMessage<SettingRes> {
-    private static readonly pb::MessageParser<SettingRes> _parser = new pb::MessageParser<SettingRes>(() => new SettingRes());
+  public sealed partial class SystemSettingReceipt : pb::IMessage<SystemSettingReceipt> {
+    private static readonly pb::MessageParser<SystemSettingReceipt> _parser = new pb::MessageParser<SystemSettingReceipt>(() => new SystemSettingReceipt());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<SettingRes> Parser { get { return _parser; } }
+    public static pb::MessageParser<SystemSettingReceipt> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -373,21 +373,21 @@ namespace MagiCloud.NetWorks
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public SettingRes() {
+    public SystemSettingReceipt() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public SettingRes(SettingRes other) : this() {
+    public SystemSettingReceipt(SystemSettingReceipt other) : this() {
       back_ = other.back_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public SettingRes Clone() {
-      return new SettingRes(this);
+    public SystemSettingReceipt Clone() {
+      return new SystemSettingReceipt(this);
     }
 
     /// <summary>Field number for the "back" field.</summary>
@@ -403,11 +403,11 @@ namespace MagiCloud.NetWorks
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as SettingRes);
+      return Equals(other as SystemSettingReceipt);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(SettingRes other) {
+    public bool Equals(SystemSettingReceipt other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -457,7 +457,7 @@ namespace MagiCloud.NetWorks
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(SettingRes other) {
+    public void MergeFrom(SystemSettingReceipt other) {
       if (other == null) {
         return;
       }

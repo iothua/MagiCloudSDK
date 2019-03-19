@@ -9,8 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace MagiCloud.NetWorks
-{
+namespace MagiCloud.NetWorks {
 
   /// <summary>Holder for reflection information generated from ExperimentInfo.proto</summary>
   public static partial class ExperimentInfoReflection {
@@ -25,13 +24,14 @@ namespace MagiCloud.NetWorks
     static ExperimentInfoReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChRFeHBlcmltZW50SW5mby5wcm90bxIITUNTZXJ2ZXIiRwoORXhwZXJpbWVu",
-            "dEluZm8SCwoDb3duGAEgASgJEgwKBG5hbWUYAiABKAkSCgoCaWQYAyABKAUS",
-            "DgoGaXNCYWNrGAQgASgIYgZwcm90bzM="));
+            "ChRFeHBlcmltZW50SW5mby5wcm90bxISTWFnaUNsb3VkLk5ldFdvcmtzImIK",
+            "DkV4cGVyaW1lbnRJbmZvEhIKCm93blByb2plY3QYASABKAkSDAoEbmFtZRgC",
+            "IAEoCRIKCgJpZBgDIAEoBRIOCgZpc0JhY2sYBCABKAgSEgoKcHJlZmFiUGF0",
+            "aBgFIAEoCWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.ExperimentInfo), global::MagiCloud.NetWorks.ExperimentInfo.Parser, new[]{ "Own", "Name", "Id", "IsBack", "ExperimentPath" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.ExperimentInfo), global::MagiCloud.NetWorks.ExperimentInfo.Parser, new[]{ "OwnProject", "Name", "Id", "IsBack", "PrefabPath" }, null, null, null)
           }));
     }
     #endregion
@@ -39,7 +39,7 @@ namespace MagiCloud.NetWorks
   }
   #region Messages
   /// <summary>
-  /// µ—È–≈œ¢
+  ///ÂÆûÈ™å‰ø°ÊÅØ
   /// </summary>
   public sealed partial class ExperimentInfo : pb::IMessage<ExperimentInfo> {
     private static readonly pb::MessageParser<ExperimentInfo> _parser = new pb::MessageParser<ExperimentInfo>(() => new ExperimentInfo());
@@ -66,11 +66,11 @@ namespace MagiCloud.NetWorks
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public ExperimentInfo(ExperimentInfo other) : this() {
-      own_ = other.own_;
+      ownProject_ = other.ownProject_;
       name_ = other.name_;
       id_ = other.id_;
       isBack_ = other.isBack_;
-      experimentPath_ = other.experimentPath_;
+      prefabPath_ = other.prefabPath_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -79,17 +79,17 @@ namespace MagiCloud.NetWorks
       return new ExperimentInfo(this);
     }
 
-    /// <summary>Field number for the "own" field.</summary>
-    public const int OwnFieldNumber = 1;
-    private string own_ = "";
+    /// <summary>Field number for the "ownProject" field.</summary>
+    public const int OwnProjectFieldNumber = 1;
+    private string ownProject_ = "";
     /// <summary>
-    ///À˘ ÙœÓƒø
+    ///ÊâÄÂ±ûÈ°πÁõÆ
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Own {
-      get { return own_; }
+    public string OwnProject {
+      get { return ownProject_; }
       set {
-        own_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        ownProject_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -97,7 +97,7 @@ namespace MagiCloud.NetWorks
     public const int NameFieldNumber = 2;
     private string name_ = "";
     /// <summary>
-    /// µ—È√˚≥∆
+    ///ÂÆûÈ™åÂêçÁß∞
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Name {
@@ -111,7 +111,7 @@ namespace MagiCloud.NetWorks
     public const int IdFieldNumber = 3;
     private int id_;
     /// <summary>
-    /// µ—È±‡∫≈
+    ///ÂÆûÈ™åID
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Id {
@@ -125,7 +125,7 @@ namespace MagiCloud.NetWorks
     public const int IsBackFieldNumber = 4;
     private bool isBack_;
     /// <summary>
-    /// «∑Ò÷¥––∑µªÿ√¸¡Ó
+    ///ÊòØÂê¶ÊâßË°åËøîÂõûÂëΩ‰ª§
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public bool IsBack {
@@ -135,14 +135,14 @@ namespace MagiCloud.NetWorks
       }
     }
 
-    /// <summary>Field number for the "experimentPath" field.</summary>
-    public const int ExperimentPathFieldNumber = 5;
-    private string experimentPath_ = "";
+    /// <summary>Field number for the "prefabPath" field.</summary>
+    public const int PrefabPathFieldNumber = 5;
+    private string prefabPath_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string ExperimentPath {
-      get { return experimentPath_; }
+    public string PrefabPath {
+      get { return prefabPath_; }
       set {
-        experimentPath_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        prefabPath_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -159,22 +159,22 @@ namespace MagiCloud.NetWorks
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Own != other.Own) return false;
+      if (OwnProject != other.OwnProject) return false;
       if (Name != other.Name) return false;
       if (Id != other.Id) return false;
       if (IsBack != other.IsBack) return false;
-      if (ExperimentPath != other.ExperimentPath) return false;
+      if (PrefabPath != other.PrefabPath) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Own.Length != 0) hash ^= Own.GetHashCode();
+      if (OwnProject.Length != 0) hash ^= OwnProject.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (Id != 0) hash ^= Id.GetHashCode();
       if (IsBack != false) hash ^= IsBack.GetHashCode();
-      if (ExperimentPath.Length != 0) hash ^= ExperimentPath.GetHashCode();
+      if (PrefabPath.Length != 0) hash ^= PrefabPath.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -188,9 +188,9 @@ namespace MagiCloud.NetWorks
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Own.Length != 0) {
+      if (OwnProject.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(Own);
+        output.WriteString(OwnProject);
       }
       if (Name.Length != 0) {
         output.WriteRawTag(18);
@@ -204,9 +204,9 @@ namespace MagiCloud.NetWorks
         output.WriteRawTag(32);
         output.WriteBool(IsBack);
       }
-      if (ExperimentPath.Length != 0) {
+      if (PrefabPath.Length != 0) {
         output.WriteRawTag(42);
-        output.WriteString(ExperimentPath);
+        output.WriteString(PrefabPath);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -216,8 +216,8 @@ namespace MagiCloud.NetWorks
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Own.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Own);
+      if (OwnProject.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OwnProject);
       }
       if (Name.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
@@ -228,8 +228,8 @@ namespace MagiCloud.NetWorks
       if (IsBack != false) {
         size += 1 + 1;
       }
-      if (ExperimentPath.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(ExperimentPath);
+      if (PrefabPath.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PrefabPath);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -242,8 +242,8 @@ namespace MagiCloud.NetWorks
       if (other == null) {
         return;
       }
-      if (other.Own.Length != 0) {
-        Own = other.Own;
+      if (other.OwnProject.Length != 0) {
+        OwnProject = other.OwnProject;
       }
       if (other.Name.Length != 0) {
         Name = other.Name;
@@ -254,8 +254,8 @@ namespace MagiCloud.NetWorks
       if (other.IsBack != false) {
         IsBack = other.IsBack;
       }
-      if (other.ExperimentPath.Length != 0) {
-        ExperimentPath = other.ExperimentPath;
+      if (other.PrefabPath.Length != 0) {
+        PrefabPath = other.PrefabPath;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -269,7 +269,7 @@ namespace MagiCloud.NetWorks
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            Own = input.ReadString();
+            OwnProject = input.ReadString();
             break;
           }
           case 18: {
@@ -285,7 +285,7 @@ namespace MagiCloud.NetWorks
             break;
           }
           case 42: {
-            ExperimentPath = input.ReadString();
+            PrefabPath = input.ReadString();
             break;
           }
         }

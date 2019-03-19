@@ -531,10 +531,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1381316296}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ed09700e0a6f33499d7967054643c7e, type: 3}
+  m_Script: {fileID: 11500000, guid: d15e6d6b0a31c2446826b42078cb7395, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clientPath: "C:\\\\Users\\\\Administrator\\\\Desktop\\\\\u5E73\u53F0\u6D4B\u8BD5\\\\ClientDemo\\\\MagiCloud.exe"
+  txtSocket: {fileID: 0}
 --- !u!4 &1381316298
 Transform:
   m_ObjectHideFlags: 0
@@ -629,7 +629,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1381316297}
+      - m_Target: {fileID: 0}
         m_MethodName: AddEvent
         m_Mode: 1
         m_Arguments:

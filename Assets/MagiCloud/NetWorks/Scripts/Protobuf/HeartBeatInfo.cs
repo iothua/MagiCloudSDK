@@ -9,8 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace MagiCloud.NetWorks
-{
+namespace MagiCloud.NetWorks {
 
   /// <summary>Holder for reflection information generated from HeartBeatInfo.proto</summary>
   public static partial class HeartBeatInfoReflection {
@@ -25,18 +24,22 @@ namespace MagiCloud.NetWorks
     static HeartBeatInfoReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChNIZWFydEJlYXRJbmZvLnByb3RvEghNQ1NlcnZlciIwCg1IZWFydEJlYXRJ",
-            "bmZvEg8KB2N1cnRpbWUYASABKAUSDgoGaG9zdGlwGAIgASgJYgZwcm90bzM="));
+            "ChNIZWFydEJlYXRJbmZvLnByb3RvEhJNYWdpQ2xvdWQuTmV0V29ya3MiNAoN",
+            "SGVhcnRCZWF0SW5mbxITCgtjdXJyZW50VGltZRgBIAEoBRIOCgZob3N0aXAY",
+            "AiABKAliBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.HeartBeatInfo), global::MagiCloud.NetWorks.HeartBeatInfo.Parser, new[]{ "Curtime", "Hostip" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.HeartBeatInfo), global::MagiCloud.NetWorks.HeartBeatInfo.Parser, new[]{ "CurrentTime", "Hostip" }, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
+  /// <summary>
+  ///心跳包信息
+  /// </summary>
   public sealed partial class HeartBeatInfo : pb::IMessage<HeartBeatInfo> {
     private static readonly pb::MessageParser<HeartBeatInfo> _parser = new pb::MessageParser<HeartBeatInfo>(() => new HeartBeatInfo());
     private pb::UnknownFieldSet _unknownFields;
@@ -62,7 +65,7 @@ namespace MagiCloud.NetWorks
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public HeartBeatInfo(HeartBeatInfo other) : this() {
-      curtime_ = other.curtime_;
+      currentTime_ = other.currentTime_;
       hostip_ = other.hostip_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -72,20 +75,26 @@ namespace MagiCloud.NetWorks
       return new HeartBeatInfo(this);
     }
 
-    /// <summary>Field number for the "curtime" field.</summary>
-    public const int CurtimeFieldNumber = 1;
-    private int curtime_;
+    /// <summary>Field number for the "currentTime" field.</summary>
+    public const int CurrentTimeFieldNumber = 1;
+    private int currentTime_;
+    /// <summary>
+    ///当前时间
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Curtime {
-      get { return curtime_; }
+    public int CurrentTime {
+      get { return currentTime_; }
       set {
-        curtime_ = value;
+        currentTime_ = value;
       }
     }
 
     /// <summary>Field number for the "hostip" field.</summary>
     public const int HostipFieldNumber = 2;
     private string hostip_ = "";
+    /// <summary>
+    ///主机IP
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Hostip {
       get { return hostip_; }
@@ -107,7 +116,7 @@ namespace MagiCloud.NetWorks
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Curtime != other.Curtime) return false;
+      if (CurrentTime != other.CurrentTime) return false;
       if (Hostip != other.Hostip) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -115,7 +124,7 @@ namespace MagiCloud.NetWorks
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Curtime != 0) hash ^= Curtime.GetHashCode();
+      if (CurrentTime != 0) hash ^= CurrentTime.GetHashCode();
       if (Hostip.Length != 0) hash ^= Hostip.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -130,9 +139,9 @@ namespace MagiCloud.NetWorks
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Curtime != 0) {
+      if (CurrentTime != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(Curtime);
+        output.WriteInt32(CurrentTime);
       }
       if (Hostip.Length != 0) {
         output.WriteRawTag(18);
@@ -146,8 +155,8 @@ namespace MagiCloud.NetWorks
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Curtime != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Curtime);
+      if (CurrentTime != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(CurrentTime);
       }
       if (Hostip.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Hostip);
@@ -163,8 +172,8 @@ namespace MagiCloud.NetWorks
       if (other == null) {
         return;
       }
-      if (other.Curtime != 0) {
-        Curtime = other.Curtime;
+      if (other.CurrentTime != 0) {
+        CurrentTime = other.CurrentTime;
       }
       if (other.Hostip.Length != 0) {
         Hostip = other.Hostip;
@@ -181,7 +190,7 @@ namespace MagiCloud.NetWorks
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Curtime = input.ReadInt32();
+            CurrentTime = input.ReadInt32();
             break;
           }
           case 18: {
