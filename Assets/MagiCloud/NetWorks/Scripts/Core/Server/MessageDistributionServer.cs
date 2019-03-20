@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MagiCloud.NetWorks
 {
     /// <summary>
     /// 服务端/客户端 消息分发
     /// </summary>
-    public class MessageDistributionServer
+    public class MessageDistributionServer :IMessageDistribution
     {
-        public delegate void MessageDelegate(ProtobufTool data);
-
         private int num = 20;
-        public List<ProtobufTool> msgList = new List<ProtobufTool>(); //当前消息列表
+        public List<ReceiveMessageStruct> msgList = new List<ReceiveMessageStruct>(); //当前消息列表
 
-        private Dictionary<int, MessageDelegate> msgEvents = new Dictionary<int, MessageDelegate>(); //消息事件集合
-        private Dictionary<int, MessageDelegate> onceMsgEvents = new Dictionary<int, MessageDelegate>(); //单次消息事件集合
+        private Dictionary<int,MessageDelegate> msgEvents = new Dictionary<int,MessageDelegate>(); //消息事件集合
+        private Dictionary<int,MessageDelegate> onceMsgEvents = new Dictionary<int,MessageDelegate>(); //单次消息事件集合
 
         #region AddOrRemove
 
@@ -26,7 +20,7 @@ namespace MagiCloud.NetWorks
         /// </summary>
         /// <param name="type"></param>
         /// <param name="msg"></param>
-        public void AddListener(int type, MessageDelegate msg)
+        public void AddListener(int type,MessageDelegate msg)
         {
             if (msgEvents.ContainsKey(type))
                 msgEvents[type] += msg;
@@ -38,7 +32,7 @@ namespace MagiCloud.NetWorks
         /// </summary>
         /// <param name="type"></param>
         /// <param name="msg"></param>
-        public void AddOnceListener(int type, MessageDelegate msg)
+        public void AddOnceListener(int type,MessageDelegate msg)
         {
             if (onceMsgEvents.ContainsKey(type))
                 onceMsgEvents[type] += msg;
@@ -50,7 +44,7 @@ namespace MagiCloud.NetWorks
         /// </summary>
         /// <param name="type"></param>
         /// <param name="msg"></param>
-        public void RemoveListener(int type, MessageDelegate msg)
+        public void RemoveListener(int type,MessageDelegate msg)
         {
             if (msgEvents.ContainsKey(type))
             {
@@ -64,7 +58,7 @@ namespace MagiCloud.NetWorks
         /// </summary>
         /// <param name="type"></param>
         /// <param name="msg"></param>
-        public void RemoveOnceListener(int type, MessageDelegate msg)
+        public void RemoveOnceListener(int type,MessageDelegate msg)
         {
             if (msgEvents.ContainsKey(type))
             {
@@ -95,22 +89,28 @@ namespace MagiCloud.NetWorks
             }
         }
 
+        private  void OnMessageEvent(ReceiveMessageStruct sendData)
+        {
+            OnMessageEvent(sendData.connectID,sendData.protobuf);
+        }
+
         /// <summary>
         /// 执行消息事件
         /// </summary>
         /// <param name="key"></param>
-        private void OnMessageEvent(ProtobufTool msg)
+        public void OnMessageEvent(int connectID,ProtobufTool protobuf)
         {
-            int key = msg.type;
+            int key = protobuf.type;
             if (msgEvents.ContainsKey(key))
-                msgEvents[key](msg);
+                msgEvents[key](connectID,protobuf);
             if (onceMsgEvents.ContainsKey(key))
             {
-                onceMsgEvents[key](msg);
+                onceMsgEvents[key](connectID,protobuf);
                 onceMsgEvents[key] = null;
                 onceMsgEvents.Remove(key);
             }
         }
+
 
     }
 }

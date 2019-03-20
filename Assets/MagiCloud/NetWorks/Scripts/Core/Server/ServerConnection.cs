@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MagiCloud.NetWorks
 {
-    public class ServerConnection
+    public class ServerConnection :IConnect
     {
         public MessageDistributionServer messageDistribution;
 
@@ -60,12 +60,12 @@ namespace MagiCloud.NetWorks
             messageDistribution = new MessageDistributionServer();
         }
 
-        public bool Connect(string ip, int port)
+        public bool Connect(string ip,int port)
         {
             try
             {
-                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                socket.Connect(ip, port);
+                socket = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
+                socket.Connect(ip,port);
                 BeginReceiveMessage();
 
                 status = ConnectStatus.Connected;
@@ -80,23 +80,23 @@ namespace MagiCloud.NetWorks
 
         private void BeginReceiveMessage()
         {
-            socket.BeginReceive(readBuffer, bufferCount, Buffer_Size - bufferCount, SocketFlags.None, (asyncResult) =>
+            socket.BeginReceive(readBuffer,bufferCount,Buffer_Size - bufferCount,SocketFlags.None,(asyncResult) =>
+        {
+            try
             {
-                try
-                {
-                    int count = socket.EndReceive(asyncResult);
-                    bufferCount = bufferCount + count;
-                    ProcessData();
+                int count = socket.EndReceive(asyncResult);
+                bufferCount = bufferCount + count;
+                ProcessData();
 
-                    BeginReceiveMessage();
+                BeginReceiveMessage();
 
-                }
-                catch (Exception e)
-                {
-                    status = ConnectStatus.None;
-                    Debug.Log("接收信息失败：" + e.Message);
-                }
-            }, socket);
+            }
+            catch (Exception e)
+            {
+                status = ConnectStatus.None;
+                Debug.Log("接收信息失败：" + e.Message);
+            }
+        },socket);
         }
 
         /// <summary>
@@ -109,9 +109,9 @@ namespace MagiCloud.NetWorks
                 return;
 
             //消息长度4个字节，消息类型4个字节
-            Array.Copy(readBuffer, lenBytes, sizeof(int));
+            Array.Copy(readBuffer,lenBytes,sizeof(int));
 
-            msgLength = BitConverter.ToInt32(lenBytes, 0) - sizeof(int);
+            msgLength = BitConverter.ToInt32(lenBytes,0) - sizeof(int);
 
             if (bufferCount < msgLength + sizeof(int))
                 return;
@@ -122,12 +122,12 @@ namespace MagiCloud.NetWorks
 
             lock (messageDistribution.msgList)
             {
-                messageDistribution.msgList.Add(proto);
+                messageDistribution.msgList.Add(new ReceiveMessageStruct(0,protobuf));
             }
 
             //清除已处理的消息
             int count = bufferCount - msgLength - sizeof(int) - sizeof(int);
-            Array.Copy(readBuffer, sizeof(int) + msgLength, readBuffer, 0, count);
+            Array.Copy(readBuffer,sizeof(int) + msgLength,readBuffer,0,count);
             bufferCount = count;
 
             if (bufferCount > 0)
@@ -140,10 +140,10 @@ namespace MagiCloud.NetWorks
         {
             try
             {
-                socket.BeginSend(protobuf.bytes, 0, protobuf.byteLength, SocketFlags.None, (asyncResult) =>
-                {
+                socket.BeginSend(protobuf.bytes,0,protobuf.byteLength,SocketFlags.None,(asyncResult) =>
+            {
 
-                }, socket);
+            },socket);
             }
             catch (Exception e)
             {
@@ -179,7 +179,7 @@ namespace MagiCloud.NetWorks
                 Hostip = "127.0.0.1"
             };
 
-            protobuf.CreatData((int)CommandID.HeartbeatPacketRequest, hearInfo);
+            protobuf.CreatData((int)CommandID.HeartbeatPacketRequest,hearInfo);
 
             return protobuf;
         }
@@ -195,6 +195,11 @@ namespace MagiCloud.NetWorks
             {
                 throw e;
             }
+        }
+
+        public void Send(ProtobufTool protobuf)
+        {
+            BeginSendMessage(protobuf);
         }
     }
 }
