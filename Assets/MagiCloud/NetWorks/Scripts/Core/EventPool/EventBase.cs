@@ -20,7 +20,11 @@ namespace MagiCloud.NetWorks
         /// <summary>
         /// 连接器
         /// </summary>
-        protected ServerConnection Connection { get; private set; }
+        protected IConnect Connection { get; private set; }
+         /// <summary>
+        /// 连接器
+        /// </summary>
+        protected IMessageDistribution MessageDistribution { get; private set; }
         /// <summary>
         /// 协议类型
         /// </summary>
@@ -36,10 +40,11 @@ namespace MagiCloud.NetWorks
         /// 初始化
         /// </summary>
         /// <param name="connection"></param>
-        public virtual void Init(ServerConnection connection)
+        public virtual void Init(IConnect connection,IMessageDistribution messageDistribution)
         {
             this.Connection=connection;
-            connection.messageDistribution.AddListener(MessageType,Receive);
+            MessageDistribution=messageDistribution;
+            MessageDistribution.AddListener(MessageType,Receive);
         }
         /// <summary>
         /// 发送消息
@@ -49,14 +54,14 @@ namespace MagiCloud.NetWorks
         /// <param name="command"></param>
         public virtual void Send<T>(T info) where T : IMessage
         {
-            Connection.BeginSendMessage(GetProtobuf(info));
+            Connection.Send(GetProtobuf(info));
         }
         /// <summary>
         /// 收到消息
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="data"></param>
-        protected virtual void Receive(ProtobufTool data)
+        protected virtual void Receive(int senderID,ProtobufTool data)
         {
             data.DeSerialize(Proto,data.bytes);
             if (handler!=null)
@@ -90,7 +95,7 @@ namespace MagiCloud.NetWorks
         /// </summary>
         public virtual void Remove()
         {
-            Connection.messageDistribution.RemoveListener(MessageType,Receive);
+            MessageDistribution.RemoveListener(MessageType,Receive);
         }
 
         /// <summary>

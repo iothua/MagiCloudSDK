@@ -6,10 +6,12 @@ namespace MagiCloud.NetWorks
     public static class SystemDllHelper
     {
         [DllImport("user32.dll")]
-        public static extern bool ShowWindow(IntPtr intPtr, int show);
+        public static extern bool ShowWindow(IntPtr intPtr,int show);
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]
-        public static extern void SwitchToThisWindow(IntPtr intPtr, bool altTab);
+        public static extern void SwitchToThisWindow(IntPtr intPtr,bool altTab);
+        [DllImport("USER32.DLL")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 }
