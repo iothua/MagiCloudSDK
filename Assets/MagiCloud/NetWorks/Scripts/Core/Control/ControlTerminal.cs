@@ -14,15 +14,15 @@ namespace MagiCloud.NetWorks
         public ConnectControl[] connects;
         public ProtobufTool proto = new ProtobufTool();
 
-        public void Start(string ip, int port)
+        public void Start(string ip,int port)
         {
             CreateConnects();
-            controlSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            controlSocket = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
 
-            IPEndPoint point = new IPEndPoint(IPAddress.Parse(ip), port);
+            IPEndPoint point = new IPEndPoint(IPAddress.Parse(ip),port);
             controlSocket.Bind(point);
             controlSocket.Listen(maxConnect);
-            controlSocket.BeginAccept(AcceptCallback, controlSocket);
+            controlSocket.BeginAccept(AcceptCallback,controlSocket);
 
             UnityEngine.Debug.Log("启动服务器");
 
@@ -31,7 +31,7 @@ namespace MagiCloud.NetWorks
 
         public void Update()
         {
-            MessageDistributionControl.Update();
+            MessageDistributionControl.Instance.Update();
         }
 
         public void Stop()
@@ -54,7 +54,7 @@ namespace MagiCloud.NetWorks
                 else
                 {
                     ConnectControl connect = connects[i];
-                    connect.Initialize(toClientSocket, i);
+                    connect.Initialize(toClientSocket,i);
 
                     string ip = connect.GetAddress();
 
@@ -63,7 +63,7 @@ namespace MagiCloud.NetWorks
                     BeginReceiveMessage(connect);
                 }
 
-                controlSocket.BeginAccept(AcceptCallback, null);
+                controlSocket.BeginAccept(AcceptCallback,null);
             }
             catch (Exception e)
             {
@@ -83,78 +83,57 @@ namespace MagiCloud.NetWorks
             };
 
             ProtobufTool protobuf = new ProtobufTool();
-            protobuf.CreatData((int)CommandID.Connect, info);
+            protobuf.CreatData((int)CommandID.Connect,info);
 
-            Broadcast(protobuf, i);
+            Broadcast(protobuf,i);
         }
 
-        public void BeginSendMessage(ConnectControl connect, int type, IMessage message)
+        public void BeginSendMessage(ConnectControl connect,int type,IMessage message)
         {
             ProtobufTool protobuf = new ProtobufTool();
-            protobuf.CreatData(type, message);
+            protobuf.CreatData(type,message);
 
-            BeginSendMessage(connect, protobuf);
+            BeginSendMessage(connect,protobuf);
         }
 
-        public void BeginSendMessage(ConnectControl connect, ProtobufTool protobuf)
+        public void BeginSendMessage(ConnectControl connect,ProtobufTool protobuf)
         {
-            try
-            {
-                connect.socket.BeginSend(protobuf.bytes, 0, protobuf.byteLength, SocketFlags.None, (asyncResult) =>
-                {
-                    try
-                    {
-                        ConnectControl asyncConnect = asyncResult.AsyncState as ConnectControl;
-                        asyncConnect.socket.EndSend(asyncResult);
-                    }
-                    catch (Exception e)
-                    {
-                        UnityEngine.Debug.LogError(e);
-                        //throw e;
-                    }
-
-                }, connect);
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogError(e);
-                //throw e;
-            }
+            connect.Send(protobuf);
         }
 
         public void BeginReceiveMessage(ConnectControl connect)
         {
-            connect.socket.BeginReceive(connect.buffer, connect.bufferCount, connect.BUffRemain(), SocketFlags.None, (asyncResult) =>
+            connect.socket.BeginReceive(connect.buffer,connect.bufferCount,connect.BUffRemain(),SocketFlags.None,(asyncResult) =>
+        {
+            ConnectControl connectControl = null;
+
+            connectControl = asyncResult.AsyncState as ConnectControl;
+            lock (connectControl)
             {
-                ConnectControl connectControl = null;
-
-                connectControl = asyncResult.AsyncState as ConnectControl;
-                lock (connectControl)
+                try
                 {
-                    try
+                    int count = connectControl.socket.EndReceive(asyncResult);
+                    if (count == 0)
                     {
-                        int count = connectControl.socket.EndReceive(asyncResult);
-                        if (count == 0)
-                        {
-                            connectControl.Close();
-                            return;
-                        }
-
-                        connectControl.bufferCount += count;
-                        ProcessData(connectControl);
-
-                        BeginReceiveMessage(connectControl);
+                        connectControl.Close();
+                        return;
                     }
-                    catch (Exception e)
-                    {
-                        if (connectControl != null)
-                            connectControl.Close();
 
-                        throw e;
-                    }
+                    connectControl.bufferCount += count;
+                    ProcessData(connectControl);
+
+                    BeginReceiveMessage(connectControl);
                 }
+                catch (Exception e)
+                {
+                    if (connectControl != null)
+                        connectControl.Close();
 
-            }, connect);
+                    throw e;
+                }
+            }
+
+        },connect);
         }
 
         private void ProcessData(ConnectControl connect)
@@ -163,9 +142,9 @@ namespace MagiCloud.NetWorks
                 return;
 
             //消息长度4个字节，消息类型4个字节
-            Array.Copy(connect.buffer, connect.lenBytes, sizeof(int));
+            Array.Copy(connect.buffer,connect.lenBytes,sizeof(int));
             //真实消息长度
-            connect.msgLength = BitConverter.ToInt32(connect.lenBytes, 0) - sizeof(int);
+            connect.msgLength = BitConverter.ToInt32(connect.lenBytes,0) - sizeof(int);
 
             if (connect.bufferCount < connect.msgLength + sizeof(int))
                 return;
@@ -176,14 +155,14 @@ namespace MagiCloud.NetWorks
                 ProtobufTool protobuf = proto.Read(connect.buffer);
 
                 //添加到消息集合等待处理
-                lock (MessageDistributionControl.msgList)
+                lock (MessageDistributionControl.Instance.msgList)
                 {
-                    MessageDistributionControl.msgList.Add(new ReceiveMessageStruct(connect.id, protobuf));
+                    MessageDistributionControl.Instance.msgList.Add(new ReceiveMessageStruct(connect.id,protobuf));
                 }
 
                 //清除已处理的数据
                 int count = connect.bufferCount - connect.msgLength - sizeof(int) - sizeof(int);
-                Array.Copy(connect.buffer, sizeof(int) + connect.msgLength, connect.buffer, 0, count);
+                Array.Copy(connect.buffer,sizeof(int) + connect.msgLength,connect.buffer,0,count);
                 connect.bufferCount = count;
 
                 if (connect.bufferCount > 0)
@@ -240,7 +219,7 @@ namespace MagiCloud.NetWorks
             }
         }
 
-        public void Broadcast(ProtobufTool protobuf, int? sender = null)
+        public void Broadcast(ProtobufTool protobuf,int? sender = null)
         {
             int senderId = sender.HasValue ? sender.Value : -1;
             for (int i = 0; i < connects.Length; i++)
@@ -250,8 +229,9 @@ namespace MagiCloud.NetWorks
 
                 if (connects[i].socket == null) continue;
 
-                BeginSendMessage(connects[i], protobuf);
+                BeginSendMessage(connects[i],protobuf);
             }
         }
+
     }
 }

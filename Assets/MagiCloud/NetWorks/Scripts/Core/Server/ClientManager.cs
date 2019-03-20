@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace MagiCloud.NetWorks
 {
-    public class ClientManager : MonoBehaviour
+    public class ClientManager :MonoBehaviour
     {
         private ServerConnection serverConnection;
         private ExperimentEventServer eventServer;
@@ -15,17 +15,19 @@ namespace MagiCloud.NetWorks
         {
             txtSocket.text = "Client：";
             serverConnection = new ServerConnection();
-
-          //  distributionServer = new MessageDistributionServer();
-            eventServer = new ExperimentEventServer( serverConnection,(log)=> {
+           
+            //  distributionServer = new MessageDistributionServer();
+            eventServer = new ExperimentEventServer(serverConnection,(log) =>
+            {
 
                 if (txtSocket != null)
                     txtSocket.text += log + " ";
 
             });
 
-            serverConnection.Connect("127.0.0.1", 8888);
+            serverConnection.Connect("127.0.0.1",8888);
 
+          
         }
 
         private void Update()

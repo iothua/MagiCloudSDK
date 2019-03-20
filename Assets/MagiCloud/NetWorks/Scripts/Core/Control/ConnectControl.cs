@@ -6,7 +6,7 @@ namespace MagiCloud.NetWorks
     /// <summary>
     /// 连接信息
     /// </summary>
-    public class ConnectControl
+    public class ConnectControl :IConnect
     {
         public int id;
         public bool isUse = false;
@@ -36,18 +36,18 @@ namespace MagiCloud.NetWorks
         /// </summary>
         /// <param name="socket"></param>
         /// <param name="id"></param>
-        public void Initialize(Socket socket, int id)
+        public void Initialize(Socket socket,int id)
         {
             this.id = id;
             this.socket = socket;
 
             isUse = true;
             bufferCount = 0;
-            MessageDistributionControl.AddListener((int)CommandID.HeartbeatPacketRequest, HeartBeatCallback);
+            MessageDistributionControl.Instance.AddListener((int)CommandID.HeartbeatPacketRequest,HeartBeatCallback);
             lastTickTime = TimeHelper.GetTimeStamp();
         }
 
-        private void HeartBeatCallback(int connectID, ProtobufTool protobuf)
+        private void HeartBeatCallback(int connectID,ProtobufTool protobuf)
         {
             lastTickTime = TimeHelper.GetTimeStamp();
         }
@@ -56,6 +56,7 @@ namespace MagiCloud.NetWorks
         {
             return Buffer_Size - bufferCount;
         }
+
 
         public string GetAddress()
         {
@@ -70,6 +71,32 @@ namespace MagiCloud.NetWorks
             socket.Shutdown(SocketShutdown.Both);
             socket.Close();
             isUse = false;
+        }
+
+        public void Send(ProtobufTool protobuf)
+        {
+            try
+            {
+                socket.BeginSend(protobuf.bytes,0,protobuf.byteLength,SocketFlags.None,(asyncResult) =>
+                 {
+                     try
+                     {
+                         ConnectControl asyncConnect = asyncResult.AsyncState as ConnectControl;
+                         asyncConnect.socket.EndSend(asyncResult);
+                     }
+                     catch (Exception e)
+                     {
+                         UnityEngine.Debug.LogError(e);
+                        //throw e;
+                    }
+
+                 },this);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError(e);
+                //throw e;
+            }
         }
     }
 }

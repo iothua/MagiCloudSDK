@@ -10,7 +10,6 @@ namespace MagiCloud.NetWorks
         public byte[] bytes;    //消息缓存
         public int byteLength;  //消息长度
         public int type;        //消息类型
-
         /// <summary>
         /// 将文件序列化为 byte[]
         /// </summary>
@@ -36,7 +35,7 @@ namespace MagiCloud.NetWorks
         /// <typeparam name="T"></typeparam>
         /// <param name="t"></param>
         /// <param name="data"></param>
-        public void DeSerialize<T>(T t, byte[] data) where T : IMessage
+        public void DeSerialize<T>(T t,byte[] data) where T : IMessage
         {
             try
             {
@@ -59,7 +58,7 @@ namespace MagiCloud.NetWorks
         /// <param name="type"></param>
         /// <param name="pbuf"></param>
         /// <returns></returns>
-        public byte[] CreatData<T>(int type, T pbuf) where T : IMessage
+        public byte[] CreatData<T>(int type,T pbuf) where T : IMessage
         {
             byte[] pbdata = Serialize(pbuf);
             using (MemoryStream stream = new MemoryStream())
