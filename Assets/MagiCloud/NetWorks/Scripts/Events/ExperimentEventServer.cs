@@ -13,34 +13,34 @@ namespace MagiCloud.NetWorks
             this.distributionServer = serverConnection.messageDistribution;
             this.serverConnection = serverConnection;
 
-            distributionServer.AddListener((int)CommandID.ExperimentInfoReceipt, (data) =>
-            {
-                data.DeSerialize(experimentInfo, data.bytes);
+            distributionServer.AddListener((int)CommandID.ExperimentInfoReceipt,(senderID,data) =>
+           {
+               data.DeSerialize(experimentInfo,data.bytes);
 
-                if (actionLog != null)
-                    actionLog("请求：ExperimentInfoReceipt");
-            });
+               if (actionLog != null)
+                   actionLog("请求：ExperimentInfoReceipt");
+           });
 
-            distributionServer.AddListener((int)CommandID.ExperimentInfoRequest, (data) =>
-            {
-                data.DeSerialize(experimentInfo, data.bytes);
+            distributionServer.AddListener((int)CommandID.ExperimentInfoRequest,(senderID,data) =>
+           {
+               data.DeSerialize(experimentInfo,data.bytes);
 
-                if (actionLog!=null)
-                    actionLog("请求：ExperimentInfoRequest");
-            });
+               if (actionLog!=null)
+                   actionLog("请求：ExperimentInfoRequest");
+           });
         }
 
         public void SendReceipt(ExperimentInfo experimentInfo)
         {
             ProtobufTool tool = new ProtobufTool();
-            tool.CreatData((int)CommandID.ExperimentInfoReceipt, experimentInfo);
+            tool.CreatData((int)CommandID.ExperimentInfoReceipt,experimentInfo);
             serverConnection.BeginSendMessage(tool);
         }
 
         public void SendRequest(ExperimentInfo experimentInfo)
         {
             ProtobufTool tool = new ProtobufTool();
-            tool.CreatData((int)CommandID.ExperimentInfoRequest, experimentInfo);
+            tool.CreatData((int)CommandID.ExperimentInfoRequest,experimentInfo);
             serverConnection.BeginSendMessage(tool);
         }
     }

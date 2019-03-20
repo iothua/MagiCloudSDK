@@ -26,7 +26,7 @@ namespace MagiCloud.NetWorks
             this.actionLog = actionlog;
 
             //收到请求
-            MessageDistributionControl.AddListener((int)CommandID.ExperimentInfoRequest, (int connectID, ProtobufTool data) =>
+            MessageDistributionControl.Instance.AddListener((int)CommandID.ExperimentInfoRequest, (int connectID, ProtobufTool data) =>
             {
                 data.DeSerialize(experimentInfo, data.bytes);
 
@@ -39,7 +39,7 @@ namespace MagiCloud.NetWorks
 
             });
 
-            MessageDistributionControl.AddListener((int)CommandID.ExperimentInfoReceipt, (int connectID, ProtobufTool data) =>
+            MessageDistributionControl.Instance.AddListener((int)CommandID.ExperimentInfoReceipt, (int connectID, ProtobufTool data) =>
             {
                 data.DeSerialize(experimentInfo, data.bytes);
 
