@@ -38,11 +38,12 @@ namespace MagiCloud.NetWorks
                     Destroy(curExpPrefab);
                     curExpPrefab=null;
                 }
+                //加载资源
                 curExpPrefab=(GameObject)Instantiate(Resources.Load(info.PrefabPath));
                 curPrefabPath=info.PrefabPath;
                 curInfo=info;
-                LoadComplete();
             }
+            LoadComplete();
         }
         /// <summary>
         /// 资源加载完成
