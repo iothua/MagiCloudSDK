@@ -11,6 +11,12 @@ namespace MagiCloud.Restfuls
     /// </summary>
     public class RestfulController : MonoBehaviour
     {
+        public string url;
+
+        private IEnumerator Start()
+        {
+            yield return UnityWebGet(url);
+        }
 
         IEnumerator UnityWebGet(string url)
         {
