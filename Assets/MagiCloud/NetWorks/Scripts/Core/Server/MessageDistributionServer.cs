@@ -89,7 +89,7 @@ namespace MagiCloud.NetWorks
             }
         }
 
-        private  void OnMessageEvent(ReceiveMessageStruct sendData)
+        private void OnMessageEvent(ReceiveMessageStruct sendData)
         {
             OnMessageEvent(sendData.connectID,sendData.protobuf);
         }

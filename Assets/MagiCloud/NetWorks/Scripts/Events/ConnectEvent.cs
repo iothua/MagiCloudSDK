@@ -1,4 +1,6 @@
-﻿namespace MagiCloud.NetWorks
+﻿using System;
+
+namespace MagiCloud.NetWorks
 {
     /// <summary>
     /// 连接事件，收到客户端于服务器连接的信息
@@ -8,8 +10,7 @@
         public ConnectEvent()
         {
             Command=CommandID.Connect;
-            ConnectInfo connect = new ConnectInfo() { };
-            Proto=connect;
+            Proto = new ConnectInfo();
         }
     }
 
@@ -21,8 +22,7 @@
         public BreakConnectEvent()
         {
             Command=CommandID.BreakConnection;
-            ConnectInfo connect = new ConnectInfo() { };
-            Proto=connect;
+            Proto  = new ConnectInfo();
         }
     }
 
@@ -35,7 +35,16 @@
         public WindowWakeUpRequestEvent()
         {
             Command=CommandID.WindowWakeUpRequest;
-            Proto=new ConnectInfo();
+            Proto=new WindowWakeup();
+        }
+    }
+
+    public class WindowWakeUpReceiptEvent :EventBase
+    {
+        public WindowWakeUpReceiptEvent()
+        {
+            Command=CommandID.WindowWakeUpReceipt;
+            Proto =new WindowWakeup();
         }
     }
 
@@ -47,7 +56,7 @@
         public ExperimentRequestEvent()
         {
             Command=CommandID.ExperimentInfoRequest;
-            Proto=new ConnectInfo();
+            Proto=new ExperimentInfo();
         }
     }
     /// <summary>
@@ -58,15 +67,14 @@
         public ExperimentReceiptEvent()
         {
             Command=CommandID.ExperimentInfoReceipt;
-            Proto=new ConnectInfo();
+            Proto=new ExperimentInfo();
         }
-    }
-
-    public class TTT
-    {
-        public void T()
+        protected override void Receive(int senderID,ProtobufTool data)
         {
-
+            base.Receive(senderID,data);
         }
     }
+
+
+
 }

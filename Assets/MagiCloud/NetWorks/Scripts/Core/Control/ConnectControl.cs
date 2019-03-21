@@ -77,25 +77,27 @@ namespace MagiCloud.NetWorks
         {
             try
             {
-                socket.BeginSend(protobuf.bytes,0,protobuf.byteLength,SocketFlags.None,(asyncResult) =>
-                 {
-                     try
-                     {
-                         ConnectControl asyncConnect = asyncResult.AsyncState as ConnectControl;
-                         asyncConnect.socket.EndSend(asyncResult);
-                     }
-                     catch (Exception e)
-                     {
-                         UnityEngine.Debug.LogError(e);
-                        //throw e;
-                    }
-
-                 },this);
+                socket.BeginSend(protobuf.bytes,0,protobuf.byteLength,SocketFlags.None,SendCallback
+                ,protobuf);
             }
             catch (Exception e)
             {
                 UnityEngine.Debug.LogError(e);
                 //throw e;
+            }
+        }
+
+        private void SendCallback(IAsyncResult ar)
+        {
+           
+            try
+            {
+                ProtobufTool connect = ar.AsyncState as ProtobufTool;
+                socket.EndSend(ar);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
     }

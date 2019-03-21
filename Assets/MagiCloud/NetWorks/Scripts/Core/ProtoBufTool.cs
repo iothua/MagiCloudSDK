@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace MagiCloud.NetWorks
 {
+    /// <summary>
+    /// 协议工具。辅助数据序的列化和反序列化，同时缓存真实数据
+    /// </summary>
     public class ProtobufTool
     {
         public byte[] bytes;    //消息缓存

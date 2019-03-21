@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace MagiCloud.NetWorks
 {
+    /// <summary>
+    /// 用于客户端向服务器连接的连接器，具有发送协议和解析协议并分发的功能
+    /// </summary>
     public class ServerConnection :IConnect
     {
         public MessageDistributionServer messageDistribution;
@@ -118,11 +121,11 @@ namespace MagiCloud.NetWorks
 
             ProtobufTool proto = protobuf.Read(readBuffer);
 
-            //Debug.Log("收到消息：" + (CommandID)proto.type);
+            Debug.Log("收到消息：" + (CommandID)proto.type);
 
             lock (messageDistribution.msgList)
             {
-                messageDistribution.msgList.Add(new ReceiveMessageStruct(0,protobuf));
+                messageDistribution.msgList.Add(new ReceiveMessageStruct(0,proto));
             }
 
             //清除已处理的消息

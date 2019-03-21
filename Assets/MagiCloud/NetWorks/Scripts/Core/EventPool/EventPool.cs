@@ -8,13 +8,11 @@ namespace MagiCloud.NetWorks
     /// </summary>
     public class EventPool
     {
-        IConnect onnection;
         IMessageDistribution messageDistribution;
         private List<EventBase> events;
 
-        public EventPool(IConnect onnection,IMessageDistribution messageDistribution)
+        public EventPool( IMessageDistribution messageDistribution)
         {
-            this.onnection=onnection;
             this.messageDistribution=messageDistribution;
             events=new List<EventBase>();
         }
@@ -65,7 +63,7 @@ namespace MagiCloud.NetWorks
             if (eventBase==null)
                 throw new Exception("实例化类型失败:"+type.FullName);
             events.Add(eventBase);
-            eventBase.Init(onnection,messageDistribution);
+            eventBase.Init(messageDistribution);
             return eventBase;
         }
     }

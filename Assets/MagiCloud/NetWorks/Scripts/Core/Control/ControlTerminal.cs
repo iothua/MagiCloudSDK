@@ -84,7 +84,6 @@ namespace MagiCloud.NetWorks
 
             ProtobufTool protobuf = new ProtobufTool();
             protobuf.CreatData((int)CommandID.Connect,info);
-
             Broadcast(protobuf,i);
         }
 
@@ -95,6 +94,7 @@ namespace MagiCloud.NetWorks
 
             BeginSendMessage(connect,protobuf);
         }
+
 
         public void BeginSendMessage(ConnectControl connect,ProtobufTool protobuf)
         {
@@ -221,14 +221,13 @@ namespace MagiCloud.NetWorks
 
         public void Broadcast(ProtobufTool protobuf,int? sender = null)
         {
-            int senderId = sender.HasValue ? sender.Value : -1;
+            int senderId = sender.HasValue&&sender.Value>=0 ? sender.Value : -1;
             for (int i = 0; i < connects.Length; i++)
             {
                 if (i == senderId) continue;
                 if (!connects[i].isUse) continue;
 
                 if (connects[i].socket == null) continue;
-
                 BeginSendMessage(connects[i],protobuf);
             }
         }
