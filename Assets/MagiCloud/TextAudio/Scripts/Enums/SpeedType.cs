@@ -5,10 +5,10 @@
     /// </summary>
     public enum SpeedType :byte
     {
-        x_slow,
-        slow,
-        medium,
-        fast,
-        x_fast
+        medium = 0,
+        x_slow = 1,
+        slow = 2,
+        fast = 3,
+        x_fast = 4
     }
 }
