@@ -11,9 +11,9 @@ namespace MagiCloud
     public enum OperateModeType
     {
         /// <summary>
-        /// 操作模式
+        /// 移动模式
         /// </summary>
-        Operate = 1,
+        Move = 1,
         /// <summary>
         /// 旋转模式
         /// </summary>
@@ -73,7 +73,7 @@ namespace MagiCloud
         /// 初始化激活的模式
         /// </summary>
         /// <param name="modeType"></param>
-        public static void OnInitializeMode(OperateModeType modeType,OperateModeType defaultMode = OperateModeType.Operate)
+        public static void OnInitializeMode(OperateModeType modeType,OperateModeType defaultMode = OperateModeType.Move)
         {
             ActiveMode = modeType | OperateModeType.Tool; //添加工具
             CurrentMode = defaultMode;
