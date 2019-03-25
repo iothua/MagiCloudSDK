@@ -56,7 +56,7 @@ namespace MagiCloud
             }
             set {
 
-                if ((value & activeMode) == 0) return; //如果不存在这个组合中，则没必要存在了
+                if ((value & ActiveMode) == 0) return; //如果不存在这个组合中，则没必要存在了
 
                 currentMode = value;
 
@@ -65,34 +65,29 @@ namespace MagiCloud
         }
 
         /// <summary>
-        /// 激活的模式
+        /// 激活模式
         /// </summary>
-        private static OperateModeType activeMode;
+        public static OperateModeType ActiveMode { get; private set; }
 
         /// <summary>
         /// 初始化激活的模式
         /// </summary>
         /// <param name="modeType"></param>
-        public static void OnInitializeMode(OperateModeType modeType)
+        public static void OnInitializeMode(OperateModeType modeType,OperateModeType defaultMode = OperateModeType.Operate)
         {
-            activeMode = modeType | OperateModeType.Tool; //添加工具
+            ActiveMode = modeType | OperateModeType.Tool; //添加工具
+            CurrentMode = defaultMode;
 
-            //加载UI了
+            UITool.UIToolManager magiCloudTool = GameObject.FindObjectOfType<UITool.UIToolManager>();
+            if (magiCloudTool == null)
+            {
+                var toolObject = Resources.Load<UITool.UIToolManager>("MagiCloudTools");
+                if (toolObject == null) throw new Exception("MagiCloudTools工具为Null，检查资源是否存在此预制物体");
 
-            //if ((activeMode & OperateModeType.Rotate) != 0)
-            //{
-            //    Debug.Log("加载物体：观察模式UI" );
-            //}
+                magiCloudTool = GameObject.Instantiate(toolObject);
+            }
 
-            //if ((activeMode & OperateModeType.Operate) != 0)
-            //{
-            //    Debug.Log("加载物体：操作模式UI");
-            //}
-
-            //if ((activeMode & OperateModeType.Tool) != 0)
-            //{
-            //    Debug.Log("加载物体：工具模式UI");
-            //}
+            magiCloudTool.OnInitialize();
         }
 
         public static void AddListener(Action<OperateModeType> action)
