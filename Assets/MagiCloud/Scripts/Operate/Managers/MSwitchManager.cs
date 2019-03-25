@@ -81,10 +81,10 @@ namespace MagiCloud
             UITool.UIToolManager magiCloudTool = GameObject.FindObjectOfType<UITool.UIToolManager>();
             if (magiCloudTool == null)
             {
-                var toolObject = Resources.Load<UITool.UIToolManager>("MagiCloudTools");
+                var toolObject = Resources.Load<GameObject>("MagiCloudTools");
                 if (toolObject == null) throw new Exception("MagiCloudTools工具为Null，检查资源是否存在此预制物体");
 
-                magiCloudTool = GameObject.Instantiate(toolObject);
+                magiCloudTool = GameObject.Instantiate(toolObject).GetComponentInChildren<UITool.UIToolManager>();
             }
 
             magiCloudTool.OnInitialize();
