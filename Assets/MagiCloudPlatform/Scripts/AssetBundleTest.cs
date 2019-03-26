@@ -9,9 +9,9 @@ public class AssetBundleTest : MonoBehaviour
 
     private void Start()
     {
-        AssetBundleManager.LoadAsset<GameObject>(bundleInfos, (target) =>
+        AssetBundleManager.LoadAsset<GameObject>(bundleInfos, (targets) =>
         {
-            foreach (var item in target)
+            foreach (var item in targets)
             {
                 GameObject.Instantiate(item);
             }

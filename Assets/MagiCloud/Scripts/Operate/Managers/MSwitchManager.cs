@@ -42,7 +42,7 @@ namespace MagiCloud
     public class MSwitchManager 
     {
 
-        private static OperateModeType currentMode; //当前模式
+        private static OperateModeType currentMode = OperateModeType.Move; //当前模式
 
         private static List<Action<OperateModeType>> Actions = new List<Action<OperateModeType>>();
 

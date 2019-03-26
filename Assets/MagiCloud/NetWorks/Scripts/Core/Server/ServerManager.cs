@@ -11,7 +11,9 @@ namespace MagiCloud.NetWorks
         private ServerConnection connection;
         private EventPool controllerEventPool;              //事件池
         private IntPtr curWindowIntPtr;                     //自身窗口
+
         private ExperimentWindowsManager experiment;        //实验项目窗口管理
+
         bool clientConnect = false;
         private void Start()
         {
@@ -54,27 +56,28 @@ namespace MagiCloud.NetWorks
         private void Update()
         {
             connection.Update();
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                //开启实验0
-                SelectExpInfo(0);
-            }
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                //开启实验1
-                SelectExpInfo(1);
-            }
+            //if (Input.GetKeyDown(KeyCode.Q))
+            //{
+            //    //开启实验0
+            //    SelectExpInfo(0);
+            //}
+            //if (Input.GetKeyDown(KeyCode.W))
+            //{
+            //    //开启实验1
+            //    SelectExpInfo(1);
+            //}
         }
 
         /// <summary>
         /// 选择实验启动,如果实验已连接,直接发送实验信息,否则在连接回调事件中等待发送
         /// </summary>
-        private void SelectExpInfo(int i = 0)
+        public void SelectExpInfo(int i = 0)
         {
             experiment.Select(i);
             SystemDllHelper.SetForegroundWindow(curWindowIntPtr);
             SendExpInfo();
         }
+
         /// <summary>
         /// 发送实验信息数据
         /// </summary>
