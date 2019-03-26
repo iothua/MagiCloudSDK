@@ -31,19 +31,31 @@ namespace MagiCloud.NetWorks
         {
             ExperimentInfo info = proto as ExperimentInfo;
 
-            if (curPrefabPath!=info.PrefabPath)
+            if (curPrefabPath != info.PrefabPath)
             {
-                if (curExpPrefab!=null)
+                if (curExpPrefab != null)
                 {
                     Destroy(curExpPrefab);
-                    curExpPrefab=null;
+                    curExpPrefab = null;
                 }
-                //加载资源
-                curExpPrefab=(GameObject)Instantiate(Resources.Load(info.PrefabPath));
-                curPrefabPath=info.PrefabPath;
-                curInfo=info;
+
+                AssetBundleManager.LoadAsset<GameObject>(new string[1] { info.PrefabPath }, (targets) =>
+                {
+                    //加载资源
+                    curExpPrefab = (GameObject)Instantiate(Resources.Load(info.PrefabPath));
+                    curPrefabPath = info.PrefabPath;
+                    curInfo = info;
+
+                    if (!IsInvoking("LoadComplete"))
+                    {
+                        Invoke("LoadComplete", 0.5f);
+                    }
+                });
             }
-            LoadComplete();
+            else
+            {
+                LoadComplete();
+            }
         }
         /// <summary>
         /// 资源加载完成
