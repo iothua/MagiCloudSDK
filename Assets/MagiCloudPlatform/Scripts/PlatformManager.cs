@@ -77,6 +77,12 @@ namespace MagiCloudPlatform
                 webRequest = UnityWebRequest.Post(url, fieldForm);
             }
 
+            var testRequest = UnityWebRequest.Head(url);
+
+            yield return testRequest.SendWebRequest();
+
+            Debug.Log(testRequest.timeout);
+
             yield return webRequest.SendWebRequest();
 
             bool isError = false;
