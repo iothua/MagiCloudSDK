@@ -8,7 +8,7 @@ namespace MagiCloudPlatform.Data
     {
         public string status;
 
-        public List<Product> data;
+        public List<Product> datas;
     }
 
     /// <summary>

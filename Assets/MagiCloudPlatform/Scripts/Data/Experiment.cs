@@ -16,7 +16,7 @@ namespace MagiCloudPlatform.Data
         /// </summary>
         public string status;
 
-        public List<Experiment> data;
+        public List<Experiment> datas;
     }
 
     /// <summary>

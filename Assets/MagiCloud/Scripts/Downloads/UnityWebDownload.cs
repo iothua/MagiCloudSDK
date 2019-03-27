@@ -35,25 +35,10 @@ namespace MagiCloud.Downloads
         {
             var webRequest = UnityWebRequest.Head(uri);
             
-            //webRequest.SetRequestHeader("Range", "bytes = " + currentLength+"-"+);//断点续传设置文件的数据流开始索引
             isStartDownload = true;
             webRequest.timeout = 30;
 
             yield return webRequest.SendWebRequest();
-
-            //FileStream fileStream;
-            //if (File.Exists(tempSaveFilePath))
-            //{
-            //    //若之前已下载了一部分，继续下载
-            //    fileStream = File.OpenWrite(tempSaveFilePath);
-            //    currentLength = fileStream.Length;
-            //    fileStream.Seek(currentLength, SeekOrigin.Current);
-            //}
-            //else
-            //{
-            //    fileStream = new FileStream(tempSaveFilePath, FileMode.Create, FileAccess.Write);
-            //    currentLength = 0;
-            //}
 
             using (FileStream fileStream = new FileStream(tempSaveFilePath, FileMode.OpenOrCreate, FileAccess.Write))
             {
