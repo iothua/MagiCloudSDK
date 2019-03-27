@@ -129,7 +129,7 @@ namespace MagiCloud.NetWorks
                     if (connectControl != null)
                         connectControl.Close();
 
-                    throw e;
+                    //throw e;
                 }
             }
 

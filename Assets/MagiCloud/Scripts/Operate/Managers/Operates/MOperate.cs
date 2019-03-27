@@ -106,7 +106,7 @@ namespace MagiCloud
                 OnNoRayTarget();
             }
             //物体处理
-            else if (MSwitchManager.CurrentMode == OperateModeType.Operate && Physics.Raycast(ray, out hit, 10000, 1 << MOperateManager.layerRay | 1 << MOperateManager.layerObject))
+            else if (MSwitchManager.CurrentMode == OperateModeType.Move && Physics.Raycast(ray, out hit, 10000, 1 << MOperateManager.layerRay | 1 << MOperateManager.layerObject))
             {
                 OnRayTarget(hit, ray);
             }

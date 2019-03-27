@@ -51,13 +51,12 @@ public class TestController : MonoBehaviour
     {
         //RotateAndZoomManager.StartCameraZoom(center, 2, 10);
         //RotateAndZoomManager.StartCameraAroundCenter(center);
-        MSwitchManager.OnInitializeMode(OperateModeType.Operate | OperateModeType.Rotate | OperateModeType.Zoom);
-        MSwitchManager.CurrentMode = OperateModeType.Operate;
+        MSwitchManager.OnInitializeMode(OperateModeType.Move | OperateModeType.Rotate | OperateModeType.Zoom);
     }
 
     public void OnOperate()
     {
-        MSwitchManager.CurrentMode =  OperateModeType.Operate;
+        MSwitchManager.CurrentMode =  OperateModeType.Move;
         //禁止UI
         MagiCloud.KGUI.UIShieldController.UnAllShileldAssign();
 
