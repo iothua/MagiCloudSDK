@@ -98,7 +98,8 @@ namespace MagiCloud.Operate
                     {
                         if (IsRotate)
                         {
-                            EventCameraRotate.SendListener(inputHand.ScreenVector);
+                            Vector3 vector = inputHand.ScreenVector;
+                            EventCameraRotate.SendListener(vector);
                         }
                         else
                         {
@@ -122,14 +123,35 @@ namespace MagiCloud.Operate
                     }
                     float lastDis = Vector2.Distance(lastTouch1.position,lastTouch2.position);
                     float dis = Vector2.Distance(touch1.position,touch2.position);
-                    float offset = dis-lastDis;
-                    EventCameraZoom.SendListener(offset*0.01f);
+                    float offset = (dis-lastDis)*0.0008f;
+                    float dir = 1;
+                    if (offset<0)
+                        dir=-1;
+                    offset=Damping(offset,5)*dir;
+                    EventCameraZoom.SendListener(offset);
                 }
                 else
                 {
                     float offset = Input.GetAxis("Mouse ScrollWheel");
+
+                    offset =Damping(offset,10);
                     EventCameraZoom.SendListener(offset);
                 }
+            }
+
+            /// <summary>
+            /// 阻尼
+            /// </summary>
+            /// <param name="speed"></param>
+            /// <param name="force"></param>
+            /// <returns></returns>
+            private float Damping(float speed,float force)
+            {
+                if (speed==0) return 0;
+                return speed* Mathf.Exp(-1*0.3f*Time.deltaTime)*Mathf.Cos(Mathf.Sqrt(force*Time.deltaTime));
+                //if (Mathf.Abs(speed)<=0.001f)
+                //    return 0;
+                //return -Mathf.Sin(speed*force)/(speed*force);
 
             }
         }
