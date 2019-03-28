@@ -49,8 +49,8 @@ public class TestController : MonoBehaviour
 
     private void Start()
     {
-        //RotateAndZoomManager.StartCameraZoom(center, 2, 10);
-        //RotateAndZoomManager.StartCameraAroundCenter(center);
+        RotateAndZoomManager.StartCameraZoom(center,2,10);
+        RotateAndZoomManager.StartCameraAroundCenter(center);
         MSwitchManager.OnInitializeMode(OperateModeType.Move | OperateModeType.Rotate | OperateModeType.Zoom);
     }
 

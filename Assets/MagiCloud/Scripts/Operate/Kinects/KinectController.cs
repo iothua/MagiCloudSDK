@@ -200,50 +200,67 @@ namespace MagiCloud.Operate
             /// <param name="handOperate">Hand operate.</param>
             public void OnGestureAction(HandOperate handOperate,bool isRotate)
             {
-                //如果左手以及处于旋转状态，则没必要进行下一步了
-                if (!handOperate.IsActioning)
+                switch (MSwitchManager.CurrentMode)
                 {
-                    if (IsAction(handOperate) && Operate.InputHand.ScreenVector.magnitude > 5)
-                    {
-                        if (isRotate)
-                            Operate.InputHand.HandStatus = MInputHandStatus.Rotate;
-                        else
-                            Operate.InputHand.HandStatus = MInputHandStatus.Zoom;
-
-                        IsActioning = true;
-                    }
-
-                    if (isRotate)
-                    {
-                        if (Operate.InputHand.IsRotateStatus)
-                        {
-                            EventCameraRotate.SendListener(Operate.InputHand.ScreenVector);
-                        }
-                        else
-                        {
-                            if (IsActioning)
-                            {
-                                EventCameraRotate.SendListener(Vector3.zero);
-                                IsActioning = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (Operate.InputHand.IsZoomStatus)
-                        {
-                            EventCameraZoom.SendListener(Operate.InputHand.ScreenVector.x / 1200);
-                        }
-                        else
-                        {
-                            if (IsActioning)
-                            {
-                                EventCameraZoom.SendListener(0);
-                                IsActioning = false;
-                            }
-                        }
-                    }
+                    case OperateModeType.Move:
+                        break;
+                    case OperateModeType.Rotate:
+                        EventCameraRotate.SendListener(Operate.InputHand.ScreenVector);
+                        break;
+                    case OperateModeType.Zoom:
+                        EventCameraZoom.SendListener(Operate.InputHand.ScreenVector.x / 1200);
+                        break;
+                    case OperateModeType.Tool:
+                        break;
+                    default:
+                        break;
                 }
+                #region old
+                ////如果左手以及处于旋转状态，则没必要进行下一步了
+                //if (!handOperate.IsActioning)
+                //{
+                //    if (IsAction(handOperate) && Operate.InputHand.ScreenVector.magnitude > 5)
+                //    {
+                //        if (isRotate)
+                //            Operate.InputHand.HandStatus = MInputHandStatus.Rotate;
+                //        else
+                //            Operate.InputHand.HandStatus = MInputHandStatus.Zoom;
+
+                //        IsActioning = true;
+                //    }
+
+                //    if (isRotate)
+                //    {
+                //        if (Operate.InputHand.IsRotateStatus)
+                //        {
+                //            EventCameraRotate.SendListener(Operate.InputHand.ScreenVector);
+                //        }
+                //        else
+                //        {
+                //            if (IsActioning)
+                //            {
+                //                EventCameraRotate.SendListener(Vector3.zero);
+                //                IsActioning = false;
+                //            }
+                //        }
+                //    }
+                //    else
+                //    {
+                //        if (Operate.InputHand.IsZoomStatus)
+                //        {
+                //            EventCameraZoom.SendListener(Operate.InputHand.ScreenVector.x / 1200);
+                //        }
+                //        else
+                //        {
+                //            if (IsActioning)
+                //            {
+                //                EventCameraZoom.SendListener(0);
+                //                IsActioning = false;
+                //            }
+                //        }
+                //    }
+                //} 
+                #endregion
             }
         }
 
