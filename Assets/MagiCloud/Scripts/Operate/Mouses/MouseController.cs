@@ -8,18 +8,19 @@ using MagiCloud.Features;
 
 namespace MagiCloud.Operate
 {
-    
+
 
     /// <summary>
     /// 鼠标控制端
     /// </summary>
-    public class MouseController : MonoBehaviour, IHandController
+    public class MouseController :MonoBehaviour, IHandController
     {
         public class ObservedMode
         {
             private bool IsObserved;
             private bool IsDown;
-
+            Touch lastTouch1;
+            Touch lastTouch2;
             /// <summary>
             /// 按下时
             /// </summary>
@@ -54,7 +55,7 @@ namespace MagiCloud.Operate
             /// </summary>
             /// <param name="inputHand"></param>
             /// <param name="IsRotate"></param>
-            public void OnAchieve(MInputHand inputHand, bool IsRotate)
+            public void OnAchieve(MInputHand inputHand,bool IsRotate)
             {
                 ////如果按下右键
                 //if (Input.GetMouseButtonDown(0))
@@ -106,6 +107,31 @@ namespace MagiCloud.Operate
                     }
                 }
             }
+
+            public void OnZoom()
+            {
+                if (Input.touchCount>=2)
+                {
+                    Touch touch1 = Input.GetTouch(0);
+                    Touch touch2 = Input.GetTouch(1);
+                    if (touch2.phase==TouchPhase.Began)
+                    {
+                        lastTouch1=touch1;
+                        lastTouch2=touch2;
+                        return;
+                    }
+                    float lastDis = Vector2.Distance(lastTouch1.position,lastTouch2.position);
+                    float dis = Vector2.Distance(touch1.position,touch2.position);
+                    float offset = dis-lastDis;
+                    EventCameraZoom.SendListener(offset*0.01f);
+                }
+                else
+                {
+                    float offset = Input.GetAxis("Mouse ScrollWheel");
+                    EventCameraZoom.SendListener(offset);
+                }
+
+            }
         }
 
         private MBehaviour behaviour;
@@ -130,7 +156,7 @@ namespace MagiCloud.Operate
         /// <summary>
         /// 是否触摸
         /// </summary>
-        public bool IsTouching = false; 
+        public bool IsTouching = false;
         /// <summary>
         /// 是否鼠标
         /// </summary>
@@ -139,31 +165,37 @@ namespace MagiCloud.Operate
         /// <summary>
         /// 输入端
         /// </summary>
-        public Dictionary<int, MInputHand> InputHands {
-            get;set;
+        public Dictionary<int,MInputHand> InputHands
+        {
+            get; set;
         }
 
         /// <summary>
         /// 是否启动
         /// </summary>
-        public bool IsPlaying {
-            get {
+        public bool IsPlaying
+        {
+            get
+            {
                 return isPlaying;
             }
         }
 
-        public bool IsEnable {
-            get {
+        public bool IsEnable
+        {
+            get
+            {
                 return isEnable;
             }
-            set {
+            set
+            {
 
                 if (isEnable == value) return;
                 isEnable = value;
 
                 if (isEnable)
                 {
-                    behaviour = new MBehaviour(ExecutionPriority.Highest, -900);
+                    behaviour = new MBehaviour(ExecutionPriority.Highest,-900);
                     behaviour.OnUpdate_MBehaviour(OnMouseUpdate);
 
                     enabled = true;
@@ -171,7 +203,7 @@ namespace MagiCloud.Operate
                 }
                 else
                 {
-                    
+
                     enabled = false;
                     operate.OnDisable();
 
@@ -189,7 +221,7 @@ namespace MagiCloud.Operate
         {
             MInputHand hand;
 
-            InputHands.TryGetValue(handIndex, out hand);
+            InputHands.TryGetValue(handIndex,out hand);
 
             if (hand == null)
                 throw new Exception("手势编号错误：" + handIndex);
@@ -199,21 +231,21 @@ namespace MagiCloud.Operate
 
         private void Awake()
         {
-            behaviour = new MBehaviour(ExecutionPriority.Highest, -900, enabled);
+            behaviour = new MBehaviour(ExecutionPriority.Highest,-900,enabled);
 
-            InputHands = new Dictionary<int, MInputHand>();
+            InputHands = new Dictionary<int,MInputHand>();
 
             //初始化手的种类
-            var handUI = MHandUIManager.CreateHandUI(transform, handSprite, handSize);
-            var inputHand = new MInputHand(0, handUI, OperatePlatform.Mouse);
+            var handUI = MHandUIManager.CreateHandUI(transform,handSprite,handSize);
+            var inputHand = new MInputHand(0,handUI,OperatePlatform.Mouse);
             handUI.name = "Mouse-Hand";
 
-            InputHands.Add(0, inputHand);
+            InputHands.Add(0,inputHand);
 
             isPlaying = true;
 
             //注册操作者相关事件
-            operate = MOperateManager.AddOperateHand(inputHand, this);
+            operate = MOperateManager.AddOperateHand(inputHand,this);
             //注册方法
             operate.OnGrab = OnGrabObject;
             operate.OnSetGrab = SetGrabObject;
@@ -280,12 +312,12 @@ namespace MagiCloud.Operate
             {
                 case OperateModeType.Rotate:
 
-                    observedMode.OnAchieve(InputHands[0], true);
+                    observedMode.OnAchieve(InputHands[0],true);
                     break;
                 case OperateModeType.Zoom:
 
-                    observedMode.OnAchieve(InputHands[0], false);
-
+                    //observedMode.OnAchieve(InputHands[0], false);
+                    observedMode.OnZoom();
                     break;
                 case OperateModeType.Tool:
                     break;
@@ -302,11 +334,11 @@ namespace MagiCloud.Operate
                         //需要处理偏移量
                         var screenDevice = MUtility.MainWorldToScreenPoint(operateObject.GrabObject.transform.position);
                         Vector3 screenMouse = InputHands[0].ScreenPoint;
-                        Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x, screenMouse.y, screenDevice.z));
+                        Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x,screenMouse.y,screenDevice.z));
 
                         Vector3 position = vPos - offset;
 
-                        EventUpdateObject.SendListener(operateObject.GrabObject, position, operateObject.GrabObject.transform.rotation, InputHands[0].HandIndex);
+                        EventUpdateObject.SendListener(operateObject.GrabObject,position,operateObject.GrabObject.transform.rotation,InputHands[0].HandIndex);
 
                         break;
                     case MInputHandStatus.Idle:
@@ -344,11 +376,11 @@ namespace MagiCloud.Operate
         /// </summary>
         /// <param name="operate"></param>
         /// <param name="handIndex"></param>
-        void OnGrabObject(IOperateObject operate, int handIndex)
+        void OnGrabObject(IOperateObject operate,int handIndex)
         {
             if (handIndex != InputHands[0].HandIndex) return;
 
-            offset = MUtility.GetOffsetPosition(InputHands[0].ScreenPoint, operate.GrabObject);
+            offset = MUtility.GetOffsetPosition(InputHands[0].ScreenPoint,operate.GrabObject);
 
             this.operateObject = operate;
         }
@@ -359,7 +391,7 @@ namespace MagiCloud.Operate
         /// <param name="operate"></param>
         /// <param name="handIndex"></param>
         /// <param name="cameraRelativeDistance"></param>
-        void SetGrabObject(IOperateObject operate, int handIndex, float cameraRelativeDistance)
+        void SetGrabObject(IOperateObject operate,int handIndex,float cameraRelativeDistance)
         {
             if (handIndex != InputHands[0].HandIndex) return;
 
@@ -367,10 +399,10 @@ namespace MagiCloud.Operate
             Vector3 screenpoint = InputHands[0].ScreenPoint;
             operateObject = operate;
 
-            Vector3 screenMainCamera = MUtility.MainWorldToScreenPoint(MUtility.MainCamera.transform.position 
+            Vector3 screenMainCamera = MUtility.MainWorldToScreenPoint(MUtility.MainCamera.transform.position
                 + MUtility.MainCamera.transform.forward * cameraRelativeDistance);
 
-            Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenpoint.x, screenpoint.y, screenMainCamera.z));
+            Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenpoint.x,screenpoint.y,screenMainCamera.z));
 
             offset = Vector3.zero;
 
