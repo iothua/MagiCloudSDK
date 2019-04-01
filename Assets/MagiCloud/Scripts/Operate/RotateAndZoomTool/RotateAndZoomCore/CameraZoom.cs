@@ -92,6 +92,7 @@ namespace MagiCloud.RotateAndZoomTool
         float zoomMinDis = 0;
         float zoomMaxDis = 0;
 
+        private Vector3 velocity = Vector3.zero;
         /// <summary>
         ///  手势缩放系数
         /// </summary>
@@ -119,7 +120,7 @@ namespace MagiCloud.RotateAndZoomTool
         /// <summary>
         /// 每变化一次缩放程度变化区间
         /// </summary>
-        Vector2 zoomSpeedInterval = new Vector2(2f, 5f);
+        Vector2 zoomSpeedInterval = new Vector2(2f,5f);
 
         #region 开启和关闭缩放
         /// <summary>
@@ -152,9 +153,9 @@ namespace MagiCloud.RotateAndZoomTool
         /// <param name="zoomcenter">缩放中心</param>
         /// <param name="mindistance">最近距离</param>
         /// <param name="maxdistance">最大距离</param>
-        public void StartCameraZoomWithCenter(Transform zoomcenter, float mindistance, float maxdistance)
+        public void StartCameraZoomWithCenter(Transform zoomcenter,float mindistance,float maxdistance)
         {
-            mainCamera = MUtility.MainCamera;;
+            mainCamera = MUtility.MainCamera; ;
             zoomTarget = zoomcenter;
 
             zoomMinDis = mindistance;
@@ -237,21 +238,23 @@ namespace MagiCloud.RotateAndZoomTool
         void ZoomAndLimit(float zoomdis)
         {
 
-            distance = DistanceCameraToTarget(zoomTarget, mainCamera.transform);
+            distance = DistanceCameraToTarget(zoomTarget,mainCamera.transform);
 
             mouseZoomSpeed = RotateAndZoomManager.Speed_CameraZoom;
-
-            distance = Mathf.Clamp(distance - zoomdis * mouseZoomSpeed, zoomMinDis, zoomMaxDis);
+         
+            distance = Mathf.Clamp(distance - zoomdis * mouseZoomSpeed,zoomMinDis,zoomMaxDis);
+            Vector3 curCameraPosition = mainCamera.transform.position;
             RaycastHit hit;
-            if (Physics.Linecast(zoomTarget.position, mainCamera.transform.position, out hit, 1 << (LayerMask.NameToLayer("None"))))
+            if (Physics.Linecast(zoomTarget.position,curCameraPosition,out hit,1 << (LayerMask.NameToLayer("None"))))
             {
                 distance -= hit.distance * mouseMoveSpeed;
             }
             Rotatedistance = distance;
 
-            Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
+            Vector3 negDistance = new Vector3(0.0f,0.0f,-distance);
             Vector3 tempposition = mainCamera.transform.rotation * negDistance + zoomTarget.position;
-
+            //阻尼计算
+            Vector3.SmoothDamp(curCameraPosition,tempposition,ref velocity,0.5f,2);
             mainCamera.transform.position = tempposition;
         }
 
@@ -259,20 +262,20 @@ namespace MagiCloud.RotateAndZoomTool
         #endregion
 
         #region 相机移动调整 和 物体间距离计算
-       
+
         /// <summary>
         /// 计算距离
         /// </summary>
         /// <param name="camera"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        float DistanceCameraToTarget(Transform camera, Transform target)
+        float DistanceCameraToTarget(Transform camera,Transform target)
         {
-            return Vector3.Distance(camera.position, target.position);
+            return Vector3.Distance(camera.position,target.position);
         }
 
         #endregion
 
     }
-    
+
 }

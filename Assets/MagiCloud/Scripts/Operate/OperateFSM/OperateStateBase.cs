@@ -19,7 +19,7 @@ namespace MagiCloud.Operate.OperateFSM
         }
         internal override void OnUpdate(IFsm<OperateSystem> fSM)
         {
-            Debug.Log(MSwitchManager.CurrentMode);
+           // Debug.Log(MSwitchManager.CurrentMode);
             base.OnUpdate(fSM);
         }
         internal override void OnLeave(IFsm<OperateSystem> fSM,bool v)
