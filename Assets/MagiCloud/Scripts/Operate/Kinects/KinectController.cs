@@ -466,6 +466,8 @@ namespace MagiCloud.Operate
                     float dis = Vector2.Distance(left,right);
                     float offset = (dis-lastDis)/1200;
                     EventCameraZoom.SendListener(offset);
+                    lastLeftPos=left;
+                    lastRightPos=right;
                     //rightHandOperate.OnGestureAction(leftHandOperate,false);
                     //leftHandOperate.OnGestureAction(rightHandOperate,false);
                     break;

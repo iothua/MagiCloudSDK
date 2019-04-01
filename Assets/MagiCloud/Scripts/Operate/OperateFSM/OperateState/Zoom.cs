@@ -19,7 +19,14 @@ namespace MagiCloud.Operate.OperateFSM
                     break;
                 case Core.OperatePlatform.Mouse:
                     if (IsTwoTouch)
-                        RotateAndZoomManager.Speed_CameraZoom=2;
+                    {
+#if UNITY_ANDROID
+                           RotateAndZoomManager.Speed_CameraZoom=2;
+#elif UNITY_STANDALONE_WIN
+                        RotateAndZoomManager.Speed_CameraZoom=10;
+#endif
+
+                    }
                     else
                         RotateAndZoomManager.Speed_CameraZoom=10;
                     break;
