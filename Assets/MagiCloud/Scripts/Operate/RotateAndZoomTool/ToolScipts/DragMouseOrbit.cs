@@ -36,7 +36,6 @@ namespace MagiCloud.RotateAndZoomTool
         /// 平滑度
         /// </summary>
         public float smoothTime = 3f;
-
         /// <summary>
         /// 缓冲量
         /// </summary>
@@ -46,7 +45,7 @@ namespace MagiCloud.RotateAndZoomTool
         public float velocityY = 0.0f;
 
         // Use this for initialization
-        public DragMouseOrbit(Transform targettrans, Transform cameratrans)
+        public DragMouseOrbit(Transform targettrans,Transform cameratrans)
         {
             //目标物体
             target = targettrans;
@@ -59,37 +58,56 @@ namespace MagiCloud.RotateAndZoomTool
             // Make the rigid body not change rotation
         }
 
-        public void LateUpdateCameraRotate(Transform cameratrans, Vector3 pos, float distance)
+
+        public void LateUpdateCameraRotate(Transform cameratrans,Vector3 pos,float distance)
         {
             if (target)
             {
-                //velocityX += xSpeed * Input.GetAxis("Mouse X") * distance * 0.02f;
-                //velocityY += ySpeed * Input.GetAxis("Mouse Y") * 0.02f;
 
-                velocityX += RotateAndZoomManager.Speed_CameraRotateAroundCenter_HorizontalAxis * -pos.x * speednormalize;
-                velocityY += RotateAndZoomManager.Speed_CameraRotateAroundCenter_VerticalAxis * -pos.y * speednormalize;
+                #region New 2019-4-1
+                velocityX+=pos.x/(Screen.width)*360f*xSpeed;
+                velocityY+=pos.y/(Screen.height)*360f*ySpeed;
+                //限制范围
+                velocityX=Mathf.Clamp(velocityX,xMinLimit,xMaxLimit);
+                velocityY=Mathf.Clamp(velocityY,yMinLimit,yMaxLimit);
 
-                rotationYAxis += velocityX;
-                rotationXAxis -= velocityY;
+                //计算旋转值
+                Quaternion q = Quaternion.Euler(velocityY,velocityX,0);
 
-                //限制垂直方向上角度
-                rotationXAxis = ClampAngle(rotationXAxis, yMinLimit, yMaxLimit);
+                Vector3 direction = q*target.forward;
+                Vector3 targetPos = target.position-direction*distance;
 
-                //当有水平轴上的角度限制的时候
-                if (xMinLimit != 0 || xMaxLimit != 0) rotationYAxis = ClampAngle(rotationYAxis, xMinLimit, xMaxLimit);
-                //Quaternion fromRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
+                cameratrans.position=targetPos;
+                cameratrans.rotation=q;
+                #endregion
 
-                Quaternion toRotation = Quaternion.Euler(rotationXAxis, rotationYAxis, 0);
+                #region Old
+                //velocityX += RotateAndZoomManager.Speed_CameraRotateAroundCenter_HorizontalAxis * -pos.x * speednormalize;
+                //velocityY += RotateAndZoomManager.Speed_CameraRotateAroundCenter_VerticalAxis * -pos.y * speednormalize;
 
-                Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
-                Vector3 position = toRotation * negDistance + target.position;
+                //rotationYAxis += velocityX;
+                //rotationXAxis -= velocityY;
 
+                ////限制垂直方向上角度
+                //rotationXAxis = ClampAngle(rotationXAxis,yMinLimit,yMaxLimit);
 
-                cameratrans.rotation = toRotation;
-                cameratrans.position = position;
+                ////当有水平轴上的角度限制的时候
+                //if (xMinLimit != 0 || xMaxLimit != 0) rotationYAxis = ClampAngle(rotationYAxis,xMinLimit,xMaxLimit);
+                ////Quaternion fromRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0);
 
-                velocityX = Mathf.Lerp(velocityX, 0, Time.deltaTime * smoothTime);
-                velocityY = Mathf.Lerp(velocityY, 0, Time.deltaTime * smoothTime);
+                //Quaternion toRotation = Quaternion.Euler(rotationXAxis,rotationYAxis,0);
+
+                //Vector3 negDistance = new Vector3(0.0f,0.0f,-distance);
+                //Vector3 position = toRotation * negDistance + target.position;
+
+                ////cameratrans.rotation= Quaternion.Slerp(cameratrans.rotation,toRotation,Time.deltaTime*smoothTime);
+
+                //cameratrans.rotation = toRotation;
+                ////cameratrans.position =Vector3.Slerp(cameratrans.position,position,Time.deltaTime*smoothTime);
+                //cameratrans.position=position;
+                //velocityX = Mathf.Lerp(velocityX,0,Time.deltaTime * smoothTime);
+                //velocityY = Mathf.Lerp(velocityY,0,Time.deltaTime * smoothTime);
+                #endregion
 
             }
         }
@@ -102,13 +120,13 @@ namespace MagiCloud.RotateAndZoomTool
             velocityY = 0.0f;
         }
 
-        public static float ClampAngle(float angle, float min, float max)
+        public static float ClampAngle(float angle,float min,float max)
         {
             if (angle < -360F)
                 angle += 360F;
             if (angle > 360F)
                 angle -= 360F;
-            return Mathf.Clamp(angle, min, max);
+            return Mathf.Clamp(angle,min,max);
         }
 
         float AngleCC(float s)

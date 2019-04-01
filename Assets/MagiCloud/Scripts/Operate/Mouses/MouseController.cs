@@ -130,6 +130,8 @@ namespace MagiCloud.Operate
                     //    dir=-1;
                     //offset=MathHelper.Damping(offset,10)*dir;
                     EventCameraZoom.SendListener(offset);
+                    lastTouch1=touch1;
+                    lastTouch2=touch2;
                 }
                 else
                 {
