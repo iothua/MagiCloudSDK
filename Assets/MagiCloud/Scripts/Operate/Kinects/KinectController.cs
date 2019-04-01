@@ -34,23 +34,25 @@ namespace MagiCloud.Operate
     /// 3、此时只检测缩放操作，除非停止操作。
     /// 
     /// </summary>
-    public class KinectController : MonoBehaviour, IHandController
+    public class KinectController :MonoBehaviour, IHandController
     {
         private bool isEnable = false;
 
         public bool IsEnable
         {
-            get {
+            get
+            {
                 return isEnable;
             }
-            set {
+            set
+            {
 
                 if (isEnable == value) return;
                 isEnable = value;
 
-                if(isEnable)
+                if (isEnable)
                 {
-                    behaviour = new MBehaviour(ExecutionPriority.Highest, -900);
+                    behaviour = new MBehaviour(ExecutionPriority.Highest,-900);
                     behaviour.OnUpdate_MBehaviour(OnKinectUpdate);
 
                     //注册手势启动/停止事件
@@ -130,7 +132,7 @@ namespace MagiCloud.Operate
             {
                 if (HandIndex != handIndex) return;
 
-                Offset = MUtility.GetOffsetPosition(Operate.InputHand.ScreenPoint, operate.GrabObject);
+                Offset = MUtility.GetOffsetPosition(Operate.InputHand.ScreenPoint,operate.GrabObject);
                 OperateObject = operate;
             }
 
@@ -150,7 +152,7 @@ namespace MagiCloud.Operate
                 Vector3 screenMainCamera = MUtility.MainWorldToScreenPoint(MUtility.MainCamera.transform.position
                 + MUtility.MainCamera.transform.forward * cameraRelativeDistance);
 
-                Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenPoint.x, screenPoint.y, screenMainCamera.z));
+                Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenPoint.x,screenPoint.y,screenMainCamera.z));
                 Offset = Vector3.zero;
 
                 OperateObject.GrabObject.transform.position = position;
@@ -160,19 +162,19 @@ namespace MagiCloud.Operate
             /// 针对OperateObject的处理
             /// </summary>
             public void OnOperateObjectHandle()
-            { 
-                switch(Operate.InputHand.HandStatus)
+            {
+                switch (Operate.InputHand.HandStatus)
                 {
                     case MInputHandStatus.Grabing:
 
                         var screenDevice = MUtility.MainWorldToScreenPoint(OperateObject.GrabObject.transform.position);
 
                         var screenMouse = Operate.InputHand.ScreenPoint;
-                        Vector3 vpos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x, screenMouse.y, screenDevice.z));
+                        Vector3 vpos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x,screenMouse.y,screenDevice.z));
 
                         Vector3 position = vpos - Offset;
 
-                        EventUpdateObject.SendListener(OperateObject.GrabObject, position, OperateObject.GrabObject.transform.rotation, HandIndex);
+                        EventUpdateObject.SendListener(OperateObject.GrabObject,position,OperateObject.GrabObject.transform.rotation,HandIndex);
 
                         break;
                     case MInputHandStatus.Idle:
@@ -208,7 +210,7 @@ namespace MagiCloud.Operate
                         EventCameraRotate.SendListener(Operate.InputHand.ScreenVector);
                         break;
                     case OperateModeType.Zoom:
-                        EventCameraZoom.SendListener(Operate.InputHand.ScreenVector.x / 1200);
+                        // EventCameraZoom.SendListener(Operate.InputHand.ScreenVector.x / 1200);
                         break;
                     case OperateModeType.Tool:
                         break;
@@ -264,12 +266,12 @@ namespace MagiCloud.Operate
             }
         }
 
-        public Vector2 handSize = new Vector2(50, 50);
+        public Vector2 handSize = new Vector2(50,50);
 
         public HandOperate rightHandOperate = new HandOperate() { HandIndex = 0 };
         public HandOperate leftHandOperate = new HandOperate() { HandIndex = 1 };
 
-        public Dictionary<int, MInputHand> InputHands { get; set; }
+        public Dictionary<int,MInputHand> InputHands { get; set; }
         public bool IsPlaying { get; private set; }
 
         private MBehaviour behaviour;
@@ -286,7 +288,7 @@ namespace MagiCloud.Operate
         {
             MInputHand hand;
 
-            InputHands.TryGetValue(handIndex, out hand);
+            InputHands.TryGetValue(handIndex,out hand);
 
             if (hand == null)
                 throw new Exception("手势编号错误：" + handIndex);
@@ -300,7 +302,7 @@ namespace MagiCloud.Operate
         /// <param name="handModel">Hand model.</param>
         private void KinectInitialize(KinectHandModel handModel)
         {
-            InputHands = new Dictionary<int, MInputHand>();
+            InputHands = new Dictionary<int,MInputHand>();
 
             MInputKinect inputKinect = gameObject.GetComponent<MInputKinect>() ?? gameObject.AddComponent<MInputKinect>();
 
@@ -308,23 +310,23 @@ namespace MagiCloud.Operate
             IsPlaying = true;
 
             //实例化右手
-            var rightHandUI = MHandUIManager.CreateHandUI(transform, rightHandOperate.handIcon);
-            var rightInputHand = new MInputHand(rightHandOperate.HandIndex, rightHandUI, OperatePlatform.Kinect);
+            var rightHandUI = MHandUIManager.CreateHandUI(transform,rightHandOperate.handIcon);
+            var rightInputHand = new MInputHand(rightHandOperate.HandIndex,rightHandUI,OperatePlatform.Kinect);
             rightHandUI.name = "kinect-Hand-0";
-            InputHands.Add(rightHandOperate.HandIndex, rightInputHand);
+            InputHands.Add(rightHandOperate.HandIndex,rightInputHand);
 
             //实例化左手
-            var leftHandUI = MHandUIManager.CreateHandUI(transform, leftHandOperate.handIcon);
-            var leftInputHand = new MInputHand(leftHandOperate.HandIndex, leftHandUI, OperatePlatform.Kinect);
+            var leftHandUI = MHandUIManager.CreateHandUI(transform,leftHandOperate.handIcon);
+            var leftInputHand = new MInputHand(leftHandOperate.HandIndex,leftHandUI,OperatePlatform.Kinect);
             leftHandUI.name = "Kinect-Hand-1";
-            InputHands.Add(leftHandOperate.HandIndex, leftInputHand);
+            InputHands.Add(leftHandOperate.HandIndex,leftInputHand);
 
             //右手操作端相关初始化与事件绑定
-            rightHandOperate.Operate = MOperateManager.AddOperateHand(rightInputHand, this);
+            rightHandOperate.Operate = MOperateManager.AddOperateHand(rightInputHand,this);
             rightHandOperate.BindGrab();
 
             //左手操作端相关初始化与事件的绑定
-            leftHandOperate.Operate = MOperateManager.AddOperateHand(leftInputHand, this);
+            leftHandOperate.Operate = MOperateManager.AddOperateHand(leftInputHand,this);
             leftHandOperate.BindGrab();
 
             IsEnable = true;
@@ -431,6 +433,9 @@ namespace MagiCloud.Operate
             IsEnable = true;
         }
 
+        private OperateModeType operateModeType;
+        private Vector2 lastLeftPos;
+        private Vector2 lastRightPos;
         void OnKinectUpdate()
         {
             if (!isEnable) return;
@@ -444,19 +449,32 @@ namespace MagiCloud.Operate
             //不同模式中的不同操作
             switch (MSwitchManager.CurrentMode)
             {
+                //不用区分是左手旋转还是右手旋转，双手使用时会切换到缩放模式
                 case OperateModeType.Rotate:
-                    rightHandOperate.OnGestureAction(leftHandOperate, true); ;
-                    leftHandOperate.OnGestureAction(rightHandOperate, true);
+                    rightHandOperate.OnGestureAction(leftHandOperate,true); ;
+                    leftHandOperate.OnGestureAction(rightHandOperate,true);
                     break;
                 case OperateModeType.Zoom:
-                    rightHandOperate.OnGestureAction(leftHandOperate, false);
-                    leftHandOperate.OnGestureAction(rightHandOperate, false);
+                    Vector2 left = leftHandOperate.Operate.InputHand.ScreenPoint;
+                    Vector2 right = rightHandOperate.Operate.InputHand.ScreenPoint;
+                    if (operateModeType!=MSwitchManager.CurrentMode)
+                    {
+                        lastLeftPos=left;
+                        lastRightPos=right;
+                    }
+                    float lastDis = Vector2.Distance(lastRightPos,lastLeftPos);
+                    float dis = Vector2.Distance(left,right);
+                    float offset = (dis-lastDis)/1200;
+                    EventCameraZoom.SendListener(offset);
+                    //rightHandOperate.OnGestureAction(leftHandOperate,false);
+                    //leftHandOperate.OnGestureAction(rightHandOperate,false);
                     break;
                 case OperateModeType.Tool:
                     break;
                 default:
                     break;
             }
+            operateModeType=MSwitchManager.CurrentMode;
         }
 
         /// <summary>

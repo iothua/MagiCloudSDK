@@ -1,5 +1,6 @@
 ﻿using MagiCloud.Common;
 using MagiCloud.Core.Events;
+using MagiCloud.RotateAndZoomTool;
 
 namespace MagiCloud.Operate.OperateFSM
 {
@@ -11,6 +12,20 @@ namespace MagiCloud.Operate.OperateFSM
         internal override void OnEnter(IFsm<OperateSystem> fSM)
         {
             base.OnEnter(fSM);
+            switch (Platform)
+            {
+                case Core.OperatePlatform.Kinect:
+                    RotateAndZoomManager.Speed_CameraZoom=1;
+                    break;
+                case Core.OperatePlatform.Mouse:
+                    if (IsTwoTouch)
+                        RotateAndZoomManager.Speed_CameraZoom=2;
+                    else
+                        RotateAndZoomManager.Speed_CameraZoom=10;
+                    break;
+                default:
+                    break;
+            }
             MSwitchManager.CurrentMode=OperateModeType.Zoom;
             KGUI.UIShieldController.ShieldDownward(0);
         }
