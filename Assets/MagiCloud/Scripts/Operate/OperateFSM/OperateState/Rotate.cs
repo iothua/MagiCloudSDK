@@ -1,6 +1,7 @@
 ﻿using MagiCloud.Common;
 using MagiCloud.Core;
 using MagiCloud.Core.Events;
+using MagiCloud.RotateAndZoomTool;
 using UnityEngine;
 
 namespace MagiCloud.Operate.OperateFSM
@@ -15,6 +16,8 @@ namespace MagiCloud.Operate.OperateFSM
         {
             base.OnEnter(fSM);
             MSwitchManager.CurrentMode=OperateModeType.Rotate;
+            //开启旋转惯性
+            CameraRotate.Instance.inertia=true;
             KGUI.UIShieldController.ShieldDownward(0);
         }
         internal override void OnUpdate(IFsm<OperateSystem> fSM)

@@ -34,12 +34,12 @@ namespace MagiCloud.RotateAndZoomTool
         /// <summary>
         /// 旋转速度 水平轴
         /// </summary>
-        public static float Speed_CameraRotateAroundCenter_HorizontalAxis = 2f;
+        public static float Speed_CameraRotateAroundCenter_HorizontalAxis = 0.1f;
 
         /// <summary>
         /// 旋转速度 垂直轴
         /// </summary>
-        public static float Speed_CameraRotateAroundCenter_VerticalAxis = 1f;
+        public static float Speed_CameraRotateAroundCenter_VerticalAxis = 0.1f;
 
         /// <summary>
         /// 缩放暂停或者重启

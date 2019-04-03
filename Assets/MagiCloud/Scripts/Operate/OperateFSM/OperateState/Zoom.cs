@@ -1,6 +1,6 @@
 ﻿using MagiCloud.Common;
 using MagiCloud.Core.Events;
-using MagiCloud.RotateAndZoomTool;
+using MagiCloud.RotateAndZoomTool; 
 
 namespace MagiCloud.Operate.OperateFSM
 {
@@ -15,7 +15,7 @@ namespace MagiCloud.Operate.OperateFSM
             switch (Platform)
             {
                 case Core.OperatePlatform.Kinect:
-                    RotateAndZoomManager.Speed_CameraZoom=1;
+                    RotateAndZoomManager.Speed_CameraZoom=2;
                     break;
                 case Core.OperatePlatform.Mouse:
                     if (IsTwoTouch)
