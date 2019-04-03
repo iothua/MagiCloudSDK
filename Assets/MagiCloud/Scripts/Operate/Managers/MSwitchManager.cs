@@ -78,16 +78,16 @@ namespace MagiCloud
             ActiveMode = modeType | OperateModeType.Tool; //添加工具
             CurrentMode = defaultMode;
 
-            UITool.UIToolManager magiCloudTool = GameObject.FindObjectOfType<UITool.UIToolManager>();
-            if (magiCloudTool == null)
-            {
-                var toolObject = Resources.Load<GameObject>("MagiCloudTools");
-                if (toolObject == null) throw new Exception("MagiCloudTools工具为Null，检查资源是否存在此预制物体");
+            //UITool.UIToolManager magiCloudTool = GameObject.FindObjectOfType<UITool.UIToolManager>();
+            //if (magiCloudTool == null)
+            //{
+            //    var toolObject = Resources.Load<GameObject>("MagiCloudTools");
+            //    if (toolObject == null) throw new Exception("MagiCloudTools工具为Null，检查资源是否存在此预制物体");
 
-                magiCloudTool = GameObject.Instantiate(toolObject).GetComponentInChildren<UITool.UIToolManager>();
-            }
+            //    magiCloudTool = GameObject.Instantiate(toolObject).GetComponentInChildren<UITool.UIToolManager>();
+            //}
 
-            magiCloudTool.OnInitialize();
+            //magiCloudTool.OnInitialize();
         }
 
         public static void AddListener(Action<OperateModeType> action)
