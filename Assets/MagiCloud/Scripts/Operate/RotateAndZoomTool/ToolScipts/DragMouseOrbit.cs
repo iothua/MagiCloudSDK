@@ -65,8 +65,10 @@ namespace MagiCloud.RotateAndZoomTool
             {
 
                 #region New 2019-4-1
-                velocityX+=pos.x/(Screen.width)*360f*xSpeed;
-                velocityY+=pos.y/(Screen.height)*360f*ySpeed;
+                rotationXAxis+=pos.x/(Screen.width)*360f*xSpeed;
+                velocityX+=rotationXAxis;
+                rotationYAxis+=pos.y/(Screen.height)*360f*ySpeed;
+                velocityY-=rotationYAxis;
                 //限制范围
                 velocityX=Mathf.Clamp(velocityX,xMinLimit,xMaxLimit);
                 velocityY=Mathf.Clamp(velocityY,yMinLimit,yMaxLimit);
@@ -79,6 +81,8 @@ namespace MagiCloud.RotateAndZoomTool
 
                 cameratrans.position=targetPos;
                 cameratrans.rotation=q;
+                rotationXAxis = Mathf.Lerp(rotationXAxis,0,Time.deltaTime * smoothTime);
+                rotationYAxis = Mathf.Lerp(rotationYAxis,0,Time.deltaTime * smoothTime);
                 #endregion
 
                 #region Old

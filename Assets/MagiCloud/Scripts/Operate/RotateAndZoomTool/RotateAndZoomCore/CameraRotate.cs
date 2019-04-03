@@ -98,7 +98,7 @@ namespace MagiCloud.RotateAndZoomTool
         /// 相机对的中心位置物体
         /// </summary>
         GameObject cameraLookToCenter;
-
+        public bool inertia = false ;
         /// <summary>
         /// 相机绕点转的速率
         /// </summary>
@@ -140,8 +140,8 @@ namespace MagiCloud.RotateAndZoomTool
         /// <summary>
         /// 相机在绕自身旋转的角度限制
         /// </summary>
-        Vector2 cameraSelfRotateXlimits = new Vector2(-10, 10);
-        Vector2 cameraSelfRotateYlimits = new Vector2(-10, 10);
+        Vector2 cameraSelfRotateXlimits = new Vector2(-10,10);
+        Vector2 cameraSelfRotateYlimits = new Vector2(-10,10);
 
         /// <summary>
         /// 相机按自身轴旋转对象 插件
@@ -167,7 +167,7 @@ namespace MagiCloud.RotateAndZoomTool
         /// </summary>
         /// <param name="cameraCenter">相机对准物体</param>
         /// <param name="duration"></param>
-        public void StartCameraRotateWithCenter(Transform cameraCenter, float duration = 0.5f)
+        public void StartCameraRotateWithCenter(Transform cameraCenter,float duration = 0.5f)
         {
             StopCameraRotateWithCenter();
 
@@ -178,32 +178,32 @@ namespace MagiCloud.RotateAndZoomTool
             tween =
 
             //朝向开启再旋转
-            mainCamera.transform.DOLookAt(cameraLookToCenter.transform.position, duration).OnComplete(() =>
-            {
-                dragMouseOrbit = new DragMouseOrbit(cameraCenter, mainCamera.transform);
+            mainCamera.transform.DOLookAt(cameraLookToCenter.transform.position,duration).OnComplete(() =>
+           {
+               dragMouseOrbit = new DragMouseOrbit(cameraCenter,mainCamera.transform);
 
-                EventCameraRotate.AddListener(RotateCameraToCenter);
+               EventCameraRotate.AddListener(RotateCameraToCenter);
 
-                mBehaviour = new MBehaviour(ExecutionPriority.High);
+               mBehaviour = new MBehaviour(ExecutionPriority.High);
 
-                mBehaviour.OnUpdate_MBehaviour(() =>
-                {
-                    RotateCameraToCenter(inputPointPos);
-                });
+               mBehaviour.OnUpdate_MBehaviour(() =>
+               {
+                   RotateCameraToCenter(inputPointPos);
+               });
 
 
-                isRotateCameraWithCenter = true;
+               isRotateCameraWithCenter = true;
 
-                isRotateCameraWithCenterInitialization = true;
+               isRotateCameraWithCenterInitialization = true;
 
-                RotateAndZoomManager.IsDone_StartCameraAroundCenter_Initialization = true;
-            });
+               RotateAndZoomManager.IsDone_StartCameraAroundCenter_Initialization = true;
+           });
 
         }
 
 
 
-        public void StartCameraRotateWithCenter(Transform cameraCenter, Vector3 camerainitialpos, Quaternion camerainitialqua, float duration = 0.5f)
+        public void StartCameraRotateWithCenter(Transform cameraCenter,Vector3 camerainitialpos,Quaternion camerainitialqua,float duration = 0.5f)
         {
             StopCameraRotateWithCenter();
 
@@ -215,31 +215,31 @@ namespace MagiCloud.RotateAndZoomTool
 
             tween =
 
-            mainCamera.transform.DOMove(camerainitialpos, duration / 3);
+            mainCamera.transform.DOMove(camerainitialpos,duration / 3);
 
-            mainCamera.transform.DORotate(camerainitialqua.eulerAngles, duration / 3).OnComplete(() =>
-              {
-                  mainCamera.transform.DOLookAt(cameraCenter.transform.position, duration / 3).OnComplete(() =>
-                    {
-                        dragMouseOrbit = new DragMouseOrbit(cameraCenter, mainCamera.transform);
+            mainCamera.transform.DORotate(camerainitialqua.eulerAngles,duration / 3).OnComplete(() =>
+             {
+                 mainCamera.transform.DOLookAt(cameraCenter.transform.position,duration / 3).OnComplete(() =>
+                   {
+                       dragMouseOrbit = new DragMouseOrbit(cameraCenter,mainCamera.transform);
 
-                        EventCameraRotate.AddListener(RotateCameraToCenter);
+                       EventCameraRotate.AddListener(RotateCameraToCenter);
 
-                        mBehaviour = new MBehaviour(ExecutionPriority.High);
+                       mBehaviour = new MBehaviour(ExecutionPriority.High);
 
-                        mBehaviour.OnUpdate_MBehaviour(() =>
-                        {
-                            RotateCameraToCenter(inputPointPos);
-                        });
+                       mBehaviour.OnUpdate_MBehaviour(() =>
+                       {
+                           RotateCameraToCenter(inputPointPos);
+                       });
 
-                        isRotateCameraWithCenter = true;
+                       isRotateCameraWithCenter = true;
 
-                        isRotateCameraWithCenterInitialization = true;
+                       isRotateCameraWithCenterInitialization = true;
 
-                        RotateAndZoomManager.IsDone_StartCameraAroundCenter_Initialization = true;
-                    });
+                       RotateAndZoomManager.IsDone_StartCameraAroundCenter_Initialization = true;
+                   });
 
-              });
+             });
 
         }
 
@@ -295,11 +295,16 @@ namespace MagiCloud.RotateAndZoomTool
         void RotateCameraToCenter(Vector3 vector3)
         {
             if (!isRotateCameraWithCenter) return;
-            inputPointPos = vector3;
 
+            inputPointPos = vector3;
             if (vector3 != Vector3.zero)
             {
-                InUpdateCameraRotate(mainCamera.transform, cameraLookToCenter, -vector3);
+                InUpdateCameraRotate(mainCamera.transform,cameraLookToCenter,vector3);
+            }
+            else
+            {
+                if (inertia)
+                    InUpdateCameraRotate(mainCamera.transform,cameraLookToCenter,vector3);
             }
         }
 
@@ -308,7 +313,7 @@ namespace MagiCloud.RotateAndZoomTool
         /// </summary>
         /// <param name="target"></param>
         /// <param name="pos"></param>
-        void InUpdateCameraRotate(Transform maincamera, GameObject target, Vector3 pos)
+        void InUpdateCameraRotate(Transform maincamera,GameObject target,Vector3 pos)
         {
             if (maincamera == null) return;
 
@@ -317,9 +322,9 @@ namespace MagiCloud.RotateAndZoomTool
             dragMouseOrbit.xMinLimit = RotateAndZoomManager.Limit_CameraRotateAroundCenter_HorizontalAxis.x;
             dragMouseOrbit.xMaxLimit = RotateAndZoomManager.Limit_CameraRotateAroundCenter_HorizontalAxis.y;
 
-            CameraZoom.Instance.Rotatedistance = DistanceCameraToTarget(target.transform, maincamera);
+            CameraZoom.Instance.Rotatedistance = DistanceCameraToTarget(target.transform,maincamera);
 
-            dragMouseOrbit.LateUpdateCameraRotate(maincamera, pos, CameraZoom.Instance.Rotatedistance);
+            dragMouseOrbit.LateUpdateCameraRotate(maincamera,pos,CameraZoom.Instance.Rotatedistance);
         }
 
 
@@ -336,7 +341,7 @@ namespace MagiCloud.RotateAndZoomTool
 
             if (mainCamera == null) mainCamera = MUtility.MainCamera;
 
-            if (otherHelpCameraSelfRotate == null) otherHelpCameraSelfRotate = new OtherRotateHelp(cameraSelfRotateXlimits, cameraSelfRotateYlimits, rotateCameraSelfSpeed);
+            if (otherHelpCameraSelfRotate == null) otherHelpCameraSelfRotate = new OtherRotateHelp(cameraSelfRotateXlimits,cameraSelfRotateYlimits,rotateCameraSelfSpeed);
 
             EventCameraRotate.AddListener(RotateCameraSelf);
 
@@ -386,7 +391,7 @@ namespace MagiCloud.RotateAndZoomTool
         /// <param name="vector3">手帧差向量</param>
         void RotateCameraSelf(Vector3 vector3)
         {
-            InUpdateCameraRotate(mainCamera.transform, vector3);
+            InUpdateCameraRotate(mainCamera.transform,vector3);
         }
 
         /// <summary>
@@ -394,7 +399,7 @@ namespace MagiCloud.RotateAndZoomTool
         /// </summary>
         /// <param name="camera"></param>
         /// <param name="pos"></param>
-        void InUpdateCameraRotate(Transform camera, Vector3 pos)
+        void InUpdateCameraRotate(Transform camera,Vector3 pos)
         {
             //限制角度
             otherHelpCameraSelfRotate.MinmaxX = RotateAndZoomManager.Limit_CameraRotateSelf_HorizontalAxis;
@@ -403,10 +408,10 @@ namespace MagiCloud.RotateAndZoomTool
             //插件实现方式
             //otherHelpCameraSelfRotate.RotateFun(camera, pos);
 
-            rotateCore.RotateFunInWorldSpace(camera, mainCamera, 0.1f, pos);
-            rotateCore.AngleLimits(camera, AxisLimits.X, otherHelpCameraSelfRotate.MinmaxY);
-            rotateCore.AngleLimits(camera, AxisLimits.Y, otherHelpCameraSelfRotate.MinmaxX);
-            rotateCore.AngleLimits(camera, AxisLimits.Z, Vector2.zero);
+            rotateCore.RotateFunInWorldSpace(camera,mainCamera,0.1f,pos);
+            rotateCore.AngleLimits(camera,AxisLimits.X,otherHelpCameraSelfRotate.MinmaxY);
+            rotateCore.AngleLimits(camera,AxisLimits.Y,otherHelpCameraSelfRotate.MinmaxX);
+            rotateCore.AngleLimits(camera,AxisLimits.Z,Vector2.zero);
         }
 
         #endregion
@@ -419,9 +424,9 @@ namespace MagiCloud.RotateAndZoomTool
         /// <param name="camera"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        float DistanceCameraToTarget(Transform camera, Transform target)
+        float DistanceCameraToTarget(Transform camera,Transform target)
         {
-            return Vector3.Distance(camera.position, target.position);
+            return Vector3.Distance(camera.position,target.position);
         }
     }
 }

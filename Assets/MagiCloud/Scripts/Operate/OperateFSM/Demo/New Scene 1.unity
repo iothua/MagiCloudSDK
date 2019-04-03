@@ -392,8 +392,8 @@ GameObject:
   - component: {fileID: 1069109983}
   - component: {fileID: 1069109982}
   - component: {fileID: 1069109981}
-  - component: {fileID: 1069109986}
   - component: {fileID: 1069109985}
+  - component: {fileID: 1069109986}
   m_Layer: 0
   m_Name: operaObject
   m_TagString: Untagged
