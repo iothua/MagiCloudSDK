@@ -19,7 +19,7 @@ namespace MagiCloud.Operate.OperateFSM
         }
         internal override void OnUpdate(IFsm<OperateSystem> fSM)
         {
-           // Debug.Log(MSwitchManager.CurrentMode);
+            // Debug.Log(MSwitchManager.CurrentMode);
             base.OnUpdate(fSM);
         }
         internal override void OnLeave(IFsm<OperateSystem> fSM,bool v)
@@ -45,6 +45,16 @@ namespace MagiCloud.Operate.OperateFSM
         public bool IsTwoTouch => Input.touchCount>=2;
         //平台
         public OperatePlatform Platform => MOperateManager.GetOperateHand(0).InputHand.Platform;
+
+        public bool IsUI
+        {
+            get
+            {
+                bool left = MOperateManager.GetUIOperate(0).UIObj!=null;
+                bool right = MOperateManager.GetUIOperate(1)==null ? false : MOperateManager.GetUIOperate(1).UIObj!=null;
+                return left||right;
+            }
+        }
 
     }
 }

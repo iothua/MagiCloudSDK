@@ -21,7 +21,7 @@ namespace MagiCloud.Operate.OperateFSM
         {
             base.OnUpdate(fSM);
             //检查到鼠标左键点击或者手势握拳，进入到握拳状态
-
+            if (IsUI) return;
             if (LeftGrip||RightGrip)
                 ChangeState(fSM,typeof(Grip));
             if (Platform==OperatePlatform.Mouse)

@@ -34,6 +34,7 @@ namespace MagiCloud.Operate.OperateFSM
                 if (IsTwoTouch)
                     ChangeState(fSM,typeof(Zoom));
             }
+          
             if (LeftIdle&&RightIdle)
                 ChangeState(fSM,typeof(Idle));
         }
