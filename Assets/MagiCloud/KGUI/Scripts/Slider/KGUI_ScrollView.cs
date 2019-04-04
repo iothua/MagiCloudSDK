@@ -63,8 +63,29 @@ namespace MagiCloud.KGUI
                 }
             }
         }
+        /// <summary>
+        /// 设置容器大小
+        /// </summary>
+        public Vector2 ContentSize
+        {
+            get
+            {
+                return content.sizeDelta;
+            }
+            set
+            {
 
+                content.sizeDelta = value;
 
+                SetRectData();
+
+                if (vertical != null)
+                    vertical.Value = 0;
+
+                if (horizontal != null)
+                    horizontal.Value = 0;
+            }
+        }
         private void OnUp(int arg0,bool arg1)
         {
             var pos = content.localPosition;
@@ -157,9 +178,10 @@ namespace MagiCloud.KGUI
                     var parentBox = rectParent.GetComponent<BoxCollider>();
                     parentBox.size = new Vector3(rectParent.sizeDelta.x,parentBox.size.y,parentBox.size.z);
                     parentBox.center = Vector3.zero;
-
-                    content.sizeDelta = new Vector2(rectParent.sizeDelta.x,content.sizeDelta.y);
-
+                    content.sizeDelta = new Vector2(rectParent.sizeDelta.x,rectParent.sizeDelta.y);
+                    var pos = content.localPosition;
+                    pos.y = (rectParent.sizeDelta.y - content.sizeDelta.y) * 0.5f;
+                    content.localPosition = pos;
                     //var contentBox = rectParent.GetComponent<BoxCollider>();
                     //contentBox.size = new Vector3(content.sizeDelta.x, contentBox.size.y, contentBox.size.z);
                     //contentBox.center = Vector3.zero;
