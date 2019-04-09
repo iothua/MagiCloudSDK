@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using MagiCloud.UISystem;
+using UnityEngine;
 
 namespace MagiCloud.KGUI
 {
-    public class KGUI_Base :MonoBehaviour
+    public class KGUI_Base :UIBase
     {
         [SerializeField]
         protected int order = 0;

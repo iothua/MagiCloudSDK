@@ -5,18 +5,18 @@ using UnityEngine.UI;
 
 namespace MagiCloud.KGUI
 {
-    
+
     /// <summary>
     /// KGUI_Button
     /// </summary>
-    public class KGUI_Button : KGUI_ButtonBase
+    public class KGUI_Button :KGUI_ButtonBase
     {
 
         public bool IsButtonGroup;
         public KGUI_ButtonGroup buttonGroup;
 
         public bool IsShowButton;
-        
+
         public ButtonGroupReset onGroupReset;
 
         protected override void Start()
@@ -81,7 +81,24 @@ namespace MagiCloud.KGUI
 
             base.OnExit(handIndex);
         }
-
+        public override void OnEnableUI()
+        {
+            base.OnEnableUI();
+            IsEnable=true;
+        }
+        public override void OnDisableUI()
+        {
+            base.OnDisableUI();
+            IsEnable=false;
+        }
+        public override void OnCovered()
+        {
+            base.OnCovered();
+        }
+        public override void OnReveal()
+        {
+            base.OnReveal();
+        }
         /// <summary>
         /// 重置
         /// </summary>
