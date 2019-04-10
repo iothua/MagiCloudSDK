@@ -52,8 +52,8 @@ namespace MagiCloud.RotateAndZoomTool
 
             //相机物体
             Vector3 angles = cameratrans.eulerAngles;
-            //rotationYAxis = AngleCC(angles.y);
-            //rotationXAxis = AngleCC(angles.x);
+            velocityX = AngleCC(angles.y);
+            velocityY = AngleCC(angles.x);
 
             // Make the rigid body not change rotation
         }
