@@ -276,6 +276,15 @@ namespace MagiCloud.Operate
 
             #region 鼠标/触摸检测
 
+            //触摸
+            if (!IsMousing&&Input.touchCount >= 1)
+            {
+                InputHands[0].SetGrip();
+                IsTouching = true;
+
+                observedMode.OnDown();
+            }
+
             if (Input.GetMouseButtonDown(0))
             {
                 //鼠标
@@ -286,6 +295,14 @@ namespace MagiCloud.Operate
 
                     observedMode.OnDown();
                 }
+            }
+
+            if (IsTouching && Input.touchCount == 0)
+            {
+                InputHands[0].SetIdle();
+                IsTouching = false;
+
+                ObservedModeUpHandler();
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -299,22 +316,8 @@ namespace MagiCloud.Operate
                 }
             }
 
-            //触摸
-            if (!IsMousing&&Input.touchCount >= 1)
-            {
-                InputHands[0].SetGrip();
-                IsTouching = true;
+           
 
-                observedMode.OnDown();
-            }
-
-            if (IsTouching && Input.touchCount == 0)
-            {
-                InputHands[0].SetIdle();
-                IsTouching = false;
-
-                ObservedModeUpHandler();
-            }
 
             #endregion
 
