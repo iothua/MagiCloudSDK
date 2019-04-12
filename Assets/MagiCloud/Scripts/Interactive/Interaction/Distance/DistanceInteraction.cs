@@ -28,6 +28,11 @@ namespace MagiCloud.Interactive.Distance
         public EventDistanceInteractionRelease OnStatusRelease; //交互后，第二次释放
         public UnityEvent OnNotRelease;//没有交互时的释放
 
+        public bool IsEnable
+        {
+            get; private set;
+        }
+
         #endregion
 
         private Features.FeaturesObjectController featuresObject;
@@ -58,7 +63,7 @@ namespace MagiCloud.Interactive.Distance
         /// 初始距离检测，在距离内则进行交互
         /// </summary>
         public bool AutoDetection = true;
-        public bool HasDetected { get; set; }
+        public bool HasDeteced { get; set; }
         public bool ActiveParent;
         public bool ActiveShadow;
 
@@ -131,6 +136,7 @@ namespace MagiCloud.Interactive.Distance
             //distanceData.IsEnabel = true;
             //统一调用，去匹配数据，还需要一个数据，每隔一段时间校验一次，用于匹配执行顺序等情况
             DistanceStorage.AddDistanceData(this);
+            IsEnable = true;
         }
 
         protected virtual void Start()
@@ -142,6 +148,8 @@ namespace MagiCloud.Interactive.Distance
                     StartCoroutine(AutoInteraction(0.01f));
             }
         }
+
+
 
         /// <summary>
         /// 自动交互
@@ -167,6 +175,7 @@ namespace MagiCloud.Interactive.Distance
         {
             //distanceData.IsEnabel = false;
             DistanceStorage.DeleteDistanceData(this);
+            IsEnable = false;
         }
 
         public virtual bool IsCanInteraction(DistanceInteraction distanceInteraction)
@@ -209,12 +218,15 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         public virtual void OnDistanceStay(DistanceInteraction distanceInteraction)
         {
+
             if (ActiveShadow && interactionShadow != null)
             {
-                if (distanceInteraction.AutoDetection)
+                if (AutoDetection)
                 {
-                    if (distanceInteraction.HasDetected)
+                    if (HasDeteced)
+                    {
                         interactionShadow.OnOpen(this,distanceInteraction);
+                    }
                 }
                 else
                     interactionShadow.OnOpen(this,distanceInteraction);
@@ -237,12 +249,24 @@ namespace MagiCloud.Interactive.Distance
             }
             if (ActiveShadow && interactionShadow != null)
             {
-                interactionShadow.OnClose(this,distanceInteraction);
-            }
+                if (AutoDetection)
+                {
+                    if (!HasDeteced)
+                    {
+                        HasDeteced=true;
+                    }
+                    else
+                        interactionShadow.OnClose(this,distanceInteraction);
+                }
+                else
+                {
+                    interactionShadow.OnClose(this,distanceInteraction);
+                }
 
-            if (OnRelease != null)
-            {
-                OnRelease.Invoke(distanceInteraction);
+                if (OnRelease != null)
+                {
+                    OnRelease.Invoke(distanceInteraction);
+                }
             }
         }
 

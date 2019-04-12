@@ -89,7 +89,8 @@ namespace MagiCloud.Interactive
                             if (distance.AutoDetection)
                             {
                                 distances[i].AddDistance(distance);
-                                distance.HasDetected=true;
+
+
                             }
                         }
                     }
