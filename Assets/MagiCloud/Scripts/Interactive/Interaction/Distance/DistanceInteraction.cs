@@ -209,9 +209,15 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         public virtual void OnDistanceStay(DistanceInteraction distanceInteraction)
         {
-            if (ActiveShadow && interactionShadow != null&&HasDetected)
+            if (ActiveShadow && interactionShadow != null)
             {
-                interactionShadow.OnOpen(this,distanceInteraction);
+                if (distanceInteraction.AutoDetection)
+                {
+                    if (distanceInteraction.HasDetected)
+                        interactionShadow.OnOpen(this,distanceInteraction);
+                }
+                else
+                    interactionShadow.OnOpen(this,distanceInteraction);
             }
 
             if (OnStay != null)
