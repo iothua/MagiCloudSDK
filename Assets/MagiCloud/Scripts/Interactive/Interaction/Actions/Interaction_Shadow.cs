@@ -62,7 +62,7 @@ namespace MagiCloud.Interactive.Actions
         void OnDistanceStay(DistanceInteraction interaction)
         {
             if (Interaction == null) return;
-
+            if (!Interaction.HasDetected) return;
             if (Interaction.IsGrab && !IsSelf) return;
 
             if (!IsOpen && !IsLimit)
