@@ -58,7 +58,7 @@ namespace MagiCloud.Interactive.Distance
         /// 初始距离检测，在距离内则进行交互
         /// </summary>
         public bool AutoDetection = true;
-
+        public bool HasDetected { get; set; }
         public bool ActiveParent;
         public bool ActiveShadow;
 
@@ -158,7 +158,7 @@ namespace MagiCloud.Interactive.Distance
 
             yield return new WaitForSeconds(delay);
             //初始交互
-            InteractiveController.Instance.Search.OnStartInteraction(FeaturesObjectController.gameObject, false, 0, true);
+            InteractiveController.Instance.Search.OnStartInteraction(FeaturesObjectController.gameObject,false,0,true);
             yield return new WaitForSeconds(0.15f);
             InteractiveController.Instance.Search.OnStopInteraction(FeaturesObjectController.gameObject,true);
         }
@@ -209,7 +209,7 @@ namespace MagiCloud.Interactive.Distance
         /// </summary>
         public virtual void OnDistanceStay(DistanceInteraction distanceInteraction)
         {
-            if (ActiveShadow && interactionShadow != null)
+            if (ActiveShadow && interactionShadow != null&&HasDetected)
             {
                 interactionShadow.OnOpen(this,distanceInteraction);
             }
