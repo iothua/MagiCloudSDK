@@ -163,6 +163,7 @@ namespace MagiCloud.Operate
             /// </summary>
             public void OnOperateObjectHandle()
             {
+                if (OperateObject==null) return;
                 switch (Operate.InputHand.HandStatus)
                 {
                     case MInputHandStatus.Grabing:
@@ -451,8 +452,10 @@ namespace MagiCloud.Operate
             {
                 //不用区分是左手旋转还是右手旋转，双手使用时会切换到缩放模式
                 case OperateModeType.Rotate:
-                    rightHandOperate.OnGestureAction(leftHandOperate,true); ;
-                    leftHandOperate.OnGestureAction(rightHandOperate,true);
+                    if (GetInputHand(0).HandStatus==MInputHandStatus.Grip)
+                        rightHandOperate.OnGestureAction(leftHandOperate,true);
+                    if (GetInputHand(1).HandStatus==MInputHandStatus.Grip)
+                        leftHandOperate.OnGestureAction(rightHandOperate,true);
                     break;
                 case OperateModeType.Zoom:
                     Vector2 left = leftHandOperate.Operate.InputHand.ScreenPoint;
