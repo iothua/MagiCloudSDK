@@ -53,6 +53,9 @@ namespace MagiCloud.Downloads
             }
         }
 
+        public AbstractDownload()
+        { }
+
         public AbstractDownload(string url, string path)
         {
             this.uri = url;
@@ -64,7 +67,7 @@ namespace MagiCloud.Downloads
             saveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, fileExt);
         }
 
-        public virtual void StartDownload(Action callback = null)
+        public virtual void StartDownload(Action<bool> callback = null)
         {
             if (string.IsNullOrEmpty(uri) || string.IsNullOrEmpty(savePath))
                 return;

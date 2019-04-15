@@ -186,7 +186,12 @@ namespace MagiCloud.TextToAudio
         public void StopCurrent()
         {
             if (!IsOn) return;
-            AudioSource1.Stop();
+            if (AudioSource1!=null)
+                if (AudioSource1.isPlaying)
+                {
+                    AudioSource1.Stop();
+
+                }
             audioPlayer.Stop();
         }
         public void Stop(string data)
@@ -199,7 +204,12 @@ namespace MagiCloud.TextToAudio
         public void RegistCallback(UnityAction<string> onComplete)
         {
             if (!IsOn) return;
-            this.onComplete = onComplete;
+            this.onComplete += onComplete;
+        }
+        public void UnRegistCallback(UnityAction<string> onComplete)
+        {
+            if (!IsOn) return;
+            this.onComplete -= onComplete;
         }
         private void OnComplete(string text)
         {

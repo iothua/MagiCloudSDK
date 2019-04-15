@@ -124,6 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 155c3a932a6aed24f89afd5d98a9ff8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  order: 0
   buttonType: 0
   spriteRenderer: {fileID: 0}
   image: {fileID: 0}
@@ -135,35 +136,44 @@ MonoBehaviour:
   enterObject: {fileID: 0}
   pressedObject: {fileID: 0}
   disableObject: {fileID: 0}
+  audioClip: {fileID: 0}
+  audioStatus: 0
+  audioSource: {fileID: 0}
+  IsStartAudio: 1
   onClick:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onDown:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onUp:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   onDownStay:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.ButtonEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  onUpRange:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: MagiCloud.KGUI.PanelEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   KguiAxis: 1
   horizontal: 0
@@ -175,7 +185,7 @@ MonoBehaviour:
   OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: KGUI.EventFloat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_TypeName: MagiCloud.KGUI.EventFloat, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   OnRelease:
     m_PersistentCalls:
@@ -230,6 +240,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.50007623, y: 124.996635}
+  m_AnchoredPosition: {x: 0.50007623, y: 1.2499617}
   m_SizeDelta: {x: 36, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}

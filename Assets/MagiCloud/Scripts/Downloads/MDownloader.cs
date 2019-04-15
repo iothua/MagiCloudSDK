@@ -16,7 +16,7 @@ namespace MagiCloud.Downloads
             Debug.Log(Application.persistentDataPath);
             abstractDownload = new UnityWebDownload(testUrl, Application.streamingAssetsPath,this);
 
-            abstractDownload.StartDownload(() =>
+            abstractDownload.StartDownload((result) =>
             {
                 Debug.Log("下载完成");
             });

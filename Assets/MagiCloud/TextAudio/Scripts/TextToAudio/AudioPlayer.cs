@@ -36,7 +36,10 @@ namespace MagiCloud.TextToAudio
         {
             if (completed) return;
             if (onComplete!=null)
+            {
                 onComplete.Invoke(text);
+                onComplete=null;
+            }
             completed=true;
         }
         public void Pause()

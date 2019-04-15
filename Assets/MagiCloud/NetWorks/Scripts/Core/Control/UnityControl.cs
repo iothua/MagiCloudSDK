@@ -54,7 +54,9 @@ namespace MagiCloud.NetWorks
         private void OnDestroy()
         {
             isBreak=true;
-            controlTerminal.Close();
+
+            if (controlTerminal != null)
+                controlTerminal.Close();
         }
     }
 }
