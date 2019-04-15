@@ -1,0 +1,14 @@
+Notice
+
+This asset is governed by the Asset Store EULA; however, the following components are governed by the licenses indicated below:
+
+A. DotNetZip(Ionic.Zip)
+	Microsoft Public License (Ms-PL)
+
+B. LZ4
+	BSD 2-Clause "Simplified" License
+
+C. SevenZip
+	LGPL v3.0.	
+
+license and copyright/accreditation details¡ªdetermined by relevant license

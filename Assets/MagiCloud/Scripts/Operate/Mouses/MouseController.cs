@@ -5,20 +5,147 @@ using MagiCloud.Core.MInput;
 using MagiCloud.Core.Events;
 using MagiCloud.Core;
 using MagiCloud.Features;
+using Utility;
 
 namespace MagiCloud.Operate
 {
+
+
     /// <summary>
     /// 鼠标控制端
     /// </summary>
-    public class MouseController : MonoBehaviour, IHandController
+    public class MouseController :MonoBehaviour, IHandController
     {
+        public class ObservedMode
+        {
+            private bool IsObserved;
+            private bool IsDown;
+            Touch lastTouch1;
+            Touch lastTouch2;
+            /// <summary>
+            /// 按下时
+            /// </summary>
+            public void OnDown()
+            {
+                IsDown = true;
+                IsObserved = false;
+            }
+
+            /// <summary>
+            /// 抬起时
+            /// </summary>
+            /// <param name="IsRotate"></param>
+            public void OnUp(bool IsRotate)
+            {
+                IsDown = false;
+
+                //已经存在旋转，并且在集合中记录
+                if (IsObserved)
+                {
+                    if (IsRotate)
+                        EventCameraRotate.SendListener(Vector3.zero);
+                    else
+                        EventCameraZoom.SendListener(0);
+                }
+
+                IsObserved = false;
+            }
+
+            /// <summary>
+            /// 具体实现，是旋转还是缩放
+            /// </summary>
+            /// <param name="inputHand"></param>
+            /// <param name="IsRotate"></param>
+            public void OnAchieve(MInputHand inputHand,bool IsRotate)
+            {
+                ////如果按下右键
+                //if (Input.GetMouseButtonDown(0))
+                //{
+                //    IsDown = true;
+                //    IsObserved = false;
+                //}
+
+                //if (Input.GetMouseButtonUp(0))
+                //{
+                //    IsDown = false;
+
+                //    //已经存在旋转，并且在集合中记录
+                //    if (IsObserved)
+                //    {
+                //        if (IsRotate)
+                //            EventCameraRotate.SendListener(Vector3.zero);
+                //        else
+                //            EventCameraZoom.SendListener(0);
+                //    }
+
+                //    IsObserved = false;
+                //    inputHand.HandStatus = MInputHandStatus.Idle;
+                //}
+
+                //按住右键旋转
+                if (IsDown)
+                {
+                    //向量的模大于2.0时
+                    if (!IsObserved  && inputHand.ScreenVector.magnitude > 2.0f)
+                    {
+                        //将动作记录到集合中
+                        inputHand.HandStatus = IsRotate ? MInputHandStatus.Rotate : MInputHandStatus.Zoom;
+
+                        IsObserved = true;
+                    }
+
+                    //已经存在旋转，并且在集合中记录
+                    if (IsObserved)
+                    {
+                        if (IsRotate)
+                        {
+                            Vector3 vector = inputHand.ScreenVector;
+                            EventCameraRotate.SendListener(vector);
+                        }
+                        else
+                        {
+                            EventCameraZoom.SendListener(inputHand.ScreenVector.x / 1200);
+                        }
+                    }
+                }
+            }
+
+            public void OnZoom()
+            {
+                if (Input.touchCount>=2)
+                {
+                    Touch touch1 = Input.GetTouch(0);
+                    Touch touch2 = Input.GetTouch(1);
+                    if (touch2.phase==TouchPhase.Began)
+                    {
+                        lastTouch1=touch1;
+                        lastTouch2=touch2;
+                        return;
+                    }
+                    float lastDis = Vector2.Distance(lastTouch1.position,lastTouch2.position);
+                    float dis = Vector2.Distance(touch1.position,touch2.position);
+                    float offset = (dis-lastDis)*0.001f;
+                    //float dir = 1;
+                    //if (offset<0)
+                    //    dir=-1;
+                    //offset=MathHelper.Damping(offset,10)*dir;
+                    EventCameraZoom.SendListener(offset);
+                    lastTouch1=touch1;
+                    lastTouch2=touch2;
+                }
+                else
+                {
+                    float offset = Input.GetAxis("Mouse ScrollWheel");
+
+                    //  offset =MathHelper.Damping(offset,10);
+                    EventCameraZoom.SendListener(offset);
+                }
+            }
+
+
+        }
+
         private MBehaviour behaviour;
-
-        private bool IsZoom = false; //开启缩放
-        private bool IsRotate = false; //开启旋转
-
-        private bool IsRotateDown = false; //旋转是否开启
 
         [Header("手图标")]
         public HandIcon handSprite;//手图标
@@ -34,54 +161,64 @@ namespace MagiCloud.Operate
         private bool isEnable;
         private MOperate operate;
 
+        //观察模式的具体实现
+        private ObservedMode observedMode = new ObservedMode();
+
+        /// <summary>
+        /// 是否触摸
+        /// </summary>
+        public bool IsTouching = false;
+        /// <summary>
+        /// 是否鼠标
+        /// </summary>
+        public bool IsMousing = false;
+
         /// <summary>
         /// 输入端
         /// </summary>
-        public Dictionary<int, MInputHand> InputHands {
-            get;set;
+        public Dictionary<int,MInputHand> InputHands
+        {
+            get; set;
         }
 
         /// <summary>
         /// 是否启动
         /// </summary>
-        public bool IsPlaying {
-            get {
+        public bool IsPlaying
+        {
+            get
+            {
                 return isPlaying;
             }
         }
 
-        public bool IsEnable {
-            get {
+        public bool IsEnable
+        {
+            get
+            {
                 return isEnable;
             }
-            set {
+            set
+            {
 
                 if (isEnable == value) return;
                 isEnable = value;
 
                 if (isEnable)
                 {
-                    behaviour = new MBehaviour(ExecutionPriority.Highest, -900);
+                    behaviour = new MBehaviour(ExecutionPriority.Highest,-900);
                     behaviour.OnUpdate_MBehaviour(OnMouseUpdate);
 
                     enabled = true;
                     operate.OnEnable();
-
-                    //开启事件发送
-                    //EventHandStart.SendListener(0);
                 }
                 else
                 {
-                    
+
                     enabled = false;
                     operate.OnDisable();
 
-                    behaviour.OnDestroy_MBehaviour(OnMouseUpdate);
-
-                    //停止事件发送
-                    //EventHandStop.SendListener(0);
-
-                    //InputHands[0].SetIdle(); //停止后，设置为Idle状态
+                    behaviour.OnExcuteDestroy();
                 }
             }
         }
@@ -95,7 +232,7 @@ namespace MagiCloud.Operate
         {
             MInputHand hand;
 
-            InputHands.TryGetValue(handIndex, out hand);
+            InputHands.TryGetValue(handIndex,out hand);
 
             if (hand == null)
                 throw new Exception("手势编号错误：" + handIndex);
@@ -105,21 +242,21 @@ namespace MagiCloud.Operate
 
         private void Awake()
         {
-            behaviour = new MBehaviour(ExecutionPriority.Highest, -900, enabled);
+            behaviour = new MBehaviour(ExecutionPriority.Highest,-900,enabled);
 
-            InputHands = new Dictionary<int, MInputHand>();
+            InputHands = new Dictionary<int,MInputHand>();
 
             //初始化手的种类
-            var handUI = MHandUIManager.CreateHandUI(transform, handSprite, handSize);
-            var inputHand = new MInputHand(0, handUI, OperatePlatform.Mouse);
+            var handUI = MHandUIManager.CreateHandUI(transform,handSprite,handSize);
+            var inputHand = new MInputHand(0,handUI,OperatePlatform.Mouse);
             handUI.name = "Mouse-Hand";
 
-            InputHands.Add(0, inputHand);
+            InputHands.Add(0,inputHand);
 
             isPlaying = true;
 
             //注册操作者相关事件
-            operate = MOperateManager.AddOperateHand(inputHand, this);
+            operate = MOperateManager.AddOperateHand(inputHand,this);
             //注册方法
             operate.OnGrab = OnGrabObject;
             operate.OnSetGrab = SetGrabObject;
@@ -137,90 +274,70 @@ namespace MagiCloud.Operate
             //将他的屏幕坐标传递出去
             InputHands[0].OnUpdate(Input.mousePosition);
 
-            if (Input.GetMouseButtonDown(0)&&InputHands[0].IsIdleStatus)
+            #region 鼠标/触摸检测
+
+            //触摸
+            if (!IsMousing&&Input.touchCount >= 1)
+            {
                 InputHands[0].SetGrip();
+                IsTouching = true;
 
-            if (Input.GetMouseButtonUp(0) && !(InputHands[0].IsRotateZoomStatus || InputHands[0].IsErrorStatus))
+                observedMode.OnDown();
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                //鼠标
+                if (!IsTouching&& InputHands[0].IsIdleStatus)
+                {
+                    InputHands[0].SetGrip();
+                    IsMousing = true;
+
+                    observedMode.OnDown();
+                }
+            }
+
+            if (IsTouching && Input.touchCount == 0)
+            {
                 InputHands[0].SetIdle();
+                IsTouching = false;
 
-            #region 旋转
-
-            //如果按下右键
-            if (Input.GetMouseButtonDown(1))
-            {
-                IsRotateDown = true;
-                IsRotate = false;
+                ObservedModeUpHandler();
             }
 
-            if (Input.GetMouseButtonUp(1))
+            if (Input.GetMouseButtonUp(0))
             {
-                IsRotateDown = false;
-
-                //已经存在旋转，并且在集合中记录
-                if (IsRotate)
+                if (IsMousing && !InputHands[0].IsErrorStatus)
                 {
-                    EventCameraRotate.SendListener(Vector3.zero);
-                }
+                    InputHands[0].SetIdle();
+                    IsMousing = false;
 
-                IsRotate = false;
-                InputHands[0].HandStatus = MInputHandStatus.Idle;
+                    ObservedModeUpHandler();
+                }
             }
 
-            //按住右键旋转
-            if (IsRotateDown)
-            {
-                //向量的模大于2.0时
-                if (!IsRotate && InputHands[0].IsIdleStatus && InputHands[0].ScreenVector.magnitude > 2.0f)
-                {
-                    //将动作记录到集合中
-                    InputHands[0].HandStatus = MInputHandStatus.Rotate;
+           
 
-                    IsRotate = true;
-                }
 
-                //已经存在旋转，并且在集合中记录
-                if (IsRotate)
-                {
-                    EventCameraRotate.SendListener(InputHands[0].ScreenVector);
-                }
-
-            }
             #endregion
 
-            #region 缩放
-
-            //缩放
-            if (Input.GetAxis("Mouse ScrollWheel") != 0)
+            //不同模式中的不同操作
+            switch (MSwitchManager.CurrentMode)
             {
-                float result = Input.GetAxis("Mouse ScrollWheel");
+                case OperateModeType.Rotate:
 
-                if (!IsZoom && InputHands[0].IsIdleStatus)
-                {
+                    observedMode.OnAchieve(InputHands[0],true);
+                    break;
+                case OperateModeType.Zoom:
 
-                    InputHands[0].HandStatus = MInputHandStatus.Zoom;
-                    IsZoom = true;
-                }
-
-                //进行缩放
-                if (IsZoom)
-                {
-                    EventCameraZoom.SendListener(result);
-                }
+                    //observedMode.OnAchieve(InputHands[0], false);
+                    observedMode.OnZoom();
+                    break;
+                case OperateModeType.Tool:
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                //进行缩放
-                if (IsZoom)
-                {
-                    EventCameraZoom.SendListener(0);
-                    IsZoom = false;
-                    InputHands[0].HandStatus = MInputHandStatus.Idle;
-                }
-
-
-
-            }
-            #endregion
 
             if (operateObject != null)
             {
@@ -231,11 +348,11 @@ namespace MagiCloud.Operate
                         //需要处理偏移量
                         var screenDevice = MUtility.MainWorldToScreenPoint(operateObject.GrabObject.transform.position);
                         Vector3 screenMouse = InputHands[0].ScreenPoint;
-                        Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x, screenMouse.y, screenDevice.z));
+                        Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x,screenMouse.y,screenDevice.z));
 
                         Vector3 position = vPos - offset;
 
-                        EventUpdateObject.SendListener(operateObject.GrabObject, position, operateObject.GrabObject.transform.rotation, InputHands[0].HandIndex);
+                        EventUpdateObject.SendListener(operateObject.GrabObject,position,operateObject.GrabObject.transform.rotation,InputHands[0].HandIndex);
 
                         break;
                     case MInputHandStatus.Idle:
@@ -249,15 +366,35 @@ namespace MagiCloud.Operate
         }
 
         /// <summary>
+        /// 观察模式时，释放处理
+        /// </summary>
+        private void ObservedModeUpHandler()
+        {
+            switch (MSwitchManager.CurrentMode)
+            {
+                case OperateModeType.Rotate:
+                    observedMode.OnUp(true);
+
+                    break;
+                case OperateModeType.Zoom:
+                    observedMode.OnUp(false);
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
         /// 移动设置
         /// </summary>
         /// <param name="operate"></param>
         /// <param name="handIndex"></param>
-        void OnGrabObject(IOperateObject operate, int handIndex)
+        void OnGrabObject(IOperateObject operate,int handIndex)
         {
             if (handIndex != InputHands[0].HandIndex) return;
 
-            offset = MUtility.GetOffsetPosition(InputHands[0].ScreenPoint, operate.GrabObject);
+            offset = MUtility.GetOffsetPosition(InputHands[0].ScreenPoint,operate.GrabObject);
 
             this.operateObject = operate;
         }
@@ -268,7 +405,7 @@ namespace MagiCloud.Operate
         /// <param name="operate"></param>
         /// <param name="handIndex"></param>
         /// <param name="cameraRelativeDistance"></param>
-        void SetGrabObject(IOperateObject operate, int handIndex, float cameraRelativeDistance)
+        void SetGrabObject(IOperateObject operate,int handIndex,float cameraRelativeDistance)
         {
             if (handIndex != InputHands[0].HandIndex) return;
 
@@ -276,10 +413,10 @@ namespace MagiCloud.Operate
             Vector3 screenpoint = InputHands[0].ScreenPoint;
             operateObject = operate;
 
-            Vector3 screenMainCamera = MUtility.MainWorldToScreenPoint(MUtility.MainCamera.transform.position 
+            Vector3 screenMainCamera = MUtility.MainWorldToScreenPoint(MUtility.MainCamera.transform.position
                 + MUtility.MainCamera.transform.forward * cameraRelativeDistance);
 
-            Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenpoint.x, screenpoint.y, screenMainCamera.z));
+            Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenpoint.x,screenpoint.y,screenMainCamera.z));
 
             offset = Vector3.zero;
 

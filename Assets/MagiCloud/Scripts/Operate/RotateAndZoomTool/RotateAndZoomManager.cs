@@ -8,23 +8,23 @@ namespace MagiCloud.RotateAndZoomTool
         /// <summary>
         /// 相机绕点旋转时候的水平轴方向上旋转的角度限制
         /// </summary>
-        public static Vector2 Limit_CameraRotateAroundCenter_HorizontalAxis = new Vector2(0, 0);
+        public static Vector2 Limit_CameraRotateAroundCenter_HorizontalAxis = new Vector2(float.MinValue,float.MaxValue);
 
         /// <summary>
         /// 相机绕点旋转时候的垂直轴方向上旋转的角度限制
         /// </summary>
-        public static Vector2 Limit_CameraRotateAroundCenter_VerticalAxis = new Vector2(-85, 85);
+        public static Vector2 Limit_CameraRotateAroundCenter_VerticalAxis = new Vector2(float.MinValue,float.MaxValue);
 
 
         /// <summary>
         /// 相机自身旋转时候的水平轴方向上旋转的角度限制
         /// </summary>
-        public static Vector2 Limit_CameraRotateSelf_HorizontalAxis = new Vector2(-360, 360);
+        public static Vector2 Limit_CameraRotateSelf_HorizontalAxis = new Vector2(-360,360);
 
         /// <summary>
         /// 相机自身旋转时候的垂直轴方向上旋转的角度限制
         /// </summary>
-        public static Vector2 Limit_CameraRotateSelf_VerticalAxis = new Vector2(-85, 85);
+        public static Vector2 Limit_CameraRotateSelf_VerticalAxis = new Vector2(-85,85);
 
         /// <summary>
         /// 相机缩放系数
@@ -34,12 +34,12 @@ namespace MagiCloud.RotateAndZoomTool
         /// <summary>
         /// 旋转速度 水平轴
         /// </summary>
-        public static float Speed_CameraRotateAroundCenter_HorizontalAxis = 0.2f;
+        public static float Speed_CameraRotateAroundCenter_HorizontalAxis = 0.1f;
 
         /// <summary>
         /// 旋转速度 垂直轴
         /// </summary>
-        public static float Speed_CameraRotateAroundCenter_VerticalAxis = 0.2f;
+        public static float Speed_CameraRotateAroundCenter_VerticalAxis = 0.1f;
 
         /// <summary>
         /// 缩放暂停或者重启
@@ -141,9 +141,9 @@ namespace MagiCloud.RotateAndZoomTool
         /// 相机围绕某个中心旋转
         /// </summary>
         /// <param name="center"></param>
-        public static void StartCameraAroundCenter(Transform center, float duration = 0.5f)
+        public static void StartCameraAroundCenter(Transform center,float duration = 0.5f)
         {
-            CameraRotate.Instance.StartCameraRotateWithCenter(center, duration);
+            CameraRotate.Instance.StartCameraRotateWithCenter(center,duration);
         }
 
         /// <summary>
@@ -152,9 +152,9 @@ namespace MagiCloud.RotateAndZoomTool
         /// <param name="center">围绕中心点</param>
         /// <param name="pos">初始化相机位置</param>
         /// <param name="qua">初始化相机角度</param>
-        public static void StartCameraAroundCenter(Transform center, Vector3 pos, Quaternion qua, float duration = 0.5f)
+        public static void StartCameraAroundCenter(Transform center,Vector3 pos,Quaternion qua,float duration = 0.5f)
         {
-            CameraRotate.Instance.StartCameraRotateWithCenter(center, pos, qua, duration);
+            CameraRotate.Instance.StartCameraRotateWithCenter(center,pos,qua,duration);
         }
 
         /// <summary>
@@ -195,9 +195,9 @@ namespace MagiCloud.RotateAndZoomTool
         /// <param name="center">缩放中心</param>
         /// <param name="mindistance">距离中心最近距离</param>
         /// <param name="maxdistance">距离中心最远距离</param>
-        public static void StartCameraZoom(Transform center, float mindistance, float maxdistance)
+        public static void StartCameraZoom(Transform center,float mindistance,float maxdistance)
         {
-            CameraZoom.Instance.StartCameraZoomWithCenter(center, mindistance, maxdistance);
+            CameraZoom.Instance.StartCameraZoomWithCenter(center,mindistance,maxdistance);
         }
 
         /// <summary>
@@ -216,10 +216,10 @@ namespace MagiCloud.RotateAndZoomTool
         {
 
             //角度限制的重置
-            Limit_CameraRotateAroundCenter_HorizontalAxis = new Vector2(0, 0);
-            Limit_CameraRotateAroundCenter_VerticalAxis = new Vector2(-85, 85);
-            Limit_CameraRotateSelf_HorizontalAxis = new Vector2(-360, 360);
-            Limit_CameraRotateSelf_VerticalAxis = new Vector2(-85, 85);
+            Limit_CameraRotateAroundCenter_HorizontalAxis = new Vector2(0,0);
+            Limit_CameraRotateAroundCenter_VerticalAxis = new Vector2(-85,85);
+            Limit_CameraRotateSelf_HorizontalAxis = new Vector2(-360,360);
+            Limit_CameraRotateSelf_VerticalAxis = new Vector2(-85,85);
 
             //缩放系数
             Speed_CameraZoom = 20;

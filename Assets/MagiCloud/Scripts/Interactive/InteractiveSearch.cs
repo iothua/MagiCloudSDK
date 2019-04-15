@@ -89,6 +89,8 @@ namespace MagiCloud.Interactive
                             if (distance.AutoDetection)
                             {
                                 distances[i].AddDistance(distance);
+
+
                             }
                         }
                     }
@@ -207,7 +209,7 @@ namespace MagiCloud.Interactive
         /// <summary>
         /// 停止交互
         /// </summary>
-        public void OnStopInteraction(GameObject target,bool isAuto=false )
+        public void OnStopInteraction(GameObject target,bool isAuto = false)
         {
             List<DistanceDataManager> managers;
             dataManagers.TryGetValue(target,out managers);
@@ -229,7 +231,7 @@ namespace MagiCloud.Interactive
         {
             if (dataManagers.Count == 0) return;
             //帅选被动点中的主动点，然后实时进行距离检测，判断是否靠近了某段距离
-            foreach (var send in dataManagers)
+            foreach (var send in dataManagers.ToDictionary(key => key.Key,value => value.Value))
             {
                 for (int i = 0; i < send.Value.Count; i++)
                 {

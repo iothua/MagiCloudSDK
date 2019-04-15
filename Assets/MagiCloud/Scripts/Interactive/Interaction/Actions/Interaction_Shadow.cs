@@ -62,7 +62,13 @@ namespace MagiCloud.Interactive.Actions
         void OnDistanceStay(DistanceInteraction interaction)
         {
             if (Interaction == null) return;
-
+            if (Interaction.AutoDetection)
+            {
+                if (!Interaction.HasDeteced)
+                {
+                    return;
+                }
+            }
             if (Interaction.IsGrab && !IsSelf) return;
 
             if (!IsOpen && !IsLimit)
@@ -100,7 +106,13 @@ namespace MagiCloud.Interactive.Actions
         {
             if (Interaction == null) return;
             if (Interaction.IsGrab && !IsSelf) return;
-
+            if (Interaction.AutoDetection)
+            {
+                if (!Interaction.HasDeteced)
+                {
+                    Interaction.HasDeteced=true;
+                }
+            }
             if (IsOpen)
             {
                 shadowController?.CloseGhost();

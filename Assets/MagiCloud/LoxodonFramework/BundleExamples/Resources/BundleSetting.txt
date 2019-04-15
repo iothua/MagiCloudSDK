@@ -1,0 +1,2 @@
+ manifestFilename = manifest.dat
+ bundleRoot = bundles

@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: f41e58c74463edf43a9624fcdf483d19
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - _shaderSwapRedBlue: {fileID: 4800000, guid: f8dc701632c759e4a8f2ee16201149cd,
+      type: 3}
+  - _shaderRGBA2YCbCr: {fileID: 4800000, guid: d21befa361dcbc6489decfa310898604, type: 3}
+  executionOrder: 29000
+  icon: {fileID: 2800000, guid: 9dadcbc01dfb782409ab9f21874995f1, type: 3}
+  userData: 

@@ -1,0 +1,25 @@
+syntax = "proto3";
+package MagiCloud.NetWorks;
+//窗体唤醒
+message WindowWakeup{
+  int32 open=1;		//打开
+
+}
+
+//窗体请求
+message WindowRequest{
+	string path=1;
+}
+//窗口回执状态
+message WindowRes{
+	WindowStatus status=1;
+}
+
+//窗体状态
+enum WindowStatus{
+	NONE=0;//无
+	RESTORE=1;	//恢复
+	MIN=2;		//最小化
+	MAX=3;		//最大化
+	EXIT=4;		//退出
+	}
