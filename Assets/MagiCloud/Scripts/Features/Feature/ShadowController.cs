@@ -229,8 +229,9 @@ namespace MagiCloud.Features
         private void SetMaterial(GameObject go)
         {
 
-            MeshRenderer meshRen = go.GetComponent<MeshRenderer>();
-
+            Renderer meshRen = go.GetComponent<MeshRenderer>();
+            if (meshRen==null)
+                meshRen= go.GetComponent<SkinnedMeshRenderer>();
             //设置材质
             Material material = new Material(ghostShader)
             {

@@ -25,14 +25,29 @@ namespace MagiCloud.Downloads
             this.behaviour = behaviour;
         }
 
-        public override void StartDownload(Action callback = null)
+        public HttpWebDownload(string url, string savePath, string fileName, MonoBehaviour behaviour)
+        {
+            this.uri = url;
+            this.savePath = savePath;
+            isStartDownload = false;
+
+            fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+            fileExt = Path.GetExtension(fileName);
+
+            saveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, fileExt);
+
+            tempSaveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, tempFileExt);
+            this.behaviour = behaviour;
+        }
+
+        public override void StartDownload(Action<bool> callback = null)
         {
             base.StartDownload(callback);
 
             behaviour.StartCoroutine(Download(callback));
         }
 
-        IEnumerator Download(Action callback = null)
+        IEnumerator Download(Action<bool> callback = null)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = "GET";
@@ -53,7 +68,21 @@ namespace MagiCloud.Downloads
                 currentLength = 0;
             }
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            HttpWebResponse response;
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+
+            }
+            catch (Exception e)
+            {
+                //Debug.LogError("抛出异常处理：" + e.Message);
+                if (callback != null)
+                    callback(false);
+
+                yield break;
+            }
+
             Stream stream = response.GetResponseStream();
 
             //总文件大小= 当前需要下载的+已下载的
@@ -93,7 +122,8 @@ namespace MagiCloud.Downloads
             File.Move(tempSaveFilePath, saveFilePath);
 
             if (callback != null)
-                callback();
+                callback(true);
+
         }
 
         public override void Destroy()

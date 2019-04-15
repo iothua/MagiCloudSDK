@@ -167,7 +167,7 @@ namespace MagiCloud.KGUI
             {
 
                 TextMeshPro.enabled=true;
-                TextMeshPro.hideFlags=HideFlags.HideInInspector;
+                TextMeshPro.hideFlags = HideFlags.None;
             }
             if (TMPMaterial!=null)
                 TMPMaterial.hideFlags=HideFlags.HideInInspector;

@@ -74,10 +74,10 @@ namespace MagiCloud
 
             if (currentButton != null)
             {
-                currentButton.OnDown(handIndex);
+                InputHand.HandStatus = Core.MInputHandStatus.Pressed; //设置为UI按下
                 IsButtonPress = true;
 
-                InputHand.HandStatus = Core.MInputHandStatus.Pressed; //设置为UI按下
+                currentButton.OnDown(handIndex);
             }
         }
 
