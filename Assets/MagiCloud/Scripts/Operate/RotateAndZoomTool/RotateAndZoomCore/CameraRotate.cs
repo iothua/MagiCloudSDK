@@ -98,7 +98,7 @@ namespace MagiCloud.RotateAndZoomTool
         /// 相机对的中心位置物体
         /// </summary>
         GameObject cameraLookToCenter;
-        public bool inertia = false ;
+        public bool inertia = false;
         /// <summary>
         /// 相机绕点转的速率
         /// </summary>
@@ -179,25 +179,25 @@ namespace MagiCloud.RotateAndZoomTool
 
             //朝向开启再旋转
             mainCamera.transform.DOLookAt(cameraLookToCenter.transform.position,duration).OnComplete(() =>
-           {
-               dragMouseOrbit = new DragMouseOrbit(cameraCenter,mainCamera.transform);
+            {
+                dragMouseOrbit = new DragMouseOrbit(cameraCenter,mainCamera.transform);
 
-               EventCameraRotate.AddListener(RotateCameraToCenter);
+                EventCameraRotate.AddListener(RotateCameraToCenter);
 
-               mBehaviour = new MBehaviour(ExecutionPriority.High);
+                mBehaviour = new MBehaviour(ExecutionPriority.High);
 
-               mBehaviour.OnUpdate_MBehaviour(() =>
-               {
-                   RotateCameraToCenter(inputPointPos);
-               });
+                mBehaviour.OnUpdate_MBehaviour(() =>
+                {
+                    RotateCameraToCenter(inputPointPos);
+                });
 
 
-               isRotateCameraWithCenter = true;
+                isRotateCameraWithCenter = true;
 
-               isRotateCameraWithCenterInitialization = true;
+                isRotateCameraWithCenterInitialization = true;
 
-               RotateAndZoomManager.IsDone_StartCameraAroundCenter_Initialization = true;
-           });
+                RotateAndZoomManager.IsDone_StartCameraAroundCenter_Initialization = true;
+            });
 
         }
 
@@ -218,28 +218,28 @@ namespace MagiCloud.RotateAndZoomTool
             mainCamera.transform.DOMove(camerainitialpos,duration / 3);
 
             mainCamera.transform.DORotate(camerainitialqua.eulerAngles,duration / 3).OnComplete(() =>
-             {
-                 mainCamera.transform.DOLookAt(cameraCenter.transform.position,duration / 3).OnComplete(() =>
-                   {
-                       dragMouseOrbit = new DragMouseOrbit(cameraCenter,mainCamera.transform);
+            {
+                mainCamera.transform.DOLookAt(cameraCenter.transform.position,duration / 3).OnComplete(() =>
+                {
+                    dragMouseOrbit = new DragMouseOrbit(cameraCenter,mainCamera.transform);
 
-                       EventCameraRotate.AddListener(RotateCameraToCenter);
+                    EventCameraRotate.AddListener(RotateCameraToCenter);
 
-                       mBehaviour = new MBehaviour(ExecutionPriority.High);
+                    mBehaviour = new MBehaviour(ExecutionPriority.High);
 
-                       mBehaviour.OnUpdate_MBehaviour(() =>
-                       {
-                           RotateCameraToCenter(inputPointPos);
-                       });
+                    mBehaviour.OnUpdate_MBehaviour(() =>
+                    {
+                        RotateCameraToCenter(inputPointPos);
+                    });
 
-                       isRotateCameraWithCenter = true;
+                    isRotateCameraWithCenter = true;
 
-                       isRotateCameraWithCenterInitialization = true;
+                    isRotateCameraWithCenterInitialization = true;
 
-                       RotateAndZoomManager.IsDone_StartCameraAroundCenter_Initialization = true;
-                   });
+                    RotateAndZoomManager.IsDone_StartCameraAroundCenter_Initialization = true;
+                });
 
-             });
+            });
 
         }
 

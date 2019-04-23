@@ -1,4 +1,5 @@
 ﻿using MagiCloud.Common;
+using MagiCloud.RotateAndZoomTool;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -8,15 +9,16 @@ namespace MagiCloud.Operate.OperateFSM
 {
     public class OperateController :MonoBehaviour
     {
-        [SerializeField]
+        [SerializeField, Header("状态脚本名称，需要带上命名空间")]
         private string[] operateStateTypeNames;
-        [SerializeField]
+        [SerializeField, Header("指定初始状态")]
         private string startOperateStateTypeName;
         FsmSystem fsmSystem;
         OperateSystem operateSystem;
         OperateStateBase startOperateState;
         private void Awake()
         {
+            //状态机管理系统
             fsmSystem=new FsmSystem();
             fsmSystem.Init();
             operateSystem=new OperateSystem();
@@ -24,7 +26,8 @@ namespace MagiCloud.Operate.OperateFSM
 
         private IEnumerator Start()
         {
-
+            //实例化状态
+            MSwitchManager.OnInitializeMode(OperateModeType.Move | OperateModeType.Rotate | OperateModeType.Zoom);
             var states = new OperateStateBase[operateStateTypeNames.Length];
             for (int i = 0; i < operateStateTypeNames.Length; i++)
             {
@@ -39,6 +42,7 @@ namespace MagiCloud.Operate.OperateFSM
             }
             if (startOperateState==null)
                 yield break;
+            //启动状态机
             operateSystem.Initialize(fsmSystem,states);
             yield return new WaitForEndOfFrame();
             operateSystem.Start(startOperateState.GetType());
@@ -47,8 +51,8 @@ namespace MagiCloud.Operate.OperateFSM
 
         private void Update()
         {
-          
-            if (MSwitchManager.CurrentMode!=OperateModeType.Tool)
+
+            if (MSwitchManager.CurrentMode!=OperateModeType.Tool&&CameraRotate.Instance.IsRotateCameraWithCenterEnable)
                 fsmSystem.Update();
         }
         private void OnDestroy()
@@ -56,4 +60,6 @@ namespace MagiCloud.Operate.OperateFSM
             fsmSystem.Shutdown();
         }
     }
+
+
 }

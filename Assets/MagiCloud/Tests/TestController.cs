@@ -5,8 +5,9 @@ using UnityEngine;
 using MagiCloud.Core.Events;
 using MagiCloud.RotateAndZoomTool;
 using MagiCloud;
+using UnityEngine.UI;
 
-public class TestController : MonoBehaviour
+public class TestController :MonoBehaviour
 {
     private MBehaviour behaviour;
 
@@ -15,8 +16,14 @@ public class TestController : MonoBehaviour
 
     public Transform center;
 
+    public static TestController Controller;
+
+    public Text txtInfo;
+
     private void Awake()
     {
+        Controller = this;
+
         //behaviour = new MBehaviour(executionPriority, executionOrder, enabled);
 
         //behaviour.OnAwake_MBehaviour(() =>
@@ -47,12 +54,25 @@ public class TestController : MonoBehaviour
         //MBehaviourController.AddBehaviour(behaviour);
     }
 
+    public static void AddText(string msg)
+    {
+        Controller.txtInfo.text += msg + "\r\n";
+    }
+
+    public void OnClear()
+    {
+        txtInfo.text = string.Empty;
+    }
+
     private void Start()
     {
-        RotateAndZoomManager.StartCameraZoom(center,2,20);
-        RotateAndZoomManager.StartCameraAroundCenter(center);
-        MSwitchManager.OnInitializeMode(OperateModeType.Move | OperateModeType.Rotate | OperateModeType.Zoom);
+        //RotateAndZoomManager.StartCameraZoom(center,2,20);
+        //RotateAndZoomManager.StartCameraAroundCenter(center);
+      
+        //MSwitchManager.OnInitializeMode(OperateModeType.Move | OperateModeType.Rotate | OperateModeType.Zoom);
     }
+
+
 
     public void OnOperate()
     {
@@ -85,14 +105,17 @@ public class TestController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            RotateAndZoomManager.StartCameraZoom(center, 2, 10);
-            RotateAndZoomManager.StartCameraAroundCenter(center);
+            //RotateAndZoomManager.StartCameraZoom(center,2,10);
+            //RotateAndZoomManager.StartCameraAroundCenter(center);
+
+            OnClear();
+
         }
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            RotateAndZoomManager.StopCameraAroundCenter();
-            RotateAndZoomManager.StopCameraZoom();
-        }
+        //if (Input.GetKeyDown(KeyCode.W))
+        //{
+        //    RotateAndZoomManager.StopCameraAroundCenter();
+        //    RotateAndZoomManager.StopCameraZoom();
+        //}
     }
 
     void onGrab(int handindex)
@@ -101,10 +124,10 @@ public class TestController : MonoBehaviour
     }
 
     void OnRelease(int handindex)
-    {}
+    { }
 
     void OnTargetEnter(int handindex)
-    {}
+    { }
 
     void OnTargetExit(int handindex)
     {
@@ -161,56 +184,56 @@ public class TestController : MonoBehaviour
         EventHandGrabObjectKey.AddListener(gameObject,onGrab);
         EventHandGrabObjectKey.RemoveListener(gameObject,onGrab);
 
-        EventHandReleaseObjectKey.AddListener(gameObject, OnRelease);
-        EventHandReleaseObjectKey.RemoveListener(gameObject, OnRelease);
+        EventHandReleaseObjectKey.AddListener(gameObject,OnRelease);
+        EventHandReleaseObjectKey.RemoveListener(gameObject,OnRelease);
 
         EventHandRayTarget.AddListener(onraytarget);
         EventHandRayTarget.RemoveListener(onraytarget);
 
-        EventHandRayTargetEnter.AddListener(gameObject, OnTargetEnter);
-        EventHandRayTargetEnter.RemoveListener(gameObject, OnTargetEnter);
+        EventHandRayTargetEnter.AddListener(gameObject,OnTargetEnter);
+        EventHandRayTargetEnter.RemoveListener(gameObject,OnTargetEnter);
 
-        EventHandRayTargetExit.AddListener(gameObject, OnTargetExit);
-        EventHandRayTargetExit.RemoveListener(gameObject, OnTargetExit);
+        EventHandRayTargetExit.AddListener(gameObject,OnTargetExit);
+        EventHandRayTargetExit.RemoveListener(gameObject,OnTargetExit);
 
-        EventHandUIRayEnter.AddListener(gameObject, onuienter);
-        EventHandUIRayEnter.RemoveListener(gameObject, onuienter);
+        EventHandUIRayEnter.AddListener(gameObject,onuienter);
+        EventHandUIRayEnter.RemoveListener(gameObject,onuienter);
 
-        EventHandUIRayExit.AddListener(gameObject, onuiexit);
-        EventHandUIRayExit.RemoveListener(gameObject, onuiexit);
+        EventHandUIRayExit.AddListener(gameObject,onuiexit);
+        EventHandUIRayExit.RemoveListener(gameObject,onuiexit);
 
         EventHandUIRay.AddListener(onRay);
         EventHandUIRay.RemoveListener(onRay);
-        
+
     }
     void onuienter(int hand)
-    {}
+    { }
 
     void onuiexit(int hand)
-    {}
+    { }
 
 
     void onraytarget(RaycastHit hit,int hand)
-    {}
+    { }
 
 
     void ongrabobject(GameObject game,int hand)
-    {}
+    { }
 
     void onreleaseobject(GameObject game,int hand)
-    {}
+    { }
 
     void onrotate(Vector3 rotation)
-    {}
+    { }
 
     void onzoom(float value)
-    {}
+    { }
 
     void onstart(int hand)
-    {}
+    { }
 
     void onstop(int hand)
-    {}
+    { }
 
 
     void onRay(Ray ray,int hand)
@@ -219,7 +242,7 @@ public class TestController : MonoBehaviour
     }
 
     void OnRays(Ray ray,Ray uiRay,int hand)
-    {}
+    { }
 
     private void OnEnable()
     {

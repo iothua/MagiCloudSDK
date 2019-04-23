@@ -312,10 +312,7 @@ namespace MagiCloud.KGUI
                         if (pressedSprite != null)
                         {
                             image.sprite = pressedSprite;
-                            if (image.transform.localScale == Vector3.one)
-                            {
-                                image.transform.DOPunchScale(new Vector3(-0.2f,-0.2f,0),0.4f,12,0.5f);
-                            }
+                      
                         }
                     }
                     else if (cmd.Equals("enter"))

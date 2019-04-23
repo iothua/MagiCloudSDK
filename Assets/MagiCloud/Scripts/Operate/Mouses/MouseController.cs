@@ -300,6 +300,9 @@ namespace MagiCloud.Operate
             if (IsTouching && Input.touchCount == 0)
             {
                 InputHands[0].SetIdle();
+
+                SystemDllHelper.SetCursorPos(0, Screen.height);
+
                 IsTouching = false;
 
                 ObservedModeUpHandler();
@@ -316,7 +319,7 @@ namespace MagiCloud.Operate
                 }
             }
 
-           
+
 
 
             #endregion
