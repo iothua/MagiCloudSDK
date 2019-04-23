@@ -16,6 +16,8 @@ namespace MagiCloud.Kinect
 
         public static GameObject initialScene;
 
+        private GameObject[] ARIgnoreObjects;
+
         private void Start()
         {
             kGUI_Button = GetComponentInChildren<KGUI_Toggle>();
@@ -55,6 +57,16 @@ namespace MagiCloud.Kinect
 
                 }
 
+                ARIgnoreObjects = GameObject.FindGameObjectsWithTag("ARIgnore");
+                if (ARIgnoreObjects != null)
+                {
+                    foreach (var item in ARIgnoreObjects)
+                    {
+                        item.SetActive(false);
+                        //Debug.Log("false");
+                    }
+                }
+
                 if (initialScene != null)
                 {
                     initialScene.SetActive(false);
@@ -69,8 +81,16 @@ namespace MagiCloud.Kinect
                 if (Camera.main != null)
                 {
                     Camera.main.clearFlags = CameraClearFlags.Skybox;
-
                 }
+
+                if (ARIgnoreObjects != null)
+                {
+                    foreach (var item in ARIgnoreObjects)
+                    {
+                        item.SetActive(true);
+                    }
+                }
+             
                 if (initialScene != null)
                 {
                     initialScene.SetActive(true);

@@ -57,5 +57,9 @@ namespace MagiCloud
         [DllImport("user32.dll",CharSet = CharSet.Auto)]
         public static extern int SetWindowPos(IntPtr hWnd,int hWndInsertAfter,int x,int y,int Width,int Height,int flags);
 
+
+        [DllImport("user32.dll")] //引入dll
+        public static extern int SetCursorPos(int x, int y);
+
     }
 }

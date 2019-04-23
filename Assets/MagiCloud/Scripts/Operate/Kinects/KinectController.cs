@@ -346,8 +346,8 @@ namespace MagiCloud.Operate
 
             IsEnable = true;
 
-            //mouseController = gameObject.GetComponent<MouseController>() ?? gameObject.AddComponent<MouseController>();
-            //mouseController.IsEnable = false;
+            mouseController = gameObject.GetComponent<MouseController>() ?? gameObject.AddComponent<MouseController>();
+            mouseController.IsEnable = false;
 
             //检查一次是否激活手
             HandStop(2);//默认也禁止
@@ -383,7 +383,7 @@ namespace MagiCloud.Operate
                     break;
             }
 
-            //ChangePlatform();
+            ChangePlatform();
         }
 
         /// <summary>
@@ -438,7 +438,7 @@ namespace MagiCloud.Operate
             }
 
             //根据手势的启用情况，设置他的状态
-            //ChangePlatform();
+            ChangePlatform();
         }
 
         void Awake()
@@ -450,6 +450,7 @@ namespace MagiCloud.Operate
         private OperateModeType operateModeType;
         private Vector2 lastLeftPos;
         private Vector2 lastRightPos;
+
         void OnKinectUpdate()
         {
             if (!isEnable) return;
@@ -480,7 +481,7 @@ namespace MagiCloud.Operate
                     }
                     float lastDis = Vector2.Distance(lastRightPos,lastLeftPos);
                     float dis = Vector2.Distance(left,right);
-                    float offset = (dis-lastDis)/1200;
+                    float offset = (dis - lastDis) / 1200;
                     EventCameraZoom.SendListener(offset);
                     lastLeftPos=left;
                     lastRightPos=right;
@@ -493,7 +494,7 @@ namespace MagiCloud.Operate
                     break;
             }
             operateModeType = MSwitchManager.CurrentMode;
-            
+
         }
 
         /// <summary>

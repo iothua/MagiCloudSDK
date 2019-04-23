@@ -78,6 +78,7 @@ GameObject:
   - component: {fileID: 65445493556174552}
   - component: {fileID: 114840402905020382}
   - component: {fileID: 82892141278320184}
+  - component: {fileID: 114143957907871200}
   m_Layer: 5
   m_Name: Toggle
   m_TagString: button
@@ -264,6 +265,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &114143957907871200
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1751579728126808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2895b1b8af9701a4fbe2e7ff14f56ba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoxCollider: {fileID: 65445493556174552}
 --- !u!114 &114350869958805330
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -320,7 +333,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: accb829c4a61f074388b76dfbeb8e7a8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bcd949449aad98b46abd26c0684a1e8c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -436,14 +449,18 @@ MonoBehaviour:
     m_TypeName: MagiCloud.KGUI.PanelEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   isValue: 1
-  onEnterSprite: {fileID: 21300000, guid: abc2b7c58fc1c5c4b95792b12383de21, type: 3}
-  offEnterSprite: {fileID: 21300000, guid: abc2b7c58fc1c5c4b95792b12383de21, type: 3}
-  onNormalSprite: {fileID: 21300000, guid: accb829c4a61f074388b76dfbeb8e7a8, type: 3}
-  offNormalSprite: {fileID: 21300000, guid: c5abffcdbfa17e44182a6b82d3273be2, type: 3}
+  onEnterSprite: {fileID: 21300000, guid: c482acbd6356e5a4693dd7571ec605f7, type: 3}
+  offEnterSprite: {fileID: 21300000, guid: bcd949449aad98b46abd26c0684a1e8c, type: 3}
+  onNormalSprite: {fileID: 21300000, guid: bcd949449aad98b46abd26c0684a1e8c, type: 3}
+  offNormalSprite: {fileID: 21300000, guid: c482acbd6356e5a4693dd7571ec605f7, type: 3}
+  onDisableSprite: {fileID: 21300000, guid: bcd949449aad98b46abd26c0684a1e8c, type: 3}
+  offDisableSprite: {fileID: 21300000, guid: bcd949449aad98b46abd26c0684a1e8c, type: 3}
   onNormalObject: {fileID: 0}
   offNormalObject: {fileID: 0}
   onEnterObject: {fileID: 0}
   offEnterObject: {fileID: 0}
+  onDisableObject: {fileID: 0}
+  offDisableObject: {fileID: 0}
   OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -543,7 +560,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: -1
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &224165795748201346
 RectTransform:
@@ -614,8 +631,8 @@ RectTransform:
   m_Father: {fileID: 224507963765206578}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 171, y: 244}
-  m_SizeDelta: {x: 206, y: 116}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 559, y: -78}
+  m_SizeDelta: {x: 182, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}

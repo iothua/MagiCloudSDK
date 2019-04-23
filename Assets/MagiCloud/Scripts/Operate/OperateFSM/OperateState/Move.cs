@@ -1,5 +1,4 @@
 ﻿using MagiCloud.Common;
-using MagiCloud.RotateAndZoomTool;
 
 namespace MagiCloud.Operate.OperateFSM
 {
@@ -11,7 +10,7 @@ namespace MagiCloud.Operate.OperateFSM
         internal override void OnEnter(IFsm<OperateSystem> fSM)
         {
             base.OnEnter(fSM);
-            CameraRotate.Instance.inertia=false;
+
         }
         internal override void OnUpdate(IFsm<OperateSystem> fSM)
         {

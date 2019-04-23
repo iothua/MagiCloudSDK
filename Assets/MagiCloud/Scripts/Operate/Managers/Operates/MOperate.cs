@@ -18,7 +18,6 @@ namespace MagiCloud
         /// 与之关联的输入端手势
         /// </summary>
         public MInputHand InputHand;
-
         public UIOperate UIOperate;
 
         public Func<bool> RayExternaLimit;//射线外部限制
@@ -81,6 +80,12 @@ namespace MagiCloud
         {
             if (handIndex != InputHand.HandIndex) return;
 
+            if (operaObject != null)
+            {
+                HideHighLight();
+                HideLabel();
+            }
+
             if (OperateObject != null)
             {
                 SetObjectRelease(); //释放
@@ -92,7 +97,17 @@ namespace MagiCloud
 
             if (handIndex != InputHand.HandIndex) return;
 
-            if (InputHand.IsErrorStatus || InputHand.IsRotateZoomStatus) return;
+            //处于错误状态
+            if (InputHand.IsErrorStatus)
+            {
+                return;
+            }
+
+            //处于旋转缩放状态
+            if (InputHand.IsRotateZoomStatus)
+            {
+                return;
+            }
 
             RaycastHit hit;
             //限制处理
@@ -106,9 +121,9 @@ namespace MagiCloud
                 OnNoRayTarget();
             }
             //物体处理
-            else if (MSwitchManager.CurrentMode == OperateModeType.Move && Physics.Raycast(ray, out hit, 10000, 1 << MOperateManager.layerRay | 1 << MOperateManager.layerObject))
+            else if (MSwitchManager.CurrentMode == OperateModeType.Move && Physics.Raycast(ray,out hit,10000,1 << MOperateManager.layerRay | 1 << MOperateManager.layerObject))
             {
-                OnRayTarget(hit, ray);
+                OnRayTarget(hit,ray);
             }
             else
             {
@@ -153,7 +168,6 @@ namespace MagiCloud
             switch (InputHand.HandStatus)
             {
                 case MInputHandStatus.Idle:
-
                     EventHandRayTarget.SendListener(hit,InputHand.HandIndex);
                     ShowHightLight(false);      //现在是每帧检测
                     if (operaObject == null)
@@ -306,7 +320,7 @@ namespace MagiCloud
 
                     var customize = operaObject.GetComponent<MCustomize>();
                     if (customize.HandStatus != MInputHandStatus.Idle) return null;
-                  
+
                     customize.OnOpen(InputHand.HandIndex);
 
                     return customize;
@@ -375,6 +389,9 @@ namespace MagiCloud
 
             EventHandReleaseObject.SendListener(OperateObject.GrabObject,InputHand.HandIndex);
             EventHandReleaseObjectKey.SendListener(OperateObject.GrabObject,InputHand.HandIndex);
+
+            operaObject = null;
+            OperateObject = null;
         }
 
         private void OperateObjectHandler()
