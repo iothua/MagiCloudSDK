@@ -17,9 +17,9 @@ namespace Loxodon.Framework.Bundles
             this.useCache = useCache;
         }
 
-        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo, BundleLoader[] dependencies)
+        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo)
         {
-            return new UnityWebRequestBundleLoader(new System.Uri(this.BaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager, this.useCache);
+            return new UnityWebRequestBundleLoader(new System.Uri(this.BaseUri, bundleInfo.Filename), bundleInfo, manager, this.useCache);
         }
     }
 
@@ -28,7 +28,7 @@ namespace Loxodon.Framework.Bundles
         //private static readonly ILog log = LogManager.GetLogger(typeof(UnityWebRequestBundleLoader));
 
         private bool useCache;
-        public UnityWebRequestBundleLoader(System.Uri uri, BundleInfo bundleInfo, BundleLoader[] dependencies, BundleManager manager, bool useCache = true) : base(uri, bundleInfo, dependencies, manager)
+        public UnityWebRequestBundleLoader(System.Uri uri, BundleInfo bundleInfo, BundleManager manager, bool useCache = true) : base(uri, bundleInfo, manager)
         {
             this.useCache = useCache | this.IsRemoteUri();
         }

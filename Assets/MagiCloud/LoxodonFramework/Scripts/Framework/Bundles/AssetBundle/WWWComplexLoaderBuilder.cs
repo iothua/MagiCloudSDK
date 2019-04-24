@@ -18,13 +18,13 @@ namespace Loxodon.Framework.Bundles
             this.decryptor = decryptor;
         }
 
-        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo, BundleLoader[] dependencies)
+        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo)
         {
             Uri loadBaseUri = this.BaseUri;
             if (this.useCache && BundleUtil.ExistsInCache(bundleInfo))
             {
                 loadBaseUri = this.BaseUri;
-                return new WWWBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager, this.useCache);
+                return new WWWBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, manager, this.useCache);
             }
 
             if (BundleUtil.ExistsInStorableDirectory(bundleInfo))
@@ -42,12 +42,12 @@ namespace Loxodon.Framework.Bundles
             if (bundleInfo.IsEncrypted)
             {
                 if (this.decryptor != null && bundleInfo.Encoding.Equals(decryptor.AlgorithmName))
-                    return new CryptographBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager, decryptor);
+                    return new CryptographBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, manager, decryptor);
 
                 throw new NotSupportedException(string.Format("Not support the encryption algorithm '{0}'.", bundleInfo.Encoding));
             }
 
-            return new WWWBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager, this.useCache);
+            return new WWWBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, manager, this.useCache);
         }
     }
 }

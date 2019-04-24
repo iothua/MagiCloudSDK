@@ -17,9 +17,9 @@ namespace Loxodon.Framework.Bundles
             this.useCache = useCache;
         }
 
-        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo, BundleLoader[] dependencies)
+        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo)
         {
-            return new WWWBundleLoader(new Uri(this.BaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager, this.useCache);
+            return new WWWBundleLoader(new Uri(this.BaseUri, bundleInfo.Filename), bundleInfo, manager, this.useCache);
         }
     }
 
@@ -29,7 +29,7 @@ namespace Loxodon.Framework.Bundles
 
         private bool useCache = false;
 
-        public WWWBundleLoader(Uri uri, BundleInfo bundleInfo, BundleLoader[] dependencies, BundleManager manager, bool useCache) : base(uri, bundleInfo, dependencies, manager)
+        public WWWBundleLoader(Uri uri, BundleInfo bundleInfo, BundleManager manager, bool useCache) : base(uri, bundleInfo, manager)
         {
             this.useCache = useCache;
         }

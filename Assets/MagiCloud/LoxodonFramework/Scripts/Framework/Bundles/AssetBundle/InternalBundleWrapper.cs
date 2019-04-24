@@ -9,13 +9,11 @@ namespace Loxodon.Framework.Bundles
     /// </summary>
     internal class InternalBundleWrapper : IBundle
     {
-        private BundleLoader loader;
-        private IBundle bundle;
-        public InternalBundleWrapper(BundleLoader loader, IBundle bundle)
+        private DefaultBundle bundle;
+        public InternalBundleWrapper(DefaultBundle bundle)
         {
-            this.loader = loader;
             this.bundle = bundle;
-            this.loader.Retain();
+            this.bundle.Retain();
         }
         #region IBundle Support
         public virtual string Name
@@ -103,13 +101,13 @@ namespace Loxodon.Framework.Bundles
             {
                 try
                 {
-                    if (this.loader != null)
+                    if (this.bundle != null)
                     {
                         /* Must be released in the main thread  */
                         Executors.RunOnMainThread(() =>
                         {
-                            this.loader.Release();
-                            this.loader = null;
+                            this.bundle.Release();
+                            this.bundle = null;
                         });
                     }
                 }

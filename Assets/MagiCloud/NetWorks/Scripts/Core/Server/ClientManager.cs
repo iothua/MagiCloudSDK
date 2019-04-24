@@ -32,7 +32,7 @@ namespace MagiCloud.NetWorks
         {
             curWindowIntPtr = SystemDllHelper.GetActiveWindow();
             curID = SystemDllHelper.GetCurrentThreadId();
-            foreID = SystemDllHelper.GetWindowThreadProcessId(curWindowIntPtr, default(IntPtr));
+            foreID = SystemDllHelper.GetWindowThreadProcessId(curWindowIntPtr, default);
         }
 
         private IEnumerator Start()
