@@ -59,6 +59,7 @@ MonoBehaviour:
       InvalidIcon: {fileID: 21300000, guid: d17cbf228f2c0744b8ab5b4be7b901a6, type: 3}
       ErrorIcon: {fileID: 21300000, guid: d17cbf228f2c0744b8ab5b4be7b901a6, type: 3}
     HandIndex: 0
+    IsActioning: 0
   leftHandOperate:
     handIcon:
       IdelIcon: {fileID: 21300000, guid: a5e07e76b00215647ae9723c760ba96c, type: 3}
@@ -66,4 +67,5 @@ MonoBehaviour:
       InvalidIcon: {fileID: 21300000, guid: e6160b476df1c334cadc73bd0e1fbfde, type: 3}
       ErrorIcon: {fileID: 21300000, guid: e6160b476df1c334cadc73bd0e1fbfde, type: 3}
     HandIndex: 1
+    IsActioning: 0
   handModel: 2

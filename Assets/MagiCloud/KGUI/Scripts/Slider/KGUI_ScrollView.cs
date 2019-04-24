@@ -22,7 +22,7 @@ namespace MagiCloud.KGUI
         public KGUI_ScrollBar vertical; //垂直滚动
         public KGUI_ScrollBar horizontal; //水平滚动
         public KGUI_Panel panel; //容器
-
+        public float speed = 2f;
         public RectTransform content;//进行滚轮
 
         private ScrollViewInfo viewInfoX;
@@ -35,7 +35,7 @@ namespace MagiCloud.KGUI
         private int curHand = -1;
         private Vector3 recordHandPos;
         private Vector3 recordPos;
-
+        private bool eventHasAdd = false;
         //x
         public int initXNum = 4;
         private float unitXSize;
@@ -43,8 +43,10 @@ namespace MagiCloud.KGUI
         private int curXHand = -1;
         private Vector3 recordXHandPos;
         private Vector3 recordXPos;
+        private float space;
         private void Start()
         {
+            space=content.GetComponent<KGUI_Table>().spacing;
             SetRectData();
             if (panel != null)
             {
@@ -139,7 +141,7 @@ namespace MagiCloud.KGUI
                 viewInfoY = new ScrollViewInfo();
 
                 float size = content.sizeDelta.y;
-                float parentSize = content.parent.GetComponent<RectTransform>().sizeDelta.y;
+                float parentSize = content.parent.GetComponent<RectTransform>().sizeDelta.y+space;
                 unitSize = parentSize/initNum;
                 sumNum = (int)(size/unitSize);
 
@@ -162,10 +164,13 @@ namespace MagiCloud.KGUI
                 vertical.IsFullHandle = true; //是否填充滚轮
                 vertical.Size = 1 / scale; //设置容器
 
-                if (!isFollowHand)
-                    //添加事件
-                    vertical.OnValueChanged.AddListener(BindingVerticalValue);
-
+                // if (!isFollowHand)
+                //添加事件
+                if (!eventHasAdd)
+                {
+                      vertical.OnValueChanged.AddListener(BindingVerticalValue);
+                    eventHasAdd=true;
+                }
                 //如果高度一样
                 if (size <= parentSize)
                 {
@@ -210,7 +215,9 @@ namespace MagiCloud.KGUI
                     //var contentBox = rectParent.GetComponent<BoxCollider>();
                     //contentBox.size = new Vector3(content.sizeDelta.x, contentBox.size.y, contentBox.size.z);
                     //contentBox.center = Vector3.zero;
+
                 }
+                vertical.SetChangingValue(0);
             }
 
             if (horizontal != null)
@@ -239,8 +246,13 @@ namespace MagiCloud.KGUI
 
                 horizontal.IsFullHandle = true;
                 horizontal.Size = 1 / scale;
-                if (!isFollowHand)
+                // if (!isFollowHand)
+                if (!eventHasAdd)
+                {
                     horizontal.OnValueChanged.AddListener(BindingHorizontalValue);
+                    eventHasAdd=true;
+                }
+
 
                 if (size <= parentSize)
                 {
@@ -294,11 +306,13 @@ namespace MagiCloud.KGUI
             if (isFollowHand)
             {
                 var handPos = MOperateManager.GetHandScreenPoint(curHand);
-                var y = recordPos.y+  handPos.y-recordHandPos.y;
+                var y = handPos.y-recordHandPos.y;
+                y=speed*y+recordPos.y;
                 y=Mathf.Clamp(y,viewInfoY.minValue,viewInfoY.maxValue);
                 var pos = content.localPosition;
                 pos.y=y;
-                content.localPosition=pos;
+                vertical.Value=(y-viewInfoY.minValue)/(viewInfoY.maxValue-viewInfoY.minValue);
+             //   content.localPosition=pos;
             }
             else
             {
@@ -319,6 +333,7 @@ namespace MagiCloud.KGUI
                 x=Mathf.Clamp(x,viewInfoX.minValue,viewInfoX.maxValue);
                 var pos = content.localPosition;
                 pos.x=x;
+                horizontal.Value=(x-viewInfoX.minValue)/(viewInfoX.maxValue-viewInfoX.minValue);
                 content.localPosition=pos;
             }
             else

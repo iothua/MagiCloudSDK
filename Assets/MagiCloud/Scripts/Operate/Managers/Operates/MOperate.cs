@@ -18,7 +18,6 @@ namespace MagiCloud
         /// 与之关联的输入端手势
         /// </summary>
         public MInputHand InputHand;
-
         public UIOperate UIOperate;
 
         public Func<bool> RayExternaLimit;//射线外部限制
@@ -81,6 +80,12 @@ namespace MagiCloud
         {
             if (handIndex != InputHand.HandIndex) return;
 
+            if (operaObject != null)
+            {
+                HideHighLight();
+                HideLabel();
+            }
+
             if (OperateObject != null)
             {
                 SetObjectRelease(); //释放
@@ -92,7 +97,17 @@ namespace MagiCloud
 
             if (handIndex != InputHand.HandIndex) return;
 
-            if (InputHand.IsErrorStatus || InputHand.IsRotateZoomStatus) return;
+            //处于错误状态
+            if (InputHand.IsErrorStatus)
+            {
+                return;
+            }
+
+            //处于旋转缩放状态
+            if (InputHand.IsRotateZoomStatus)
+            {
+                return;
+            }
 
             RaycastHit hit;
             //限制处理
@@ -126,7 +141,7 @@ namespace MagiCloud
 
             if (InputHand.HandStatus == MInputHandStatus.Idle)
             {
-                if (operaObject != null)
+                if (operaObject != null && operaObject.FeaturesObject != null)
                 {
                     //operaObject.BoxCollider.IsShake = false;
 
@@ -153,7 +168,6 @@ namespace MagiCloud
             switch (InputHand.HandStatus)
             {
                 case MInputHandStatus.Idle:
-
                     EventHandRayTarget.SendListener(hit,InputHand.HandIndex);
                     ShowHightLight(false);      //现在是每帧检测
                     if (operaObject == null)
@@ -372,16 +386,22 @@ namespace MagiCloud
             OperateObjectHandler();
 
             InputHand.HandStatus = MInputHandStatus.Idle;
+
             EventHandReleaseObject.SendListener(OperateObject.GrabObject,InputHand.HandIndex);
             EventHandReleaseObjectKey.SendListener(OperateObject.GrabObject,InputHand.HandIndex);
+
+            operaObject = null;
+            OperateObject = null;
         }
 
         private void OperateObjectHandler()
         {
             HideHighLight();
             HideLabel();
-
-            HandleIdle(operaObject.FeaturesObject.operaType);
+            if (operaObject != null)
+            {
+                HandleIdle(operaObject.FeaturesObject.operaType);
+            }
             OperateObject.HandStatus = MInputHandStatus.Idle;
 
             //operaObject.BoxCollider.IsShake = false;
@@ -390,6 +410,10 @@ namespace MagiCloud
         private void IdleOperateEnter()
         {
             //operaObject.BoxCollider.IsShake = true;
+            if (operaObject.FeaturesObject == null)
+            {
+                return;
+            }
             EventHandRayTargetEnter.SendListener(operaObject.FeaturesObject.gameObject,InputHand.HandIndex);
             ShowLabel();
             //显示高亮
@@ -473,7 +497,7 @@ namespace MagiCloud
         /// </summary>
         private void HideLabel()
         {
-            if (operaObject != null && operaObject.FeaturesObject.ActiveLabel)
+            if (operaObject != null && operaObject.FeaturesObject != null && operaObject.FeaturesObject.ActiveLabel)
                 operaObject.FeaturesObject.AddLabel().label.OnExit();
         }
 
@@ -495,7 +519,7 @@ namespace MagiCloud
         private void ShowHightLight(bool isGrab)
         {
             //判断是否激活高亮
-            if (operaObject != null && !isHighlighting && operaObject.FeaturesObject.ActiveHighlight)
+            if (operaObject != null && !isHighlighting && operaObject.FeaturesObject != null && operaObject.FeaturesObject.ActiveHighlight)
             {
                 operaObject.GetComponent<HighlightObject>().ShowHighLight(isGrab);
                 isHighlighting = true;

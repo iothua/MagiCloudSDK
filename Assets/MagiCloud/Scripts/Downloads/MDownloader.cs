@@ -9,14 +9,14 @@ namespace MagiCloud.Downloads
     public class MDownloader : MonoBehaviour
     {
         AbstractDownload abstractDownload;
-        string testUrl = "http://download.microsoft.com/download/F/5/B/F5B06C7A-2B61-4CC0-91CC-48939EE7C7AF/Azure_Developer_Guide_eBook_zh-CN.pdf";
+        public string testUrl = "http://download.microsoft.com/download/F/5/B/F5B06C7A-2B61-4CC0-91CC-48939EE7C7AF/Azure_Developer_Guide_eBook_zh-CN.pdf";
 
         private void Start()
         {
             Debug.Log(Application.persistentDataPath);
-            abstractDownload = new UnityWebDownload(testUrl, Application.persistentDataPath,this);
+            abstractDownload = new UnityWebDownload(testUrl, Application.streamingAssetsPath,this);
 
-            abstractDownload.StartDownload(() =>
+            abstractDownload.StartDownload((result) =>
             {
                 Debug.Log("下载完成");
             });

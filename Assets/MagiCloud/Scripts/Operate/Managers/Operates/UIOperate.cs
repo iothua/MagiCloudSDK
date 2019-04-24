@@ -74,10 +74,10 @@ namespace MagiCloud
 
             if (currentButton != null)
             {
-                currentButton.OnDown(handIndex);
+                InputHand.HandStatus = Core.MInputHandStatus.Pressed; //设置为UI按下
                 IsButtonPress = true;
 
-                InputHand.HandStatus = Core.MInputHandStatus.Pressed; //设置为UI按下
+                currentButton.OnDown(handIndex);
             }
         }
 
@@ -91,8 +91,11 @@ namespace MagiCloud
             }
 
             //如果不是长按并且握拳，返回false
-            if (!IsButtonPress && (InputHand.IsGripStatus))
+            if (!IsButtonPress && InputHand.IsGripStatus)
+            {
+                //MLog.WriteLog(InputHand.HandIndex + "握拳");
                 return false;
+            }
 
             if (!IsEnable) return false;
 
@@ -177,6 +180,8 @@ namespace MagiCloud
                     }
                     else
                     {
+                        //MLog.WriteLog(InputHand.HandIndex + "握拳：" + hit.collider.gameObject);
+
                         rayObject = hit.collider.gameObject;
                         //如果握拳，则进行处理
                     }

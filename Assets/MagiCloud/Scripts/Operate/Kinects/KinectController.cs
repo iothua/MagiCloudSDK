@@ -52,6 +52,10 @@ namespace MagiCloud.Operate
 
                 if (isEnable)
                 {
+                    enabled = true;
+
+                    inputKinect.IsEnable = true;
+
                     behaviour = new MBehaviour(ExecutionPriority.Highest,-900);
                     behaviour.OnUpdate_MBehaviour(OnKinectUpdate);
 
@@ -61,13 +65,23 @@ namespace MagiCloud.Operate
                 }
                 else
                 {
+
+                    inputKinect.IsEnable = false;
+
+                    if (leftHandOperate != null)
+                        leftHandOperate.Operate.OnDisable();
+
+                    if (rightHandOperate != null)
+                        rightHandOperate.Operate.OnDisable();
+
+
+                    enabled = false;
                     behaviour.OnExcuteDestroy();
 
                     //移除手势启动/停止事件
                     EventHandStart.RemoveListener(HandStart);
                     EventHandStop.RemoveListener(HandStop);
                 }
-
             }
         }
 
@@ -118,8 +132,8 @@ namespace MagiCloud.Operate
             /// </summary>
             public void BindGrab()
             {
-                Operate.OnGrab = OnGrabObject;
-                Operate.OnSetGrab = SetGrabObject;
+                Operate.OnGrab += OnGrabObject;
+                Operate.OnSetGrab += SetGrabObject;
                 Operate.OnEnable();
             }
 
@@ -131,7 +145,6 @@ namespace MagiCloud.Operate
             public void OnGrabObject(IOperateObject operate,int handIndex)
             {
                 if (HandIndex != handIndex) return;
-
                 Offset = MUtility.GetOffsetPosition(Operate.InputHand.ScreenPoint,operate.GrabObject);
                 OperateObject = operate;
             }
@@ -145,7 +158,6 @@ namespace MagiCloud.Operate
             public void SetGrabObject(IOperateObject operate,int handIndex,float cameraRelativeDistance)
             {
                 if (HandIndex != handIndex) return;
-
                 Vector3 screenPoint = Operate.InputHand.ScreenPoint;
                 OperateObject = operate;
 
@@ -285,6 +297,8 @@ namespace MagiCloud.Operate
         private bool IsZooming;
         private bool IsRotating;
 
+        private MInputKinect inputKinect;
+
         public MInputHand GetInputHand(int handIndex)
         {
             MInputHand hand;
@@ -305,7 +319,7 @@ namespace MagiCloud.Operate
         {
             InputHands = new Dictionary<int,MInputHand>();
 
-            MInputKinect inputKinect = gameObject.GetComponent<MInputKinect>() ?? gameObject.AddComponent<MInputKinect>();
+            inputKinect = gameObject.GetComponent<MInputKinect>() ?? gameObject.AddComponent<MInputKinect>();
 
             MInputKinect.HandModel = handModel;
             IsPlaying = true;
@@ -384,7 +398,7 @@ namespace MagiCloud.Operate
                     mouseController.IsEnable = true;
                     MUtility.CurrentPlatform = OperatePlatform.Mouse;
 
-                    MLog.WriteLog("切换：鼠标平台");
+                    //MLog.WriteLog("切换：鼠标平台");
                     //Debug.Log("切换：鼠标平台");
                 }
             }
@@ -395,8 +409,7 @@ namespace MagiCloud.Operate
                     mouseController.IsEnable = false;
                     MUtility.CurrentPlatform = OperatePlatform.Kinect;
 
-                    MLog.WriteLog("切换：Kinect平台");
-
+                    //MLog.WriteLog("切换：Kinect平台");
                     //Debug.Log("切换：Kinect平台");
                 }
             }
@@ -437,6 +450,7 @@ namespace MagiCloud.Operate
         private OperateModeType operateModeType;
         private Vector2 lastLeftPos;
         private Vector2 lastRightPos;
+
         void OnKinectUpdate()
         {
             if (!isEnable) return;
@@ -467,7 +481,7 @@ namespace MagiCloud.Operate
                     }
                     float lastDis = Vector2.Distance(lastRightPos,lastLeftPos);
                     float dis = Vector2.Distance(left,right);
-                    float offset = (dis-lastDis)/1200;
+                    float offset = (dis - lastDis) / 1200;
                     EventCameraZoom.SendListener(offset);
                     lastLeftPos=left;
                     lastRightPos=right;
@@ -479,7 +493,8 @@ namespace MagiCloud.Operate
                 default:
                     break;
             }
-            operateModeType=MSwitchManager.CurrentMode;
+            operateModeType = MSwitchManager.CurrentMode;
+
         }
 
         /// <summary>
@@ -524,6 +539,11 @@ namespace MagiCloud.Operate
         public void StartOnlyHand()
         {
             MInputKinect.HandModel = KinectHandModel.One;
+        }
+
+        public void DisableHand()
+        {
+            MInputKinect.HandModel = KinectHandModel.None;
         }
     }
 }

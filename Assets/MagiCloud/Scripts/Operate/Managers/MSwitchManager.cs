@@ -21,11 +21,11 @@ namespace MagiCloud
         /// <summary>
         /// 缩放模式
         /// </summary>
-        Zoom,
+        Zoom = 4,
         /// <summary>
         /// 工具模式
         /// </summary>
-        Tool = 4
+        Tool = 8
     }
 
 
@@ -87,7 +87,7 @@ namespace MagiCloud
             //    magiCloudTool = GameObject.Instantiate(toolObject).GetComponentInChildren<UITool.UIToolManager>();
             //}
 
-            //magiCloudTool.OnInitialize();
+          //  magiCloudTool.OnInitialize();
         }
 
         public static void AddListener(Action<OperateModeType> action)

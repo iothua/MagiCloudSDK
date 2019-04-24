@@ -263,10 +263,10 @@ namespace MagiCloud.Interactive.Distance
                     interactionShadow.OnClose(this,distanceInteraction);
                 }
 
-                if (OnRelease != null)
-                {
-                    OnRelease.Invoke(distanceInteraction);
-                }
+            }
+            if (OnRelease != null)
+            {
+                OnRelease.Invoke(distanceInteraction);
             }
         }
 

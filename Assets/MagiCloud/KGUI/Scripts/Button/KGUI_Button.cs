@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace MagiCloud.KGUI
 {
@@ -25,6 +26,26 @@ namespace MagiCloud.KGUI
                 OnClick(0);
             else
                 OnHandle("normal");
+        }
+
+        protected override void OnHandle(string cmd)
+        {
+            base.OnHandle(cmd);
+
+            if (buttonType == ButtonType.Image)
+            {
+                if (cmd.Equals("click"))
+                {
+                    if (pressedSprite != null)
+                    {
+                        if (image.transform.localScale == Vector3.one)
+                        {
+                            image.transform.DOPunchScale(new Vector3(-0.2f, -0.2f, 0), 0.4f, 12, 0.5f);
+                        }
+                    }
+                }
+            }
+ 
         }
 
         /// <summary>

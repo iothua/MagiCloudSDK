@@ -29,17 +29,17 @@ namespace MagiCloud.RotateAndZoomTool
         /// <summary>
         /// 相机缩放系数
         /// </summary>
-        public static float Speed_CameraZoom = 20;
+        public static float Speed_CameraZoom = 0.1f;
 
         /// <summary>
         /// 旋转速度 水平轴
         /// </summary>
-        public static float Speed_CameraRotateAroundCenter_HorizontalAxis = 0.1f;
+        public static float Speed_CameraRotateAroundCenter_HorizontalAxis = 0.05f;
 
         /// <summary>
         /// 旋转速度 垂直轴
         /// </summary>
-        public static float Speed_CameraRotateAroundCenter_VerticalAxis = 0.1f;
+        public static float Speed_CameraRotateAroundCenter_VerticalAxis = 0.05f;
 
         /// <summary>
         /// 缩放暂停或者重启
@@ -216,7 +216,7 @@ namespace MagiCloud.RotateAndZoomTool
         {
 
             //角度限制的重置
-            Limit_CameraRotateAroundCenter_HorizontalAxis = new Vector2(0,0);
+            Limit_CameraRotateAroundCenter_HorizontalAxis =  new Vector2(float.MinValue,float.MaxValue);
             Limit_CameraRotateAroundCenter_VerticalAxis = new Vector2(-85,85);
             Limit_CameraRotateSelf_HorizontalAxis = new Vector2(-360,360);
             Limit_CameraRotateSelf_VerticalAxis = new Vector2(-85,85);

@@ -154,7 +154,8 @@ namespace MagiCloud
         {
             foreach (var item in Operates)
             {
-                item.Value.HandController.IsEnable = result;
+                if (item.Key.platform == MUtility.CurrentPlatform)
+                    item.Value.HandController.IsEnable = result;
             }
         }
 

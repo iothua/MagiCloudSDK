@@ -11,13 +11,13 @@ namespace MagiCloud.Downloads
         /// <summary>
         /// 临时文件后缀名
         /// </summary>
-        private string tempFileExt = ".temp";
+        protected string tempFileExt = ".temp";
         /// <summary>
         /// 临时文件路径
         /// </summary>
-        private string tempSaveFilePath;
+        protected string tempSaveFilePath;
 
-        private MonoBehaviour behaviour;
+        protected MonoBehaviour behaviour;
 
         public UnityWebDownload(string url, string path, MonoBehaviour behaviour) : base(url, path)
         {
@@ -25,35 +25,41 @@ namespace MagiCloud.Downloads
             this.behaviour = behaviour;
         }
 
-        public override void StartDownload(Action callback = null)
+        public UnityWebDownload(string url, string savePath, string fileName, MonoBehaviour behaviour)
+        {
+            this.uri = url;
+            this.savePath = savePath;
+            isStartDownload = false;
+
+            fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+            fileExt = Path.GetExtension(fileName);
+
+            string last = savePath.Substring(savePath.Length - 1, 1);
+            if (last == "/")
+            {
+                savePath = savePath.Remove(savePath.Length - 1, 1);
+            }
+
+            saveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, fileExt);
+
+            tempSaveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, tempFileExt);
+            this.behaviour = behaviour;
+        }
+
+        public override void StartDownload(Action<bool> callback = null)
         {
             base.StartDownload(callback);
             behaviour.StartCoroutine(Download(callback));
         }
 
-        IEnumerator Download(Action callback = null)
+        IEnumerator Download(Action<bool> callback = null)
         {
             var webRequest = UnityWebRequest.Head(uri);
             
-            //webRequest.SetRequestHeader("Range", "bytes = " + currentLength+"-"+);//断点续传设置文件的数据流开始索引
             isStartDownload = true;
             webRequest.timeout = 30;
 
             yield return webRequest.SendWebRequest();
-
-            //FileStream fileStream;
-            //if (File.Exists(tempSaveFilePath))
-            //{
-            //    //若之前已下载了一部分，继续下载
-            //    fileStream = File.OpenWrite(tempSaveFilePath);
-            //    currentLength = fileStream.Length;
-            //    fileStream.Seek(currentLength, SeekOrigin.Current);
-            //}
-            //else
-            //{
-            //    fileStream = new FileStream(tempSaveFilePath, FileMode.Create, FileAccess.Write);
-            //    currentLength = 0;
-            //}
 
             using (FileStream fileStream = new FileStream(tempSaveFilePath, FileMode.OpenOrCreate, FileAccess.Write))
             {
@@ -65,6 +71,14 @@ namespace MagiCloud.Downloads
                     fileStream.Seek(currentLength, SeekOrigin.Begin);
 
                     var request = UnityWebRequest.Get(uri);
+
+                    if (request.isHttpError || request.isNetworkError)
+                    {
+                        if (callback != null)
+                            callback(false);
+
+                        yield break;
+                    }
 
                     request.SetRequestHeader("Range", "bytes=" + currentLength + "-" + totalLength);
                     request.SendWebRequest();
@@ -100,7 +114,7 @@ namespace MagiCloud.Downloads
             isStartDownload = false;
 
             if (callback != null)
-                callback();
+                callback(true);
         }
 
         public override void Destroy()

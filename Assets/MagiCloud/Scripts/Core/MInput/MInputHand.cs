@@ -9,6 +9,9 @@ namespace MagiCloud.Core.MInput
     public class MInputHand
     {
         private bool isPressed;
+
+        private bool isError;
+
         private bool isEnable;
 
         private Vector3 currentPoint = Vector3.zero;//当前帧
@@ -25,7 +28,10 @@ namespace MagiCloud.Core.MInput
         /// </summary>
         public MInputHandStatus HandStatus {
             get { return handStatus; }
-            set { 
+            set {
+
+                if (handStatus == value) return;
+
                 handStatus = value;
 
                 if (HandUI != null)
@@ -67,6 +73,8 @@ namespace MagiCloud.Core.MInput
                 isEnable = value;
 
                 isPressed = false;
+                isError = false;
+
                 currentPoint = Vector3.zero;
                 lastPoint = null;
                 lerpPoint = Vector3.zero;
@@ -143,9 +151,11 @@ namespace MagiCloud.Core.MInput
         {
             if (!isEnable) return;
 
-            if (isPressed) return;
+            if (!isError)
+                if (isPressed) return;
 
             isPressed = true;
+            isError = false;
 
             HandStatus = MInputHandStatus.Grip;
 
@@ -159,8 +169,11 @@ namespace MagiCloud.Core.MInput
         {
             if (!isEnable) return;
 
-            if (!isPressed) return;
+            if (!isError)
+                if (!isPressed) return;
+
             isPressed = false;
+            isError = false;
 
             HandStatus = MInputHandStatus.Idle;
 
@@ -170,7 +183,8 @@ namespace MagiCloud.Core.MInput
         public void SetLasso()
         {
             if (!isEnable) return;
-            handStatus = MInputHandStatus.Error;
+            isError = true;
+            HandStatus = MInputHandStatus.Error;
         }
 
         /// <summary>

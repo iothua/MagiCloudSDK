@@ -18,7 +18,6 @@ namespace MagiCloud.Operate.OperateFSM
             MSwitchManager.CurrentMode=OperateModeType.Rotate;
             //开启旋转惯性
             CameraRotate.Instance.inertia=true;
-            KGUI.UIShieldController.ShieldDownward(0);
         }
         internal override void OnUpdate(IFsm<OperateSystem> fSM)
         {
@@ -34,7 +33,7 @@ namespace MagiCloud.Operate.OperateFSM
                 if (IsTwoTouch)
                     ChangeState(fSM,typeof(Zoom));
             }
-          
+
             if (LeftIdle&&RightIdle)
                 ChangeState(fSM,typeof(Idle));
         }

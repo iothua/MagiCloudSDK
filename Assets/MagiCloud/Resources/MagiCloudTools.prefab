@@ -306,7 +306,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1789659634521584
 GameObject:
   m_ObjectHideFlags: 1
@@ -357,7 +357,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1892149084357538
 GameObject:
   m_ObjectHideFlags: 1
@@ -1479,7 +1479,7 @@ MonoBehaviour:
       PublicKeyToken=null
   IsButtonGroup: 1
   buttonGroup: {fileID: 114916355556529702}
-  IsShowButton: 1
+  IsShowButton: 0
   onGroupReset:
     m_PersistentCalls:
       m_Calls: []

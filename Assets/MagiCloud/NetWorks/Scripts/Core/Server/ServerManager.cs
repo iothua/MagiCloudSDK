@@ -37,7 +37,7 @@ namespace MagiCloud.NetWorks
         /// <param name="proto"></param>
         private void OnConnectEvent(int sender,IMessage proto)
         {
-            print("客户端已连接");
+            //print("客户端已连接");
             clientConnect=true;
             //发送数据
             SendExpInfo();

@@ -91,7 +91,7 @@ namespace MagiCloud.Interactive.Distance
         public void OnComputeDistance()
         {
 
-            if (!sendData.FeaturesObjectController.IsEnable)
+            if (!sendData.IsEnable || sendData.FeaturesObjectController == null || !sendData.FeaturesObjectController.IsEnable)
                 return;
 
             if (sendData.distanceData.IsShort)
@@ -100,7 +100,7 @@ namespace MagiCloud.Interactive.Distance
 
                 foreach (var receive in Distances)
                 {
-                    if (receive == null) continue;
+                    if (receive == null || !receive.IsEnable|| sendData.FeaturesObjectController == null) continue;
 
                     if (!receive.FeaturesObjectController.IsEnable) continue;
 
@@ -114,25 +114,25 @@ namespace MagiCloud.Interactive.Distance
                             tempDistance = receive;
                             tempValue = distanceValue;
 
-                            OnEnter(receive);
+                            OnEnter(tempDistance);
                         }
                         else
                         {
-                            if (tempValue > distanceValue && tempDistance != receive)
+                            if (tempValue >= distanceValue && tempDistance != receive)
                             {
 
-                                Debug.Log("距离值：" + distanceValue + "    距离对象：" + tempDistance);
+                                Debug.Log("距离值：" + distanceValue + "    距离对象：" + tempDistance.FeaturesObjectController.gameObject.name);
                                 //先执行退出，然后在执行移入
                                 OnExit(tempDistance);
 
                                 tempDistance = receive;
                                 tempValue = distanceValue;
 
-                                OnEnter(receive);
+                                OnEnter(tempDistance);
                                 continue;
                             }
 
-                            OnEnter(receive);
+                            OnEnter(tempDistance);
                         }
                     }
                     else
