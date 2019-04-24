@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace MagiCloud.KGUI
 {
+    [CanEditMultipleObjects]
     public class KGUIButtonEventEditor
     {
         public SerializedProperty onClick;  //鼠标点击

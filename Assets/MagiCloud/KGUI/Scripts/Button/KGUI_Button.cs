@@ -26,6 +26,30 @@ namespace MagiCloud.KGUI
                 OnClick(0);
             else
                 OnHandle("normal");
+            SetCollider();
+        }
+
+        public void SetCollider()
+        {
+            Vector3 size = Vector3.zero;
+            switch (buttonType)
+            {
+                case ButtonType.None:
+                    break;
+                case ButtonType.Image:
+                    size= image.rectTransform.sizeDelta;
+                    break;
+                case ButtonType.SpriteRenderer:
+                    size=spriteRenderer.size;
+                    break;
+                case ButtonType.Object:
+                    size=normalObject.transform.lossyScale;
+                    break;
+                default:
+                    break;
+            }
+            size.z=0.1f;
+            Collider.BoxCollider.size=size;
         }
 
         protected override void OnHandle(string cmd)
@@ -40,12 +64,12 @@ namespace MagiCloud.KGUI
                     {
                         if (image.transform.localScale == Vector3.one)
                         {
-                            image.transform.DOPunchScale(new Vector3(-0.2f, -0.2f, 0), 0.4f, 12, 0.5f);
+                            image.transform.DOPunchScale(new Vector3(-0.2f,-0.2f,0),0.4f,12,0.5f);
                         }
                     }
                 }
             }
- 
+
         }
 
         /// <summary>
