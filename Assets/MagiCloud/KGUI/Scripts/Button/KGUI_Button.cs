@@ -15,7 +15,7 @@ namespace MagiCloud.KGUI
 
         public bool IsButtonGroup;
         public KGUI_ButtonGroup buttonGroup;
-
+        public bool isPunch = true;
         public bool IsShowButton;
 
         public ButtonGroupReset onGroupReset;
@@ -56,7 +56,7 @@ namespace MagiCloud.KGUI
         {
             base.OnHandle(cmd);
 
-            if (buttonType == ButtonType.Image)
+            if (buttonType == ButtonType.Image&&isPunch)
             {
                 if (cmd.Equals("click"))
                 {

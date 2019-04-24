@@ -13,7 +13,7 @@ namespace MagiCloud.KGUI
         public SerializedProperty onGroupReset;
 
         public SerializedProperty buttonGroup;
-
+        public SerializedProperty punch;
         private KGUI_Button button;
 
         KGUIButtonTypeEditor ButtonType;
@@ -41,13 +41,15 @@ namespace MagiCloud.KGUI
             onGroupReset = serializedObject.FindProperty("onGroupReset");
 
             buttonGroup = serializedObject.FindProperty("buttonGroup");
+            punch=serializedObject.FindProperty("isPunch");
         }
 
         public override void OnInspectorGUI()
         {
 
             ButtonType.OnInspectorButtonType(button);
-
+            if (button.buttonType==KGUI.ButtonType.Image)
+                EditorGUILayout.PropertyField(punch,new GUIContent("动画效果"));
             EditorGUILayout.BeginVertical(GUILayout.Width(500));
 
             GUILayout.Space(10);
