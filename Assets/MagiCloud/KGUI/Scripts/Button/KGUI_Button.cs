@@ -26,7 +26,7 @@ namespace MagiCloud.KGUI
                 OnClick(0);
             else
                 OnHandle("normal");
-            SetCollider();
+           // SetCollider();
         }
 
         public void SetCollider()
