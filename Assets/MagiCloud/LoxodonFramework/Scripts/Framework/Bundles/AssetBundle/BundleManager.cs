@@ -13,6 +13,7 @@ namespace Loxodon.Framework.Bundles
         protected const int DEFAULT_PRIORITY = 0;
 
         protected Dictionary<string, BundleLoader> loaders;
+        protected Dictionary<string, DefaultBundle> bundles;
         protected BundleManifest bundleManifest = null;
         protected ILoaderBuilder loaderBuilder;
         protected ITaskExecutor executor;
@@ -27,6 +28,7 @@ namespace Loxodon.Framework.Bundles
             this.loaderBuilder = builder;
             this.executor = executor != null ? executor : new PriorityTaskExecutor();
             this.loaders = new Dictionary<string, BundleLoader>();
+            this.bundles = new Dictionary<string, DefaultBundle>();
         }
 
         public virtual BundleManifest BundleManifest
@@ -73,37 +75,60 @@ namespace Loxodon.Framework.Bundles
             return null;
         }
 
-        public virtual BundleLoader GetBundleLoader(BundleInfo bundleInfo)
+        public virtual BundleLoader GetOrCreateBundleLoader(BundleInfo bundleInfo, int priority)
         {
-            return GetBundleLoader(bundleInfo.Name);
-        }
-
-        public virtual BundleLoader CreateBundleLoader(BundleInfo bundleInfo, int priority)
-        {
-            return this.CreateBundleLoader(bundleInfo, bundleInfo, priority);
-        }
-
-        protected virtual BundleLoader CreateBundleLoader(BundleInfo rootBundleInfo, BundleInfo bundleInfo, int priority)
-        {
-            BundleLoader loader = this.GetBundleLoader(bundleInfo.Name);
-            if (loader != null)
+            BundleLoader loader;
+            if (this.loaders.TryGetValue(bundleInfo.Name, out loader))
             {
                 loader.Priority = priority;
                 return loader;
             }
 
-            List<BundleLoader> dependencies = new List<BundleLoader>();
-            foreach (BundleInfo info in this.bundleManifest.GetDependencies(bundleInfo.Name, false))
-            {
-                if (info.Equals(rootBundleInfo))
-                    throw new LoopingReferenceException(string.Format("Error creating AssetBundle loader with name '{0}'.It has an unresolvable loop reference between '{0}' and '{1}'.", rootBundleInfo.Name, bundleInfo.Name));
-
-                dependencies.Add(CreateBundleLoader(rootBundleInfo, info, priority));
-            }
-
-            loader = this.loaderBuilder.Create(this, bundleInfo, dependencies.ToArray());
+            loader = this.loaderBuilder.Create(this, bundleInfo);
             loader.Priority = priority;
             return loader;
+        }
+
+        public virtual List<BundleLoader> GetOrCreateDependencies(BundleInfo bundleInfo, bool recursive, int priority)
+        {
+            List<BundleLoader> dependencies = new List<BundleLoader>();
+
+            BundleInfo[] bundleInfos = this.BundleManifest.GetDependencies(bundleInfo.Name, recursive);
+
+            foreach (BundleInfo info in bundleInfos)
+            {
+                BundleLoader loader = this.GetOrCreateBundleLoader(info, priority);
+                dependencies.Add(loader);
+            }
+
+            return dependencies;
+        }
+
+        public virtual void AddBundle(DefaultBundle bundle)
+        {
+            if (this.bundles == null)
+                return;
+
+            this.bundles.Add(bundle.Name, bundle);
+        }
+
+        public virtual void RemoveBundle(DefaultBundle bundle)
+        {
+            if (this.bundles == null)
+                return;
+
+            this.bundles.Remove(bundle.Name);
+        }
+
+        public virtual DefaultBundle GetOrCreateBundle(BundleInfo bundleInfo, int priority)
+        {
+            DefaultBundle bundle;
+            if (this.bundles.TryGetValue(bundleInfo.Name, out bundle))
+                return bundle;
+
+            bundle = new DefaultBundle(bundleInfo, this);
+            bundle.Priority = priority;
+            return bundle;
         }
 
         #region IBundleManager Support
@@ -120,11 +145,11 @@ namespace Loxodon.Framework.Bundles
             if (info == null)
                 return null;
 
-            var loader = this.GetBundleLoader(info);
-            if (loader == null)
+            DefaultBundle bundle;
+            if (!this.bundles.TryGetValue(info.Name, out bundle))
                 return null;
 
-            return loader.Bundle;
+            return bundle.IsReady ? new InternalBundleWrapper(bundle) : null;
         }
 
         public virtual IProgressResult<float, IBundle> LoadBundle(string bundleName)
@@ -162,8 +187,19 @@ namespace Loxodon.Framework.Bundles
                 if (bundleInfo == null)
                     throw new ArgumentNullException("The bundleInfo is null!");
 
-                BundleLoader loader = this.CreateBundleLoader(bundleInfo, priority);
-                return loader.Load();
+                DefaultBundle bundle = this.GetOrCreateBundle(bundleInfo, priority);
+                var result = bundle.Load();
+
+                ProgressResult<float, IBundle> resultCopy = new ProgressResult<float, IBundle>();
+                result.Callbackable().OnProgressCallback(p => resultCopy.UpdateProgress(p));
+                result.Callbackable().OnCallback((r) =>
+                {
+                    if (r.Exception != null)
+                        resultCopy.SetException(r.Exception);
+                    else
+                        resultCopy.SetResult(new InternalBundleWrapper(bundle));
+                });
+                return resultCopy;
             }
             catch (Exception e)
             {
@@ -235,8 +271,8 @@ namespace Loxodon.Framework.Bundles
             {
                 try
                 {
-                    BundleLoader loader = this.CreateBundleLoader(bundleInfos[i], priority);
-                    IProgressResult<float, IBundle> bundleResult = loader.Load();
+                    DefaultBundle bundle = this.GetOrCreateBundle(bundleInfos[i], priority);
+                    IProgressResult<float, IBundle> bundleResult = bundle.Load();
                     bundleResult.Callbackable().OnCallback(r =>
                     {
                         if (r.Exception != null)
@@ -245,8 +281,9 @@ namespace Loxodon.Framework.Bundles
                             if (log.IsWarnEnabled)
                                 log.WarnFormat("Loads Bundle failure! Error:{0}", r.Exception);
                         }
-                        else {
-                            bundles.Add(r.Result);
+                        else
+                        {
+                            bundles.Add(new InternalBundleWrapper((DefaultBundle)r.Result));
                         }
                     });
 
