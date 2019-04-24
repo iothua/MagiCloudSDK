@@ -102,5 +102,10 @@ namespace MagiCloud.Kinect
                 }
             }
         }
+
+        private void OnDestroy()
+        {
+            ARIgnoreObjects = null;
+        }
     }
 }
