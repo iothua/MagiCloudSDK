@@ -211,6 +211,11 @@ namespace MagiCloud.Interactive
         /// </summary>
         public void OnStopInteraction(GameObject target,bool isAuto = false)
         {
+            if (target == null)
+            {
+                return;
+            }
+
             List<DistanceDataManager> managers;
             dataManagers.TryGetValue(target,out managers);
 
