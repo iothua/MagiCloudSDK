@@ -7,7 +7,7 @@ namespace MagiCloud.KGUI
 {
     [CustomEditor(typeof(KGUI_Button))]
     [CanEditMultipleObjects]
-    public class KGUIButtonEditor : Editor
+    public class KGUIButtonEditor :Editor
     {
 
         public SerializedProperty onGroupReset;
@@ -23,7 +23,6 @@ namespace MagiCloud.KGUI
         private void OnEnable()
         {
             button = serializedObject.targetObject as KGUI_Button;
-
             if (ButtonType == null)
                 ButtonType = new KGUIButtonTypeEditor();
 
@@ -33,6 +32,7 @@ namespace MagiCloud.KGUI
             if (ButtonAudio == null)
                 ButtonAudio = new KGUIButtonAudioEditor();
 
+            button.SetCollider();
 
             ButtonType.OnInstantiation(serializedObject);
             ButtonEvent.OnInstantiation(serializedObject);
@@ -52,23 +52,23 @@ namespace MagiCloud.KGUI
 
             GUILayout.Space(10);
 
-            button.IsEnable = EditorGUILayout.Toggle("是否启用(IsEnable)", button.IsEnable);
+            button.IsEnable = EditorGUILayout.Toggle("是否启用(IsEnable)",button.IsEnable);
 
             ButtonAudio.OnInspectorButtonAudio(button);
 
-            button.IsButtonGroup = EditorGUILayout.Toggle("是否归属Button组：", button.IsButtonGroup);
+            button.IsButtonGroup = EditorGUILayout.Toggle("是否归属Button组：",button.IsButtonGroup);
 
             if (button.IsButtonGroup)
             {
-                EditorGUILayout.PropertyField(buttonGroup, true, null);
-                button.IsShowButton = EditorGUILayout.Toggle("IsShowButton[是否默认按下]：", button.IsShowButton);
+                EditorGUILayout.PropertyField(buttonGroup,true,null);
+                button.IsShowButton = EditorGUILayout.Toggle("IsShowButton[是否默认按下]：",button.IsShowButton);
             }
 
             GUILayout.Space(20);
-            
+
             if (button.IsButtonGroup)
             {
-                EditorGUILayout.PropertyField(onGroupReset, true, null);
+                EditorGUILayout.PropertyField(onGroupReset,true,null);
             }
 
             ButtonEvent.OnInspectorButtonEvent();
