@@ -25,6 +25,9 @@ namespace MagiCloud.Core
 
         private HighlightingRenderer highlighting;
 
+        [Header("Kinect模式兼容鼠标")]
+        public bool CompatibleMouse = true;
+
         [Header("开启日志记录")]
         public bool IsRecordLog; //记录日志
 
@@ -35,7 +38,8 @@ namespace MagiCloud.Core
             switch (CurrentPlatform)
             {
                 case OperatePlatform.Kinect:
-                    Instantiate(Resources.Load("Controller/KinectController"),transform);
+                    var kinectController = Instantiate(Resources.Load<GameObject>("Controller/KinectController"),transform).GetComponent<Operate.KinectController>();
+                    kinectController.CompatibleMouse = CompatibleMouse;
                     break;
                 case OperatePlatform.Mouse:
                     Instantiate(Resources.Load("Controller/MouseController"),transform);
