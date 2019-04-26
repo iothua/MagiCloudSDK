@@ -56,6 +56,14 @@ namespace MagiCloud.RotateAndZoomTool
             }
         }
 
+        public bool IsZoomInitialization
+        {
+            get
+            {
+                return isZoomInitialization;
+            }
+        }
+
         /// <summary>
         /// 供外界读取 数据
         /// </summary>
@@ -175,7 +183,7 @@ namespace MagiCloud.RotateAndZoomTool
         /// <param name="isenable"></param>
         public void PauseOrRestart(bool isenable)
         {
-            if (!isZoomInitialization) return;
+            if (!IsZoomInitialization) return;
             if (isenable)
             {
                 //EventCameraZoom.AddTwoHandDisEvent(HandZoomFun);
@@ -241,7 +249,7 @@ namespace MagiCloud.RotateAndZoomTool
             distance = DistanceCameraToTarget(zoomTarget,mainCamera.transform);
 
             mouseZoomSpeed = RotateAndZoomManager.Speed_CameraZoom;
-         
+
             distance = Mathf.Clamp(distance - zoomdis * mouseZoomSpeed,zoomMinDis,zoomMaxDis);
             Vector3 curCameraPosition = mainCamera.transform.position;
             RaycastHit hit;

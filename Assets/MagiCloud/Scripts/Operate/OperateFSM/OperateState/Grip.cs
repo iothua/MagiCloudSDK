@@ -15,7 +15,7 @@ namespace MagiCloud.Operate.OperateFSM
             if (LeftGrab||RightGrab)
                 ChangeState(fSM,typeof(Move));
             //握拳进入旋转状态
-            if (LeftGrip||RightGrip)
+            if ((LeftGrip||RightGrip)&&ActiveRotate)
                 ChangeState(fSM,typeof(Rotate));
             if (LeftIdle&&RightIdle)
                 ChangeState(fSM,typeof(Idle));

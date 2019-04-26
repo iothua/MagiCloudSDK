@@ -1,5 +1,6 @@
 ﻿using MagiCloud.Common;
 using MagiCloud.Core;
+using MagiCloud.RotateAndZoomTool;
 using UnityEngine;
 
 namespace MagiCloud.Operate.OperateFSM
@@ -45,6 +46,9 @@ namespace MagiCloud.Operate.OperateFSM
         public bool IsTwoTouch => Input.touchCount>=2;
         //平台
         public OperatePlatform Platform => MOperateManager.GetOperateHand(0).InputHand.Platform;
+
+        public bool ActiveRotate { get { return CameraRotate.Instance.IsRotateCameraWithCenterEnable; } }
+        public bool ActiveZoom { get { return CameraZoom.Instance.IsZoomInitialization; } }
 
         public bool IsUI
         {

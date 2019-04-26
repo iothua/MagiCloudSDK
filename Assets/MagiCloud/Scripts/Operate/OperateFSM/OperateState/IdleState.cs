@@ -24,7 +24,7 @@ namespace MagiCloud.Operate.OperateFSM
             if (IsUI) return;
             if (LeftGrip||RightGrip)
                 ChangeState(fSM,typeof(Grip));
-            if (Platform==OperatePlatform.Mouse)
+            if (Platform==OperatePlatform.Mouse&&ActiveZoom)
             {
                 if (Input.GetAxis("Mouse ScrollWheel")!=0)
                     ChangeState(fSM,typeof(Zoom));

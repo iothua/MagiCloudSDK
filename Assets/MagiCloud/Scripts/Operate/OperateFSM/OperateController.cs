@@ -51,19 +51,19 @@ namespace MagiCloud.Operate.OperateFSM
 
         private void Update()
         {
-
             if (MSwitchManager.CurrentMode!=OperateModeType.Tool)
             {
-                if (CameraRotate.Instance.IsRotateCameraWithCenterEnable)
+                if (CameraRotate.Instance.IsRotateCameraWithCenterEnable||CameraZoom.Instance.IsZoomInitialization)
                     fsmSystem.Update();
                 else
                 {
-                    if (MSwitchManager.CurrentMode!=OperateModeType.Move)
+                    if (MSwitchManager.CurrentMode!=OperateModeType.Move&&operateSystem.CurOperate!=null)
                     {
                         operateSystem.CurOperate.ChangeState(fsmSystem.GetFsm<OperateSystem>(),typeof(Idle));
                     }
                 }
             }
+
 
         }
         private void OnDestroy()
