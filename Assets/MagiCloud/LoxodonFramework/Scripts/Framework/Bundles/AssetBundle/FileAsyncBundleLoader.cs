@@ -12,15 +12,15 @@ namespace Loxodon.Framework.Bundles
         {
         }
 
-        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo, BundleLoader[] dependencies)
+        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo)
         {
-            return new FileAsyncBundleLoader(new Uri(this.BaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager);
+            return new FileAsyncBundleLoader(new Uri(this.BaseUri, bundleInfo.Filename), bundleInfo, manager);
         }
     }
 
     public class FileAsyncBundleLoader : BundleLoader
     {
-        public FileAsyncBundleLoader(Uri uri, BundleInfo bundleInfo, BundleLoader[] dependencies, BundleManager manager) : base(uri, bundleInfo, dependencies, manager)
+        public FileAsyncBundleLoader(Uri uri, BundleInfo bundleInfo, BundleManager manager) : base(uri, bundleInfo, manager)
         {
         }
 

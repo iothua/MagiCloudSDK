@@ -383,6 +383,8 @@ namespace MagiCloud
         public void SetObjectRelease()
         {
 
+            if (OperateObject == null) return;
+
             OperateObjectHandler();
 
             InputHand.HandStatus = MInputHandStatus.Idle;

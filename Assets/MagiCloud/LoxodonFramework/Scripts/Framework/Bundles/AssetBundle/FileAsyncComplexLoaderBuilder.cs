@@ -30,7 +30,7 @@ namespace Loxodon.Framework.Bundles
             return false;
         }
 
-        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo, BundleLoader[] dependencies)
+        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo)
         {
             Uri loadBaseUri = this.BaseUri;
 
@@ -50,17 +50,17 @@ namespace Loxodon.Framework.Bundles
             if (bundleInfo.IsEncrypted)
             {
                 if (this.decryptor != null && bundleInfo.Encoding.Equals(decryptor.AlgorithmName))
-                    return new CryptographBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager, decryptor);
+                    return new CryptographBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, manager, decryptor);
 
                 throw new NotSupportedException(string.Format("Not support the encryption algorithm '{0}'.", bundleInfo.Encoding));
             }
 
 #if UNITY_ANDROID && !UNITY_5_4_OR_NEWER
             if (loadBaseUri != null && loadBaseUri.Scheme.Equals("jar", StringComparison.OrdinalIgnoreCase))
-                return new WWWBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager, false);
+                return new WWWBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, manager, false);
 #endif
 
-            return new FileAsyncBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager);
+            return new FileAsyncBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, manager);
         }
     }
 }

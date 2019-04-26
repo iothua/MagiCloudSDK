@@ -46,7 +46,7 @@ namespace MagiCloud.KGUI
         public float space = 5;
         private void Start()
         {
-            space=content.GetComponent<KGUI_Table>().spacing;
+            space=/*content.GetComponent<KGUI_Table>().spacing*/0;
             SetRectData();
             if (panel != null)
             {
