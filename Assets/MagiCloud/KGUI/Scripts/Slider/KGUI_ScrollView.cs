@@ -44,6 +44,7 @@ namespace MagiCloud.KGUI
         private Vector3 recordXHandPos;
         private Vector3 recordXPos;
         public float space = 5;
+        private float mouseValue = 0;
         private void Start()
         {
             space=content.GetComponent<KGUI_Table>().spacing;
@@ -55,6 +56,8 @@ namespace MagiCloud.KGUI
                     panel.onDown.AddListener(OnDown);
                     panel.onDirectionY.AddListener(PanelScrollY);
                     panel.onUp.AddListener(OnUp);
+                    panel.onEnter.AddListener(RecordYPos);
+                    panel.onStay.AddListener(MouseScrollY);
                 }
 
                 if (horizontal != null)
@@ -62,6 +65,8 @@ namespace MagiCloud.KGUI
                     panel.onUp.AddListener(OnXUp);
                     panel.onDown.AddListener(OnXDown);
                     panel.onDirectionX.AddListener(PanelScrollX);
+                    panel.onEnter.AddListener(RecordXPos);
+                    panel.onStay.AddListener(MouseScrollX);
                 }
             }
         }
@@ -100,40 +105,51 @@ namespace MagiCloud.KGUI
                 pos.y=viewInfoY.minValue+((int)((pos.y-viewInfoY.minValue)/unitSize))*unitSize;
             }
             pos.y=Mathf.Clamp(pos.y,viewInfoY.minValue,viewInfoY.maxValue);
-            if (vertical.gameObject.activeSelf)
-                vertical.Value=(pos.y-viewInfoY.minValue)/(viewInfoY.maxValue-viewInfoY.minValue);
-            else
-                content.localPosition=pos;
+            //if (vertical.gameObject.activeSelf)
+            //    vertical.Value=(pos.y-viewInfoY.minValue)/(viewInfoY.maxValue-viewInfoY.minValue);
+            content.localPosition=pos;
         }
         private void OnXUp(int arg0,bool arg1)
         {
             var pos = content.localPosition;
-            if ((pos.x-viewInfoX.minValue)%unitSize>0.5f)
+            if ((pos.x-viewInfoX.minValue)%unitXSize>0.5f)
             {
-                pos.x=viewInfoX.minValue+((int)((pos.x-viewInfoX.minValue)/unitSize)+1)*unitSize;
+                pos.x=viewInfoX.minValue+((int)((pos.x-viewInfoX.minValue)/unitXSize)+1)*unitXSize;
             }
-            else if ((pos.x-viewInfoX.minValue)%unitSize<=0.5f)
+            else if ((pos.x-viewInfoX.minValue)%unitXSize<=0.5f)
             {
-                pos.x=viewInfoX.minValue+((int)((pos.x-viewInfoX.minValue)/unitSize))*unitSize;
+                pos.x=viewInfoX.minValue+((int)((pos.x-viewInfoX.minValue)/unitXSize))*unitXSize;
             }
             pos.x=Mathf.Clamp(pos.x,viewInfoX.minValue,viewInfoX.maxValue);
             if (vertical.gameObject.activeSelf)
                 vertical.Value=(pos.x-viewInfoX.minValue)/(viewInfoX.maxValue-viewInfoX.minValue);
-            else
-                content.localPosition=pos;
+            content.localPosition=pos;
         }
         private void OnDown(int arg0,bool arg1)
         {
             curHand=arg0;
             recordHandPos= MOperateManager.GetHandScreenPoint(curHand);
-            recordPos=content.localPosition;
+            RecordYPos();
         }
         private void OnXDown(int arg0,bool arg1)
         {
             curXHand=arg0;
             recordXHandPos= MOperateManager.GetHandScreenPoint(curXHand);
+            RecordXPos();
+
+        }
+
+        private void RecordXPos(int i = 0)
+        {
             recordXPos=content.localPosition;
         }
+
+        private void RecordYPos(int i = 0)
+        {
+            recordPos=content.localPosition;
+            //  mouseValue=Input.GetAxis("Mouse ScrollWheel");
+        }
+
         /// <summary>
         /// 设置RectData
         /// </summary>
@@ -151,12 +167,13 @@ namespace MagiCloud.KGUI
                 if (size>parentSize)
                 {
                     unitSize=(size-parentSize)/(sumNum-initNum+1);
+                    sumNum++;
                 }
                 else
                 {
                     unitSize = parentSize/initNum;
+                    sumNum = (int)(size/unitSize);
                 }
-                sumNum = (int)(size/unitSize);
                 //计算出父容器与当前容器的比例
                 float scale = size > parentSize ? size / parentSize : 1;
                 //根据比例，设置其值，同时当进行滑动时，也要同时设置滚轮的相应值
@@ -181,7 +198,7 @@ namespace MagiCloud.KGUI
                 if (!eventHasAdd)
                 {
                     vertical.OnValueChanged.AddListener(BindingVerticalValue);
-                    eventHasAdd=true;
+                    eventHasAdd =true;
                 }
                 //如果高度一样
                 if (size <= parentSize)
@@ -241,13 +258,15 @@ namespace MagiCloud.KGUI
                 float parentSize = content.parent.GetComponent<RectTransform>().sizeDelta.x;
                 if (size>parentSize)
                 {
-                    unitSize=(size-parentSize)/(sumNum-initNum+1);
+                    unitXSize=(size-parentSize)/(sumXNum-initXNum+1);
+                    sumXNum++;
                 }
                 else
                 {
-                    unitSize = parentSize/initNum;
+                    unitXSize = parentSize/initXNum;
+                    sumXNum = (int)(size/unitXSize);
                 }
-                sumXNum = (int)(size/unitXSize);
+
                 //计算出父容器与当前容器的比例
                 float scale = size > parentSize ? size / parentSize : 1;
                 //根据比例，设置其值，同时当进行滑动时，也要同时设置滚轮的相应值
@@ -327,14 +346,8 @@ namespace MagiCloud.KGUI
             {
                 var handPos = MOperateManager.GetHandScreenPoint(curHand);
                 var y = handPos.y-recordHandPos.y;
-                y=speed*y+recordPos.y;
-                y=Mathf.Clamp(y,viewInfoY.minValue,viewInfoY.maxValue);
-                var pos = content.localPosition;
-                pos.y=y;
-                if (vertical.gameObject.activeSelf)
-                    vertical.Value=(y-viewInfoY.minValue)/(viewInfoY.maxValue-viewInfoY.minValue);
-                else
-                    content.localPosition=pos;
+
+                y=MoveFollowY(y);
             }
             else
             {
@@ -342,6 +355,38 @@ namespace MagiCloud.KGUI
             }
         }
 
+        private float MoveFollowY(float y)
+        {
+            y=speed*y+recordPos.y;
+
+            y=Mathf.Clamp(y,viewInfoY.minValue,viewInfoY.maxValue);
+            var pos = content.localPosition;
+            pos.y=y;
+            if (vertical.gameObject.activeSelf)
+                vertical.Value=(y-viewInfoY.minValue)/(viewInfoY.maxValue-viewInfoY.minValue);
+            else
+                content.localPosition=pos;
+            return y;
+        }
+
+        public void MouseScrollY(int i)
+        {
+            float y = Input.GetAxis("Mouse ScrollWheel");
+            if (y!=0)
+            {
+                MoveFollowY(-y*unitSize*5);
+                RecordYPos();
+            }
+        }
+        public void MouseScrollX(int i)
+        {
+            float x = Input.GetAxis("Mouse ScrollWheel");
+            if (x!=0)
+            {
+                MoveFollowX(x*unitXSize*5);
+                RecordXPos();
+            }
+        }
         /// <summary>
         /// 容器水平滚动
         /// </summary>
@@ -351,19 +396,27 @@ namespace MagiCloud.KGUI
             if (isFollowHand)
             {
                 var handXPos = MOperateManager.GetHandScreenPoint(curXHand);
-                var x = recordXPos.x+  handXPos.x-recordXHandPos.x;
-                x=Mathf.Clamp(x,viewInfoX.minValue,viewInfoX.maxValue);
-                var pos = content.localPosition;
-                pos.x=x;
-                if (horizontal.gameObject.activeSelf)
-                    horizontal.Value=(x-viewInfoX.minValue)/(viewInfoX.maxValue-viewInfoX.minValue);
-                else
-                    content.localPosition=pos;
+                var x = handXPos.x-recordXHandPos.x;
+
+                x=MoveFollowX(x);
             }
             else
             {
                 horizontal.Value -= direction * 1.5f * Time.deltaTime;
             }
+        }
+
+        private float MoveFollowX(float x)
+        {
+            x= recordXPos.x+speed*x;
+            x=Mathf.Clamp(x,viewInfoX.minValue,viewInfoX.maxValue);
+            var pos = content.localPosition;
+            pos.x=x;
+            if (horizontal.gameObject.activeSelf)
+                horizontal.Value=(x-viewInfoX.minValue)/(viewInfoX.maxValue-viewInfoX.minValue);
+            else
+                content.localPosition=pos;
+            return x;
         }
     }
 }

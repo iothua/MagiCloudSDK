@@ -51,10 +51,11 @@ namespace MagiCloud.KGUI
         public ButtonEvent onDirectionX;//X轴方向
         public ButtonEvent onDirectionY;//Y轴方向
 
+
         [Header("移入与移出")]
         public ButtonEvent onEnter;
         public ButtonEvent onExit;
-
+        public ButtonEvent onStay;
         [Header("按下与抬起")]
         public PanelEvent onDown;
         public PanelEvent onUp;
@@ -152,6 +153,8 @@ namespace MagiCloud.KGUI
         {
             if (IsAreaContains(handIndex))
             {
+
+                onStay?.Invoke(handIndex);
                 //如果以及有手移入了，在移入则什么都不处理
                 if (IsEnter) return;
 
