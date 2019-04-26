@@ -23,17 +23,19 @@ namespace MagiCloud.Operate.OperateFSM
         {
             base.OnUpdate(fSM);
             //在Kinect模式下，双手握拳激活缩放
-            if (Platform==OperatePlatform.Kinect)
+            if (ActiveZoom)
             {
-                if (LeftGrip&&RightGrip)
-                    ChangeState(fSM,typeof(Zoom));
+                if (Platform==OperatePlatform.Kinect)
+                {
+                    if (LeftGrip&&RightGrip)
+                        ChangeState(fSM,typeof(Zoom));
+                }
+                else
+                {
+                    if (IsTwoTouch)
+                        ChangeState(fSM,typeof(Zoom));
+                }
             }
-            else
-            {
-                if (IsTwoTouch)
-                    ChangeState(fSM,typeof(Zoom));
-            }
-
             if (LeftIdle&&RightIdle)
                 ChangeState(fSM,typeof(Idle));
         }
