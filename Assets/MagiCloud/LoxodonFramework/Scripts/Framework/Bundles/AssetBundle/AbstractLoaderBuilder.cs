@@ -55,6 +55,6 @@ namespace Loxodon.Framework.Bundles
             return false;
         }
 
-        public abstract BundleLoader Create(BundleManager manager, BundleInfo bundleInfo, BundleLoader[] dependencies);
+        public abstract BundleLoader Create(BundleManager manager, BundleInfo bundleInfo);
     }
 }

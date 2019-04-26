@@ -19,9 +19,9 @@ namespace Loxodon.Framework.Bundles
             this.decryptor = decryptor;
         }
 
-        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo, BundleLoader[] dependencies)
+        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo)
         {
-            return new CryptographBundleLoader(new Uri(this.BaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager, this.decryptor);
+            return new CryptographBundleLoader(new Uri(this.BaseUri, bundleInfo.Filename), bundleInfo, manager, this.decryptor);
         }
     }
 
@@ -32,7 +32,7 @@ namespace Loxodon.Framework.Bundles
         private const float WEIGHT = 0.7f;
 
         private IDecryptor decryptor;
-        public CryptographBundleLoader(Uri uri, BundleInfo bundleInfo, BundleLoader[] dependencies, BundleManager manager, IDecryptor decryptor) : base(uri, bundleInfo, dependencies, manager)
+        public CryptographBundleLoader(Uri uri, BundleInfo bundleInfo, BundleManager manager, IDecryptor decryptor) : base(uri, bundleInfo, manager)
         {
             this.decryptor = decryptor;
         }

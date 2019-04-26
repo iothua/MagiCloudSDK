@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Loxodon.Log;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ namespace Loxodon.Framework.Bundles
     [Serializable]
     public class BundleManifest : ISerializationCallbackReceiver
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(BundleManifest));
+
         /// <summary>
         /// Convert from JSON string to BundleManifest object.
         /// </summary>
@@ -266,7 +269,13 @@ namespace Loxodon.Framework.Bundles
             {
                 var dependency = dependencies[i];
                 if (dependency.Equals(root))
-                    throw new LoopingReferenceException(string.Format("There is a error occurred.It has an unresolvable loop reference between '{0}' and '{1}'.", root.Name, info.Name));
+                {
+                    if (log.IsWarnEnabled)
+                        log.WarnFormat("It has an loop reference between '{0}' and '{1}',it is recommended to redistribute their assts.", root.Name, info.Name);
+
+                    continue;
+                    //throw new LoopingReferenceException(string.Format("There is a error occurred.It has an unresolvable loop reference between '{0}' and '{1}'.", root.Name, info.Name));
+                }
 
                 if (list.Contains(dependency))
                     continue;

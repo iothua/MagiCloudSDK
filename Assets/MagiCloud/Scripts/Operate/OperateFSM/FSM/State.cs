@@ -71,7 +71,7 @@ namespace MagiCloud.Common
                 _events[eventId]-=handler;
         }
 
-        public  void ChangeState(IFsm<T> fsm,Type stateType)
+        public void ChangeState(IFsm<T> fsm,Type stateType)
         {
             var temp = (Fsm<T>)fsm;
             if (temp==null) return;

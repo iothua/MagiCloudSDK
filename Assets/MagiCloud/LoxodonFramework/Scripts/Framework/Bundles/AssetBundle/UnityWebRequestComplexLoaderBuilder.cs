@@ -18,7 +18,7 @@ namespace Loxodon.Framework.Bundles
             this.decryptor = decryptor;
         }
 
-        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo, BundleLoader[] dependencies)
+        public override BundleLoader Create(BundleManager manager, BundleInfo bundleInfo)
         {
             Uri loadBaseUri = this.BaseUri;
 
@@ -26,7 +26,7 @@ namespace Loxodon.Framework.Bundles
             {
                 //Load assets from the cache of Unity3d.
                 loadBaseUri = this.BaseUri;
-                return new UnityWebRequestBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager, this.useCache);
+                return new UnityWebRequestBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, manager, this.useCache);
             }
 
             if (BundleUtil.ExistsInStorableDirectory(bundleInfo))
@@ -48,16 +48,16 @@ namespace Loxodon.Framework.Bundles
             if (bundleInfo.IsEncrypted)
             {
                 if (this.decryptor != null && bundleInfo.Encoding.Equals(decryptor.AlgorithmName))
-                    return new CryptographBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager, decryptor);
+                    return new CryptographBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, manager, decryptor);
 
                 throw new NotSupportedException(string.Format("Not support the encryption algorithm '{0}'.", bundleInfo.Encoding));
             }
 
             //Loads assets from an Internet address if it does not exist in the local directory.
             if (this.IsRemoteUri(loadBaseUri))
-                return new UnityWebRequestBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager, this.useCache);
+                return new UnityWebRequestBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, manager, this.useCache);
             else
-                return new FileAsyncBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, dependencies, manager);
+                return new FileAsyncBundleLoader(new Uri(loadBaseUri, bundleInfo.Filename), bundleInfo, manager);
         }
     }
 }

@@ -13,10 +13,23 @@ namespace MagiCloud.Features
         public GameObject grabObject;
         [SerializeField]
         protected bool IsRayLayer = true;
-        
+
+        private bool isDestory = false;
+
+        public bool IsDestory {
+            get {
+                return isDestory;
+            }
+        }
+
         protected virtual void Start()
         {
             gameObject.layer = IsRayLayer ? MOperateManager.layerRay : MOperateManager.layerObject;
+        }
+
+        private void OnDestroy()
+        {
+            isDestory = true;
         }
 
         /// <summary>
@@ -24,8 +37,12 @@ namespace MagiCloud.Features
         /// </summary>
         public GameObject GrabObject {
             get {
+
+                if (isDestory) return null;
+
                 if (grabObject == null)
                     grabObject = gameObject;
+
                 return grabObject;
             }
             set {

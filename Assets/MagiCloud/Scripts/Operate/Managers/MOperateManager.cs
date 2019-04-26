@@ -245,6 +245,15 @@ namespace MagiCloud
             operate.SetObjectRelease();
         }
 
+        /// <summary>
+        /// 清空全部数据
+        /// </summary>
+        public static void SetObjectReleaseAll()
+        {
+            SetObjectRelease(0);
+            SetObjectRelease(1);
+        }
+
         public static MInputHandStatus GetHandStatus(int handIndex)
         {
             var operate = GetOperateHand(handIndex);

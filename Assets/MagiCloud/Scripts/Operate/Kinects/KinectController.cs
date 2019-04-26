@@ -167,7 +167,8 @@ namespace MagiCloud.Operate
                 Vector3 position = MUtility.MainScreenToWorldPoint(new Vector3(screenPoint.x,screenPoint.y,screenMainCamera.z));
                 Offset = Vector3.zero;
 
-                OperateObject.GrabObject.transform.position = position;
+                if (OperateObject.GrabObject != null)
+                    OperateObject.GrabObject.transform.position = position;
             }
 
             /// <summary>
@@ -175,7 +176,7 @@ namespace MagiCloud.Operate
             /// </summary>
             public void OnOperateObjectHandle()
             {
-                if (OperateObject==null) return;
+                if (OperateObject == null || OperateObject.GrabObject == null) return;
                 switch (Operate.InputHand.HandStatus)
                 {
                     case MInputHandStatus.Grabing:
@@ -299,6 +300,8 @@ namespace MagiCloud.Operate
 
         private MInputKinect inputKinect;
 
+        public bool CompatibleMouse = true;
+
         public MInputHand GetInputHand(int handIndex)
         {
             MInputHand hand;
@@ -346,12 +349,9 @@ namespace MagiCloud.Operate
 
             IsEnable = true;
 
-            mouseController = gameObject.GetComponent<MouseController>() ?? gameObject.AddComponent<MouseController>();
-            mouseController.IsEnable = false;
-
-            //检查一次是否激活手
-            HandStop(2);//默认也禁止
         }
+
+        
 
         /// <summary>
         /// 手停止
@@ -383,7 +383,8 @@ namespace MagiCloud.Operate
                     break;
             }
 
-            ChangePlatform();
+            if (CompatibleMouse)
+                ChangePlatform();
         }
 
         /// <summary>
@@ -437,8 +438,9 @@ namespace MagiCloud.Operate
                     break;
             }
 
-            //根据手势的启用情况，设置他的状态
-            ChangePlatform();
+            if (CompatibleMouse)
+                //根据手势的启用情况，设置他的状态
+                ChangePlatform();
         }
 
         void Awake()
@@ -447,13 +449,29 @@ namespace MagiCloud.Operate
             IsEnable = true;
         }
 
+        private void Start()
+        {
+
+            if (CompatibleMouse)
+            {
+                mouseController = gameObject.GetComponent<MouseController>() ?? gameObject.AddComponent<MouseController>();
+                mouseController.IsEnable = false;
+            }
+
+            //检查一次是否激活手
+            HandStop(2);//默认也禁止
+        }
+
         private OperateModeType operateModeType;
         private Vector2 lastLeftPos;
         private Vector2 lastRightPos;
 
         void OnKinectUpdate()
         {
-            if (!isEnable) return;
+            if (!isEnable)
+            {
+                return;
+            }
 
             SetHandStatus(0); //右手
             SetHandStatus(1); //左手

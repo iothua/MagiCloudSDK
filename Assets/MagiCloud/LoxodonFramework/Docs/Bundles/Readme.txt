@@ -1,5 +1,5 @@
 ﻿Loxodon Framework Bundle
-Version: 1.8.10
+Version: 1.8.11
 © 2016, Clark Yang
 =======================================
 
@@ -13,6 +13,10 @@ Please email yangpc.china@gmail.com for any help or issues.
 
 UPDATE NOTES
 ----------------------------------------
+version 1.8.11
+	Removed loop-referenced exceptions, allowing loop references between multiple asset bundles.
+	Upgrade LoxodonFramework to version 1.7.6.
+
 version 1.8.10
 	Fixed a bug on Unity2018.
 	Upgrade LoxodonFramework to version 1.7.1.
