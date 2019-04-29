@@ -43,11 +43,12 @@ namespace MagiCloud.KGUI
         private int curXHand = -1;
         private Vector3 recordXHandPos;
         private Vector3 recordXPos;
-        public float space = 5;
         private float mouseValue = 0;
+        public bool posCurrection = true;   //坐标修正
+        public bool isFixedMouseSpeed = false;
+        public float fixedMouseSpeed = 100;
         private void Start()
         {
-            space=/*content.GetComponent<KGUI_Table>().spacing*/0;
             SetRectData();
             if (panel != null)
             {
@@ -55,14 +56,16 @@ namespace MagiCloud.KGUI
                 {
                     panel.onDown.AddListener(OnDown);
                     panel.onDirectionY.AddListener(PanelScrollY);
-                    panel.onUp.AddListener(OnUp);
+                    if (posCurrection)
+                        panel.onUp.AddListener(OnUp);
                     panel.onEnter.AddListener(RecordYPos);
                     panel.onStay.AddListener(MouseScrollY);
                 }
 
                 if (horizontal != null)
                 {
-                    panel.onUp.AddListener(OnXUp);
+                    if (posCurrection)
+                        panel.onUp.AddListener(OnXUp);
                     panel.onDown.AddListener(OnXDown);
                     panel.onDirectionX.AddListener(PanelScrollX);
                     panel.onEnter.AddListener(RecordXPos);
@@ -374,16 +377,19 @@ namespace MagiCloud.KGUI
             float y = Input.GetAxis("Mouse ScrollWheel");
             if (y!=0)
             {
-                MoveFollowY(-y*unitSize*5);
+                float speed = isFixedMouseSpeed ? fixedMouseSpeed : unitSize;
+                MoveFollowY(-y*speed*5);
                 RecordYPos();
             }
         }
         public void MouseScrollX(int i)
         {
             float x = Input.GetAxis("Mouse ScrollWheel");
+
             if (x!=0)
             {
-                MoveFollowX(x*unitXSize*5);
+                float speed = isFixedMouseSpeed ? fixedMouseSpeed : unitXSize;
+                MoveFollowX(x*speed*5);
                 RecordXPos();
             }
         }
