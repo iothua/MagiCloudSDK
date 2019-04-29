@@ -19,6 +19,9 @@ namespace MagiCloud.KGUI
         public SerializedProperty isFollowHand;
         public SerializedProperty initYNum;
         public SerializedProperty initXNum;
+        public SerializedProperty posCurrection;
+        public SerializedProperty isFixedMouseSpeed;
+        public SerializedProperty fixedMouseSpeed;
         private KGUI_ScrollView scrollView;
 
         private void OnEnable()
@@ -32,6 +35,9 @@ namespace MagiCloud.KGUI
             isFollowHand=serializedObject.FindProperty("isFollowHand");
             initYNum=serializedObject.FindProperty("initNum");
             initXNum=serializedObject.FindProperty("initXNum");
+            posCurrection=serializedObject.FindProperty("posCurrection");
+            isFixedMouseSpeed=serializedObject.FindProperty("isFixedMouseSpeed");
+            fixedMouseSpeed=serializedObject.FindProperty("fixedMouseSpeed");
         }
 
         public override void OnInspectorGUI()
@@ -45,6 +51,12 @@ namespace MagiCloud.KGUI
             EditorGUILayout.PropertyField(isFollowHand,true,null);
             EditorGUILayout.PropertyField(initYNum,true,null);
             EditorGUILayout.PropertyField(initXNum,true,null);
+            EditorGUILayout.PropertyField(posCurrection,new GUIContent("自动修正坐标"),true);
+            if (EditorGUILayout.PropertyField(isFixedMouseSpeed,new GUIContent("是否使用固定鼠标速度"),true)) ;
+            if (scrollView.isFixedMouseSpeed)
+            {
+                EditorGUILayout.PropertyField(fixedMouseSpeed,new GUIContent("固定鼠标速度"),true);
+            }
             GUILayout.Space(20);
 
             if (GUILayout.Button("刷新",GUILayout.Width(100),GUILayout.Height(21)))
