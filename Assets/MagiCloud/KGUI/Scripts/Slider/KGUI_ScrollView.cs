@@ -108,8 +108,6 @@ namespace MagiCloud.KGUI
                 pos.y=viewInfoY.minValue+((int)((pos.y-viewInfoY.minValue)/unitSize))*unitSize;
             }
             pos.y=Mathf.Clamp(pos.y,viewInfoY.minValue,viewInfoY.maxValue);
-            //if (vertical.gameObject.activeSelf)
-            //    vertical.Value=(pos.y-viewInfoY.minValue)/(viewInfoY.maxValue-viewInfoY.minValue);
             content.localPosition=pos;
         }
         private void OnXUp(int arg0,bool arg1)

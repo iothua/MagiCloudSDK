@@ -90,6 +90,7 @@ namespace MagiCloud.KGUI
                     buttonGroup.CurrentButton.OnReset();
 
                 buttonGroup.CurrentButton = this;
+
                 IsShowButton = true;
             }
 

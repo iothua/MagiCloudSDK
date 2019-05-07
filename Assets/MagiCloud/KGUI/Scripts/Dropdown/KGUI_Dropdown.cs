@@ -42,7 +42,7 @@ namespace MagiCloud.KGUI
         public GameObject Template;
 
         //显示的内容
-        public Text textName;
+        public KGUI_Text textName;
 
         private KGUI_DropdownItem currentItem;//当前选项
 
@@ -59,7 +59,6 @@ namespace MagiCloud.KGUI
         public GameObject dropdownItem; //子项预知物体
 
         private int handIndex;
-
 
         protected override void Awake()
         {
@@ -87,6 +86,8 @@ namespace MagiCloud.KGUI
                 onEnter.AddListener(OnExpand);
             else
                 onClick.AddListener(OnExpand);
+
+            buttonGroup.SetButton(Items[0]);
         }
 
         /// <summary>
@@ -173,11 +174,20 @@ namespace MagiCloud.KGUI
 
             RectTransform content = gridLayout.GetComponent<RectTransform>();
 
+            gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+
             //设置子项的高度
             Vector2 delta = content.sizeDelta;
 
+            int count = Names.Count;
+
+            if(gridLayout.constraintCount>1)
+            {
+                count = Names.Count / gridLayout.constraintCount + (Names.Count % gridLayout.constraintCount == 0 ? 0 : 1);
+            }
+
             //设置背景框的高度
-            content.sizeDelta = new Vector2(delta.x,gridLayout.cellSize.y * Names.Count);
+            content.sizeDelta = new Vector2(delta.x, gridLayout.cellSize.y * count + (count - 1) * gridLayout.spacing.y);
 
             //因为设置了瞄点，所以需要根据父对象的高度，重新进行Y轴坐标的计算。
 
@@ -188,8 +198,9 @@ namespace MagiCloud.KGUI
             //设置滚动数值，自动填充
             scrollView.SetRectData();
 
-            //没有激活的话，则显示全部
-            gridLayout.cellSize = new Vector2(gridLayout.GetComponent<RectTransform>().sizeDelta.x,gridLayout.cellSize.y);
+            if (gridLayout.constraintCount == 1)
+                //没有激活的话，则显示全部
+                gridLayout.cellSize = new Vector2(gridLayout.GetComponent<RectTransform>().sizeDelta.x, gridLayout.cellSize.y);
 
             //设置所有子项的大小
 
@@ -200,7 +211,7 @@ namespace MagiCloud.KGUI
                 //设置默认值
                 if (i == 0)
                 {
-                    Items[i].OnDown(0); //设置被选中状态
+                    Items[i].OnClick(0); //设置被选中状态
                 }
             }
         }
@@ -238,8 +249,12 @@ namespace MagiCloud.KGUI
             foreach (var item in Items)
             {
                 if (item == null) continue;
+                buttonGroup.RemoveButton(item);
+
+
                 DestroyImmediate(item.gameObject);
             }
+
 
             Items.Clear();
         }
@@ -267,7 +282,7 @@ namespace MagiCloud.KGUI
         public void OnSetDropdownText(KGUI_DropdownItem item)
         {
             currentItem = item;
-            textName.text = item.Name;
+            textName.Text = item.Name;
 
             Template.SetActive(false);
         }

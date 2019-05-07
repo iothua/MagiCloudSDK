@@ -301,7 +301,9 @@ namespace MagiCloud.Operate
             {
                 InputHands[0].SetIdle();
 
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
                 SystemDllHelper.SetCursorPos(0, Screen.height);
+#endif
 
                 IsTouching = false;
 
@@ -322,7 +324,7 @@ namespace MagiCloud.Operate
 
 
 
-            #endregion
+#endregion
 
             //不同模式中的不同操作
             switch (MSwitchManager.CurrentMode)
