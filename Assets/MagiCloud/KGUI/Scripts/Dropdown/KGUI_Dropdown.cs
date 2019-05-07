@@ -1,6 +1,8 @@
 ﻿using MagiCloud.Core.Events;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace MagiCloud.KGUI
@@ -41,6 +43,12 @@ namespace MagiCloud.KGUI
         //模板对象
         public GameObject Template;
 
+        [Serializable]
+        public class DropdownEvent :UnityEvent<int>
+        {
+
+        }
+        public DropdownEvent onChangeValue;
         //显示的内容
         public KGUI_Text textName;
 
@@ -63,7 +71,7 @@ namespace MagiCloud.KGUI
         protected override void Awake()
         {
             base.Awake();
-
+            if (onChangeValue==null) onChangeValue=new DropdownEvent();
             if (dropdownItem == null)
                 dropdownItem = Resources.Load<GameObject>("Prefabs\\DropdownItem");
         }
@@ -181,13 +189,13 @@ namespace MagiCloud.KGUI
 
             int count = Names.Count;
 
-            if(gridLayout.constraintCount>1)
+            if (gridLayout.constraintCount>1)
             {
                 count = Names.Count / gridLayout.constraintCount + (Names.Count % gridLayout.constraintCount == 0 ? 0 : 1);
             }
 
             //设置背景框的高度
-            content.sizeDelta = new Vector2(delta.x, gridLayout.cellSize.y * count + (count - 1) * gridLayout.spacing.y);
+            content.sizeDelta = new Vector2(delta.x,gridLayout.cellSize.y * count + (count - 1) * gridLayout.spacing.y);
 
             //因为设置了瞄点，所以需要根据父对象的高度，重新进行Y轴坐标的计算。
 
@@ -200,7 +208,7 @@ namespace MagiCloud.KGUI
 
             if (gridLayout.constraintCount == 1)
                 //没有激活的话，则显示全部
-                gridLayout.cellSize = new Vector2(gridLayout.GetComponent<RectTransform>().sizeDelta.x, gridLayout.cellSize.y);
+                gridLayout.cellSize = new Vector2(gridLayout.GetComponent<RectTransform>().sizeDelta.x,gridLayout.cellSize.y);
 
             //设置所有子项的大小
 
@@ -283,7 +291,8 @@ namespace MagiCloud.KGUI
         {
             currentItem = item;
             textName.Text = item.Name;
-
+            if (onChangeValue!=null)
+                onChangeValue.Invoke(Items.IndexOf(item));
             Template.SetActive(false);
         }
 
