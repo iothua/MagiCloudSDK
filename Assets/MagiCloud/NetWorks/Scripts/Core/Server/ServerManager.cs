@@ -19,9 +19,9 @@ namespace MagiCloud.NetWorks
 #if UNITY_ANDROID
             windowsManager = new AndroidWindowsManager();
 #elif UNITY_IOS
-            experiment=new IosWindowsManager();
+            windowsManager=new IosWindowsManager();
 #else
-              experiment = new ExperimentWindowsManager();
+              windowsManager = new ExperimentWindowsManager();
 #endif
             connection = new ServerConnection();
 
