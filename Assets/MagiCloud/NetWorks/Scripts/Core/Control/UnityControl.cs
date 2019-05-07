@@ -17,10 +17,18 @@ namespace MagiCloud.NetWorks
             serverEventPool=new EventPool(MessageDistributionControl.Instance);
             serverEventPool.GetEvent<ExperimentRequestEvent>().AddReceiveEvent(OnExpReq);
             serverEventPool.GetEvent<ExperimentReceiptEvent>().AddReceiveEvent(OnExpRec);
+            serverEventPool.GetEvent<BreakConnectEvent>().AddReceiveEvent(OnExitReq);
             controlTerminal.Start("127.0.1",8888);
             Thread thread = new Thread(OnUpdate);
             thread.Start();
         }
+
+        private void OnExitReq(int sender,IMessage proto)
+        {
+            var info = proto as ConnectInfo;
+            controlTerminal.Broadcast(serverEventPool.GetEvent<BreakConnectEvent>().GetProtobuf(proto),sender);
+        }
+
         bool isBreak = false;
         /// <summary>
         /// 从控制端收到打开实验请求
@@ -42,6 +50,8 @@ namespace MagiCloud.NetWorks
         {
             controlTerminal.Broadcast(serverEventPool.GetEvent<ExperimentReceiptEvent>().GetProtobuf(proto),sender);
         }
+
+
         private void OnUpdate()
         {
             while (!isBreak)
