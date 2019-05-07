@@ -10,13 +10,9 @@ namespace MagiCloud.KGUI
     public class KGUI_DropdownItem : KGUI_Button
     {
 
-        public string Name;//信息
+        public new string Name;//信息
 
         public KGUI_Dropdown dropdown;
-
-        public Text text;
-
-
 
         /// <summary>
         /// 初始化
@@ -26,10 +22,38 @@ namespace MagiCloud.KGUI
             buttonGroup = dropdown.buttonGroup;
             IsButtonGroup = true;
 
-            if (text == null)
-                text = gameObject.GetComponentInChildren<Text>();
+            dropdown.buttonGroup.AddButton(this);
 
-            text.text = name;
+            switch(buttonType)
+            {
+                case ButtonType.Image:
+                case ButtonType.None:
+                case ButtonType.SpriteRenderer:
+                    var text = gameObject.GetComponentInChildren<KGUI_Text>();
+                    if (text != null)
+                        text.Text = name;
+                    break;
+                case ButtonType.Object:
+
+                    var normalText = normalObject.GetComponentInChildren<KGUI_Text>();
+                    var enterText = enterObject.GetComponentInChildren<KGUI_Text>();
+                    var pressedText = pressedObject.GetComponentInChildren<KGUI_Text>();
+                    var disableText = disableObject.GetComponentInChildren<KGUI_Text>();
+
+                    if (normalText != null)
+                        normalText.Text = name;
+
+                    if (enterText != null)
+                        enterText.Text = name;
+
+                    if (pressedText != null)
+                        pressedText.Text = name;
+
+                    if (disableText != null)
+                        disableText.Text = name;
+
+                    break;
+            }
 
             Name = name;
 
@@ -50,9 +74,15 @@ namespace MagiCloud.KGUI
 
         public override void OnClick(int handIndex)
         {
+            if(IsButtonGroup)
+            {
+                if (buttonGroup == null || (buttonGroup != null && buttonGroup.CurrentButton == this))
+                {
+                    return;
+                }
+            }
 
             base.OnClick(handIndex);
-
             dropdown.OnSetDropdownText(this);
         }
     }

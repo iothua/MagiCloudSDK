@@ -4,20 +4,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using Loxodon.Framework.Bundles;
 
 namespace MagiCloud.NetWorks
 {
     public class ClientManager :MonoBehaviour
     {
-        private ServerConnection clientConnection;
-        private EventPool clientEventPool;  //事件池
-        private GameObject curExpPrefab;    //当前实验物体
-        private string curPrefabPath;       //当前预制文件路径
-        ExperimentInfo curInfo;             //当前实验信息
+        protected ServerConnection clientConnection;
+        protected EventPool clientEventPool;  //事件池
+        protected GameObject curExpPrefab;    //当前实验物体
+        protected string curPrefabPath;       //当前预制文件路径
+        protected ExperimentInfo curInfo;             //当前实验信息
 
-        private IntPtr curWindowIntPtr;                     //自身窗口
-        private IntPtr curID;
-        private IntPtr foreID;
+        protected IntPtr curWindowIntPtr;                     //自身窗口
+        protected IntPtr curID;
+        protected IntPtr foreID;
 
         public AssetBundleManager BundleManager;
 
@@ -26,16 +27,22 @@ namespace MagiCloud.NetWorks
         //Request资源名称，用于优先下载指定的
         public List<string> requestDownloadBundleNames;
 
-        public Text txt;
+        public static ClientManager Manager;
+
+        public event Action<int> EventExperimentStatus;
 
         private void Awake()
         {
+            Manager = this;
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             curWindowIntPtr = SystemDllHelper.GetActiveWindow();
             curID = SystemDllHelper.GetCurrentThreadId();
             foreID = SystemDllHelper.GetWindowThreadProcessId(curWindowIntPtr, default(IntPtr));
+#endif
+
         }
 
-        private IEnumerator Start()
+        protected virtual IEnumerator Start()
         {
             if (BundleManager == null)
                 BundleManager = new AssetBundleManager(bundleUri);
@@ -47,6 +54,22 @@ namespace MagiCloud.NetWorks
             clientEventPool=new EventPool(clientConnection.messageDistribution);
             clientEventPool.GetEvent<ExperimentRequestEvent>().AddReceiveEvent(OnExpReq);
             clientConnection.Connect("127.0.0.1",8888);
+
+            DontDestroyOnLoad(gameObject);
+
+            //InvokeRepeating("DetectionWindows", 1.0f, 5.0f);
+        }
+
+        void DetectionWindows()
+        {
+            if (curWindowIntPtr == SystemDllHelper.GetForegroundWindow())
+            {
+                MOperateManager.ActiveHandController(true);
+            }
+            else
+            {
+                MOperateManager.ActiveHandController(false);
+            }
         }
 
         /// <summary>
@@ -54,7 +77,7 @@ namespace MagiCloud.NetWorks
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="proto">ExperimentInfo</param>
-        private void OnExpReq(int sender,IMessage proto)
+        protected void OnExpReq(int sender,IMessage proto)
         {
             ExperimentInfo info = proto as ExperimentInfo;
 
@@ -62,52 +85,108 @@ namespace MagiCloud.NetWorks
             {
                 if (curExpPrefab != null)
                 {
-                    Destroy(curExpPrefab);
+                    //Destroy(curExpPrefab);
+
                     curExpPrefab = null;
                     curInfo = null;
+
+                    if (EventExperimentStatus != null)
+                        EventExperimentStatus(2);
                 }
 
-                txt.text += "实验信息：" + info.Name + "\r\n";
+                UnityEngine.SceneManagement.SceneManager.LoadScene(1);
 
-                BundleManager.LoadAsset<GameObject>(new string[1] { info.PrefabPath }, (targets) =>
-                {
-                    //加载资源
-                    curExpPrefab = (GameObject)Instantiate(targets[0]);
-
-                    if (curExpPrefab == null)
-                    {
-                        txt.text += "实例化的预制物体为Null";
-                    }
-                    else
-                    {
-                        txt.text += "实例化的物体不为Null:" + curExpPrefab.name;
-                    }
-
-                    curPrefabPath = info.PrefabPath;
-                    curInfo = info;
-
-                    if (!IsInvoking("LoadComplete"))
-                    {
-                        Invoke("LoadComplete", 0.5f);
-                    }
-                });
+                //切换到实验场景中
+                StartCoroutine(OnLoadAsset(info));
             }
             else
             {
                 LoadComplete();
             }
         }
+
+        IEnumerator OnLoadAsset(ExperimentInfo info)
+        {
+            yield return 0;
+
+            LoadAsset(info);
+        }
+
+        protected virtual void LoadAsset(ExperimentInfo info)
+        {
+
+            BundleManager.LoadAsset<GameObject>(new string[1] { info.PrefabPath }, (targets) =>
+            {
+                //加载资源
+                curExpPrefab = (GameObject)Instantiate(targets[0]);
+
+                curPrefabPath = info.PrefabPath;
+                curInfo = info;
+
+                if (!IsInvoking("LoadComplete"))
+                {
+                    Invoke("LoadComplete", 0.5f);
+                }
+            });
+        }
+
+        public void AssetBundleLoad(string prefabPath,ExperimentInfo info)
+        {
+            Debug.LogError("AssetBundleLoad:" + info);
+
+            BundleManager.LoadAsset<GameObject>(new string[1] { prefabPath }, (targets) =>
+            {
+                //加载资源
+                curExpPrefab = (GameObject)Instantiate(targets[0]);
+
+                curPrefabPath = info.PrefabPath;
+                curInfo = info;
+
+                if (!IsInvoking("LoadComplete"))
+                {
+                    Invoke("LoadComplete", 0.5f);
+                }
+            });
+        }
+
+        public void ResourcesLoad(string prefabPath,ExperimentInfo info)
+        {
+            LocalResources localResources = new LocalResources();
+
+            var target = localResources.LoadAsset<GameObject>(prefabPath);
+
+            if (target == null)
+                Debug.LogError("路径物体不存在");
+
+            //加载资源
+            curExpPrefab = (GameObject)Instantiate(target);
+
+
+            curPrefabPath = info != null ? info.PrefabPath : string.Empty;
+            curInfo = info;
+
+            if (!IsInvoking("LoadComplete"))
+            {
+                Invoke("LoadComplete", 0.5f);
+            }
+        }
+
         /// <summary>
         /// 资源加载完成
         /// </summary>
         public void LoadComplete()
         {
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+
             SystemDllHelper.AttachThreadInput(curID, foreID, 1);
             SystemDllHelper.ShowWindow(curWindowIntPtr, 3);
             SystemDllHelper.SetWindowPos(curWindowIntPtr, -1, 0, 0, 0, 0, 1 | 2);
             SystemDllHelper.SetWindowPos(curWindowIntPtr, -2, 0, 0, 0, 0, 1 | 2);
             bool max = SystemDllHelper.SetForegroundWindow(curWindowIntPtr);
             SystemDllHelper.AttachThreadInput(curID, foreID, 0);
+
+            MOperateManager.ActiveHandController(true);
+			#endif
         }
 
         /// <summary>
@@ -115,18 +194,54 @@ namespace MagiCloud.NetWorks
         /// </summary>
         public void OnBack()
         {
-            curInfo.IsBack = true;
+            curInfo.ExperimentStatus = 1;
             clientEventPool.GetEvent<ExperimentReceiptEvent>().Send(clientConnection,curInfo);
+
+            MOperateManager.ActiveHandController(false);
         }
 
-        private void Update()
+        public void OnExit()
         {
-            clientConnection.Update();
+            curInfo.ExperimentStatus = 3;
+            clientEventPool.GetEvent<ExperimentReceiptEvent>().Send(clientConnection, curInfo);
+        }
+
+        /// <summary>
+        /// 返回
+        /// -1：失败
+        /// 0：成功
+        /// 1：返回
+        /// 2：重置
+        /// </summary>
+        public void OnExperimentBack()
+        {
+            OnBack();
+        }
+
+        public void OnExperimentReset()
+        {
+            curInfo.ExperimentStatus = 2;
+            clientEventPool.GetEvent<ExperimentReceiptEvent>().Send(clientConnection, curInfo);
+
+            if (EventExperimentStatus != null)
+                EventExperimentStatus(2);
+            
+            //curInfo = null;
+            curPrefabPath = string.Empty;
+        }
+
+        protected virtual void Update()
+        {
+            if (clientConnection != null)
+                clientConnection.Update();
         }
 
         private void OnDestroy()
         {
-            clientConnection.Close();
+            OnExit();
+
+            if (clientConnection != null)
+                clientConnection.Close();
         }
     }
 }

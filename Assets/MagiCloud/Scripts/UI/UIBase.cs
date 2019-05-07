@@ -24,11 +24,18 @@ namespace MagiCloud.UISystem
         public int Depth => depth;
         public Transform Node { get; private set; }
         public IUIGroup OwnerGroup => ownerGroup;
-        public int Priority { get => priority; set => priority=value; }
+        public int Priority {
+            get {
+                return priority;
+            }
+            set {
+                priority = value;
+            }
+        }
         /// <summary>
         /// 是否可用
         /// </summary>
-        public bool IsAvailable { get => isAvailable; }
+        public bool IsAvailable { get { return isAvailable; } }
         /// <summary>
         /// 是否可见
         /// </summary>
