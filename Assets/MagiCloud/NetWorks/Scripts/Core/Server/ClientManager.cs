@@ -16,9 +16,7 @@ namespace MagiCloud.NetWorks
         protected string curPrefabPath;       //当前预制文件路径
         protected ExperimentInfo curInfo;             //当前实验信息
 
-        protected IntPtr curWindowIntPtr;                     //自身窗口
-        protected IntPtr curID;
-        protected IntPtr foreID;
+        WindowsManager windowsManager;
 
         public AssetBundleManager BundleManager;
 
@@ -34,10 +32,12 @@ namespace MagiCloud.NetWorks
         private void Awake()
         {
             Manager = this;
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-            curWindowIntPtr = SystemDllHelper.GetActiveWindow();
-            curID = SystemDllHelper.GetCurrentThreadId();
-            foreID = SystemDllHelper.GetWindowThreadProcessId(curWindowIntPtr, default(IntPtr));
+#if UNITY_ANDROID
+            windowsManager = new AndroidWindowsManager();
+#elif UNITY_IOS
+            experiment=new IosWindowsManager();
+#else
+              experiment = new ExperimentWindowsManager();
 #endif
 
         }
@@ -53,6 +53,7 @@ namespace MagiCloud.NetWorks
             clientConnection = new ServerConnection();
             clientEventPool=new EventPool(clientConnection.messageDistribution);
             clientEventPool.GetEvent<ExperimentRequestEvent>().AddReceiveEvent(OnExpReq);
+            clientEventPool.GetEvent<BreakConnectEvent>().AddReceiveEvent(OnExitReq);
             clientConnection.Connect("127.0.0.1",8888);
 
             DontDestroyOnLoad(gameObject);
@@ -62,7 +63,7 @@ namespace MagiCloud.NetWorks
 
         void DetectionWindows()
         {
-            if (curWindowIntPtr == SystemDllHelper.GetForegroundWindow())
+            if (windowsManager.IsTopping())
             {
                 MOperateManager.ActiveHandController(true);
             }
@@ -71,7 +72,10 @@ namespace MagiCloud.NetWorks
                 MOperateManager.ActiveHandController(false);
             }
         }
-
+        private void OnExitReq(int sender,IMessage proto)
+        {
+            Application.Quit();
+        }
         /// <summary>
         /// 接收到实验请求
         /// </summary>
@@ -115,38 +119,38 @@ namespace MagiCloud.NetWorks
         protected virtual void LoadAsset(ExperimentInfo info)
         {
 
-            BundleManager.LoadAsset<GameObject>(new string[1] { info.PrefabPath }, (targets) =>
-            {
-                //加载资源
-                curExpPrefab = (GameObject)Instantiate(targets[0]);
+            BundleManager.LoadAsset<GameObject>(new string[1] { info.PrefabPath },(targets) =>
+           {
+               //加载资源
+               curExpPrefab = (GameObject)Instantiate(targets[0]);
 
-                curPrefabPath = info.PrefabPath;
-                curInfo = info;
+               curPrefabPath = info.PrefabPath;
+               curInfo = info;
 
-                if (!IsInvoking("LoadComplete"))
-                {
-                    Invoke("LoadComplete", 0.5f);
-                }
-            });
+               if (!IsInvoking("LoadComplete"))
+               {
+                   Invoke("LoadComplete",0.5f);
+               }
+           });
         }
 
         public void AssetBundleLoad(string prefabPath,ExperimentInfo info)
         {
             Debug.LogError("AssetBundleLoad:" + info);
 
-            BundleManager.LoadAsset<GameObject>(new string[1] { prefabPath }, (targets) =>
-            {
-                //加载资源
-                curExpPrefab = (GameObject)Instantiate(targets[0]);
+            BundleManager.LoadAsset<GameObject>(new string[1] { prefabPath },(targets) =>
+           {
+               //加载资源
+               curExpPrefab = (GameObject)Instantiate(targets[0]);
 
-                curPrefabPath = info.PrefabPath;
-                curInfo = info;
+               curPrefabPath = info.PrefabPath;
+               curInfo = info;
 
-                if (!IsInvoking("LoadComplete"))
-                {
-                    Invoke("LoadComplete", 0.5f);
-                }
-            });
+               if (!IsInvoking("LoadComplete"))
+               {
+                   Invoke("LoadComplete",0.5f);
+               }
+           });
         }
 
         public void ResourcesLoad(string prefabPath,ExperimentInfo info)
@@ -167,7 +171,7 @@ namespace MagiCloud.NetWorks
 
             if (!IsInvoking("LoadComplete"))
             {
-                Invoke("LoadComplete", 0.5f);
+                Invoke("LoadComplete",0.5f);
             }
         }
 
@@ -176,17 +180,7 @@ namespace MagiCloud.NetWorks
         /// </summary>
         public void LoadComplete()
         {
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-
-            SystemDllHelper.AttachThreadInput(curID, foreID, 1);
-            SystemDllHelper.ShowWindow(curWindowIntPtr, 3);
-            SystemDllHelper.SetWindowPos(curWindowIntPtr, -1, 0, 0, 0, 0, 1 | 2);
-            SystemDllHelper.SetWindowPos(curWindowIntPtr, -2, 0, 0, 0, 0, 1 | 2);
-            bool max = SystemDllHelper.SetForegroundWindow(curWindowIntPtr);
-            SystemDllHelper.AttachThreadInput(curID, foreID, 0);
-
-            MOperateManager.ActiveHandController(true);
-			#endif
+            windowsManager.SetTop();
         }
 
         /// <summary>
@@ -203,7 +197,7 @@ namespace MagiCloud.NetWorks
         public void OnExit()
         {
             curInfo.ExperimentStatus = 3;
-            clientEventPool.GetEvent<ExperimentReceiptEvent>().Send(clientConnection, curInfo);
+            clientEventPool.GetEvent<ExperimentReceiptEvent>().Send(clientConnection,curInfo);
         }
 
         /// <summary>
@@ -221,11 +215,11 @@ namespace MagiCloud.NetWorks
         public void OnExperimentReset()
         {
             curInfo.ExperimentStatus = 2;
-            clientEventPool.GetEvent<ExperimentReceiptEvent>().Send(clientConnection, curInfo);
+            clientEventPool.GetEvent<ExperimentReceiptEvent>().Send(clientConnection,curInfo);
 
             if (EventExperimentStatus != null)
                 EventExperimentStatus(2);
-            
+
             //curInfo = null;
             curPrefabPath = string.Empty;
         }

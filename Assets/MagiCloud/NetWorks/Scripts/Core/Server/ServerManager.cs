@@ -10,16 +10,18 @@ namespace MagiCloud.NetWorks
     {
         private ServerConnection connection;
         private EventPool controllerEventPool;              //事件池
-        private IntPtr curWindowIntPtr;                     //自身窗口
 
-        private ExperimentWindowsManager experiment;        //实验项目窗口管理
+        private WindowsManager windowsManager;        //实验项目窗口管理
 
         bool clientConnect = false;
         private void Start()
         {
-            experiment = new ExperimentWindowsManager();
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-            curWindowIntPtr =SystemDllHelper.GetForegroundWindow();
+#if UNITY_ANDROID
+            windowsManager = new AndroidWindowsManager();
+#elif UNITY_IOS
+            experiment=new IosWindowsManager();
+#else
+              experiment = new ExperimentWindowsManager();
 #endif
             connection = new ServerConnection();
 
@@ -51,10 +53,8 @@ namespace MagiCloud.NetWorks
         /// <param name="proto"></param>
         private void OnExpRec(int sender,IMessage proto)
         {
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             //该窗口置顶
-            SystemDllHelper.SetForegroundWindow(curWindowIntPtr);
-#endif
+            windowsManager.SetTop();
         }
 
         private void Update()
@@ -77,11 +77,8 @@ namespace MagiCloud.NetWorks
         /// </summary>
         public void SelectExpInfo(int i = 0)
         {
-            experiment.Select(i);
-
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-            SystemDllHelper.SetForegroundWindow(curWindowIntPtr);
-#endif
+            windowsManager.Select(i,SendExitReq);
+            windowsManager.SetTop();
             SendExpInfo();
         }
 
@@ -91,12 +88,19 @@ namespace MagiCloud.NetWorks
         private void SendExpInfo()
         {
             if (clientConnect)
-                controllerEventPool.GetEvent<ExperimentRequestEvent>().Send(connection,experiment.CurExpInfo);
+                controllerEventPool.GetEvent<ExperimentRequestEvent>().Send(connection,windowsManager.CurExpInfo);
         }
-
+        /// <summary>
+        /// 发送关闭请求
+        /// </summary>
+        private void SendExitReq()
+        {
+            if (clientConnect)
+                controllerEventPool.GetEvent<BreakConnectEvent>().Send(connection,new ConnectInfo() { Id=0 });
+        }
         private void OnDestroy()
         {
-            experiment.Exit();
+            windowsManager.ExitOther(SendExitReq);
             connection.Close();
         }
     }
