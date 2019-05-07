@@ -20,7 +20,7 @@ namespace MagiCloud.NetWorks
                 Id = 0,
                 OwnProject = string.Empty,
                 Name = string.Empty,
-                IsBack = false
+                ExperimentStatus = 0
             };
 
             this.actionLog = actionlog;

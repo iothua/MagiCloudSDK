@@ -18,7 +18,9 @@ namespace MagiCloud.NetWorks
         private void Start()
         {
             experiment = new ExperimentWindowsManager();
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             curWindowIntPtr =SystemDllHelper.GetForegroundWindow();
+#endif
             connection = new ServerConnection();
 
             controllerEventPool=new EventPool(connection.messageDistribution);
@@ -49,8 +51,10 @@ namespace MagiCloud.NetWorks
         /// <param name="proto"></param>
         private void OnExpRec(int sender,IMessage proto)
         {
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             //该窗口置顶
             SystemDllHelper.SetForegroundWindow(curWindowIntPtr);
+#endif
         }
 
         private void Update()
@@ -74,7 +78,10 @@ namespace MagiCloud.NetWorks
         public void SelectExpInfo(int i = 0)
         {
             experiment.Select(i);
+
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             SystemDllHelper.SetForegroundWindow(curWindowIntPtr);
+#endif
             SendExpInfo();
         }
 

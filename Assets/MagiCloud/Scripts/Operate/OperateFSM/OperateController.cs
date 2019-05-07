@@ -68,7 +68,8 @@ namespace MagiCloud.Operate.OperateFSM
         }
         private void OnDestroy()
         {
-            fsmSystem.Shutdown();
+            if (fsmSystem != null)
+                fsmSystem.Shutdown();
         }
     }
 

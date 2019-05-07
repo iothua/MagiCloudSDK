@@ -105,12 +105,17 @@ namespace MagiCloud.KGUI
             {
 
                 isEnable = value;
+
+                if (isEnable)
+                    onExit?.Invoke(this.handIndex);
+
                 IsButtonPressed = false;
                 IsDown = false;
                 handIndex = -1;
                 screenX = null;
                 screenY = null;
                 IsEnter = false;
+
                 if (isEnable)
                 {
 
@@ -135,6 +140,8 @@ namespace MagiCloud.KGUI
         {
             if (!enabled) return;
             if (!Active) return;
+            if (!IsEnable) return;
+
             OnEnterHandle(0);//右手
             OnEnterHandle(1);//左手
 

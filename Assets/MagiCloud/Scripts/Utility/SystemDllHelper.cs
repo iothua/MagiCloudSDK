@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
 
 namespace MagiCloud
 {
+
     /// <summary>
     /// 系统窗口相关API
     /// </summary>
     public static class SystemDllHelper
     {
+        
+
         /// <summary>
         /// 显示窗口
         /// </summary>
@@ -63,3 +67,5 @@ namespace MagiCloud
 
     }
 }
+#endif
+

@@ -77,7 +77,9 @@ namespace MagiCloud.NetWorks
             }
             catch (Exception e)
             {
-                throw e;
+                Debug.LogError(e.Message);
+
+                return false;
             }
         }
 
@@ -97,7 +99,6 @@ namespace MagiCloud.NetWorks
             catch (Exception e)
             {
                 status = ConnectStatus.None;
-                Debug.Log("接收信息失败：" + e.Message);
             }
         },socket);
         }
@@ -121,7 +122,7 @@ namespace MagiCloud.NetWorks
 
             ProtobufTool proto = protobuf.Read(readBuffer);
 
-            Debug.Log("收到消息：" + (CommandID)proto.type);
+            //Debug.Log("收到消息：" + (CommandID)proto.type);
 
             lock (messageDistribution.msgList)
             {
@@ -150,7 +151,7 @@ namespace MagiCloud.NetWorks
             }
             catch (Exception e)
             {
-                throw e;
+                Debug.LogError(e.Message);
             }
         }
 

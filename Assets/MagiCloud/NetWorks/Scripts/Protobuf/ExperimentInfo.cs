@@ -24,14 +24,14 @@ namespace MagiCloud.NetWorks {
     static ExperimentInfoReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChRFeHBlcmltZW50SW5mby5wcm90bxISTWFnaUNsb3VkLk5ldFdvcmtzImIK",
+            "ChRFeHBlcmltZW50SW5mby5wcm90bxISTWFnaUNsb3VkLk5ldFdvcmtzImwK",
             "DkV4cGVyaW1lbnRJbmZvEhIKCm93blByb2plY3QYASABKAkSDAoEbmFtZRgC",
-            "IAEoCRIKCgJpZBgDIAEoBRIOCgZpc0JhY2sYBCABKAgSEgoKcHJlZmFiUGF0",
-            "aBgFIAEoCWIGcHJvdG8z"));
+            "IAEoCRIKCgJpZBgDIAEoBRIYChBleHBlcmltZW50U3RhdHVzGAQgASgFEhIK",
+            "CnByZWZhYlBhdGgYBSABKAliBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.ExperimentInfo), global::MagiCloud.NetWorks.ExperimentInfo.Parser, new[]{ "OwnProject", "Name", "Id", "IsBack", "PrefabPath" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.ExperimentInfo), global::MagiCloud.NetWorks.ExperimentInfo.Parser, new[]{ "OwnProject", "Name", "Id", "ExperimentStatus", "PrefabPath" }, null, null, null)
           }));
     }
     #endregion
@@ -69,7 +69,7 @@ namespace MagiCloud.NetWorks {
       ownProject_ = other.ownProject_;
       name_ = other.name_;
       id_ = other.id_;
-      isBack_ = other.isBack_;
+      experimentStatus_ = other.experimentStatus_;
       prefabPath_ = other.prefabPath_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -121,17 +121,17 @@ namespace MagiCloud.NetWorks {
       }
     }
 
-    /// <summary>Field number for the "isBack" field.</summary>
-    public const int IsBackFieldNumber = 4;
-    private bool isBack_;
+    /// <summary>Field number for the "experimentStatus" field.</summary>
+    public const int ExperimentStatusFieldNumber = 4;
+    private int experimentStatus_;
     /// <summary>
-    ///是否执行返回命令
+    ///-1: 错误 0：加载 1：返回 2：重置
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool IsBack {
-      get { return isBack_; }
+    public int ExperimentStatus {
+      get { return experimentStatus_; }
       set {
-        isBack_ = value;
+        experimentStatus_ = value;
       }
     }
 
@@ -162,7 +162,7 @@ namespace MagiCloud.NetWorks {
       if (OwnProject != other.OwnProject) return false;
       if (Name != other.Name) return false;
       if (Id != other.Id) return false;
-      if (IsBack != other.IsBack) return false;
+      if (ExperimentStatus != other.ExperimentStatus) return false;
       if (PrefabPath != other.PrefabPath) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -173,7 +173,7 @@ namespace MagiCloud.NetWorks {
       if (OwnProject.Length != 0) hash ^= OwnProject.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (Id != 0) hash ^= Id.GetHashCode();
-      if (IsBack != false) hash ^= IsBack.GetHashCode();
+      if (ExperimentStatus != 0) hash ^= ExperimentStatus.GetHashCode();
       if (PrefabPath.Length != 0) hash ^= PrefabPath.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -200,9 +200,9 @@ namespace MagiCloud.NetWorks {
         output.WriteRawTag(24);
         output.WriteInt32(Id);
       }
-      if (IsBack != false) {
+      if (ExperimentStatus != 0) {
         output.WriteRawTag(32);
-        output.WriteBool(IsBack);
+        output.WriteInt32(ExperimentStatus);
       }
       if (PrefabPath.Length != 0) {
         output.WriteRawTag(42);
@@ -225,8 +225,8 @@ namespace MagiCloud.NetWorks {
       if (Id != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Id);
       }
-      if (IsBack != false) {
-        size += 1 + 1;
+      if (ExperimentStatus != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ExperimentStatus);
       }
       if (PrefabPath.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(PrefabPath);
@@ -251,8 +251,8 @@ namespace MagiCloud.NetWorks {
       if (other.Id != 0) {
         Id = other.Id;
       }
-      if (other.IsBack != false) {
-        IsBack = other.IsBack;
+      if (other.ExperimentStatus != 0) {
+        ExperimentStatus = other.ExperimentStatus;
       }
       if (other.PrefabPath.Length != 0) {
         PrefabPath = other.PrefabPath;
@@ -281,7 +281,7 @@ namespace MagiCloud.NetWorks {
             break;
           }
           case 32: {
-            IsBack = input.ReadBool();
+            ExperimentStatus = input.ReadInt32();
             break;
           }
           case 42: {

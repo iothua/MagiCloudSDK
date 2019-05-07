@@ -57,6 +57,11 @@ namespace MagiCloud.KGUI
             Interactions.Remove(button);
         }
 
+        public void RemoveButtonAll()
+        {
+            Interactions.Clear();
+        }
+
         public void SetButton(int index = 0)
         {
             if (Interactions == null || index < 0 || Interactions.Count < index) return;
