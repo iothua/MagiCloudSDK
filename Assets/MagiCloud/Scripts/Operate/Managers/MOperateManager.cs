@@ -27,6 +27,7 @@ namespace MagiCloud
 
         private readonly static Dictionary<OperateKey, MOperate> Operates = new Dictionary<OperateKey, MOperate>();
 
+        private static int activeHandControllerOrder = -1; //手势激活优先级
 
         /// <summary>
         /// 添加手势端
@@ -147,11 +148,20 @@ namespace MagiCloud
         }
 
         /// <summary>
-        /// 激活功能状态
+        /// 激活功能状态(应该添加一个优先级，以保证其他的选项在设置时，因为优先级问题，导致重复设置)
         /// </summary>
         /// <param name="result"></param>
-        public static void ActiveHandController(bool result)
+        public static void ActiveHandController(bool result,int activeOrder = 1)
         {
+            if (activeOrder < activeHandControllerOrder) return;
+
+            activeHandControllerOrder = activeOrder; //设置优先级
+
+            if (result)
+            {
+                activeHandControllerOrder = -1;
+            }
+
             foreach (var item in Operates)
             {
                 if (item.Key.platform == MUtility.CurrentPlatform)

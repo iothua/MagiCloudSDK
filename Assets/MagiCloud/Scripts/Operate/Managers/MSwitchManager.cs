@@ -37,7 +37,6 @@ namespace MagiCloud
     ///     2）在观察模式中，不可进行物体的抓取（高亮、标签等等），不可进行UI的操作。
     ///     3）在工具模式中，UI不可操作，物体不可抓取。只能进行图片的操作。
     /// 
-    /// 
     /// </summary>
     public class MSwitchManager 
     {

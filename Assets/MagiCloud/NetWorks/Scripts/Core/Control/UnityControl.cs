@@ -48,6 +48,8 @@ namespace MagiCloud.NetWorks
         /// <param name="proto"></param>
         private void OnExpRec(int sender,IMessage proto)
         {
+            var info = proto as ExperimentInfo;
+
             controlTerminal.Broadcast(serverEventPool.GetEvent<ExperimentReceiptEvent>().GetProtobuf(proto),sender);
         }
 

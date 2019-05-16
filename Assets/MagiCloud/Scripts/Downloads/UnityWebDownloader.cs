@@ -50,6 +50,21 @@ namespace MagiCloud.Downloads
         /// </summary>
         public bool IsPlaying { get; private set; }
 
+        /// <summary>
+        /// 下载进度值
+        /// </summary>
+        /// <value>The progress.</value>
+        public float Progress {
+            get {
+
+                if (!IsPlaying) return 0;
+
+                if (currentHandler == null) return 0;
+
+                return currentHandler.webDownload.GetProcess();
+            }
+        }
+
         public bool IsNetError { get; private set; }
 
         public UnityWebDownloader(MonoBehaviour behaviour)

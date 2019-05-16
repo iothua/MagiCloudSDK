@@ -1,107 +1,135 @@
-﻿using System;
-using Google.Protobuf;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using Google.Protobuf;
+using System;
 
 namespace MagiCloud.NetWorks
 {
-
-    public class ServerManager :MonoBehaviour
+    public class ServerManager : ServerNetManager
     {
-        private ServerConnection connection;
-        private EventPool controllerEventPool;              //事件池
 
-        private WindowsManager windowsManager;        //实验项目窗口管理
+        public event Action<ExperimentInfo> EventExperimentRecipt;
 
-        bool clientConnect = false;
-        private void Start()
+        public ServerManager() : base()
         {
-#if UNITY_ANDROID
-            windowsManager = new AndroidWindowsManager();
-#elif UNITY_IOS
-            windowsManager=new IosWindowsManager();
-#else
-              windowsManager = new ExperimentWindowsManager();
-#endif
-            connection = new ServerConnection();
 
-            controllerEventPool=new EventPool(connection.messageDistribution);
-            ProcessHelper process = new ProcessHelper();
+            eventPool.GetEvent<ConnectEvent>().AddReceiveEvent(OnConnectEvent);
+            eventPool.GetEvent<ExperimentReceiptEvent>().AddReceiveEvent(OnExperimentReceipt);
 
-            controllerEventPool.GetEvent<ConnectEvent>().AddReceiveEvent(OnConnectEvent);
-            controllerEventPool.GetEvent<ExperimentReceiptEvent>().AddReceiveEvent(OnExpRec);
 
-            connection.Connect("127.0.0.1",8888);
+            connection.Connect("127.0.0.1", 8888);
         }
 
-
-        /// <summary>
-        /// 有客户端连接
-        /// </summary>
-        /// <param name="proto"></param>
-        private void OnConnectEvent(int sender,IMessage proto)
+        private void OnConnectEvent(int sender, IMessage proto)
         {
-            //print("客户端已连接");
-            clientConnect=true;
+            IsConnect = true;
+
             //发送数据
-            SendExpInfo();
+            OnSendData<ExperimentRequestEvent, ExperimentInfo>(currentExperiment);
         }
 
         /// <summary>
-        /// 实验结束后
+        /// 实验接收
         /// </summary>
+        /// <param name="sender"></param>
         /// <param name="proto"></param>
-        private void OnExpRec(int sender,IMessage proto)
+        public virtual void OnExperimentReceipt(int sender, IMessage proto)
         {
-            //该窗口置顶
-            windowsManager.SetTop();
-        }
+            ExperimentInfo info = proto as ExperimentInfo;
 
-        private void Update()
-        {
-            connection.Update();
-            //if (Input.GetKeyDown(KeyCode.Q))
-            //{
-            //    //开启实验0
-            //    SelectExpInfo(0);
-            //}
-            //if (Input.GetKeyDown(KeyCode.W))
-            //{
-            //    //开启实验1
-            //    SelectExpInfo(1);
-            //}
+            switch (info.ExperimentStatus)
+            {
+                //错误
+                case -1:
+                    windowsManager.ExitExe();
+                    currentExperiment = null;
+
+                    break;
+                //加载成功
+                case 1:
+                    //关闭loading
+
+                    //UnityEngine.Debug.Log("加载成功");
+
+                    break;
+                case 2:
+                    //UnityEngine.Debug.Log("执行：返回");
+                    windowsManager.SetTop();
+                    break;
+                //重置
+                case 3:
+                    //UnityEngine.Debug.Log("执行：重置");
+                    //windowsManager.SetTop();
+                    SelectExperiment(currentExperiment, windowsManager.processPath);
+                    break;
+                //关闭
+                case 4:
+
+                    //UnityEngine.Debug.Log("执行：关闭");
+
+                    currentExperiment = null;
+
+                    windowsManager.SetTop();
+                    break;
+                default:
+                    break;
+            }
+
+            if (EventExperimentRecipt != null)
+                EventExperimentRecipt(info);
         }
 
         /// <summary>
-        /// 选择实验启动,如果实验已连接,直接发送实验信息,否则在连接回调事件中等待发送
+        /// 选择实验
         /// </summary>
-        public void SelectExpInfo(int i = 0)
+        /// <param name="experiment">Experiment.</param>
+        /// <param name="productExePath">Product exe path.</param>
+        public void SelectExperiment(ExperimentInfo experiment, string productExePath)
         {
-            windowsManager.Select(i,SendExitReq);
-            windowsManager.SetTop();
-            SendExpInfo();
+            try
+            {
+                SelectExperimentInfo(experiment, productExePath);
+
+                windowsManager.SetTop();
+
+                UnityEngine.Debug.Log("实验值：" + experiment.Name);
+
+                OnSendData<ExperimentRequestEvent, ExperimentInfo>(currentExperiment);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        /// <summary>
-        /// 发送实验信息数据
-        /// </summary>
-        private void SendExpInfo()
+        public void SelectExperimentInfo(ExperimentInfo experiment, string productExePath)
         {
-            if (clientConnect)
-                controllerEventPool.GetEvent<ExperimentRequestEvent>().Send(connection,windowsManager.CurExpInfo);
+            if (experiment == null)
+                throw new Exception("实验数据对象为Null");
+
+            if (!System.IO.File.Exists(productExePath))
+                throw new Exception("请先进行下载");
+
+            if (currentExperiment == null || experiment.OwnProject != currentExperiment.OwnProject)
+            {
+                windowsManager.ExitExe();
+
+                windowsManager.processPath = productExePath;
+                windowsManager.OpenExe();
+            }
+
+            currentExperiment = experiment;
         }
-        /// <summary>
-        /// 发送关闭请求
-        /// </summary>
-        private void SendExitReq()
+
+        public override void OnDestroy()
         {
-            if (clientConnect)
-                controllerEventPool.GetEvent<BreakConnectEvent>().Send(connection,new ConnectInfo() { Id=0 });
-        }
-        private void OnDestroy()
-        {
-            windowsManager.ExitOther(SendExitReq);
-            connection.Close();
+            windowsManager.ExitExe(() =>
+            {
+
+                if (!IsConnect) return;
+
+                eventPool.GetEvent<BreakConnectEvent>().Send(connection, new ConnectInfo() { Id = 0 });
+
+            });
+            base.OnDestroy();
         }
     }
 }
