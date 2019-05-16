@@ -106,8 +106,8 @@ namespace MagiCloud.KGUI
 
                 isEnable = value;
 
-                if (isEnable)
-                    onExit?.Invoke(this.handIndex);
+                //if (isEnable)
+                //    onExit?.Invoke(this.handIndex);
 
                 IsButtonPressed = false;
                 IsDown = false;

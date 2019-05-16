@@ -14,13 +14,16 @@ namespace MagiCloud.KGUI
 
         public KGUI_Dropdown dropdown;
 
+        public int Number;
+
         /// <summary>
         /// 初始化
         /// </summary>
-        public void OnInitialized(KGUI_Dropdown dropdown,string name)
+        public void OnInitialized(KGUI_Dropdown dropdown,string name,int number)
         {
             buttonGroup = dropdown.buttonGroup;
             IsButtonGroup = true;
+            this.Number = number;
 
             dropdown.buttonGroup.AddButton(this);
 

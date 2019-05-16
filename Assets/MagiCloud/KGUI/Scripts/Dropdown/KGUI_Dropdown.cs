@@ -54,6 +54,14 @@ namespace MagiCloud.KGUI
 
         private KGUI_DropdownItem currentItem;//当前选项
 
+        public int CurrentItemNumber {
+            get {
+                if (currentItem == null) return -1;
+
+                return currentItem.Number;
+            }
+        }
+
         [HideInInspector]
         public List<KGUI_DropdownItem> Items;//选项集合
 
@@ -95,7 +103,8 @@ namespace MagiCloud.KGUI
             else
                 onClick.AddListener(OnExpand);
 
-            buttonGroup.SetButton(Items[0]);
+            if (Items.Count > 0)
+                buttonGroup.SetButton(Items[0]);
         }
 
         /// <summary>
@@ -156,6 +165,18 @@ namespace MagiCloud.KGUI
             OnCreateItem();
         }
 
+        public void SetDropdownItem(string itemName)
+        {
+            var item = Items.Find(obj => obj.Name.Equals(itemName));
+            item.OnClick(0);
+        }
+
+        public void SetDropdownItem(int index)
+        {
+            if (Items.Count == 0 || Items.Count <= index) return;
+            Items[index].OnClick(0);
+        }
+
         /// <summary>
         /// 创建子项
         /// </summary>
@@ -167,15 +188,14 @@ namespace MagiCloud.KGUI
             //删除子项
             OnDeleteItem();
 
-            //生成子项
-            foreach (var name in Names)
+            for (int i = 0; i < Names.Count; i++)
             {
-                var go = Instantiate(dropdownItem,gridLayout.transform);
+                var go = Instantiate(dropdownItem, gridLayout.transform);
                 go.SetActive(true);
 
                 var item = go.GetComponent<KGUI_DropdownItem>();
 
-                item.OnInitialized(this,name);
+                item.OnInitialized(this, Names[i],i);
 
                 Items.Add(item);
             }
@@ -189,13 +209,13 @@ namespace MagiCloud.KGUI
 
             int count = Names.Count;
 
-            if (gridLayout.constraintCount>1)
+            if(gridLayout.constraintCount>1)
             {
                 count = Names.Count / gridLayout.constraintCount + (Names.Count % gridLayout.constraintCount == 0 ? 0 : 1);
             }
 
             //设置背景框的高度
-            content.sizeDelta = new Vector2(delta.x,gridLayout.cellSize.y * count + (count - 1) * gridLayout.spacing.y);
+            content.sizeDelta = new Vector2(delta.x, gridLayout.cellSize.y * count + (count - 1) * gridLayout.spacing.y);
 
             //因为设置了瞄点，所以需要根据父对象的高度，重新进行Y轴坐标的计算。
 
@@ -208,7 +228,7 @@ namespace MagiCloud.KGUI
 
             if (gridLayout.constraintCount == 1)
                 //没有激活的话，则显示全部
-                gridLayout.cellSize = new Vector2(gridLayout.GetComponent<RectTransform>().sizeDelta.x,gridLayout.cellSize.y);
+                gridLayout.cellSize = new Vector2(gridLayout.GetComponent<RectTransform>().sizeDelta.x, gridLayout.cellSize.y);
 
             //设置所有子项的大小
 
@@ -259,10 +279,12 @@ namespace MagiCloud.KGUI
                 if (item == null) continue;
                 buttonGroup.RemoveButton(item);
 
-
+#if UNITY_EDITOR
                 DestroyImmediate(item.gameObject);
+#else
+                Destroy(item.gameObject);
+#endif
             }
-
 
             Items.Clear();
         }

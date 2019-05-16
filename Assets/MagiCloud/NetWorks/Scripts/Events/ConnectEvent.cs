@@ -69,12 +69,23 @@ namespace MagiCloud.NetWorks
             Command=CommandID.ExperimentInfoReceipt;
             Proto=new ExperimentInfo();
         }
-        protected override void Receive(int senderID,ProtobufTool data)
+    }
+
+    public class SystemSettingRequestEvent : EventBase
+    {
+        public SystemSettingRequestEvent()
         {
-            base.Receive(senderID,data);
+            Command = CommandID.SystemSettingRequest;
+            Proto = new SystemSettingInfo();
         }
     }
 
-
-
+    public class SystemSettingReceiptEvent : EventBase
+    {
+        public SystemSettingReceiptEvent()
+        {
+            Command = CommandID.SystemSettingReceipt;
+            Proto = new SystemSettingReceipt();
+        }
+    }
 }
