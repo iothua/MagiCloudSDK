@@ -25,28 +25,21 @@ namespace MagiCloud.NetWorks {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChdTeXN0ZW1TZXR0aW5nSW5mby5wcm90bxISTWFnaUNsb3VkLk5ldFdvcmtz",
-            "Ip0BChFTeXN0ZW1TZXR0aW5nSW5mbxIOCgZ2b2x1bWUYASABKAUSPwoEdHlw",
-            "ZRgCIAEoDjIxLk1hZ2lDbG91ZC5OZXRXb3Jrcy5TeXN0ZW1TZXR0aW5nSW5m",
-            "by5QZXJmb3JtYW5jZSI3CgtQZXJmb3JtYW5jZRIICgROT05FEAASCQoFSElH",
-            "SFQQARIKCgZNSURETEUQAhIHCgNMT1cQAyJLChRTeXN0ZW1TZXR0aW5nUmVx",
-            "dWVzdBIzCgRpbmZvGAEgASgLMiUuTWFnaUNsb3VkLk5ldFdvcmtzLlN5c3Rl",
-            "bVNldHRpbmdJbmZvIiQKFFN5c3RlbVNldHRpbmdSZWNlaXB0EgwKBGJhY2sY",
-            "ASABKAViBnByb3RvMw=="));
+            "InsKEVN5c3RlbVNldHRpbmdJbmZvEhUKDWlzRnVsbERpc3BsYXkYASABKAgS",
+            "EwoLc2NyZWVuV2lkdGgYAiABKAUSFAoMc2NyZWVuSGVpZ2h0GAMgASgFEg8K",
+            "B3F1YWxpdHkYBCABKAUSEwoLc291bmRWb2x1bWUYBSABKAUiJgoUU3lzdGVt",
+            "U2V0dGluZ1JlY2VpcHQSDgoGc3RhdHVzGAEgASgFYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.SystemSettingInfo), global::MagiCloud.NetWorks.SystemSettingInfo.Parser, new[]{ "Volume", "Type" }, null, new[]{ typeof(global::MagiCloud.NetWorks.SystemSettingInfo.Types.Performance) }, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.SystemSettingRequest), global::MagiCloud.NetWorks.SystemSettingRequest.Parser, new[]{ "Info" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.SystemSettingReceipt), global::MagiCloud.NetWorks.SystemSettingReceipt.Parser, new[]{ "Back" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.SystemSettingInfo), global::MagiCloud.NetWorks.SystemSettingInfo.Parser, new[]{ "IsFullDisplay", "ScreenWidth", "ScreenHeight", "Quality", "SoundVolume" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MagiCloud.NetWorks.SystemSettingReceipt), global::MagiCloud.NetWorks.SystemSettingReceipt.Parser, new[]{ "Status" }, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
-  /// <summary>
-  ///系统设置
-  /// </summary>
   public sealed partial class SystemSettingInfo : pb::IMessage<SystemSettingInfo> {
     private static readonly pb::MessageParser<SystemSettingInfo> _parser = new pb::MessageParser<SystemSettingInfo>(() => new SystemSettingInfo());
     private pb::UnknownFieldSet _unknownFields;
@@ -72,8 +65,11 @@ namespace MagiCloud.NetWorks {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public SystemSettingInfo(SystemSettingInfo other) : this() {
-      volume_ = other.volume_;
-      type_ = other.type_;
+      isFullDisplay_ = other.isFullDisplay_;
+      screenWidth_ = other.screenWidth_;
+      screenHeight_ = other.screenHeight_;
+      quality_ = other.quality_;
+      soundVolume_ = other.soundVolume_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -82,25 +78,58 @@ namespace MagiCloud.NetWorks {
       return new SystemSettingInfo(this);
     }
 
-    /// <summary>Field number for the "volume" field.</summary>
-    public const int VolumeFieldNumber = 1;
-    private int volume_;
+    /// <summary>Field number for the "isFullDisplay" field.</summary>
+    public const int IsFullDisplayFieldNumber = 1;
+    private bool isFullDisplay_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Volume {
-      get { return volume_; }
+    public bool IsFullDisplay {
+      get { return isFullDisplay_; }
       set {
-        volume_ = value;
+        isFullDisplay_ = value;
       }
     }
 
-    /// <summary>Field number for the "type" field.</summary>
-    public const int TypeFieldNumber = 2;
-    private global::MagiCloud.NetWorks.SystemSettingInfo.Types.Performance type_ = 0;
+    /// <summary>Field number for the "screenWidth" field.</summary>
+    public const int ScreenWidthFieldNumber = 2;
+    private int screenWidth_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::MagiCloud.NetWorks.SystemSettingInfo.Types.Performance Type {
-      get { return type_; }
+    public int ScreenWidth {
+      get { return screenWidth_; }
       set {
-        type_ = value;
+        screenWidth_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "screenHeight" field.</summary>
+    public const int ScreenHeightFieldNumber = 3;
+    private int screenHeight_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int ScreenHeight {
+      get { return screenHeight_; }
+      set {
+        screenHeight_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "quality" field.</summary>
+    public const int QualityFieldNumber = 4;
+    private int quality_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Quality {
+      get { return quality_; }
+      set {
+        quality_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "soundVolume" field.</summary>
+    public const int SoundVolumeFieldNumber = 5;
+    private int soundVolume_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int SoundVolume {
+      get { return soundVolume_; }
+      set {
+        soundVolume_ = value;
       }
     }
 
@@ -117,16 +146,22 @@ namespace MagiCloud.NetWorks {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Volume != other.Volume) return false;
-      if (Type != other.Type) return false;
+      if (IsFullDisplay != other.IsFullDisplay) return false;
+      if (ScreenWidth != other.ScreenWidth) return false;
+      if (ScreenHeight != other.ScreenHeight) return false;
+      if (Quality != other.Quality) return false;
+      if (SoundVolume != other.SoundVolume) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Volume != 0) hash ^= Volume.GetHashCode();
-      if (Type != 0) hash ^= Type.GetHashCode();
+      if (IsFullDisplay != false) hash ^= IsFullDisplay.GetHashCode();
+      if (ScreenWidth != 0) hash ^= ScreenWidth.GetHashCode();
+      if (ScreenHeight != 0) hash ^= ScreenHeight.GetHashCode();
+      if (Quality != 0) hash ^= Quality.GetHashCode();
+      if (SoundVolume != 0) hash ^= SoundVolume.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -140,13 +175,25 @@ namespace MagiCloud.NetWorks {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Volume != 0) {
+      if (IsFullDisplay != false) {
         output.WriteRawTag(8);
-        output.WriteInt32(Volume);
+        output.WriteBool(IsFullDisplay);
       }
-      if (Type != 0) {
+      if (ScreenWidth != 0) {
         output.WriteRawTag(16);
-        output.WriteEnum((int) Type);
+        output.WriteInt32(ScreenWidth);
+      }
+      if (ScreenHeight != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(ScreenHeight);
+      }
+      if (Quality != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(Quality);
+      }
+      if (SoundVolume != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(SoundVolume);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -156,11 +203,20 @@ namespace MagiCloud.NetWorks {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Volume != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Volume);
+      if (IsFullDisplay != false) {
+        size += 1 + 1;
       }
-      if (Type != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
+      if (ScreenWidth != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ScreenWidth);
+      }
+      if (ScreenHeight != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ScreenHeight);
+      }
+      if (Quality != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Quality);
+      }
+      if (SoundVolume != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SoundVolume);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -173,11 +229,20 @@ namespace MagiCloud.NetWorks {
       if (other == null) {
         return;
       }
-      if (other.Volume != 0) {
-        Volume = other.Volume;
+      if (other.IsFullDisplay != false) {
+        IsFullDisplay = other.IsFullDisplay;
       }
-      if (other.Type != 0) {
-        Type = other.Type;
+      if (other.ScreenWidth != 0) {
+        ScreenWidth = other.ScreenWidth;
+      }
+      if (other.ScreenHeight != 0) {
+        ScreenHeight = other.ScreenHeight;
+      }
+      if (other.Quality != 0) {
+        Quality = other.Quality;
+      }
+      if (other.SoundVolume != 0) {
+        SoundVolume = other.SoundVolume;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -191,163 +256,23 @@ namespace MagiCloud.NetWorks {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Volume = input.ReadInt32();
+            IsFullDisplay = input.ReadBool();
             break;
           }
           case 16: {
-            Type = (global::MagiCloud.NetWorks.SystemSettingInfo.Types.Performance) input.ReadEnum();
+            ScreenWidth = input.ReadInt32();
             break;
           }
-        }
-      }
-    }
-
-    #region Nested types
-    /// <summary>Container for nested types declared in the SystemSettingInfo message type.</summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static partial class Types {
-      /// <summary>
-      ///性能参数
-      /// </summary>
-      public enum Performance {
-        [pbr::OriginalName("NONE")] None = 0,
-        [pbr::OriginalName("HIGHT")] Hight = 1,
-        [pbr::OriginalName("MIDDLE")] Middle = 2,
-        [pbr::OriginalName("LOW")] Low = 3,
-      }
-
-    }
-    #endregion
-
-  }
-
-  public sealed partial class SystemSettingRequest : pb::IMessage<SystemSettingRequest> {
-    private static readonly pb::MessageParser<SystemSettingRequest> _parser = new pb::MessageParser<SystemSettingRequest>(() => new SystemSettingRequest());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<SystemSettingRequest> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::MagiCloud.NetWorks.SystemSettingInfoReflection.Descriptor.MessageTypes[1]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public SystemSettingRequest() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public SystemSettingRequest(SystemSettingRequest other) : this() {
-      info_ = other.info_ != null ? other.info_.Clone() : null;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public SystemSettingRequest Clone() {
-      return new SystemSettingRequest(this);
-    }
-
-    /// <summary>Field number for the "info" field.</summary>
-    public const int InfoFieldNumber = 1;
-    private global::MagiCloud.NetWorks.SystemSettingInfo info_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::MagiCloud.NetWorks.SystemSettingInfo Info {
-      get { return info_; }
-      set {
-        info_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as SystemSettingRequest);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(SystemSettingRequest other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (!object.Equals(Info, other.Info)) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (info_ != null) hash ^= Info.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (info_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Info);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (info_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Info);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(SystemSettingRequest other) {
-      if (other == null) {
-        return;
-      }
-      if (other.info_ != null) {
-        if (info_ == null) {
-          Info = new global::MagiCloud.NetWorks.SystemSettingInfo();
-        }
-        Info.MergeFrom(other.Info);
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+          case 24: {
+            ScreenHeight = input.ReadInt32();
             break;
-          case 10: {
-            if (info_ == null) {
-              Info = new global::MagiCloud.NetWorks.SystemSettingInfo();
-            }
-            input.ReadMessage(Info);
+          }
+          case 32: {
+            Quality = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            SoundVolume = input.ReadInt32();
             break;
           }
         }
@@ -364,7 +289,7 @@ namespace MagiCloud.NetWorks {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::MagiCloud.NetWorks.SystemSettingInfoReflection.Descriptor.MessageTypes[2]; }
+      get { return global::MagiCloud.NetWorks.SystemSettingInfoReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -381,7 +306,7 @@ namespace MagiCloud.NetWorks {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public SystemSettingReceipt(SystemSettingReceipt other) : this() {
-      back_ = other.back_;
+      status_ = other.status_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -390,14 +315,14 @@ namespace MagiCloud.NetWorks {
       return new SystemSettingReceipt(this);
     }
 
-    /// <summary>Field number for the "back" field.</summary>
-    public const int BackFieldNumber = 1;
-    private int back_;
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 1;
+    private int status_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Back {
-      get { return back_; }
+    public int Status {
+      get { return status_; }
       set {
-        back_ = value;
+        status_ = value;
       }
     }
 
@@ -414,14 +339,14 @@ namespace MagiCloud.NetWorks {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Back != other.Back) return false;
+      if (Status != other.Status) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Back != 0) hash ^= Back.GetHashCode();
+      if (Status != 0) hash ^= Status.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -435,9 +360,9 @@ namespace MagiCloud.NetWorks {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Back != 0) {
+      if (Status != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(Back);
+        output.WriteInt32(Status);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -447,8 +372,8 @@ namespace MagiCloud.NetWorks {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Back != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Back);
+      if (Status != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Status);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -461,8 +386,8 @@ namespace MagiCloud.NetWorks {
       if (other == null) {
         return;
       }
-      if (other.Back != 0) {
-        Back = other.Back;
+      if (other.Status != 0) {
+        Status = other.Status;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -476,7 +401,7 @@ namespace MagiCloud.NetWorks {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Back = input.ReadInt32();
+            Status = input.ReadInt32();
             break;
           }
         }
