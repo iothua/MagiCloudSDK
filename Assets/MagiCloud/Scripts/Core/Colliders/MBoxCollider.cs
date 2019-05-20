@@ -1,21 +1,25 @@
-﻿using MagiCloud.Operate;
+﻿using MagiCloud.Core.UI;
+using MagiCloud.Operate;
 using UnityEngine;
 
 namespace MagiCloud
 {
 
     [RequireComponent(typeof(BoxCollider))]
-    public class MBoxCollider : MonoBehaviour
+    public class MBoxCollider :MonoBehaviour, IBoxCollider
     {
-        public bool IsEnable {
-            get {
+        public bool IsEnable
+        {
+            get
+            {
 
                 if (BoxCollider == null)
                     BoxCollider = GetComponent<BoxCollider>() ?? gameObject.AddComponent<BoxCollider>();
 
                 return BoxCollider.enabled;
             }
-            set {
+            set
+            {
 
                 if (BoxCollider == null)
                     BoxCollider = GetComponent<BoxCollider>() ?? gameObject.AddComponent<BoxCollider>();
@@ -29,11 +33,14 @@ namespace MagiCloud
         /// <summary>
         /// 是否开启防抖
         /// </summary>
-        public bool IsShake {
-            get {
+        public bool IsShake
+        {
+            get
+            {
                 return isShake;
             }
-            set {
+            set
+            {
                 if (isShake == value) return;
 
                 isShake = value;
@@ -53,8 +60,10 @@ namespace MagiCloud
             }
         }
 
+        public Collider GetCollider => BoxCollider;
+
         [HideInInspector]
-        public BoxCollider BoxCollider;
+        public BoxCollider BoxCollider { get; private set; }
 
         protected Vector3 offsetValue;//偏移值
 
@@ -77,10 +86,10 @@ namespace MagiCloud
             {
                 case MOperateManager.layerObject:
                 case MOperateManager.layerRay:
-                    offsetValue = new Vector3(0.5f, 0.5f, 0.5f);
+                    offsetValue = new Vector3(0.5f,0.5f,0.5f);
                     break;
                 case MOperateManager.layerUI:
-                    offsetValue = new Vector3(30, 30, 0);
+                    offsetValue = new Vector3(30,30,0);
                     break;
             }
         }

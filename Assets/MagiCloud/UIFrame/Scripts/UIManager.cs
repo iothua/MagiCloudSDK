@@ -2,7 +2,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using MagiCloud.KGUI;
+using MagiCloud.Core.UI;
 
 namespace MagiCloud.UIFrame
 {
@@ -26,29 +26,37 @@ namespace MagiCloud.UIFrame
         7）摄像机管理
     */
 
+
     /// <summary>
     /// UI管理
     /// </summary>
-    public class UIManager : MonoBehaviour
+    public class UIManager :MonoBehaviour
     {
 
         public Stack<UI_Base> mainInterfaces = new Stack<UI_Base>();
 
         public List<UI_Base> UIs;
-        
+
+        private LinkedList<UI_Base> canvasUIs = new LinkedList<UI_Base>();
+        private LinkedList<UI_Base> spriteUIs = new LinkedList<UI_Base>();
+
         //设置默认值
         public string defaultStr;//默认值
 
         private static UIManager instance;
 
-        public static UIManager Instance {
-            get {
+        public static UIManager Instance
+        {
+            get
+            {
                 if (instance == null)
                     instance = FindObjectOfType<UIManager>();
 
                 return instance;
             }
         }
+
+
 
         /// <summary>
         /// UI动作管理端
@@ -80,7 +88,6 @@ namespace MagiCloud.UIFrame
                 }
             }
         }
-
         private void Update()
         {
             if (actionManager != null)
@@ -96,30 +103,36 @@ namespace MagiCloud.UIFrame
         /// <summary>
         /// 当前UI
         /// </summary>
-        public UI_Base CurrentUI {
-            get;set;
+        public UI_Base CurrentUI
+        {
+            get; set;
         }
 
-        private KGUI_Canvas canvas;
-        private KGUI_SpriteRenderer spriteRenderer;
+        private ICanvas canvas;
+        private ISpriteRenderer spriteRenderer;
 
-        public KGUI_Canvas Canvas {
-            get {
+        public ICanvas Canvas
+        {
+            get
+            {
                 if (canvas == null)
-                    canvas = gameObject.GetComponentInChildren<KGUI_Canvas>();
+                    canvas = gameObject.GetComponentInChildren<ICanvas>();
 
                 return canvas;
             }
         }
 
-        public KGUI_SpriteRenderer SpriteRenderer {
-            get {
+        public ISpriteRenderer SpriteRenderer
+        {
+            get
+            {
                 if (spriteRenderer == null)
-                    spriteRenderer = gameObject.GetComponentInChildren<KGUI_SpriteRenderer>();
+                    spriteRenderer = gameObject.GetComponentInChildren<ISpriteRenderer>();
 
                 return spriteRenderer;
             }
         }
+
 
         /// <summary>
         /// 添加UI
@@ -127,13 +140,24 @@ namespace MagiCloud.UIFrame
         /// <param name="ui"></param>
         public void AddUI(UI_Base ui)
         {
-           
+
             if (UIs == null)
                 UIs = new List<UI_Base>();
 
             if (!IsContains(ui))
                 UIs.Add(ui);
-
+            //ui.OnInitialize();//初始化
+            switch (ui.type)
+            {
+                case UIType.SpriteRender:
+                    AddSpriteUI(ui);
+                    break;
+                case UIType.Canvas:
+                    AddCanvasUI(ui);
+                    break;
+                default:
+                    break;
+            }
             if (ui.IsShow)
             {
                 ui.OnOpen();
@@ -142,7 +166,56 @@ namespace MagiCloud.UIFrame
             {
                 ui.OnClose();//默认关闭处理
             }
-            //ui.OnInitialize();//初始化
+        }
+        /// <summary>
+        /// 添加到Canvas下
+        /// </summary>
+        /// <param name="ui"></param>
+        private void AddCanvasUI(UI_Base ui)
+        {
+            if (canvasUIs.Contains(ui)) return;
+            ui.transform.SetParent(Canvas.transform);
+            LinkedListNode<UI_Base> cur = canvasUIs.First;
+            while (cur!=null)
+            {
+                if (ui.Priority>cur.Value.Priority)
+                    break;
+                cur=cur.Next;
+            }
+            if (cur!=null)
+            {
+                canvasUIs.AddBefore(cur,ui);
+                ui.transform.SetSiblingIndex(cur.Value.transform.GetSiblingIndex()+1);
+            }
+            else
+            {
+                canvasUIs.AddLast(ui);
+                ui.transform.SetAsFirstSibling();
+            }
+
+        }
+
+
+        /// <summary>
+        /// 添加到Sprite下
+        /// </summary>
+        /// <param name="ui"></param>
+        private void AddSpriteUI(UI_Base ui)
+        {
+            if (!spriteUIs.Contains(ui))
+            {
+                LinkedListNode<UI_Base> cur = spriteUIs.First;
+                while (cur!=null)
+                {
+                    if (ui.Priority>cur.Value.Priority)
+                        break;
+                    cur=cur.Next;
+                }
+                if (cur!=null)
+                    spriteUIs.AddBefore(cur,ui);
+                else
+                    spriteUIs.AddLast(ui);
+            }
         }
 
         /// <summary>
@@ -150,7 +223,7 @@ namespace MagiCloud.UIFrame
         /// </summary>
         /// <param name="ui"></param>
         /// <param name="position"></param>
-        public void AddUI(UI_Base ui, Vector3 position)
+        public void AddUI(UI_Base ui,Vector3 position)
         {
             if (ui.type == UIType.Canvas)
             {
@@ -327,7 +400,7 @@ namespace MagiCloud.UIFrame
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public List<T> GetUIComponents<T>()
-            where T: UI_Base
+            where T : UI_Base
         {
             List<UI_Base> t = UIs.FindAll(obj => obj is T);
 
@@ -407,9 +480,9 @@ namespace MagiCloud.UIFrame
             ui.OnClose();
         }
 
-        public static void AddAction(UI_Action ui, Action action, Action start = default(Action), Action end = default(Action))
+        public static void AddAction(UI_Action ui,Action action,Action start = default(Action),Action end = default(Action))
         {
-            Instance.actionManager.AddAction(ui, action, start, end);
+            Instance.actionManager.AddAction(ui,action,start,end);
         }
     }
 }

@@ -128,11 +128,11 @@ namespace MagiCloud
 
                 GUILayout.Space(5);
 
-                FrameConfig.Config.highlightColor = EditorGUILayout.ColorField(new GUIContent("高亮颜色：", "可通过代码FrameConfig.highlightColor获取高亮颜色"), FrameConfig.Config.highlightColor
-                            , GUILayout.Width(350), GUILayout.Height(20));
+                FrameConfig.Config.highlightColor = EditorGUILayout.ColorField(new GUIContent("高亮颜色：","可通过代码FrameConfig.highlightColor获取高亮颜色"),FrameConfig.Config.highlightColor
+                            ,GUILayout.Width(350),GUILayout.Height(20));
 
-                FrameConfig.Config.grabColor = EditorGUILayout.ColorField(new GUIContent("高亮颜色：", "可通过代码FrameConfig.grabColor获取高亮颜色"), FrameConfig.Config.grabColor
-                    , GUILayout.Width(350), GUILayout.Height(20));
+                FrameConfig.Config.grabColor = EditorGUILayout.ColorField(new GUIContent("高亮颜色：","可通过代码FrameConfig.grabColor获取高亮颜色"),FrameConfig.Config.grabColor
+                    ,GUILayout.Width(350),GUILayout.Height(20));
 
 
                 //switch (FrameConfig.Config.highlightType)
@@ -163,20 +163,20 @@ namespace MagiCloud
                 EditorGUI.BeginChangeCheck();
                 FrameConfig.Config.initLabelColor = EditorGUILayout.ColorField(new GUIContent("标签颜色：","可通过代码FrameConfig.labelColor获取高亮颜色"),FrameConfig.Config.initLabelColor
                  ,GUILayout.Width(350),GUILayout.Height(20));
-                if (EditorGUI.EndChangeCheck())
-                    KGUI.KGUI_LabelController.Instance.SetAllFontColor(FrameConfig.Config.initLabelColor);
+                //  if (EditorGUI.EndChangeCheck())
+                //KGUI.KGUI_LabelController.Instance.SetAllFontColor(FrameConfig.Config.initLabelColor);
 
                 //标签字体大小
                 EditorGUI.BeginChangeCheck();
                 FrameConfig.Config.initLabelFontSize = EditorGUILayout.IntField(new GUIContent("标签字体大小：","可通过代码FrameConfig.labelFontSize获取字体大小"),FrameConfig.Config.initLabelFontSize,GUILayout.Width(350),GUILayout.Height(20));
-                if (EditorGUI.EndChangeCheck())
-                    KGUI.KGUI_LabelController.Instance.SetAllFontSize(FrameConfig.Config.initLabelFontSize);
+                //  if (EditorGUI.EndChangeCheck())
+                // KGUI.KGUI_LabelController.Instance.SetAllFontSize(FrameConfig.Config.initLabelFontSize);
                 GUILayout.Space(5);
                 //标签背景图片
                 EditorGUI.BeginChangeCheck();
                 FrameConfig.Config.labelBg = (Sprite)EditorGUILayout.ObjectField(new GUIContent("标签背景图片：","可通过代码FrameConfig.labelBg获取背景图片"),FrameConfig.Config.labelBg,typeof(Sprite),true,GUILayout.Width(350),GUILayout.Height(60));
-                if (EditorGUI.EndChangeCheck())
-                    KGUI.KGUI_LabelController.Instance.SetAllLabelBG(FrameConfig.Config.labelBg);
+                //  if (EditorGUI.EndChangeCheck())
+                //KGUI.KGUI_LabelController.Instance.SetAllLabelBG(FrameConfig.Config.labelBg);
 
 
                 #endregion

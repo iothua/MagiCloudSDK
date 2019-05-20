@@ -8,7 +8,7 @@ namespace MagiCloud.UIFrame
     /// UI基类
     /// </summary>
     [RequireComponent(typeof(UI_Action))]
-    public class UI_Base : MonoBehaviour
+    public class UI_Base :MonoBehaviour
     {
         /// <summary>
         /// UI类型
@@ -19,7 +19,31 @@ namespace MagiCloud.UIFrame
         /// 唯一的TagID,用于UIManager管理UI时索引检索
         /// </summary>
         public string TagID;//窗口名称
+        public int Priority => 0;
 
+        /// <summary>
+        /// 是否可用
+        /// </summary>
+        private bool available;
+        public bool Available => available;
+
+        private bool visible;
+        public bool Visible
+        {
+            get { return available&&visible; }
+            set
+            {
+                if (!available) return;
+                if (visible==value) return;
+                visible=value;
+                SetVisible(value);
+            }
+        }
+
+        protected internal virtual void SetVisible(bool value)
+        {
+        }
+    
         /// <summary>
         /// 显示当前窗口时的事件处理
         /// </summary>
@@ -58,7 +82,6 @@ namespace MagiCloud.UIFrame
 
         protected virtual void Start()
         {
-            
         }
 
         protected virtual void OnEnable()
@@ -66,7 +89,8 @@ namespace MagiCloud.UIFrame
         protected virtual void OnDisable()
         { }
 
-        public virtual void OnInitialize() {
+        public virtual void OnInitialize()
+        {
 
             if (uiAction == null)
                 uiAction = GetComponent<UI_Action>();
@@ -85,11 +109,14 @@ namespace MagiCloud.UIFrame
         /// <summary>
         /// UI激活状态
         /// </summary>
-        protected virtual bool IsEnable {
-            get {
+        protected virtual bool IsEnable
+        {
+            get
+            {
                 return _IsEnable;
             }
-            set {
+            set
+            {
                 _IsEnable = value;
             }
         }
@@ -101,7 +128,7 @@ namespace MagiCloud.UIFrame
         public virtual void OnOpen()
         {
             uiAction.OnShowExcute();
-            
+
             if (OnShow != null)
                 OnShow.Invoke();
 
@@ -117,7 +144,7 @@ namespace MagiCloud.UIFrame
 
             //});
         }
-        
+
 
         /// <summary>
         /// 关闭当前窗口时的处理

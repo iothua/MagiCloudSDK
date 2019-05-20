@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using MagiCloud.Core;
+﻿using MagiCloud.Core;
 using MagiCloud.Core.Events;
+using MagiCloud.Core.UI;
+using UnityEngine;
 
-namespace  MagiCloud.KGUI
+namespace MagiCloud.KGUI
 {
     /*
      * 滚动思路：
