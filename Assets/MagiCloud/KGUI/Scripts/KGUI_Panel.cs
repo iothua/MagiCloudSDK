@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using MagiCloud.Core;
 using MagiCloud.Core.Events;
+using MagiCloud.Core.UI;
 
 namespace MagiCloud.KGUI
 {

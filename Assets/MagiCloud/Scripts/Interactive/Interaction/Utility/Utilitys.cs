@@ -1,7 +1,5 @@
 ﻿using MagiCloud.Interactive.Distance;
-using System;
 using UnityEngine;
-using MagiCloud.KGUI;
 
 namespace MagiCloud.Interactive
 {

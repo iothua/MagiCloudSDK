@@ -83,7 +83,7 @@ namespace MagiCloud
             if (operaObject != null)
             {
                 HideHighLight();
-                HideLabel();
+                OnHide();
             }
 
             if (OperateObject != null)
@@ -137,7 +137,7 @@ namespace MagiCloud
         void OnNoRayTarget()
         {
             HideHighLight();
-            HideLabel();
+            OnHide();
 
             if (InputHand.HandStatus == MInputHandStatus.Idle)
             {
@@ -156,6 +156,14 @@ namespace MagiCloud
 
                 operaObject = null;
                 OperateObject = null;
+            }
+        }
+
+        private void OnHide()
+        {
+            if (operaObject!=null && operaObject.FeaturesObject != null)
+            {
+                operaObject.FeaturesObject.Hide();
             }
         }
 
@@ -213,7 +221,7 @@ namespace MagiCloud
                 case MInputHandStatus.Grip:
                     if (operaObject==null||operaObject != null && operaObject.gameObject != hit.collider.gameObject) return;
 
-                    HideLabel();
+                    OnHide();
 
                     InputHand.HandStatus = MInputHandStatus.Grab;//将该手状态设置为抓取状态
 
@@ -226,7 +234,7 @@ namespace MagiCloud
                     }
 
 
-                    HideLabel();
+                    OnHide();
 
                     OperateObject = HandleGrab(operaObject.FeaturesObject.operaType);
 
@@ -399,7 +407,7 @@ namespace MagiCloud
         private void OperateObjectHandler()
         {
             HideHighLight();
-            HideLabel();
+            operaObject.FeaturesObject.Hide();
             if (operaObject != null)
             {
                 HandleIdle(operaObject.FeaturesObject.operaType);
@@ -417,7 +425,7 @@ namespace MagiCloud
                 return;
             }
             EventHandRayTargetEnter.SendListener(operaObject.FeaturesObject.gameObject,InputHand.HandIndex);
-            ShowLabel();
+            operaObject.FeaturesObject.Show();
             //显示高亮
             //   ShowHightLight(false);
         }
@@ -485,23 +493,6 @@ namespace MagiCloud
 
         #region Features
 
-        /// <summary>
-        /// 显示标签
-        /// </summary>
-        private void ShowLabel()
-        {
-            if (operaObject != null && operaObject.FeaturesObject.ActiveLabel)
-                operaObject.FeaturesObject.AddLabel().label.OnEnter();
-        }
-
-        /// <summary>
-        /// 隐藏标签
-        /// </summary>
-        private void HideLabel()
-        {
-            if (operaObject != null && operaObject.FeaturesObject != null && operaObject.FeaturesObject.ActiveLabel)
-                operaObject.FeaturesObject.AddLabel().label.OnExit();
-        }
 
         /// <summary>
         /// 隐藏高亮

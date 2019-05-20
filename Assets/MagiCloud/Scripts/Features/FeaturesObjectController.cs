@@ -1,9 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utility;
 
 namespace MagiCloud.Features
 {
+    public class FeateureData
+    {
+
+    }
+
+    public interface IFeature
+    {
+
+    }
+
     /// <summary>
     /// 功能控制端
     /// </summary>
@@ -77,6 +89,8 @@ namespace MagiCloud.Features
                 return interactionObject.gameObject;
             }
         }
+
+
 
         private void Awake()
         {
@@ -228,7 +242,7 @@ namespace MagiCloud.Features
         /// <returns></returns>
         public MCDeskLimit AddDeskLimit()
         {
-            if(deskLimit == null )
+            if (deskLimit == null)
                 deskLimit = OperaObject.GetComponent<MCDeskLimit>() ?? OperaObject.AddComponent<MCDeskLimit>();
             deskLimit.hideFlags = HideFlags.HideInInspector;
             return deskLimit;
@@ -300,9 +314,9 @@ namespace MagiCloud.Features
                 Destroy(highlightObject);
         }
 
-        ///// <summary>
-        ///// 添加“虚影”
-        ///// </summary>
+        /// <summary>
+        /// 添加“虚影”
+        /// </summary>
         //public ShadowController AddShadow()
         //{
         //    if (ShadowController == null)
@@ -336,9 +350,9 @@ namespace MagiCloud.Features
             return LabelController;
         }
 
-        /// <summary>
-        /// 移除“标签”
-        /// </summary>
+        ///// <summary>
+        ///// 移除“标签”
+        ///// </summary>
         public void RemoveLabel()
         {
             if (LabelController == null) return;
@@ -594,6 +608,34 @@ namespace MagiCloud.Features
         {
             Collider.center = center;
             Collider.size = size;
+        }
+
+
+        public void Show()
+        {
+            ShowLabel();
+        }
+        public void Hide()
+        {
+            HideLabel();
+        }
+
+        /// <summary>
+        /// 显示标签
+        /// </summary>
+        private void ShowLabel()
+        {
+            if (operaObject != null && ActiveLabel)
+                LabelController.label.OnEnter();
+        }
+
+        /// <summary>
+        /// 隐藏标签
+        /// </summary>
+        private void HideLabel()
+        {
+            if (operaObject != null && ActiveLabel)
+                LabelController.label.OnExit();
         }
     }
 }

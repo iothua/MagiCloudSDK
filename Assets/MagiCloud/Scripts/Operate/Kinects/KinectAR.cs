@@ -1,16 +1,16 @@
-﻿using MagiCloud.KGUI;
+﻿using MagiCloud.Core.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace MagiCloud.Kinect
 {
-    public class KinectAR : MonoBehaviour
+    public class KinectAR :MonoBehaviour
     {
         private KinectManager kinectManager;                //Kinect管理对象
 
         public RawImage kinectImg;
 
-        public KGUI_Toggle kGUI_Button;
+        public IToggle toggle;
 
         private bool isTrue;
 
@@ -20,8 +20,8 @@ namespace MagiCloud.Kinect
 
         private void Start()
         {
-            kGUI_Button = GetComponentInChildren<KGUI_Toggle>();
-            kGUI_Button.onClick.AddListener(OnClick);
+            toggle = GetComponentInChildren<IToggle>();
+            toggle.onClick.AddListener(OnClick);
         }
 
         private void OnClick(int arg0)
@@ -90,7 +90,7 @@ namespace MagiCloud.Kinect
                         item.SetActive(true);
                     }
                 }
-             
+
                 if (initialScene != null)
                 {
                     initialScene.SetActive(true);

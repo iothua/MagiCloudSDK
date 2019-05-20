@@ -10,7 +10,7 @@ namespace MagiCloud.Features
     /// <summary>
     /// 桌面吸附及限制下陷
     /// </summary>
-    public class MCDeskLimit : MonoBehaviour
+    public class MCDeskLimit :MonoBehaviour
     {
         public GameObject limitObj;
         public bool openAdsorption = true;  //开启桌面吸附
@@ -31,10 +31,13 @@ namespace MagiCloud.Features
         private Ray ray;
         private RaycastHit hitInfo;
         private float initDeskHeight;
+
+
+
         void Awake()
         {
-            EventHandGrabObject.AddListener(OnGrab, Core.ExecutionPriority.High);
-            EventHandReleaseObject.AddListener(OnIdle, Core.ExecutionPriority.High);
+            EventHandGrabObject.AddListener(OnGrab,Core.ExecutionPriority.High);
+            EventHandReleaseObject.AddListener(OnIdle,Core.ExecutionPriority.High);
             initDeskHeight = deskHeight;
         }
 
@@ -44,13 +47,13 @@ namespace MagiCloud.Features
             EventHandReleaseObject.RemoveListener(OnIdle);
         }
 
-        private void OnGrab(GameObject grabObj, int index)
+        private void OnGrab(GameObject grabObj,int index)
         {
             if (grabObj != limitObj) return;
             isGrab = true;
         }
 
-        private void OnIdle(GameObject grabObj, int index)
+        private void OnIdle(GameObject grabObj,int index)
         {
             if (grabObj != limitObj) return;
             //if (!openAdsorption) return;
@@ -75,7 +78,7 @@ namespace MagiCloud.Features
                 {
                     if (distance <= deskDistance)
                     {
-                        limitObj.transform.DOMoveY(limitObj.transform.position.y - distance, distance * 0.2f).SetEase(Ease.InCubic);
+                        limitObj.transform.DOMoveY(limitObj.transform.position.y - distance,distance * 0.2f).SetEase(Ease.InCubic);
                     }
                 }
             }
@@ -95,7 +98,7 @@ namespace MagiCloud.Features
                 meshMin = minPoint.position;
 
             float tempY = deskHeight + limitObj.transform.position.y - meshMin.y;
-            curPos.y = Mathf.Clamp(curPos.y, tempY, float.MaxValue);
+            curPos.y = Mathf.Clamp(curPos.y,tempY,float.MaxValue);
             limitObj.transform.position = curPos;
             CalculationDeskHeight_Update();
         }
@@ -107,8 +110,8 @@ namespace MagiCloud.Features
 
             if (boxCollider == null)
             {
-                ray = new Ray(limitObj.transform.position, Vector3.down);
-                if (Physics.Raycast(ray, out hitInfo, 1000, layerMask.value))   //boxCollider不赋值，如果DeskLimiCheck碰撞体高于limitObj的Y值会失效
+                ray = new Ray(limitObj.transform.position,Vector3.down);
+                if (Physics.Raycast(ray,out hitInfo,1000,layerMask.value))   //boxCollider不赋值，如果DeskLimiCheck碰撞体高于limitObj的Y值会失效
                 {
                     deskHeight = hitInfo.point.y;
                 }
@@ -121,11 +124,11 @@ namespace MagiCloud.Features
             Vector3 size = new Vector3(boxCollider.size.x * boxCollider.gameObject.transform.localScale.x,
                                         boxCollider.size.y * boxCollider.gameObject.transform.localScale.y,
                                         boxCollider.size.z * boxCollider.gameObject.transform.localScale.z) * 0.5f;
-            Collider[] colliders = Physics.OverlapBox(limitObj.transform.position, size, Quaternion.identity, layerMask.value);
+            Collider[] colliders = Physics.OverlapBox(limitObj.transform.position,size,Quaternion.identity,layerMask.value);
             if (colliders.Length == 0)
             {
-                ray = new Ray(limitObj.transform.position, Vector3.down);
-                if (Physics.Raycast(ray, out hitInfo, 1000, layerMask.value))
+                ray = new Ray(limitObj.transform.position,Vector3.down);
+                if (Physics.Raycast(ray,out hitInfo,1000,layerMask.value))
                 {
                     deskHeight = hitInfo.point.y;
                 }
@@ -137,7 +140,7 @@ namespace MagiCloud.Features
             }
             foreach (var item in colliders)
             {
-                deskHeight = Mathf.Max(deskHeight, item.bounds.max.y);
+                deskHeight = Mathf.Max(deskHeight,item.bounds.max.y);
             }
         }
     }

@@ -13,7 +13,7 @@ namespace MagiCloud.Operate.OperateFSM
         internal override void OnEnter(IFsm<OperateSystem> fSM)
         {
             MSwitchManager.CurrentMode=OperateModeType.Move;
-            KGUI.UIShieldController.UnAllShileldAssign();
+     //       KGUI.UIShieldController.UnAllShileldAssign();
             base.OnEnter(fSM);
 
         }

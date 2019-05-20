@@ -111,7 +111,7 @@ namespace MagiCloud.KGUI
                 }
             }
         }
-
+        public IBoxCollider BoxCollider => Collider;
         public KGUI_BoxCollider Collider
         {
             get
@@ -131,18 +131,22 @@ namespace MagiCloud.KGUI
             }
         }
 
+
+
+
         #region 事件
 
-        public ButtonEvent onClick;  //鼠标点击
+        public ButtonEvent onClick { get; private set; }  //鼠标点击
 
-        public ButtonEvent onEnter;  //鼠标移入
-        public ButtonEvent onExit;   //鼠标移出
-        public ButtonEvent onDown;   //鼠标按下
-        public ButtonEvent onUp;     //鼠标抬起
+        public ButtonEvent onEnter { get; private set; }  //鼠标移入
+        public ButtonEvent onExit { get; private set; }   //鼠标移出
+        public ButtonEvent onDown { get; private set; }   //鼠标按下
+        public ButtonEvent onUp { get; private set; }     //鼠标抬起
 
-        public ButtonEvent onDownStay; //按下持续
+        public ButtonEvent onDownStay { get; private set; } //按下持续
 
-        public PanelEvent onUpRange;
+        public PanelEvent onUpRange { get; private set; }
+
 
         #endregion
 
@@ -219,7 +223,6 @@ namespace MagiCloud.KGUI
 
             if (onExit != null)
                 onExit.Invoke(handIndex);
-
             IsEnter = false;
         }
 
@@ -312,7 +315,7 @@ namespace MagiCloud.KGUI
                         if (pressedSprite != null)
                         {
                             image.sprite = pressedSprite;
-                      
+
                         }
                     }
                     else if (cmd.Equals("enter"))

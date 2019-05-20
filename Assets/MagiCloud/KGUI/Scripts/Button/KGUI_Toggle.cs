@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using MagiCloud.Core.UI;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,16 +10,19 @@ namespace MagiCloud.KGUI
     /// KGUI开关
     /// </summary>
     [ExecuteInEditMode]
-    public class KGUI_Toggle : KGUI_ButtonBase
+    public class KGUI_Toggle :KGUI_ButtonBase, IToggle
     {
         [SerializeField]
         private bool isValue;
 
-        public bool IsValue {
-            get {
+        public bool IsValue
+        {
+            get
+            {
                 return isValue;
             }
-            set {
+            set
+            {
 
                 //OnHandle("click");
 
@@ -51,7 +55,7 @@ namespace MagiCloud.KGUI
         public GameObject onDisableObject, offDisableObject;
 
 
-        public ToggleEvent OnValueChanged;
+        public ToggleEvent OnValueChanged { get; set; }
 
         protected override void Start()
         {
@@ -90,8 +94,8 @@ namespace MagiCloud.KGUI
                             //什么都不处理
                             image.sprite = IsValue ? onDisableSprite : offDisableSprite;
                     }
-             
-                     break;
+
+                    break;
                 case ButtonType.Object:
 
                     if (cmd.Equals("click") || cmd.Equals("normal"))

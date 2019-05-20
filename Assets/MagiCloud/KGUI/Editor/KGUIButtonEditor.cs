@@ -32,7 +32,7 @@ namespace MagiCloud.KGUI
             if (ButtonAudio == null)
                 ButtonAudio = new KGUIButtonAudioEditor();
 
-          //  button.SetCollider();
+          //   button.SetCollider();
 
             ButtonType.OnInstantiation(serializedObject);
             ButtonEvent.OnInstantiation(serializedObject);

@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using MagiCloud.Core;
+using MagiCloud.Core.UI;
 using UnityEngine;
 using UnityEngine.UI;
-using MagiCloud.Core;
 
 namespace MagiCloud.KGUI
 {
@@ -11,7 +10,7 @@ namespace MagiCloud.KGUI
     /// </summary>
     [ExecuteInEditMode]
     [DefaultExecutionOrder(-800)]
-    public class KGUI_Canvas : MonoBehaviour
+    public class KGUI_Canvas : MonoBehaviour,ICanvas
     {
         private Canvas canvas;
 

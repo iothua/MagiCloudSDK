@@ -1,5 +1,4 @@
-﻿using MagiCloud.KGUI;
-using MagiCloud.Core.MInput;
+﻿using MagiCloud.Core.MInput;
 using UnityEngine;
 using MagiCloud.Core.Events;
 using MagiCloud.Core.UI;

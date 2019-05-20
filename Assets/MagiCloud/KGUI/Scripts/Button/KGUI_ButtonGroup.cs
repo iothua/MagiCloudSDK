@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MagiCloud.Core.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace MagiCloud.KGUI
     /// <summary>
     /// UIButton组
     /// </summary>
-    public class KGUI_ButtonGroup : MonoBehaviour
+    public class KGUI_ButtonGroup :MonoBehaviour
     {
 
         public List<KGUI_Button> Interactions;
@@ -18,7 +19,7 @@ namespace MagiCloud.KGUI
         /// 当前选中Button
         /// </summary>
         public KGUI_Button CurrentButton { get; set; }
-        
+
         private void Awake()
         {
             OnInitialize();
