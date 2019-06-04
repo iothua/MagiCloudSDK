@@ -32,20 +32,20 @@ namespace MagiCloud.Operate.OperateFSM
             base.OnDestroy(fSM);
         }
         //握拳
-        public bool LeftGrip => MOperateManager.GetHandStatus(0)==MInputHandStatus.Grip;
-        public bool RightGrip => MOperateManager.GetHandStatus(1)==MInputHandStatus.Grip;
+        public bool LeftGrip { get { return MOperateManager.GetHandStatus(0)==MInputHandStatus.Grip; } }
+        public bool RightGrip { get { return MOperateManager.GetHandStatus(1)==MInputHandStatus.Grip; } }
 
         //松手
-        public bool LeftIdle => MOperateManager.GetHandStatus(0)==MInputHandStatus.Idle;
-        public bool RightIdle => MOperateManager.GetHandStatus(1)==MInputHandStatus.Idle;
+        public bool LeftIdle { get { return MOperateManager.GetHandStatus(0)==MInputHandStatus.Idle; } }
+        public bool RightIdle { get { return MOperateManager.GetHandStatus(1)==MInputHandStatus.Idle; } }
 
         //抓取物体
-        public bool LeftGrab => MOperateManager.GetHandStatus(0)==MInputHandStatus.Grab;
-        public bool RightGrab => MOperateManager.GetHandStatus(1)==MInputHandStatus.Grab;
+        public bool LeftGrab { get { return MOperateManager.GetHandStatus(0)==MInputHandStatus.Grab; } }
+        public bool RightGrab { get { return MOperateManager.GetHandStatus(1)==MInputHandStatus.Grab; } }
 
-        public bool IsTwoTouch => Input.touchCount>=2;
+        public bool IsTwoTouch { get { return Input.touchCount>=2; } }
         //平台
-        public OperatePlatform Platform => MOperateManager.GetOperateHand(0).InputHand.Platform;
+        public OperatePlatform Platform { get { return MOperateManager.GetOperateHand(0).InputHand.Platform; } }
 
         public bool ActiveRotate { get { return CameraRotate.Instance.IsRotateCameraWithCenterEnable; } }
         public bool ActiveZoom { get { return CameraZoom.Instance.IsZoomInitialization; } }

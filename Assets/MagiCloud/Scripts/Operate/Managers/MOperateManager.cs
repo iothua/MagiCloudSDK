@@ -3,10 +3,11 @@ using System;
 using MagiCloud.Core.MInput;
 using System.Collections.Generic;
 using MagiCloud.Core;
+using MagiCloud.Operate;
+using Utility;
 
 namespace MagiCloud
 {
-  
     /// <summary>
     /// 功能管理
     /// </summary>
@@ -15,7 +16,8 @@ namespace MagiCloud
         /// <summary>
         /// 射线层
         /// </summary>
-        public const int layerRay = 9;
+        public const int layerRay = 12;
+        public static IOperateCreater operateCreater;
         /// <summary>
         /// 物体层
         /// </summary>
@@ -25,31 +27,28 @@ namespace MagiCloud
         /// </summary>
         public const int layerUI = 5;
 
-        private readonly static Dictionary<OperateKey, MOperate> Operates = new Dictionary<OperateKey, MOperate>();
+        private readonly static Dictionary<OperateKey,IOperate> Operates = new Dictionary<OperateKey,IOperate>();
 
         private static int activeHandControllerOrder = -1; //手势激活优先级
 
-        /// <summary>
-        /// 添加手势端
-        /// </summary>
-        /// <param name="inputHand"></param>
-        /// <param name="func"></param>
-        public static MOperate AddOperateHand(MInputHand inputHand,  IHandController handController,Func<bool> func = null)
+        ///// <summary>
+        ///// 添加手势端
+        ///// </summary>
+        ///// <param name="inputHand"></param>
+        ///// <param name="func"></param>
+        public static IOperate AddOperateHand(MInputHand inputHand,IHandController handController,Func<bool> func = null)
         {
-            MOperate operate = GetOperateHand(inputHand.HandIndex, inputHand.Platform);
-
-            if (operate != null)
+            OperateKey key = new OperateKey(inputHand.HandIndex,inputHand.Platform);
+            if (Operates.ContainsKey(key))
             {
-                operate.RayExternaLimit = func;
-                return operate;
+                Operates[key].RayExternaLimit=func;
+                return Operates[key];
             }
-
-            operate = new MOperate(inputHand, func, handController);
-
-            Operates.Add(new OperateKey(inputHand.HandIndex, inputHand.Platform), operate);
-
+            IOperate operate = operateCreater.Creat(inputHand,handController,func);
+            Operates.Add(key,operate);
             return operate;
         }
+
 
         /// <summary>
         /// 移除手势端
@@ -57,7 +56,7 @@ namespace MagiCloud
         /// <param name="inputHand"></param>
         public static void RemoveOperateHand(MInputHand inputHand)
         {
-            OperateKey key = new OperateKey(inputHand.HandIndex, inputHand.Platform);
+            OperateKey key = new OperateKey(inputHand.HandIndex,inputHand.Platform);
 
             if (Operates.ContainsKey(key))
             {
@@ -70,9 +69,9 @@ namespace MagiCloud
         /// </summary>
         /// <param name="handIndex"></param>
         /// <returns></returns>
-        public static MOperate GetOperateHand(int handIndex)
+        public static IOperate GetOperateHand(int handIndex)
         {
-            return GetOperateHand(handIndex, MUtility.CurrentPlatform);
+            return GetOperateHand(handIndex,MUtility.CurrentPlatform);
         }
 
         /// <summary>
@@ -82,7 +81,7 @@ namespace MagiCloud
         /// <returns></returns>
         public static UIOperate GetUIOperate(int handIndex)
         {
-            return GetUIOperate(handIndex, MUtility.CurrentPlatform);
+            return GetUIOperate(handIndex,MUtility.CurrentPlatform);
         }
 
         /// <summary>
@@ -91,9 +90,9 @@ namespace MagiCloud
         /// <param name="handIndex"></param>
         /// <param name="platform"></param>
         /// <returns></returns>
-        public static UIOperate GetUIOperate(int handIndex, OperatePlatform platform)
+        public static UIOperate GetUIOperate(int handIndex,OperatePlatform platform)
         {
-            MOperate operate = GetOperateHand(handIndex, platform);
+            IOperate operate = GetOperateHand(handIndex,platform);
 
             if (operate == null)
                 return null;
@@ -107,12 +106,19 @@ namespace MagiCloud
         /// <param name="handIndex"></param>
         /// <param name="platform"></param>
         /// <returns></returns>
-        public static MOperate GetOperateHand(int handIndex, OperatePlatform platform)
+        public static IOperate GetOperateHand(int handIndex,OperatePlatform platform)
         {
-            MOperate operate;
+            IOperate operate;
 
-            Operates.TryGetValue(new OperateKey(handIndex, platform), out operate);
+            Operates.TryGetValue(new OperateKey(handIndex,platform),out operate);
 
+            return operate;
+        }
+
+        public static IOperate GetOperateHand(OperateKey key)
+        {
+            IOperate operate;
+            Operates.TryGetValue(key,out operate);
             return operate;
         }
 
@@ -122,7 +128,7 @@ namespace MagiCloud
         /// <param name="handIndex"></param>
         public static void OnEnableOperateHand(int handIndex)
         {
-            OnEnableOperateHand(handIndex, MUtility.CurrentPlatform);
+            OnEnableOperateHand(handIndex,MUtility.CurrentPlatform);
         }
 
         /// <summary>
@@ -174,7 +180,7 @@ namespace MagiCloud
         /// </summary>
         /// <param name="handIndex"></param>
         /// <param name="platform"></param>
-        public static void OnEnableOperateHand(int handIndex, OperatePlatform platform)
+        public static void OnEnableOperateHand(int handIndex,OperatePlatform platform)
         {
             var operate = GetOperateHand(handIndex,platform);
 
@@ -188,7 +194,7 @@ namespace MagiCloud
         /// <param name="handIndex"></param>
         public static void OnDisableOperateHand(int handIndex)
         {
-            OnDisableOperateHand(handIndex, MUtility.CurrentPlatform);
+            OnDisableOperateHand(handIndex,MUtility.CurrentPlatform);
         }
 
         /// <summary>
@@ -196,9 +202,9 @@ namespace MagiCloud
         /// </summary>
         /// <param name="handIndex"></param>
         /// <param name="platform"></param>
-        public static void OnDisableOperateHand(int handIndex, OperatePlatform platform)
+        public static void OnDisableOperateHand(int handIndex,OperatePlatform platform)
         {
-            var operate = GetOperateHand(handIndex, platform);
+            var operate = GetOperateHand(handIndex,platform);
 
             if (operate != null)
                 operate.OnDisable();
@@ -210,24 +216,24 @@ namespace MagiCloud
         /// </summary>
         /// <param name="target">需要被设置抓取的物体对象</param>
         /// <param name="zValue"></param>
-        public static void SetObjectGrab(GameObject target,  int handIndex, float zValue)
+        public static void SetObjectGrab(GameObject target,int handIndex,float zValue)
         {
             var operate = GetOperateHand(handIndex);
             if (operate == null) return;
 
-            operate.SetObjectGrab(target, zValue);
+            operate.SetObjectGrab(target,zValue);
         }
 
-        public static void SetObjectGrab(GameObject target, int handIndex = 0)
+        public static void SetObjectGrab(GameObject target,int handIndex = 0)
         {
             var operate = GetOperateHand(handIndex);
             if (operate == null) return;
 
-            Vector3 tempPos = MUtility.MainWorldToScreenPoint(target.transform.position - new Vector3(0, 0, MUtility.MainCamera.transform.position.z));
+            Vector3 tempPos = MUtility.MainWorldToScreenPoint(target.transform.position - new Vector3(0,0,MUtility.MainCamera.transform.position.z));
 
             tempPos = MUtility.MainScreenToWorldPoint(tempPos);
 
-            operate.SetObjectGrab(target, tempPos.z);
+            operate.SetObjectGrab(target,tempPos.z);
         }
 
         /// <summary>
@@ -240,7 +246,7 @@ namespace MagiCloud
             var operate = GetOperateHand(handIndex);
             if (operate == null) return Vector3.zero;
 
-            return operate.InputHand.ScreenPoint; 
+            return operate.InputHand.ScreenPoint;
         }
 
         /// <summary>

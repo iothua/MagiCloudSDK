@@ -17,7 +17,7 @@ namespace MagiCloud
         public GameObject currentObject;//当前抓取物体
         public GameObject rayObject;//射线照射物体
         private GameObject uiObject; //只要照射UI
-        public GameObject UIObj => uiObject;
+        public GameObject UIObj { get { return uiObject; } }
         private bool isEnter;
         public bool IsButtonPress;
 
@@ -279,7 +279,7 @@ namespace MagiCloud
         /// <summary>
         /// 清空Button信息
         /// </summary>
-        void ClearButton()
+        public void ClearButton()
         {
             if (currentButton == null) return;
 

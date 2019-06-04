@@ -15,7 +15,7 @@ namespace Utility
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("message",nameof(name));
+                throw new ArgumentException("message",name);
             }
             Type type = null;
             if (allTypes.TryGetValue(name,out type))

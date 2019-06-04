@@ -6,7 +6,7 @@ namespace MagiCloud.Common
     /// <summary>
     /// 状态机管理系统
     /// </summary>
-    public class FsmSystem : IFsmSystem
+    public class FsmSystem :IFsmSystem
     {
         private Dictionary<string,FsmBase> _fsms;
         private List<FsmBase> _runningFsm;
@@ -15,7 +15,7 @@ namespace MagiCloud.Common
 
         }
 
-        public int Count => _fsms==null ? 0 : _fsms.Count;
+        public int Count { get { return _fsms==null ? 0 : _fsms.Count; } }
         public void Update()
         {
             _runningFsm.Clear();
@@ -45,7 +45,7 @@ namespace MagiCloud.Common
         public bool HasFsm(Type type)
         {
             if (type==null)
-                throw new ArgumentNullException(nameof(type));
+                throw new ArgumentNullException(type.FullName);
 
             return HasFsm(type.FullName);
         }
@@ -60,7 +60,7 @@ namespace MagiCloud.Common
         public FsmBase GetFsm(Type type)
         {
             if (type==null)
-                throw new ArgumentNullException(nameof(type));
+                throw new ArgumentNullException(type.FullName);
             return GetFsm(type.FullName);
         }
 
@@ -79,7 +79,7 @@ namespace MagiCloud.Common
         public void GetAllFsms(List<FsmBase> fsms)
         {
             if (fsms==null)
-                throw new ArgumentNullException(nameof(fsms));
+                throw new ArgumentNullException("fsms");
             fsms.Clear();
             foreach (var item in _fsms)
                 fsms.Add(item.Value);
@@ -107,13 +107,13 @@ namespace MagiCloud.Common
         public bool DestoryFsm(Type type)
         {
             if (type==null)
-                throw new ArgumentNullException(nameof(type));
+                throw new ArgumentNullException(type.FullName);
             return DestoryFsm(type.FullName);
         }
         public bool DestoryFsm(Type type,string name)
         {
             if (type==null)
-                throw new ArgumentNullException(nameof(type));
+                throw new ArgumentNullException(type.FullName);
             var key = name==string.Empty ? type.FullName : type.FullName+"."+name;
             return DestoryFsm(key);
         }
@@ -166,14 +166,14 @@ namespace MagiCloud.Common
             return GetFsm(key);
         }
 
-        public  void Init()
+        public void Init()
         {
             _fsms=new Dictionary<string,FsmBase>();
             _runningFsm=new List<FsmBase>();
         }
 
-      
-        public  void Shutdown()
+
+        public void Shutdown()
         {
 
             foreach (var item in _fsms)

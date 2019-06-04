@@ -72,10 +72,10 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -159,6 +159,8 @@ GameObject:
   - component: {fileID: 114959399585198154}
   - component: {fileID: 114417075667801464}
   - component: {fileID: 114584166556656446}
+  - component: {fileID: 1490673609460735554}
+  - component: {fileID: 7231985854624052768}
   m_Layer: 0
   m_Name: MagiCloud
   m_TagString: Untagged
@@ -224,7 +226,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentPlatform: 1
+  CompatibleMouse: 1
   IsRecordLog: 0
+  operateCreater: {fileID: 7231985854624052768}
 --- !u!114 &114959399585198154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,6 +272,30 @@ MonoBehaviour:
   - MagiCloud.Operate.OperateFSM.Rotate
   - MagiCloud.Operate.OperateFSM.Zoom
   startOperateStateTypeName: MagiCloud.Operate.OperateFSM.Idle
+--- !u!114 &1490673609460735554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1402944865349778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f321deb11a34e6048b23b360e0c3e928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7231985854624052768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1402944865349778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4fe00442a0c5874aafcd9bb70b4a8b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1724543180610526
 GameObject:
   m_ObjectHideFlags: 0

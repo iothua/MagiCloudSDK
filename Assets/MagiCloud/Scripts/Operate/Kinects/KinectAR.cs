@@ -21,7 +21,7 @@ namespace MagiCloud.Kinect
         private void Start()
         {
             toggle = GetComponentInChildren<IToggle>();
-            toggle.onClick.AddListener(OnClick);
+            toggle.Click.AddListener(OnClick);
         }
 
         private void OnClick(int arg0)

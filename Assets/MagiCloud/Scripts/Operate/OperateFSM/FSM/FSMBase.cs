@@ -18,7 +18,7 @@ namespace MagiCloud.Common
             _name=name??string.Empty;
         }
 
-        public string Name => _name;
+        public string Name { get { return _name; } }
         public abstract Type OwnerType { get; }
         public abstract int StateCount { get; }
         public abstract bool IsRunning { get; }

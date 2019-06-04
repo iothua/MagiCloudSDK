@@ -29,7 +29,8 @@ namespace MagiCloud.Common
             FsmEventHandler<T> fsmEvent = null;
             if (_events.TryGetValue(eventId,out fsmEvent))
             {
-                fsmEvent?.Invoke(fsm,sender,userData);
+                if (fsmEvent!=null)
+                    fsmEvent.Invoke(fsm,sender,userData);
             }
         }
 
@@ -56,7 +57,7 @@ namespace MagiCloud.Common
         protected void SubscribeEvent(int eventId,FsmEventHandler<T> handler)
         {
             if (handler==null)
-                throw new ArgumentNullException(nameof(handler));
+                throw new ArgumentNullException("handler");
             if (!_events.ContainsKey(eventId))
                 _events[eventId]=handler;
             else
@@ -66,7 +67,7 @@ namespace MagiCloud.Common
         protected void UnSubscribeEvent(int eventId,FsmEventHandler<T> handler)
         {
             if (handler==null)
-                throw new ArgumentNullException(nameof(handler));
+                throw new ArgumentNullException("handler");
             if (_events.ContainsKey(eventId))
                 _events[eventId]-=handler;
         }
@@ -76,7 +77,7 @@ namespace MagiCloud.Common
             var temp = (Fsm<T>)fsm;
             if (temp==null) return;
             if (stateType==null)
-                throw new ArgumentNullException(nameof(stateType));
+                throw new ArgumentNullException(stateType.FullName);
             if (!typeof(State<T>).IsAssignableFrom(stateType)) return;
             temp.ChangeState(stateType);
         }

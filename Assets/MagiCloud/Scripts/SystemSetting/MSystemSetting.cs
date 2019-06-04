@@ -56,7 +56,7 @@ namespace MagiCloud
 
             SetQuality(SystemDataValue.Quality);
             SetFullScreen(SystemDataValue.IsFullDisplay);
-            SetDPI(SystemDataValue.ScreenWidth, SystemDataValue.ScreenHeight);
+            SetDPI(SystemDataValue.ScreenWidth,SystemDataValue.ScreenHeight);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace MagiCloud
         public static void SaveSetting(string savePath)
         {
             string jsonData = Json.JsonHelper.ObjectToJsonString(SystemDataValue);
-            Json.JsonHelper.SaveJson(jsonData, savePath);
+            Json.JsonHelper.SaveJson(jsonData,savePath);
         }
 
         public static void SetSystemData(SystemSettingInfo systemSettingInfo)
@@ -89,13 +89,13 @@ namespace MagiCloud
             switch (level)
             {
                 case 0:
-                    QualitySettings.SetQualityLevel(0, true);
+                    QualitySettings.SetQualityLevel(0,true);
                     break;
                 case 1:
-                    QualitySettings.SetQualityLevel(2, true);
+                    QualitySettings.SetQualityLevel(2,true);
                     break;
                 case 2:
-                    QualitySettings.SetQualityLevel(4, true);
+                    QualitySettings.SetQualityLevel(4,true);
                     break;
             }
 
@@ -110,12 +110,12 @@ namespace MagiCloud
 
         public static void SetDPI(Vector2Int dpi)
         {
-            SetDPI(dpi.x, dpi.y);
+            SetDPI(dpi.x,dpi.y);
         }
 
-        public static void SetDPI(int width, int height)
+        public static void SetDPI(int width,int height)
         {
-            Screen.SetResolution(width, height, SystemDataValue.IsFullDisplay);
+            Screen.SetResolution(width,height,SystemDataValue.IsFullDisplay);
             SystemDataValue.ScreenWidth = width;
             SystemDataValue.ScreenHeight = height;
 

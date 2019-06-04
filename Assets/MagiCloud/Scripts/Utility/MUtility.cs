@@ -20,7 +20,8 @@ namespace MagiCloud
         /// </summary>
         public static Camera MarkCamera
         {
-            get{
+            get
+            {
                 if (_markCamera == null)
                     _markCamera = GameObject.FindGameObjectWithTag("MarkCamera").GetComponent<Camera>();
 
@@ -32,7 +33,8 @@ namespace MagiCloud
         /// </summary>
         public static Camera MainCamera
         {
-            get{
+            get
+            {
                 if (_mainCamera == null)
                     _mainCamera = Camera.main;
 
@@ -42,10 +44,13 @@ namespace MagiCloud
 
         public static Camera UICamera
         {
-            get{
+            get
+            {
                 if (_uiCamera == null)
-                    _uiCamera = GameObject.FindGameObjectWithTag("UICamera").GetComponent<Camera>();
-
+                {
+                    var obj = GameObject.FindGameObjectWithTag("UICamera");
+                    _uiCamera =(obj==null ? null : obj.GetComponent<Camera>());
+                }
                 return _uiCamera;
             }
         }
@@ -148,7 +153,7 @@ namespace MagiCloud
         /// <param name="size">物体的大小</param>
         /// <param name="handPotion">手屏幕坐标</param>
         /// <returns></returns>
-        public static bool ScreenPointContains(Vector2 position, Vector2 size, Vector2 handPotion)
+        public static bool ScreenPointContains(Vector2 position,Vector2 size,Vector2 handPotion)
         {
             //X轴比较
             float xMin = position.x - size.x / 2;
@@ -157,7 +162,7 @@ namespace MagiCloud
             float yMin = position.y - size.y / 2;
             float yMax = position.y + size.y / 2;
 
-            return handPotion.x.FloatContains(xMin, xMax) && handPotion.y.FloatContains(yMin, yMax);
+            return handPotion.x.FloatContains(xMin,xMax) && handPotion.y.FloatContains(yMin,yMax);
         }
 
         /// <summary>
@@ -167,7 +172,7 @@ namespace MagiCloud
         /// <param name="min">最小值</param>
         /// <param name="max">最大值</param>
         /// <returns>在范围内，返回True，否则返回false</returns>
-        public static bool FloatContains(this float value, float min, float max)
+        public static bool FloatContains(this float value,float min,float max)
         {
             return value >= min && value <= max;
 
@@ -179,7 +184,7 @@ namespace MagiCloud
         /// <param name="transform">指定物体</param>
         /// <param name="handIndex"></param>
         /// <returns></returns>
-        public static bool IsAreaContains(Transform transform, int handIndex)
+        public static bool IsAreaContains(Transform transform,int handIndex)
         {
             //if (!KinectTransfer.IsHandActive(handIndex)) return false;
 
@@ -195,7 +200,7 @@ namespace MagiCloud
 
                 RectTransform rectTransform = transform.GetComponent<RectTransform>();
 
-                return ScreenPointContains(screenPoint, rectTransform.sizeDelta, screenHandPoint);
+                return ScreenPointContains(screenPoint,rectTransform.sizeDelta,screenHandPoint);
             }
             catch (Exception)
             {
@@ -211,7 +216,7 @@ namespace MagiCloud
         /// <param name="size">大小</param>
         /// <param name="handIndex">手势</param>
         /// <returns></returns>
-        public static bool IsAreaContains(Vector2 screenPoint, Vector2 size, int handIndex)
+        public static bool IsAreaContains(Vector2 screenPoint,Vector2 size,int handIndex)
         {
             //if (!KinectTransfer.IsHandActive(handIndex)) return false;
 
@@ -220,7 +225,7 @@ namespace MagiCloud
 
             //根据自身此时的屏幕坐标，去算区域
 
-            return ScreenPointContains(screenPoint, size, screenHandPoint);
+            return ScreenPointContains(screenPoint,size,screenHandPoint);
         }
 
         /// <summary>
@@ -228,13 +233,13 @@ namespace MagiCloud
         /// </summary>
         /// <param name="thingAttach"></param>
         /// <returns></returns>
-        public static bool AttachThingPosInCamera(Transform thingAttach, Vector2 xlimits, Vector2 ylimits)
+        public static bool AttachThingPosInCamera(Transform thingAttach,Vector2 xlimits,Vector2 ylimits)
         {
             Transform camTransform = MUtility.MainCamera.transform;
 
             Vector3 dir = (thingAttach.position - camTransform.position).normalized;
 
-            float dot = Vector3.Dot(camTransform.forward, dir);     //判断物体是否在相机前面  
+            float dot = Vector3.Dot(camTransform.forward,dir);     //判断物体是否在相机前面  
 
             Vector2 screenPos = MUtility.MainWorldToScreenPoint(thingAttach.position);
 
@@ -259,12 +264,12 @@ namespace MagiCloud
         /// <returns>The offset position.</returns>
         /// <param name="handPosition">Hand position.</param>
         /// <param name="grabObject">Grab object.</param>
-        public static Vector3 GetOffsetPosition(Vector3 handPosition, GameObject grabObject)
+        public static Vector3 GetOffsetPosition(Vector3 handPosition,GameObject grabObject)
         {
 
             var offset = Vector3.zero;
             Vector3 screenDevice = MUtility.MainWorldToScreenPoint(grabObject.transform.position);
-            Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(handPosition.x, handPosition.y, screenDevice.z));
+            Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(handPosition.x,handPosition.y,screenDevice.z));
 
             offset = vPos - grabObject.transform.position;
 

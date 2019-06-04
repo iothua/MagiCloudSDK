@@ -20,7 +20,7 @@ namespace Utility
             public static string Format(string format,object arg)
             {
                 if (format==null)
-                    throw new ArgumentNullException(nameof(format));
+                    throw new ArgumentNullException(format);
                 _cachedStringBuilder.Length=0;
                 _cachedStringBuilder.AppendFormat(format,arg);
                 return _cachedStringBuilder.ToString();
@@ -28,7 +28,7 @@ namespace Utility
             public static string Format(string format,object arg0,object arg1)
             {
                 if (format==null)
-                    throw new ArgumentNullException(nameof(format));
+                    throw new ArgumentNullException(format);
                 _cachedStringBuilder.Length=0;
                 _cachedStringBuilder.AppendFormat(format,arg0,arg1);
                 return _cachedStringBuilder.ToString();
@@ -36,7 +36,7 @@ namespace Utility
             public static string Format(string format,object arg0,object arg1,object arg2)
             {
                 if (format==null)
-                    throw new ArgumentNullException(nameof(format));
+                    throw new ArgumentNullException(format);
                 _cachedStringBuilder.Length=0;
                 _cachedStringBuilder.AppendFormat(format,arg0,arg1,arg2);
                 return _cachedStringBuilder.ToString();
@@ -44,9 +44,9 @@ namespace Utility
             public static string Format(string format,params object[] args)
             {
                 if (format==null)
-                    throw new ArgumentNullException(nameof(format));
+                    throw new ArgumentNullException(format);
                 if (args==null)
-                    throw new ArgumentNullException(nameof(args));
+                    throw new ArgumentNullException("args");
 
                 _cachedStringBuilder.Length=0;
                 _cachedStringBuilder.AppendFormat(format,args);
@@ -73,7 +73,7 @@ namespace Utility
             public static string GetFullName(Type type,string name)
             {
                 if (type==null)
-                    throw new ArgumentNullException(nameof(type));
+                    throw new ArgumentNullException(type.FullName);
                 string fullName = type.FullName;
                 return string.IsNullOrEmpty(name) ? fullName : Format("{0}.{1}",fullName,name);
             }

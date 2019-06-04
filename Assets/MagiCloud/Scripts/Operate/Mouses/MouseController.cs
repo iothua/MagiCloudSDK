@@ -4,12 +4,10 @@ using System.Collections.Generic;
 using MagiCloud.Core.MInput;
 using MagiCloud.Core.Events;
 using MagiCloud.Core;
-using MagiCloud.Features;
 using Utility;
 
 namespace MagiCloud.Operate
 {
-
 
     /// <summary>
     /// 鼠标控制端
@@ -144,7 +142,6 @@ namespace MagiCloud.Operate
 
 
         }
-
         private MBehaviour behaviour;
 
         [Header("手图标")]
@@ -159,7 +156,7 @@ namespace MagiCloud.Operate
 
         private Vector3 offset;
         private bool isEnable;
-        private MOperate operate;
+        private IOperate operate;
 
         //观察模式的具体实现
         private ObservedMode observedMode = new ObservedMode();
@@ -221,6 +218,14 @@ namespace MagiCloud.Operate
                     behaviour.OnExcuteDestroy();
                 }
             }
+        }
+        public IOperateObject GetOperateObject(int handIndex)
+        {
+            return operateObject;
+        }
+        public IOperate GetOperate(int handIndex)
+        {
+            return operate;
         }
 
         /// <summary>
@@ -302,7 +307,7 @@ namespace MagiCloud.Operate
                 InputHands[0].SetIdle();
 
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-                SystemDllHelper.SetCursorPos(0, Screen.height);
+                SystemDllHelper.SetCursorPos(0,Screen.height);
 #endif
 
                 IsTouching = false;
@@ -324,7 +329,7 @@ namespace MagiCloud.Operate
 
 
 
-#endregion
+            #endregion
 
             //不同模式中的不同操作
             switch (MSwitchManager.CurrentMode)
@@ -353,11 +358,11 @@ namespace MagiCloud.Operate
                         //需要处理偏移量
                         var screenDevice = MUtility.MainWorldToScreenPoint(operateObject.GrabObject.transform.position);
                         Vector3 screenMouse = InputHands[0].ScreenPoint;
-                        Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x, screenMouse.y, screenDevice.z));
+                        Vector3 vPos = MUtility.MainScreenToWorldPoint(new Vector3(screenMouse.x,screenMouse.y,screenDevice.z));
 
                         Vector3 position = vPos - offset;
 
-                        EventUpdateObject.SendListener(operateObject.GrabObject, position, operateObject.GrabObject.transform.rotation, InputHands[0].HandIndex);
+                        EventUpdateObject.SendListener(operateObject.GrabObject,position,operateObject.GrabObject.transform.rotation,InputHands[0].HandIndex);
 
                         break;
                     case MInputHandStatus.Idle:
@@ -410,7 +415,7 @@ namespace MagiCloud.Operate
         /// <param name="operate"></param>
         /// <param name="handIndex"></param>
         /// <param name="cameraRelativeDistance"></param>
-        void SetGrabObject(IOperateObject operate,int handIndex,float cameraRelativeDistance)
+        public void SetGrabObject(IOperateObject operate,int handIndex,float cameraRelativeDistance)
         {
             if (handIndex != InputHands[0].HandIndex) return;
 
