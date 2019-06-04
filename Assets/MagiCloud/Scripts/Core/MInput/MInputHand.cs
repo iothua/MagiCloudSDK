@@ -26,9 +26,11 @@ namespace MagiCloud.Core.MInput
         /// <summary>
         /// 手势状态
         /// </summary>
-        public MInputHandStatus HandStatus {
+        public MInputHandStatus HandStatus
+        {
             get { return handStatus; }
-            set {
+            set
+            {
 
                 if (handStatus == value) return;
 
@@ -52,8 +54,10 @@ namespace MagiCloud.Core.MInput
         /// <summary>
         /// 是否按下
         /// </summary>
-        public bool IsPressed {
-            get {
+        public bool IsPressed
+        {
+            get
+            {
                 return isPressed;
             }
         }
@@ -61,11 +65,14 @@ namespace MagiCloud.Core.MInput
         /// <summary>
         /// 是否激活
         /// </summary>
-        public bool IsEnable {
-            get {
+        public bool IsEnable
+        {
+            get
+            {
                 return isEnable;
             }
-            set {
+            set
+            {
 
                 if (!value)
                     SetIdle();
@@ -87,8 +94,10 @@ namespace MagiCloud.Core.MInput
         /// <summary>
         /// 屏幕坐标
         /// </summary>
-        public Vector3 ScreenPoint {
-            get {
+        public Vector3 ScreenPoint
+        {
+            get
+            {
                 return currentPoint;
             }
         }
@@ -96,8 +105,10 @@ namespace MagiCloud.Core.MInput
         /// <summary>
         /// 屏幕向量（当前帧与上一帧的差值）
         /// </summary>
-        public Vector3 ScreenVector {
-            get {
+        public Vector3 ScreenVector
+        {
+            get
+            {
                 return lerpPoint;
             }
         }
@@ -126,16 +137,15 @@ namespace MagiCloud.Core.MInput
             //移动坐标
             if (HandUI != null)
                 HandUI.MoveHand(ScreenPoint);
-
             //获取到射线
             Ray ray = MUtility.ScreenPointToRay(ScreenPoint);
 
             Ray uiRay = MUtility.UIScreenPointToRay(ScreenPoint);
 
             //发送射线信息
-            EventHandRay.SendListener(ray, HandIndex);
-            EventHandUIRay.SendListener(uiRay, HandIndex);
-            EventHandRays.SendListener(ray, uiRay, HandIndex);
+            EventHandRay.SendListener(ray,HandIndex);
+            EventHandUIRay.SendListener(uiRay,HandIndex);
+            EventHandRays.SendListener(ray,uiRay,HandIndex);
 
             //算直接坐标的插值
             lerpPoint = currentPoint - lastPoint.Value;
@@ -192,11 +202,11 @@ namespace MagiCloud.Core.MInput
         /// </summary>
         /// <param name="icon"></param>
         /// <param name="size"></param>
-        public void SetHandIcon(Sprite icon, Vector2? size = null)
+        public void SetHandIcon(Sprite icon,Vector2? size = null)
         {
             if (HandUI == null) return;
 
-            HandUI.SetHandIcon(icon, size);
+            HandUI.SetHandIcon(icon,size);
         }
 
         /// <summary>
@@ -215,7 +225,8 @@ namespace MagiCloud.Core.MInput
         /// <value><c>true</c> if is idle status; otherwise, <c>false</c>.</value>
         public bool IsIdleStatus
         {
-            get {
+            get
+            {
                 return HandStatus == MInputHandStatus.Idle;
             }
         }
@@ -228,7 +239,7 @@ namespace MagiCloud.Core.MInput
         {
             get
             {
-                return HandStatus == MInputHandStatus.Grip || HandStatus == MInputHandStatus.Grab 
+                return HandStatus == MInputHandStatus.Grip || HandStatus == MInputHandStatus.Grab
                 || HandStatus == MInputHandStatus.Grabing || HandStatus == MInputHandStatus.Pressed;
             }
         }
@@ -239,7 +250,8 @@ namespace MagiCloud.Core.MInput
         /// <value><c>true</c> if is error status; otherwise, <c>false</c>.</value>
         public bool IsErrorStatus
         {
-            get {
+            get
+            {
                 return HandStatus == MInputHandStatus.Error || HandStatus == MInputHandStatus.Invalid;
             }
         }
@@ -250,8 +262,9 @@ namespace MagiCloud.Core.MInput
         /// <value><c>true</c> if is rotate; otherwise, <c>false</c>.</value>
         public bool IsRotateStatus
         {
-            get {
-                return HandStatus == MInputHandStatus.Rotate; 
+            get
+            {
+                return HandStatus == MInputHandStatus.Rotate;
             }
         }
 
@@ -261,7 +274,8 @@ namespace MagiCloud.Core.MInput
         /// <value><c>true</c> if is zoom status; otherwise, <c>false</c>.</value>
         public bool IsZoomStatus
         {
-            get {
+            get
+            {
                 return HandStatus == MInputHandStatus.Zoom;
             }
         }
@@ -272,7 +286,8 @@ namespace MagiCloud.Core.MInput
         /// <value><c>true</c> if is rotate zoom status; otherwise, <c>false</c>.</value>
         public bool IsRotateZoomStatus
         {
-            get {
+            get
+            {
                 return HandStatus == MInputHandStatus.Rotate || HandStatus == MInputHandStatus.Zoom;
             }
         }

@@ -27,9 +27,9 @@ namespace MagiCloud.Common
         {
             _value=value;
         }
-        public override Type Type => typeof(T);
+        public override Type Type { get { return typeof(T); } }
 
-        public T Value => _value;
+        public T Value { get { return _value; } }
 
         public override object GetValue()
         {

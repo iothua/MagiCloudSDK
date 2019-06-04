@@ -39,10 +39,10 @@ namespace MagiCloud.Common
             _isDestroyed=false;
         }
 
-        public override Type OwnerType => _owner.GetType();
+        public override Type OwnerType { get { return _owner.GetType(); } }
 
 
-        public override bool IsRunning => _isRunning;
+        public override bool IsRunning { get { return _isRunning; } }
 
         public override int StateCount
         {
@@ -54,17 +54,20 @@ namespace MagiCloud.Common
             }
         }
 
-        public override bool IsDestroyed => _isDestroyed;
+        public override bool IsDestroyed
+        {
+            get { return _isDestroyed; }
+        }
 
-        public override string CurStateName => _curState?.GetType().FullName;
-
-
-        public override float CurStateTime => _curStateTime;
-
-        public T Owner => _owner;
+        public override string CurStateName { get { return _curState==null ? null : GetType().FullName; } }
 
 
-        public State<T> CurState => _curState;
+        public override float CurStateTime { get { return _curStateTime; } }
+
+        public T Owner { get { return _owner; } }
+
+
+        public State<T> CurState { get { return _curState; } }
 
         public State<T>[] GetAllStates()
         {
@@ -95,7 +98,10 @@ namespace MagiCloud.Common
         public State<T> GetState(Type stateType)
         {
             if (stateType==null)
-                throw new ArgumentNullException(nameof(stateType));
+            {
+                throw new ArgumentNullException(stateType.FullName);
+            }
+
             if (!typeof(State<T>).IsAssignableFrom(stateType))
                 throw new Exception(stateType.FullName +"已经存在");
             State<T> state = null;
@@ -107,7 +113,7 @@ namespace MagiCloud.Common
         public bool HasData(string name)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("message",nameof(name));
+                throw new ArgumentException("message",name);
             return _datas.ContainsKey(name);
         }
 
@@ -119,7 +125,7 @@ namespace MagiCloud.Common
         public bool HasState(Type stateType)
         {
             if (stateType==null)
-                throw new ArgumentNullException(nameof(stateType));
+                throw new ArgumentNullException(stateType.FullName);
             return _states.ContainsKey(stateType.FullName);
         }
 
@@ -138,14 +144,14 @@ namespace MagiCloud.Common
         public bool RemoveData(string name)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("message",nameof(name));
+                throw new ArgumentException("message",name);
             return _datas.Remove(name);
         }
 
         public void SetData<TData>(string name,TData data) where TData : Variable
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("message",nameof(name));
+                throw new ArgumentException("message",name);
             _datas[name]=data;
         }
 
@@ -163,7 +169,7 @@ namespace MagiCloud.Common
         {
             if (IsRunning) return;
             if (stateType==null)
-                throw new ArgumentNullException(nameof(stateType));
+                throw new ArgumentNullException(stateType.FullName);
             if (!typeof(State<T>).IsAssignableFrom(stateType)) return;
             State<T> state = GetState(stateType);
             if (state==null) return;
@@ -212,7 +218,7 @@ namespace MagiCloud.Common
         public Variable GetData(string name)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("message",nameof(name));
+                throw new ArgumentException("message",name);
             Variable data = null;
             if (_datas.TryGetValue(name,out data))
                 return data;
@@ -222,7 +228,7 @@ namespace MagiCloud.Common
         public void SetData(string name,Variable data)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentException("message",nameof(name));
+                throw new ArgumentException("message",name);
             _datas[name]=data;
         }
     }

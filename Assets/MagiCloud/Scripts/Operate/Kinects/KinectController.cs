@@ -3,7 +3,7 @@ using MagiCloud.Core;
 using MagiCloud.Core.Events;
 using MagiCloud.Kinect;
 using MagiCloud.Core.MInput;
-using MagiCloud.Features;
+using MagiCloud;
 using System.Collections.Generic;
 using System;
 
@@ -99,7 +99,7 @@ namespace MagiCloud.Operate
             /// 手势操作端
             /// </summary>
             /// <value>The operate.</value>
-            public MOperate Operate { get; set; }
+            public IOperate Operate { get; set; }
             /// <summary>
             /// 针对手对物体的操作
             /// </summary>
@@ -302,6 +302,31 @@ namespace MagiCloud.Operate
 
         public bool CompatibleMouse = true;
 
+
+        public IOperateObject GetOperateObject(int handIndex)
+        {
+            if (handIndex==0)
+            {
+                return rightHandOperate.OperateObject;
+            }
+            else if (handIndex==1)
+            {
+                return leftHandOperate.OperateObject;
+            }
+            return null;
+        }
+        public IOperate GetOperate(int handIndex)
+        {
+            if (handIndex==0)
+            {
+                return rightHandOperate.Operate;
+            }
+            else if (handIndex==1)
+            {
+                return leftHandOperate.Operate;
+            }
+            return null;
+        }
         public MInputHand GetInputHand(int handIndex)
         {
             MInputHand hand;
@@ -351,7 +376,7 @@ namespace MagiCloud.Operate
 
         }
 
-        
+
 
         /// <summary>
         /// 手停止
@@ -562,6 +587,18 @@ namespace MagiCloud.Operate
         public void DisableHand()
         {
             MInputKinect.HandModel = KinectHandModel.None;
+        }
+
+        public void SetGrabObject(IOperateObject operate,int handIndex,float cameraRelativeDistance)
+        {
+            if (handIndex==0)
+            {
+                rightHandOperate.SetGrabObject(operate,handIndex,cameraRelativeDistance);
+            }
+            else if (handIndex==1)
+            {
+                leftHandOperate.SetGrabObject(operate,handIndex,cameraRelativeDistance);
+            }
         }
     }
 }

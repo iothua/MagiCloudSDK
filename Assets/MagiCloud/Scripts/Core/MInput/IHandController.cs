@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MagiCloud.Operate;
+using System;
 using System.Collections.Generic;
 
 namespace MagiCloud.Core.MInput
@@ -13,7 +14,7 @@ namespace MagiCloud.Core.MInput
         /// <summary>
         /// 输入端集合
         /// </summary>
-        Dictionary<int, MInputHand> InputHands { get; set; }
+        Dictionary<int,MInputHand> InputHands { get; set; }
 
         /// <summary>
         /// 获取输入端对象
@@ -21,12 +22,13 @@ namespace MagiCloud.Core.MInput
         /// <param name="handIndex"></param>
         /// <returns></returns>
         MInputHand GetInputHand(int handIndex);
-
+        IOperateObject GetOperateObject(int handIndex);
+        IOperate GetOperate(int handIndex);
         bool IsPlaying { get; }
 
         void StartOnlyHand();
         void StartMultipleHand();
-
+        void SetGrabObject(IOperateObject operate,int handIndex,float cameraRelativeDistance);
 
     }
 }

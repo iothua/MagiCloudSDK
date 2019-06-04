@@ -60,7 +60,7 @@ namespace MagiCloud
             }
         }
 
-        public Collider GetCollider => BoxCollider;
+        public Collider GetCollider { get { return BoxCollider; } }
 
         [HideInInspector]
         public BoxCollider BoxCollider { get; private set; }

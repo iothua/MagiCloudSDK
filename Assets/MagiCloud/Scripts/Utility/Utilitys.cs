@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using MagiCloud.Equipments;
 using System;
+
 
 namespace MagiCloud
 {
-    public static class Utilitys
+  
+    public static partial class Utilitys
     {
         /// <summary>
         /// 从0-指定数中随机n个不重复数
@@ -13,7 +14,7 @@ namespace MagiCloud
         /// <param name="total">随机总数</param>
         /// <param name="n">几个数</param>
         /// <returns></returns>
-        public static int[] GetRandomSequence(int total, int n)
+        public static int[] GetRandomSequence(int total,int n)
         {
             //随机总数组  
             int[] sequence = new int[total];
@@ -30,7 +31,7 @@ namespace MagiCloud
             for (int i = 0; i < n; i++)
             {
                 //随机一个数，每随机一次，随机区间-1  
-                int num = UnityEngine.Random.Range(0, end + 1);
+                int num = UnityEngine.Random.Range(0,end + 1);
                 output[i] = sequence[num];
                 //将区间最后一个数赋值到取到数上  
                 sequence[num] = sequence[end];
@@ -47,7 +48,7 @@ namespace MagiCloud
         /// <param name="t"></param>
         /// <param name="parent">父物体</param>
         /// <returns></returns>
-        public static T ResetTransform<T>(this T t, Transform parent = null) where T : Component
+        public static T ResetTransform<T>(this T t,Transform parent = null) where T : Component
         {
             Transform result = t.transform;
             if (parent != null)
@@ -59,22 +60,7 @@ namespace MagiCloud
         }
 
 
-        /// <summary>
-        /// 根据脚本信息，添加命名空间
-        /// </summary>
-        /// <param name="transform">Transform.</param>
-        /// <param name="namespaces">Namespaces.</param>
-        /// <param name="scriptName">Script name.</param>
-        public static T AddEquipmentScript<T>(this Transform transform, string namespaces, string scriptName)
-            where T : EquipmentBase
-        {
-            if (string.IsNullOrEmpty(scriptName)) return default(T);
 
-            string script = !string.IsNullOrEmpty(namespaces) ? namespaces + "." + scriptName : scriptName;
-            var component = transform.AddEquipmentByName(script);
-
-            return (T)component;
-        }
 
         /// <summary>
         /// 根据名称添加脚本
@@ -83,7 +69,7 @@ namespace MagiCloud
         /// <param name="t">T.</param>
         /// <param name="name">Name.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public static Component AddEquipmentByName<T>(this T t, string name) where T : Component
+        public static Component AddEquipmentByName<T>(this T t,string name) where T : Component
         {
             Type type = null;
             type = Type.GetType(name);
@@ -96,7 +82,7 @@ namespace MagiCloud
         /// </summary>
         /// <param name="transform">Transform.</param>
         /// <param name="transformData">Transform data.</param>
-        public static void SetTransform(this Transform transform, TransformData transformData, bool isLocal = true)
+        public static void SetTransform(this Transform transform,TransformData transformData,bool isLocal = true)
         {
             if (isLocal)
             {
@@ -144,22 +130,22 @@ namespace MagiCloud
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static Vector3 BoundsMin(this GameObject target, bool inChildren = true, bool skinnedMesh = true)
+        public static Vector3 BoundsMin(this GameObject target,bool inChildren = true,bool skinnedMesh = true)
         {
             Renderer[] renderers;
             Vector3 sizeMin = Vector3.zero;
             if (target != null)
             {
-                if (CheckTheConditions(target, out renderers, inChildren, skinnedMesh))
+                if (CheckTheConditions(target,out renderers,inChildren,skinnedMesh))
                 {
                     Bounds[] bounds = RenderersToBounds(renderers);
                     sizeMin = bounds[0].min;
                     foreach (Bounds bound in bounds)
                     {
                         Vector3 boundsMin = bound.min;
-                        sizeMin.x = Mathf.Min(sizeMin.x, boundsMin.x);
-                        sizeMin.y = Mathf.Min(sizeMin.y, boundsMin.y);
-                        sizeMin.z = Mathf.Min(sizeMin.z, boundsMin.z);
+                        sizeMin.x = Mathf.Min(sizeMin.x,boundsMin.x);
+                        sizeMin.y = Mathf.Min(sizeMin.y,boundsMin.y);
+                        sizeMin.z = Mathf.Min(sizeMin.z,boundsMin.z);
                     }
                 }
             }
@@ -171,20 +157,20 @@ namespace MagiCloud
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static Vector3 BoundsMax(this GameObject target, bool inChildren = true, bool skinnedMesh = true)
+        public static Vector3 BoundsMax(this GameObject target,bool inChildren = true,bool skinnedMesh = true)
         {
             Renderer[] renderers;
             Vector3 sizeMax = Vector3.zero;
-            if (CheckTheConditions(target, out renderers, inChildren, skinnedMesh))
+            if (CheckTheConditions(target,out renderers,inChildren,skinnedMesh))
             {
                 Bounds[] bounds = RenderersToBounds(renderers);
                 sizeMax = bounds[0].max;
                 foreach (Bounds bound in bounds)
                 {
                     Vector3 boundsMax = bound.max;
-                    sizeMax.x = Mathf.Max(sizeMax.x, boundsMax.x);
-                    sizeMax.y = Mathf.Max(sizeMax.y, boundsMax.y);
-                    sizeMax.z = Mathf.Max(sizeMax.z, boundsMax.z);
+                    sizeMax.x = Mathf.Max(sizeMax.x,boundsMax.x);
+                    sizeMax.y = Mathf.Max(sizeMax.y,boundsMax.y);
+                    sizeMax.z = Mathf.Max(sizeMax.z,boundsMax.z);
                 }
             }
             return sizeMax;
@@ -193,7 +179,7 @@ namespace MagiCloud
         /// <summary>
         /// 检查自己及子物体是否包含Renderers相关组件
         /// </summary>
-        private static bool CheckTheConditions(GameObject obj, out Renderer[] renderers, bool inChildren = true, bool skinnedMesh = true)
+        private static bool CheckTheConditions(GameObject obj,out Renderer[] renderers,bool inChildren = true,bool skinnedMesh = true)
         {
             List<Renderer> tmpRenderers = new List<Renderer>();
 
