@@ -147,13 +147,13 @@ namespace MagiCloud.KGUI
 
         public PanelEvent onUpRange;
 
-        public ButtonEvent Click => onClick;
-        public ButtonEvent Enter => onEnter;
-        public ButtonEvent Exit => onExit;
-        public ButtonEvent Down => onDown;
-        public ButtonEvent Up => onUp;
-        public ButtonEvent DownStay => onDownStay;
-        public PanelEvent UpRange => onUpRange;
+        public ButtonEvent Click { get { return onClick; } }
+        public ButtonEvent Enter { get { return onEnter; } }
+        public ButtonEvent Exit { get { return onExit; } }
+        public ButtonEvent Down { get { return onDown; } }
+        public ButtonEvent Up { get { return onUp; } }
+        public ButtonEvent DownStay { get { return onDownStay; } }
+        public PanelEvent UpRange { get { return onUpRange; } }
 
         #endregion
 
