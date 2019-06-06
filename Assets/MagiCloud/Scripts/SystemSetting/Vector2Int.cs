@@ -1,8 +1,13 @@
-﻿using UnityEngine;
+﻿
+#if UNITY_2017_1_OR_NEWER
+#else
+using UnityEngine;
 using System;
-
 namespace MagiCloud
 {
+
+
+
     public struct Vector2Int :IEquatable<Vector2Int>
     {
         public Vector2Int(int x,int y)
@@ -41,3 +46,4 @@ namespace MagiCloud
         }
     }
 }
+#endif
