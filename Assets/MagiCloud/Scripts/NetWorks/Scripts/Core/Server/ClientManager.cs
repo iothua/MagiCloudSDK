@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MagiCloud.NetWorks
 {
-    public class ClientManager :ServerNetManager
+    public class ClientManager : ServerNetManager
     {
         public event Action<int> EventExperimentStatus;
 
@@ -12,13 +12,13 @@ namespace MagiCloud.NetWorks
         {
             eventPool.GetEvent<ExperimentRequestEvent>().AddReceiveEvent(OnExperimentRequest);
 
-            eventPool.GetEvent<BreakConnectEvent>().AddReceiveEvent((sender,proto) =>
+            eventPool.GetEvent<BreakConnectEvent>().AddReceiveEvent((sender, proto) =>
             {
                 Application.Quit();
             });
 
             eventPool.GetEvent<SystemSettingRequestEvent>().AddReceiveEvent(OnSystemSetting);
-            connection.Connect("127.0.0.1",8888);
+            connection.Connect("127.0.0.1", 8888);
 
             IsConnect = true;
         }
@@ -28,12 +28,12 @@ namespace MagiCloud.NetWorks
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="proto">ExperimentInfo</param>
-        protected virtual void OnExperimentRequest(int sender,IMessage proto)
+        protected virtual void OnExperimentRequest(int sender, IMessage proto)
         {
 
         }
 
-        protected void OnSystemSetting(int sender,IMessage proto)
+        protected void OnSystemSetting(int sender, IMessage proto)
         {
             SystemSettingInfo systemSettingInfo = proto as SystemSettingInfo;
             MSystemSetting.SetSystemData(systemSettingInfo);
@@ -41,7 +41,7 @@ namespace MagiCloud.NetWorks
             MSystemSetting.OnInitialize();
 
             //发送设置成功
-            OnSendData<SystemSettingReceiptEvent,SystemSettingReceipt>(new SystemSettingReceipt() { Status = 1 });
+            OnSendData<SystemSettingReceiptEvent, SystemSettingReceipt>(new SystemSettingReceipt() { Status = 1 });
 
         }
 
@@ -50,55 +50,42 @@ namespace MagiCloud.NetWorks
         /// </summary>
         public void OnBack()
         {
-            if (currentExperiment!=null)
-            {
-                currentExperiment.ExperimentStatus = 2;
-                OnSendData<ExperimentReceiptEvent,ExperimentInfo>(currentExperiment);
-            }
+            currentExperiment.ExperimentStatus = 2;
+            OnSendData<ExperimentReceiptEvent, ExperimentInfo>(currentExperiment);
         }
 
         public void OnExit()
         {
-            if (currentExperiment!=null)
-            {
-                currentExperiment.ExperimentStatus = 4;
-                OnSendData<ExperimentReceiptEvent,ExperimentInfo>(currentExperiment);
-            }
+            currentExperiment.ExperimentStatus = 4;
+            OnSendData<ExperimentReceiptEvent, ExperimentInfo>(currentExperiment);
         }
 
         public void OnLoadComplete()
         {
-            if (currentExperiment!=null)
-            {
-                currentExperiment.ExperimentStatus = 1;
+            currentExperiment.ExperimentStatus = 1;
 
-                OnSendData<ExperimentReceiptEvent,ExperimentInfo>(currentExperiment);
-            }
+            OnSendData<ExperimentReceiptEvent, ExperimentInfo>(currentExperiment);
+
             windowsManager.SetTop();
         }
 
         public void OnExperimentError(string msg)
         {
-            if (currentExperiment!=null)
-            {
-                currentExperiment.ExperimentStatus = -1;
+            currentExperiment.ExperimentStatus = -1;
 
-                currentExperiment.Name = currentExperiment.Name + ":" + msg;
-                eventPool.GetEvent<ExperimentReceiptEvent>().Send(connection,currentExperiment);
-            }
+            currentExperiment.Name = currentExperiment.Name + ":" + msg;
+            eventPool.GetEvent<ExperimentReceiptEvent>().Send(connection, currentExperiment);
+
         }
 
         public void OnExperimentReset()
         {
-            if (currentExperiment!=null)
-            {
-                currentExperiment.ExperimentStatus = 3;
-                eventPool.GetEvent<ExperimentReceiptEvent>().Send(connection,currentExperiment);
+            currentExperiment.ExperimentStatus = 3;
+            eventPool.GetEvent<ExperimentReceiptEvent>().Send(connection, currentExperiment);
 
-                SendExperimentStatus(2);
+            SendExperimentStatus(2);
 
-                currentExperiment = null;
-            }
+            currentExperiment = null;
 
         }
 

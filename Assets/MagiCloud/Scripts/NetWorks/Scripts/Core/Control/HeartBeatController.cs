@@ -12,7 +12,7 @@ namespace MagiCloud.NetWorks
         public long heartBeatTime = 20;
         ControlTerminal controlTerminal;
 
-        public HeartBeatController(ControlTerminal server,long heartBeatTime = 10)
+        public HeartBeatController(ControlTerminal server, long heartBeatTime = 10)
         {
             timer = new Timer(1000);
             this.controlTerminal = server;
@@ -23,7 +23,7 @@ namespace MagiCloud.NetWorks
             Console.WriteLine("开启心跳包检查");
         }
 
-        private void HandleMainTimer(object sender,ElapsedEventArgs e)
+        private void HandleMainTimer(object sender, ElapsedEventArgs e)
         {
             HeartBeat();
             timer.Start();

@@ -81,6 +81,11 @@ namespace MagiCloud.KGUI
         //    IsEnable = true;
         //}
 
+        private void Awake()
+        {
+            KGUI_PanelManager.AddPanel(this);
+        }
+
         private void OnEnable()
         {
             if (!IsEnable)
@@ -135,6 +140,11 @@ namespace MagiCloud.KGUI
                     //KinectEventHandIdle.RemoveListener(OnButtonRelease);
                 }
             }
+        }
+
+        public void OnExit()
+        {
+            onExit?.Invoke(this.handIndex);
         }
 
         private void Update()
@@ -374,6 +384,8 @@ namespace MagiCloud.KGUI
         private void OnDestroy()
         {
 
+            KGUI_PanelManager.RemovePanel(this);
+            
             if (IsEnable)
                 IsEnable = false;
 

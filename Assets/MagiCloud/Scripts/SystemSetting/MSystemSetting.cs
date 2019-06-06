@@ -108,7 +108,7 @@ namespace MagiCloud
             Screen.fullScreen = SystemDataValue.IsFullDisplay;
         }
 
-        public static void SetDPI(Vector2Int dpi)
+        public static void SetDPI(UnityEngine.Vector2Int dpi)
         {
             SetDPI(dpi.x,dpi.y);
         }

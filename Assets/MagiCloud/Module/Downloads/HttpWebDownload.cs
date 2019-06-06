@@ -1,55 +1,33 @@
 ﻿using System;
-using UnityEngine;
 using System.Collections;
-using System.Net;
 using System.IO;
+using System.Net;
+using Loxodon.Framework.Asynchronous;
+using UnityEngine;
 
-namespace MagiCloud.Downloads
-{
+namespace MagiCloudPlatform.Downloads {
+
     public class HttpWebDownload : AbstractDownload
     {
-        /// <summary>
-        /// 临时文件后缀名
-        /// </summary>
-        private string tempFileExt = ".temp";
-        /// <summary>
-        /// 临时文件路径
-        /// </summary>
-        private string tempSaveFilePath;
 
-        private MonoBehaviour behaviour;
-
-        public HttpWebDownload(string url, string path,MonoBehaviour behaviour) : base(url, path)
+        public override IEnumerator StartDownload(string url, string savePath, IProgressPromise<float, string> promise)
         {
-            tempSaveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, tempFileExt);
-            this.behaviour = behaviour;
+            yield return base.StartDownload(url, savePath, promise);
+
+            yield return Download(promise);
+
         }
 
-        public HttpWebDownload(string url, string savePath, string fileName, MonoBehaviour behaviour)
+        public override IEnumerator StartDownload(string url, string savePath, string fileName, IProgressPromise<float, string> promise)
         {
-            this.uri = url;
-            this.savePath = savePath;
-            isStartDownload = false;
+            yield return base.StartDownload(url, savePath, fileName, promise);
 
-            fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
-            fileExt = Path.GetExtension(fileName);
-
-            saveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, fileExt);
-
-            tempSaveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, tempFileExt);
-            this.behaviour = behaviour;
+            yield return Download(promise);
         }
 
-        public override void StartDownload(Action<bool> callback = null)
+        IEnumerator Download(IProgressPromise<float, string> promise)
         {
-            base.StartDownload(callback);
-
-            behaviour.StartCoroutine(Download(callback));
-        }
-
-        IEnumerator Download(Action<bool> callback = null)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
             request.Method = "GET";
 
             FileStream fileStream;
@@ -77,8 +55,7 @@ namespace MagiCloud.Downloads
             catch (Exception e)
             {
                 //Debug.LogError("抛出异常处理：" + e.Message);
-                if (callback != null)
-                    callback(false);
+                promise.SetException("下载异常：" + e.Message);
 
                 yield break;
             }
@@ -94,12 +71,22 @@ namespace MagiCloud.Downloads
 
             while (currentLength < fileLength)
             {
+                if(promise.IsCancellationRequested)
+                {
+                    promise.SetCancelled();
+                    yield break;
+                }
+
                 byte[] buffer = new byte[bufferMaxLength];
                 if (stream.CanRead)
                 {
                     lengthOnce = stream.Read(buffer, 0, buffer.Length);
                     currentLength += lengthOnce;
                     fileStream.Write(buffer, 0, lengthOnce);
+                    
+                    //更新进度信息
+                    promise.UpdateProgress((float)currentLength / fileLength);
+
                 }
                 else
                 {
@@ -121,14 +108,10 @@ namespace MagiCloud.Downloads
 
             File.Move(tempSaveFilePath, saveFilePath);
 
-            if (callback != null)
-                callback(true);
+            promise.UpdateProgress(1f);
 
-        }
+            promise.SetResult(fileExt);
 
-        public override void Destroy()
-        {
-            behaviour.StopCoroutine(Download());
         }
 
         public override long GetCurrentLength()
@@ -150,3 +133,4 @@ namespace MagiCloud.Downloads
         }
     }
 }
+

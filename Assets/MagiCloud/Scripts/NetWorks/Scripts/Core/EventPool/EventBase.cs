@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+
 namespace MagiCloud.NetWorks
 {
     /// <summary>
