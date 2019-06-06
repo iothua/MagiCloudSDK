@@ -11,7 +11,7 @@ namespace MagiCloud.KGUI
     /// <summary>
     /// KGUI标签
     /// </summary>
-    public class KGUI_Label :MonoBehaviour
+    public class KGUI_Label :KGUI_Base
     {
         public int id;
 
@@ -371,7 +371,7 @@ namespace MagiCloud.KGUI
         {
             //更新坐标
             Vector3 ScreenPoint = Camera.main.WorldToScreenPoint(worldPos);
-            ScreenPoint=ScreenPoint-new Vector3(960,540,ScreenPoint.z);
+            ScreenPoint=ScreenPoint-new Vector3(Screen.width*0.5f,Screen.height*0.5f,ScreenPoint.z);
             transform.localPosition=ScreenPoint;// Vector3.zero;
         }
 

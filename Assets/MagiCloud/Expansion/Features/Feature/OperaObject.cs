@@ -2,7 +2,7 @@
 using System.Collections;
 using MagiCloud.Features;
 
-namespace MagiCloud
+namespace MagiCloud.Features
 {
 
     /// <summary>
