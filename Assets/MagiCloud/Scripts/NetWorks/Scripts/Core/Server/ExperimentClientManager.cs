@@ -23,11 +23,17 @@ namespace MagiCloud.NetWorks
 
         protected override void OnExperimentRequest(int sender, IMessage proto)
         {
-            //base.OnExperimentRequest(sender, proto);
 
             ExperimentInfo experimentInfo = proto as ExperimentInfo;
 
-            if (currentExperiment == null || experimentInfo.PrefabPath != currentExperiment.PrefabPath)//(string.IsNullOrEmpty(currentExperimentPrefabPath) || currentExperimentPrefabPath != experimentInfo.PrefabPath)//
+            if (currentExperiment != null && experimentInfo.ExperimentStatus == 170 && currentExperiment.Id == experimentInfo.Id)
+            {
+                Debug.LogError("接收0xAA,表示加载成功");
+                windowsManager.SetTop();
+                return;
+            }
+
+            if (currentExperiment == null || experimentInfo.PrefabPath != currentExperiment.PrefabPath)
             {
                 if (currentExperiment != null)
                 {
@@ -36,19 +42,15 @@ namespace MagiCloud.NetWorks
                     SendExperimentStatus(2);
                 }
 
-                //if (!string.IsNullOrEmpty(currentExperimentPrefabPath))
-                //{
-                //    currentExperimentPrefabPath = "";
-                //    SendExperimentStatus(2);
-                //}
-
                 monoBehaviour.StartCoroutine(LoadAsset(experimentInfo));
+
+                Debug.LogError("加载资源：" + experimentInfo.Name);
             }
             else
             {
+                Debug.LogError("相同资源，直接跳过");
                 //Debug.LogError("加载现有资源完成:" + currentExperiment.Name);
-
-                OnLoadComplete();
+                windowsManager.SetTop();
             }
         }
 

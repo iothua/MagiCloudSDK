@@ -50,54 +50,48 @@ namespace MagiCloud.NetWorks
         /// </summary>
         public void OnBack()
         {
-            if (currentExperiment!=null)
-            {
-                currentExperiment.ExperimentStatus = 2;
-                OnSendData<ExperimentReceiptEvent,ExperimentInfo>(currentExperiment);
-            }
+            currentExperiment.ExperimentStatus = 2;
+            OnSendData<ExperimentReceiptEvent, ExperimentInfo>(currentExperiment);
+
+            Debug.LogError("发送返回操作");
         }
 
         public void OnExit()
         {
-            if (currentExperiment!=null)
-            {
-                currentExperiment.ExperimentStatus = 4;
-                OnSendData<ExperimentReceiptEvent,ExperimentInfo>(currentExperiment);
-            }
+            currentExperiment.ExperimentStatus = 204;
+            OnSendData<ExperimentReceiptEvent, ExperimentInfo>(currentExperiment);
+
+            Debug.LogError("发送退出");
         }
 
         public void OnLoadComplete()
         {
-            if (currentExperiment!=null)
-            {
-                currentExperiment.ExperimentStatus = 1;
+            currentExperiment.ExperimentStatus = 1;
 
-                OnSendData<ExperimentReceiptEvent,ExperimentInfo>(currentExperiment);
-            }
-            windowsManager.SetTop();
+            OnSendData<ExperimentReceiptEvent, ExperimentInfo>(currentExperiment);
         }
+
+
 
         public void OnExperimentError(string msg)
         {
-            if (currentExperiment!=null)
-            {
-                currentExperiment.ExperimentStatus = -1;
+            currentExperiment.ExperimentStatus = 255;
 
-                currentExperiment.Name = currentExperiment.Name + ":" + msg;
-                eventPool.GetEvent<ExperimentReceiptEvent>().Send(connection,currentExperiment);
-            }
+            currentExperiment.Name = currentExperiment.Name + ":" + msg;
+            eventPool.GetEvent<ExperimentReceiptEvent>().Send(connection, currentExperiment);
+
         }
 
         public void OnExperimentReset()
         {
-            if (currentExperiment!=null)
-            {
-                currentExperiment.ExperimentStatus = 3;
-                eventPool.GetEvent<ExperimentReceiptEvent>().Send(connection,currentExperiment);
-            }
-            SendExperimentStatus(2);
+            currentExperiment.ExperimentStatus = 3;
+            eventPool.GetEvent<ExperimentReceiptEvent>().Send(connection, currentExperiment);
+
+            SendExperimentStatus(currentExperiment.ExperimentStatus);
 
             currentExperiment = null;
+
+            Debug.Log("发送重新加载");
 
         }
 

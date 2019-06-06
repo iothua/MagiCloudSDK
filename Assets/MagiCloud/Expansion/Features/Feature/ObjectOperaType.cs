@@ -1,5 +1,5 @@
 ﻿
-namespace MagiCloud
+namespace MagiCloud.Features
 {
     /// <summary>
     /// 物体操作类型
