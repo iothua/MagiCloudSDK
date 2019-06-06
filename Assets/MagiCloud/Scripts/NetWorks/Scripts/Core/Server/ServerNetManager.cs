@@ -38,17 +38,17 @@ namespace MagiCloud.NetWorks
                 if (connection != null)
                     connection.Update();
 
-                if (UnityEngine.Time.frameCount % 30==0)
-                {
-                    if (windowsManager.IsTopping)
-                    {
-                        MOperateManager.ActiveHandController(true, 0);
-                    }
-                    else
-                    {
-                        MOperateManager.ActiveHandController(false, 0);
-                    }
-                }
+                //if (UnityEngine.Time.frameCount % 30==0)
+                //{
+                //    if (windowsManager.IsTopping)
+                //    {
+                //        MOperateManager.ActiveHandController(true, 0);
+                //    }
+                //    else
+                //    {
+                //        MOperateManager.ActiveHandController(false, 0);
+                //    }
+                //}
             });
         }
 

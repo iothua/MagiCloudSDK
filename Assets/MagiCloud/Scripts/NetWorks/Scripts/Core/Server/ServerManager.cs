@@ -1,11 +1,18 @@
 ﻿using Google.Protobuf;
 using System;
+using Loxodon.Framework.Messaging;
+using UnityEngine;
 
 namespace MagiCloud.NetWorks
 {
     public class ServerManager : ServerNetManager
     {
 
+        public const string StartLoading = "start_loading";
+        public const string LoadingComplete = "loading_complete";
+        public const string LoadingError = "loading_error";
+        public const string StartExperiment = "start_experiment";
+        
         public event Action<ExperimentInfo> EventExperimentRecipt;
 
         public ServerManager() : base()
@@ -28,6 +35,16 @@ namespace MagiCloud.NetWorks
 
         /// <summary>
         /// 实验接收
+        ///    0xFF:错误
+        ///    0x00:默认加载
+        ///    0x01:成功
+        ///    0x02:返回
+        ///    0x03:重置
+        ///    0xAA:应答实验
+        ///    0xCC:关闭
+        ///  
+        ///
+        /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="proto"></param>
@@ -38,36 +55,44 @@ namespace MagiCloud.NetWorks
             switch (info.ExperimentStatus)
             {
                 //错误
-                case -1:
+                case 255:
+                    
                     windowsManager.ExitExe();
                     currentExperiment = null;
 
+                    Messenger.Default.Publish(LoadingError, info);
+                    
                     break;
                 //加载成功
                 case 1:
-                    //关闭loading
 
-                    //UnityEngine.Debug.Log("加载成功");
+                    //通知另一个端口，表示加载成功
+                    info.ExperimentStatus = 170;
+
+                    OnSendData<ExperimentRequestEvent, ExperimentInfo>(info);
+                    //Messenger.Default.Publish(LoadingComplete, info.ExperimentStatus);
+
+                    Debug.LogError("命令：加载成功 " + info.Name);
 
                     break;
                 case 2:
-                    //UnityEngine.Debug.Log("执行：返回");
+                    //返回
                     windowsManager.SetTop();
+                    Debug.LogError("命令：返回 " + info.Name);
                     break;
                 //重置
                 case 3:
-                    //UnityEngine.Debug.Log("执行：重置");
-                    //windowsManager.SetTop();
                     SelectExperiment(currentExperiment, windowsManager.processPath);
+                    Debug.Log("命令：重置 " + info.Name);
                     break;
                 //关闭
-                case 4:
-
-                    //UnityEngine.Debug.Log("执行：关闭");
+                case 204:
 
                     currentExperiment = null;
 
                     windowsManager.SetTop();
+
+                    Debug.Log("命令：关闭程序");
                     break;
                 default:
                     break;
@@ -86,13 +111,32 @@ namespace MagiCloud.NetWorks
         {
             try
             {
+                /*
+                 * 
+                 
+                if (currentExperiment!=null&&currentExperiment.Id == experiment.Id)
+                {
+                    Debug.Log("值相同，直接跳过");
+                }
+                else
+                {
+                    Messenger.Default.Publish(StartLoading, experiment);
+                
+                    SelectExperimentInfo(experiment, productExePath);
+
+                    windowsManager.SetTop();
+                    
+                }
+                
+                */
+                
+                //Messenger.Default.Publish(StartLoading, experiment);
+                
                 SelectExperimentInfo(experiment, productExePath);
 
+                OnSendData<ExperimentRequestEvent, ExperimentInfo>(currentExperiment);
                 windowsManager.SetTop();
 
-                UnityEngine.Debug.Log("实验值：" + experiment.Name);
-
-                OnSendData<ExperimentRequestEvent, ExperimentInfo>(currentExperiment);
             }
             catch (Exception ex)
             {

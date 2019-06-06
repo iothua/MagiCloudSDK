@@ -1,8 +1,8 @@
 ﻿using System;
+using Google.Protobuf;
 using System.Net;
 using System.Net.Sockets;
-using DG.Tweening;
-using Google.Protobuf;
+
 namespace MagiCloud.NetWorks
 {
     public class ControlTerminal
@@ -16,7 +16,6 @@ namespace MagiCloud.NetWorks
 
         public void Start(string ip,int port)
         {
-
             CreateConnects();
             controlSocket = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
 

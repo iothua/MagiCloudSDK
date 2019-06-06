@@ -17,16 +17,7 @@ namespace MagiCloud.NetWorks
 
         public ExperimentInfoManager()
         {
-
-#if UNITY_ANDROID
-            WWW www = new WWW(Application.streamingAssetsPath+ "/ExpInfo.json");
-            while (!www.isDone)
-            {
-            }
-            string json = www.text;
-#else
-  string json=JsonHelper.ReadJsonString(Application.streamingAssetsPath+ "/ExpInfo.json");
-#endif
+            string json = JsonHelper.ReadJsonString(Application.streamingAssetsPath+ "/ExpInfo.json");
             expInfos= JsonHelper.JsonToObject<Dictionary<int,ExperimentInfo>>(json);
         }
 

@@ -1,14 +1,18 @@
 ﻿using System;
 using System.IO;
+using System.Collections;
 
-namespace MagiCloud.Downloads
+using Loxodon.Framework.Asynchronous;
+
+namespace MagiCloudPlatform.Downloads
 {
+
     public abstract class AbstractDownload
     {
         /// <summary>
         /// 网络资源Url路径
         /// </summary>
-        protected string uri;
+        protected string Uri;
 
         /// <summary>
         /// 资源下载存放路径，不包含文件名
@@ -40,6 +44,15 @@ namespace MagiCloud.Downloads
         protected long currentLength;
 
         /// <summary>
+        /// 临时文件后缀名
+        /// </summary>
+        protected string tempFileExt = ".temp";
+        /// <summary>
+        /// 临时文件路径
+        /// </summary>
+        protected string tempSaveFilePath;
+
+        /// <summary>
         /// 是否开始下载
         /// </summary>
         protected bool isStartDownload;
@@ -47,32 +60,67 @@ namespace MagiCloud.Downloads
         /// <summary>
         /// 是否开始下载
         /// </summary>
-        public bool IsStartDownload {
-            get {
+        public bool IsStartDownload
+        {
+            get
+            {
                 return isStartDownload;
             }
         }
 
-        public AbstractDownload()
-        { }
-
-        public AbstractDownload(string url, string path)
+        /// <summary>
+        /// 开始下载
+        /// </summary>
+        /// <returns>The download.</returns>
+        /// <param name="url">下载路径，路径已经包含文件信息</param>
+        /// <param name="path">保存文件夹路径</param>
+        /// <param name="promise">下载完成回调.</param>
+        public virtual IEnumerator StartDownload(string url, string savePath, IProgressPromise<float,string> promise)
         {
-            this.uri = url;
-            savePath = path;
+
+            this.Uri = url;
+            this.savePath = savePath;
             isStartDownload = false;
-            fileNameWithoutExt = Path.GetFileNameWithoutExtension(this.uri);
-            fileExt = Path.GetExtension(this.uri);
+            fileNameWithoutExt = Path.GetFileNameWithoutExtension(this.Uri);
+            fileExt = Path.GetExtension(this.Uri);
 
             saveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, fileExt);
-        }
 
-        public virtual void StartDownload(Action<bool> callback = null)
-        {
-            if (string.IsNullOrEmpty(uri) || string.IsNullOrEmpty(savePath))
-                return;
+            if (string.IsNullOrEmpty(this.Uri) || string.IsNullOrEmpty(savePath))
+                yield break;
 
             CreateDirectory(saveFilePath);
+            tempSaveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, tempFileExt);
+        }
+
+        /// <summary>
+        /// 开始下载
+        /// </summary>
+        /// <returns>The download.</returns>
+        /// <param name="url">下载链接，不包含下载文件信息</param>
+        /// <param name="savePath">保存本地路径</param>
+        /// <param name="fileName">文件名称</param>
+        /// <param name="promise">下载完成回调</param>
+        public virtual IEnumerator StartDownload(string url, string savePath, string fileName, IProgressPromise<float, string> promise)
+        {
+
+            this.Uri = url;
+            this.savePath = savePath;
+            isStartDownload = false;
+
+            fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+            fileExt = Path.GetExtension(fileName);
+
+            saveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, fileExt);
+
+
+            if (string.IsNullOrEmpty(this.Uri) || string.IsNullOrEmpty(savePath))
+                yield break;
+
+            CreateDirectory(saveFilePath);
+
+            tempSaveFilePath = string.Format("{0}/{1}{2}", savePath, fileNameWithoutExt, tempFileExt);
+
         }
 
         /// <summary>
@@ -93,7 +141,10 @@ namespace MagiCloud.Downloads
         /// <returns></returns>
         public abstract long GetLength();
 
-        public abstract void Destroy();
+        public virtual void Destroy(Loxodon.Framework.Asynchronous.IAsyncResult result)
+        {
+            result.Cancel();
+        }
 
         /// <summary>
         /// 创建目录
