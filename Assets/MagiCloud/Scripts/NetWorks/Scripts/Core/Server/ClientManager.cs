@@ -52,16 +52,12 @@ namespace MagiCloud.NetWorks
         {
             currentExperiment.ExperimentStatus = 2;
             OnSendData<ExperimentReceiptEvent, ExperimentInfo>(currentExperiment);
-
-            Debug.LogError("发送返回操作");
         }
 
         public void OnExit()
         {
             currentExperiment.ExperimentStatus = 204;
             OnSendData<ExperimentReceiptEvent, ExperimentInfo>(currentExperiment);
-
-            Debug.LogError("发送退出");
         }
 
         public void OnLoadComplete()
@@ -90,9 +86,6 @@ namespace MagiCloud.NetWorks
             SendExperimentStatus(currentExperiment.ExperimentStatus);
 
             currentExperiment = null;
-
-            Debug.Log("发送重新加载");
-
         }
 
         public override void OnDestroy()
