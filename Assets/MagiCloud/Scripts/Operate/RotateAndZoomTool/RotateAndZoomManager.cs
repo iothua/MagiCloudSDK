@@ -30,7 +30,7 @@ namespace MagiCloud.RotateAndZoomTool
         /// 相机缩放系数
         /// </summary>
         public static float Speed_CameraZoom = 0.1f;
-
+        public static float ZoomSpeed = 0.1f;
         /// <summary>
         /// 旋转速度 水平轴
         /// </summary>

@@ -248,7 +248,7 @@ namespace MagiCloud.RotateAndZoomTool
 
             distance = DistanceCameraToTarget(zoomTarget,mainCamera.transform);
 
-            mouseZoomSpeed = RotateAndZoomManager.Speed_CameraZoom;
+            mouseZoomSpeed = RotateAndZoomManager.ZoomSpeed;
 
             distance = Mathf.Clamp(distance - zoomdis * mouseZoomSpeed,zoomMinDis,zoomMaxDis);
             Vector3 curCameraPosition = mainCamera.transform.position;
