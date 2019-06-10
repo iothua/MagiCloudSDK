@@ -168,7 +168,7 @@ namespace MagiCloud.Core.MInput
             isError = false;
 
             HandStatus = MInputHandStatus.Grip;
-
+            lerpPoint=currentPoint;
             EventHandGrip.SendListener(HandIndex);
         }
 
