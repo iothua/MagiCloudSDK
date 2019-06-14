@@ -75,6 +75,11 @@ namespace MagiCloud.NetWorks
 
         public void Send(ProtobufTool protobuf)
         {
+            if (!socket.Connected)
+            {
+                isUse=false;
+                return;
+            }
             try
             {
                 socket.BeginSend(protobuf.bytes,0,protobuf.byteLength,SocketFlags.None,SendCallback
@@ -89,7 +94,7 @@ namespace MagiCloud.NetWorks
 
         private void SendCallback(IAsyncResult ar)
         {
-           
+
             try
             {
                 ProtobufTool connect = ar.AsyncState as ProtobufTool;
