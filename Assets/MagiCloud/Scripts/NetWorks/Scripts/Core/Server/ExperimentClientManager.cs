@@ -8,7 +8,7 @@ using Loxodon.Framework.Bundles;
 
 namespace MagiCloud.NetWorks
 {
-    public class ExperimentClientManager : ClientManager
+    public class ExperimentClientManager :ClientManager
     {
         public NetAsset netAsset;
 
@@ -21,7 +21,7 @@ namespace MagiCloud.NetWorks
             this.monoBehaviour = behaviour;
         }
 
-        protected override void OnExperimentRequest(int sender, IMessage proto)
+        protected override void OnExperimentRequest(int sender,IMessage proto)
         {
 
             ExperimentInfo experimentInfo = proto as ExperimentInfo;
@@ -38,7 +38,7 @@ namespace MagiCloud.NetWorks
                 {
                     currentExperiment = null;
 
-                    SendExperimentStatus(2);
+                    SendExperimentStatus(3);
                 }
 
                 monoBehaviour.StartCoroutine(LoadAsset(experimentInfo));
@@ -56,7 +56,7 @@ namespace MagiCloud.NetWorks
 
             yield return new WaitForSeconds(0.1f);
 
-            yield return netAsset.LoadAsset(experimentInfo, () =>
+            yield return netAsset.LoadAsset(experimentInfo,() =>
             {
 
                 //Debug.LogError("加载新资源完成：" + experimentInfo.Name);
