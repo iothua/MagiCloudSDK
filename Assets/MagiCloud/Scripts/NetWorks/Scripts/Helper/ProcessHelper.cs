@@ -54,8 +54,8 @@ namespace MagiCloud.NetWorks
             if (p!=null&&!p.HasExited)
             {
                 p.Kill();
-                p=null;
             }
+            p=null;
         }
     }
 }
